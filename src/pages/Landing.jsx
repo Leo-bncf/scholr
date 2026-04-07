@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DetachedNavbar from '@/components/public/DetachedNavbar';
+import { ExpandableCard } from '@/components/ui/expandable-card';
 import PublicFooter from '@/components/public/PublicFooter';
 import AnimatedBackground from '@/components/public/AnimatedBackground';
 import ConsentModal from '@/components/public/ConsentModal';
@@ -99,122 +100,80 @@ function ProblemSection() {
 }
 
 function FeaturesGrid() {
-  const [expandedId, setExpandedId] = React.useState(null);
-
   const features = [
-    { icon: BarChart3,     title: 'Executive Dashboards',        short: 'Role-specific insights',         desc: 'Personalized dashboards for every stakeholder — students see academic progress, teachers manage their classes, coordinators oversee cohorts, parents track their children, and admins control the entire school. Each role receives contextual information tailored to their responsibilities, with quick actions and performance indicators prominently displayed.' },
-    { icon: ClipboardCheck, title: 'Academic Workflows',          short: 'Complete assignment lifecycle',   desc: 'From creation to grading — publish assignments with IB criteria alignment, students submit work through Google Docs, files, or links, teachers provide criterion-based feedback, and grades sync automatically. Support for multiple submission formats, late submission handling, and comprehensive submission tracking ensure transparency throughout.' },
-    { icon: BookOpen,      title: 'Gradebook',                   short: 'Multi-framework grading',        desc: 'Support for multiple grading scales including 1-7 IB, A*-E, letter grades, and percentages. Predicted grade tracking with historical trends, rubric-based criterion assessment, and comprehensive term reports aligned to your curriculum. Generate assessment reports by criterion and lock grades for compliance.' },
-    { icon: Users,         title: 'Parent Portal',               short: 'Real-time family engagement',   desc: 'Parents see grades, attendance records, upcoming assignments, teacher feedback, and behavioral notes — all updated in real-time. Direct messaging with teachers keeps communication secure, organised, and compliant with school policies. Parents can also receive progress alerts and attendance warnings.' },
-    { icon: Calendar,      title: 'Timetable Integration',       short: 'Schedule synchronisation',      desc: 'Sync with external timetable systems like Veracross or iSAMS, display daily class schedules, manage periods and rooms, resolve scheduling conflicts automatically, and track historical schedule changes. Supports multiple concurrent timetables and handles special events and exam schedules.' },
-    { icon: MessageSquare, title: 'Internal Messaging',          short: 'Secure communication hub',      desc: 'Role-aware messaging between teachers, students, and parents with granular permission controls. Create class announcements, manage discussions, implement quiet hours policies, and maintain compliance logging for all communications. Thread-based conversations keep context clear and searchable.' },
-    { icon: Shield,        title: 'Enterprise Security',         short: 'Data protection',               desc: 'Complete multi-tenant isolation ensures schools cannot access each other\'s data. Granular role-based access control, audit logging of all critical actions, GDPR compliance tools including data export and deletion, and encrypted data storage at rest and in transit.' },
-    { icon: Star,          title: 'Extended Curriculum',         short: 'CAS, EE, TOK & more',           desc: 'Manage CAS experiences with strand mapping, supervisor tracking, and hourly reflection submissions. Track Extended Essay milestones from initial proposal through final viva voce. Manage TOK deadlines, student reflections, and coordinator approvals in one unified interface.' },
-  ];
-
-  // Positions kept away from edges so floating animation never clips
-  const bubbleConfigs = [
-    { size: 180, x: 8,  y: 10, dur: 9,  delay: 0 },
-    { size: 160, x: 30, y: 55, dur: 11, delay: 1.5 },
-    { size: 195, x: 52, y: 8,  dur: 8,  delay: 0.8 },
-    { size: 170, x: 74, y: 50, dur: 12, delay: 2.2 },
-    { size: 175, x: 16, y: 70, dur: 10, delay: 0.3 },
-    { size: 165, x: 64, y: 72, dur: 9,  delay: 1.8 },
-    { size: 185, x: 86, y: 15, dur: 11, delay: 0.6 },
-    { size: 190, x: 42, y: 38, dur: 10, delay: 1.2 },
+    { 
+      title: 'Executive Dashboards', 
+      short: 'Role-specific insights', 
+      desc: 'Personalized dashboards for every stakeholder — students see academic progress, teachers manage their classes, coordinators oversee cohorts, parents track their children, and admins control the entire school. Each role receives contextual information tailored to their responsibilities, with quick actions and performance indicators prominently displayed.',
+      src: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop'
+    },
+    { 
+      title: 'Academic Workflows', 
+      short: 'Complete assignment lifecycle', 
+      desc: 'From creation to grading — publish assignments with IB criteria alignment, students submit work through Google Docs, files, or links, teachers provide criterion-based feedback, and grades sync automatically. Support for multiple submission formats, late submission handling, and comprehensive submission tracking ensure transparency throughout.',
+      src: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=800&h=600&fit=crop'
+    },
+    { 
+      title: 'Gradebook', 
+      short: 'Multi-framework grading', 
+      desc: 'Support for multiple grading scales including 1-7 IB, A*-E, letter grades, and percentages. Predicted grade tracking with historical trends, rubric-based criterion assessment, and comprehensive term reports aligned to your curriculum. Generate assessment reports by criterion and lock grades for compliance.',
+      src: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&h=600&fit=crop'
+    },
+    { 
+      title: 'Parent Portal', 
+      short: 'Real-time family engagement', 
+      desc: 'Parents see grades, attendance records, upcoming assignments, teacher feedback, and behavioral notes — all updated in real-time. Direct messaging with teachers keeps communication secure, organised, and compliant with school policies. Parents can also receive progress alerts and attendance warnings.',
+      src: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=800&h=600&fit=crop'
+    },
+    { 
+      title: 'Timetable Integration', 
+      short: 'Schedule synchronisation', 
+      desc: 'Sync with external timetable systems like Veracross or iSAMS, display daily class schedules, manage periods and rooms, resolve scheduling conflicts automatically, and track historical schedule changes. Supports multiple concurrent timetables and handles special events and exam schedules.',
+      src: 'https://images.unsplash.com/photo-1506784951206-e9624ad2af01?w=800&h=600&fit=crop'
+    },
+    { 
+      title: 'Internal Messaging', 
+      short: 'Secure communication hub', 
+      desc: 'Role-aware messaging between teachers, students, and parents with granular permission controls. Create class announcements, manage discussions, implement quiet hours policies, and maintain compliance logging for all communications. Thread-based conversations keep context clear and searchable.',
+      src: 'https://images.unsplash.com/photo-1577563908411-5077b6dc7624?w=800&h=600&fit=crop'
+    },
+    { 
+      title: 'Enterprise Security', 
+      short: 'Data protection', 
+      desc: 'Complete multi-tenant isolation ensures schools cannot access each other\'s data. Granular role-based access control, audit logging of all critical actions, GDPR compliance tools including data export and deletion, and encrypted data storage at rest and in transit.',
+      src: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=600&fit=crop'
+    },
+    { 
+      title: 'Extended Curriculum', 
+      short: 'CAS, EE, TOK & more', 
+      desc: 'Manage CAS experiences with strand mapping, supervisor tracking, and hourly reflection submissions. Track Extended Essay milestones from initial proposal through final viva voce. Manage TOK deadlines, student reflections, and coordinator approvals in one unified interface.',
+      src: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop'
+    },
   ];
 
   return (
     <section className="py-24 bg-transparent">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-slate-900">Comprehensive Platform Capabilities</h2>
           <p className="mt-3 text-lg text-slate-500">Engineered for the rigorous demands of international multi-curricular institutions</p>
-          <p className="mt-2 text-sm text-slate-400">Click any bubble to explore</p>
         </div>
 
-        {/* Bubble arena */}
-        <div className="relative w-full" style={{ height: '500px' }}>
-          {features.map((f, i) => {
-            const cfg = bubbleConfigs[i];
-            const isExpanded = expandedId === i;
-            return (
-              <motion.button
-                key={i}
-                onClick={() => setExpandedId(isExpanded ? null : i)}
-                className="absolute flex flex-col items-center justify-center rounded-full cursor-pointer select-none"
-                style={{
-                  width: cfg.size,
-                  height: cfg.size,
-                  left: `calc(${cfg.x}% - ${cfg.size / 2}px)`,
-                  top:  `calc(${cfg.y}% - ${cfg.size / 2}px)`,
-                  background: isExpanded
-                    ? 'linear-gradient(135deg, rgba(37,99,235,0.75), rgba(96,165,250,0.65))'
-                    : 'linear-gradient(135deg, rgba(239,246,255,0.35) 0%, rgba(186,230,253,0.25) 40%, rgba(224,231,255,0.3) 70%, rgba(167,243,208,0.2) 100%)',
-                  backdropFilter: 'blur(12px) saturate(180%)',
-                  WebkitBackdropFilter: 'blur(12px) saturate(180%)',
-                  border: isExpanded
-                    ? '1.5px solid rgba(96,165,250,0.8)'
-                    : '1px solid rgba(255,255,255,0.55)',
-                  boxShadow: isExpanded
-                    ? '0 8px 32px rgba(37,99,235,0.3), inset 0 1px 0 rgba(255,255,255,0.4)'
-                    : '0 4px 24px rgba(147,197,253,0.18), inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -1px 0 rgba(147,197,253,0.15)',
-                  zIndex: isExpanded ? 10 : 1,
-                }}
-                animate={isExpanded ? { scale: 1.15 } : {
-                  y: [0, -10, 0, 8, 0],
-                  x: [0, 5, 0, -4, 0],
-                  transition: {
-                    duration: cfg.dur,
-                    delay: cfg.delay,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }
-                }}
-                transition={{ duration: 0.35, ease: 'easeOut' }}
-                whileHover={isExpanded ? {} : { scale: 1.08, boxShadow: '0 8px 24px rgba(59,130,246,0.4)' }}
-              >
-                <f.icon className={`w-6 h-6 mb-1.5 ${isExpanded ? 'text-white' : 'text-blue-500/80'}`} />
-                <span className={`text-xs font-semibold text-center leading-tight px-3 ${isExpanded ? 'text-white' : 'text-slate-700/80'}`}>
-                  {f.title}
-                </span>
-                </motion.button>
-            );
-          })}
-        </div>
-
-        {/* Expanded detail card */}
-        <AnimatePresence mode="wait">
-          {expandedId !== null && (
-            <motion.div
-              key={expandedId}
-              initial={{ opacity: 0, y: 20, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.97 }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-              className="mt-6 bg-white/90 backdrop-blur-md rounded-2xl border border-blue-200 shadow-xl p-8"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {features.map((f, i) => (
+            <ExpandableCard
+              key={i}
+              title={f.title}
+              src={f.src}
+              description={f.short}
+              classNameExpanded="[&_h4]:text-black dark:[&_h4]:text-white [&_h4]:font-medium"
             >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center flex-shrink-0">
-                    {React.createElement(features[expandedId].icon, { className: 'w-6 h-6 text-white' })}
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900">{features[expandedId].title}</h3>
-                    <p className="text-sm text-blue-600 font-medium mt-0.5">{features[expandedId].short}</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setExpandedId(null)}
-                  className="text-slate-400 hover:text-slate-600 transition-colors flex-shrink-0 mt-1"
-                >
-                  <ChevronRight className="w-5 h-5 rotate-45" />
-                </button>
-              </div>
-              <p className="mt-5 text-slate-600 leading-relaxed text-base">{features[expandedId].desc}</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <p className="text-lg leading-relaxed text-zinc-600 dark:text-zinc-300">
+                {f.desc}
+              </p>
+            </ExpandableCard>
+          ))}
+        </div>
       </div>
     </section>
   );
