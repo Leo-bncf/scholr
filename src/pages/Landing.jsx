@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PublicNavbar from '@/components/public/PublicNavbar';
+import DetachedNavbar from '@/components/public/DetachedNavbar';
 import PublicFooter from '@/components/public/PublicFooter';
 import AnimatedBackground from '@/components/public/AnimatedBackground';
 import ConsentModal from '@/components/public/ConsentModal';
@@ -530,8 +530,8 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-transparent">
       <AnimatedBackground />
-      <div className="fixed top-0 left-0 right-0 z-50">
-        <PublicNavbar />
+      <div className="fixed top-6 left-0 right-0 z-50 px-4 flex justify-center">
+        <DetachedNavbar />
       </div>
       <div className="relative z-10">
         <HeroSection />
