@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 export default function AnimatedBackground() {
   return (
-    <div className="absolute inset-0 overflow-hidden -z-10 bg-white">
+    <div className="fixed inset-0 w-full h-full overflow-hidden -z-10 bg-white">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       <motion.div 
         animate={{ 
