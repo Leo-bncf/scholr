@@ -1,41 +1,13 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { Boxes } from "@/components/ui/background-boxes";
 
 export default function AnimatedBackground() {
   return (
-    <div className="fixed inset-0 w-screen h-screen -z-10 bg-white pointer-events-none overflow-hidden">
-      {/* Grid Pattern */}
-      <motion.div 
-        animate={{ backgroundPosition: ["0px 0px", "24px 0px"] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-        className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"
-      />
-      
-      {/* Ambient Glows */}
-      <motion.div 
-        animate={{ 
-          scale: [1, 1.1, 1],
-          opacity: [0.4, 0.6, 0.4],
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-200/50 rounded-full blur-[100px]"
-      />
-      <motion.div 
-        animate={{ 
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="absolute top-[20%] right-[-10%] w-[60%] h-[60%] bg-blue-100/60 rounded-full blur-[120px]"
-      />
-      <motion.div 
-        animate={{ 
-          scale: [1, 1.1, 1],
-          opacity: [0.2, 0.4, 0.2],
-        }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute bottom-[-20%] left-[20%] w-[50%] h-[50%] bg-blue-300/30 rounded-full blur-[100px]"
-      />
+    <div className="fixed inset-0 w-screen h-screen -z-10 bg-slate-50 overflow-hidden flex flex-col items-center justify-center">
+      <div className="absolute inset-0 w-full h-full bg-slate-50 z-20 [mask-image:radial-gradient(transparent,white)] pointer-events-none" />
+      <div className="absolute inset-0 w-full h-full">
+        <Boxes />
+      </div>
     </div>
   );
 }
