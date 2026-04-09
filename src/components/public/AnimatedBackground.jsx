@@ -5,7 +5,11 @@ export default function AnimatedBackground() {
   return (
     <div className="fixed inset-0 w-screen h-screen -z-10 bg-white pointer-events-none overflow-hidden">
       {/* Grid Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+      <motion.div 
+        animate={{ backgroundPosition: ["0px 0px", "24px 0px"] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+        className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"
+      />
       
       {/* Ambient Glows */}
       <motion.div 
