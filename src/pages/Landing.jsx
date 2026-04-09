@@ -105,49 +105,57 @@ function FeaturesGrid() {
       title: 'Executive Dashboards', 
       short: 'Role-specific insights', 
       desc: 'Personalized dashboards for every stakeholder — students see academic progress, teachers manage their classes, coordinators oversee cohorts, parents track their children, and admins control the entire school. Each role receives contextual information tailored to their responsibilities, with quick actions and performance indicators prominently displayed.',
-      src: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop'
+      icon: BarChart3,
+      color: 'bg-blue-50 text-blue-500'
     },
     { 
       title: 'Academic Workflows', 
       short: 'Complete assignment lifecycle', 
       desc: 'From creation to grading — publish assignments with IB criteria alignment, students submit work through Google Docs, files, or links, teachers provide criterion-based feedback, and grades sync automatically. Support for multiple submission formats, late submission handling, and comprehensive submission tracking ensure transparency throughout.',
-      src: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=800&h=600&fit=crop'
+      icon: ClipboardCheck,
+      color: 'bg-indigo-50 text-indigo-500'
     },
     { 
       title: 'Gradebook', 
       short: 'Multi-framework grading', 
       desc: 'Support for multiple grading scales including 1-7 IB, A*-E, letter grades, and percentages. Predicted grade tracking with historical trends, rubric-based criterion assessment, and comprehensive term reports aligned to your curriculum. Generate assessment reports by criterion and lock grades for compliance.',
-      src: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&h=600&fit=crop'
+      icon: Star,
+      color: 'bg-amber-50 text-amber-500'
     },
     { 
       title: 'Parent Portal', 
       short: 'Real-time family engagement', 
       desc: 'Parents see grades, attendance records, upcoming assignments, teacher feedback, and behavioral notes — all updated in real-time. Direct messaging with teachers keeps communication secure, organised, and compliant with school policies. Parents can also receive progress alerts and attendance warnings.',
-      src: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=800&h=600&fit=crop'
+      icon: Users,
+      color: 'bg-emerald-50 text-emerald-500'
     },
     { 
       title: 'Timetable Integration', 
       short: 'Schedule synchronisation', 
       desc: 'Sync with external timetable systems like Veracross or iSAMS, display daily class schedules, manage periods and rooms, resolve scheduling conflicts automatically, and track historical schedule changes. Supports multiple concurrent timetables and handles special events and exam schedules.',
-      src: 'https://images.unsplash.com/photo-1506784951206-e9624ad2af01?w=800&h=600&fit=crop'
+      icon: Calendar,
+      color: 'bg-orange-50 text-orange-500'
     },
     { 
       title: 'Internal Messaging', 
       short: 'Secure communication hub', 
       desc: 'Role-aware messaging between teachers, students, and parents with granular permission controls. Create class announcements, manage discussions, implement quiet hours policies, and maintain compliance logging for all communications. Thread-based conversations keep context clear and searchable.',
-      src: 'https://images.unsplash.com/photo-1577563908411-5077b6dc7624?w=800&h=600&fit=crop'
+      icon: MessageSquare,
+      color: 'bg-sky-50 text-sky-500'
     },
     { 
       title: 'Enterprise Security', 
       short: 'Data protection', 
       desc: 'Complete multi-tenant isolation ensures schools cannot access each other\'s data. Granular role-based access control, audit logging of all critical actions, GDPR compliance tools including data export and deletion, and encrypted data storage at rest and in transit.',
-      src: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=600&fit=crop'
+      icon: Shield,
+      color: 'bg-rose-50 text-rose-500'
     },
     { 
       title: 'Extended Curriculum', 
       short: 'CAS, EE, TOK & more', 
       desc: 'Manage CAS experiences with strand mapping, supervisor tracking, and hourly reflection submissions. Track Extended Essay milestones from initial proposal through final viva voce. Manage TOK deadlines, student reflections, and coordinator approvals in one unified interface.',
-      src: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop'
+      icon: Sparkles,
+      color: 'bg-violet-50 text-violet-500'
     },
   ];
 
@@ -164,7 +172,8 @@ function FeaturesGrid() {
             <ExpandableCard
               key={i}
               title={f.title}
-              src={f.src}
+              icon={f.icon}
+              color={f.color}
               description={f.short}
               classNameExpanded="[&_h4]:text-black dark:[&_h4]:text-white [&_h4]:font-medium"
             >

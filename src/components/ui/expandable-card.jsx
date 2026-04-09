@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 export function ExpandableCard({
   title,
   src,
+  icon: Icon,
+  color = "bg-zinc-100 text-zinc-500",
   description,
   children,
   className,
@@ -71,11 +73,17 @@ export function ExpandableCard({
             >
               <motion.div layoutId={`image-${title}-${cardId}`}>
                 <div className="relative before:absolute before:inset-x-0 before:bottom-[-1px] before:h-[70px] before:z-50 before:bg-gradient-to-t dark:before:from-zinc-950 before:from-zinc-50">
-                  <img
-                    src={src}
-                    alt={title}
-                    className="w-full h-80 object-cover object-center"
-                  />
+                  {src ? (
+                    <img
+                      src={src}
+                      alt={title}
+                      className="w-full h-80 object-cover object-center"
+                    />
+                  ) : (
+                    <div className={cn("w-full h-80 flex items-center justify-center", color)}>
+                      {Icon && <Icon className="w-32 h-32 opacity-80" />}
+                    </div>
+                  )}
                 </div>
               </motion.div>
               <div className="relative h-full before:fixed before:inset-x-0 before:bottom-0 before:h-[70px] before:z-50 before:bg-gradient-to-t dark:before:from-zinc-950 before:from-zinc-50">
@@ -151,11 +159,17 @@ export function ExpandableCard({
       >
         <div className="flex gap-4 flex-col w-full h-full">
           <motion.div layoutId={`image-${title}-${cardId}`} className="w-full">
-            <img
-              src={src}
-              alt={title}
-              className="w-full h-40 rounded-lg object-cover object-center"
-            />
+            {src ? (
+              <img
+                src={src}
+                alt={title}
+                className="w-full h-40 rounded-lg object-cover object-center"
+              />
+            ) : (
+              <div className={cn("w-full h-40 rounded-lg flex items-center justify-center", color)}>
+                {Icon && <Icon className="w-16 h-16 opacity-80" />}
+              </div>
+            )}
           </motion.div>
           <div className="flex justify-between items-center w-full flex-grow">
             <div className="flex flex-col">
