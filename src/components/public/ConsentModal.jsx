@@ -1,87 +1,40 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { AlertCircle } from 'lucide-react';
-import { createPageUrl } from '@/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ConsentModal({ isOpen, onClose }) {
-  const [privacyAccepted, setPrivacyAccepted] = useState(false);
-  const [termsAccepted, setTermsAccepted] = useState(false);
-
   const handleAccept = () => {
-    if (privacyAccepted && termsAccepted) {
+    try {
       localStorage.setItem('scholr_consent_accepted', 'true');
-      onClose();
-    }
+    } catch (e) {}
+    onClose();
   };
 
-  if (!isOpen) return null;
-
-  const canAccept = privacyAccepted && termsAccepted;
-
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8">
-        <div className="flex items-start gap-3 mb-6">
-          <AlertCircle className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" />
-          <div>
-            <h2 className="text-xl font-bold text-slate-900">Welcome to Scholr</h2>
-            <p className="text-sm text-slate-500 mt-1">Please review and accept our policies</p>
-          </div>
-        </div>
-
-        <div className="space-y-4 mb-8">
-          <label className="flex items-start gap-3 cursor-pointer">
-            <Checkbox
-              checked={privacyAccepted}
-              onCheckedChange={setPrivacyAccepted}
-              className="mt-1"
-            />
-            <span className="text-sm text-slate-700">
-              I have read and accept the{' '}
-              <a
-                href={createPageUrl('PrivacyPolicy')}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline font-medium"
-              >
-                Privacy Policy
-              </a>
-            </span>
-          </label>
-
-          <label className="flex items-start gap-3 cursor-pointer">
-            <Checkbox
-              checked={termsAccepted}
-              onCheckedChange={setTermsAccepted}
-              className="mt-1"
-            />
-            <span className="text-sm text-slate-700">
-              I have read and accept the{' '}
-              <a
-                href={createPageUrl('TermsOfService')}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline font-medium"
-              >
-                Terms of Service
-              </a>
-            </span>
-          </label>
-        </div>
-
-        <Button
-          onClick={handleAccept}
-          disabled={!canAccept}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 100, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          className="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 md:w-96 bg-white border border-blue-100 shadow-lg p-6 rounded-2xl z-50"
         >
-          Accept and Continue
-        </Button>
-
-        <p className="text-xs text-slate-500 text-center mt-4">
-          You must accept both policies to continue using Scholr.
-        </p>
-      </div>
-    </div>
+          <h3 className="text-lg font-bold text-blue-950 mb-2">We respect your privacy</h3>
+          <p className="text-sm text-blue-800/80 mb-6 leading-relaxed">
+            We use cookies to improve your experience and analyze platform usage. 
+            By clicking "Accept", you agree to our use of cookies.
+          </p>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" className="border-blue-200 text-blue-900 hover:bg-blue-50" onClick={onClose}>
+              Decline
+            </Button>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleAccept}>
+              Accept
+            </Button>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

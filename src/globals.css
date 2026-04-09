@@ -1,21 +1,20 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   
   /* Professional Dark Blue Theme Overrides */
-  --primary: 222 47% 11%;
+  --primary: 221 83% 53%;
   --primary-foreground: 210 40% 98%;
-  --secondary: 210 40% 96.1%;
-  --secondary-foreground: 222 47% 11%;
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215 16% 47%;
-  --accent: 210 40% 96.1%;
-  --accent-foreground: 222 47% 11%;
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 222 47% 11%;
+  --secondary: 214 100% 97%;
+  --secondary-foreground: 222 84% 11%;
+  --muted: 214 100% 97%;
+  --muted-foreground: 221 83% 53%;
+  --accent: 214 100% 97%;
+  --accent-foreground: 222 84% 11%;
+  --border: 214 60% 90%;
+  --input: 214 60% 90%;
+  --ring: 221 83% 53%;
   --radius: 0.3rem;
 }
 
@@ -39,10 +38,10 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #bfdbfe;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #60a5fa;
 }
