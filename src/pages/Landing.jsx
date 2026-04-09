@@ -37,12 +37,12 @@ function HeroSection() {
       <div className="absolute inset-0 bg-transparent" />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1]">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-blue-950 leading-[1.1]">
            The LMS designed for
            <span className="text-blue-600"> the needs of</span>
            {' '}International Schools
           </h1>
-          <p className="mt-6 text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto">
+          <p className="mt-6 text-xl text-blue-700/80 leading-relaxed max-w-2xl mx-auto">
             A unified platform built for international schools — supporting multiple curricula, grading frameworks, and reporting standards.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -76,12 +76,12 @@ function FeaturesGrid() {
     <section className="py-24 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-slate-900">Everything your school needs</h2>
+          <h2 className="text-3xl font-bold text-blue-950">Everything your school needs</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((f, i) => (
             <ExpandableCard key={i} title={f.title} icon={f.icon} color={f.color} description={f.short} classNameExpanded="[&_h4]:text-black dark:[&_h4]:text-white [&_h4]:font-medium">
-              <p className="text-lg leading-relaxed text-zinc-600 dark:text-zinc-300">{f.desc}</p>
+              <p className="text-lg leading-relaxed text-blue-800 dark:text-blue-200">{f.desc}</p>
             </ExpandableCard>
           ))}
         </div>
@@ -113,7 +113,7 @@ function RolesSection() {
     <section className="py-24 bg-blue-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-slate-900">Tailored for every role</h2>
+          <h2 className="text-3xl font-bold text-blue-950">Tailored for every role</h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
           {roles.map((r, i) => {
@@ -122,7 +122,7 @@ function RolesSection() {
               <FadeInCard key={i} delay={i * 0.07}>
                 <button onClick={() => setSelectedRole(i)} className={`w-full flex flex-col items-center gap-3 p-6 rounded-2xl border transition-all duration-200 cursor-pointer ${isActive ? `bg-white border-blue-600 shadow-md ring-1 ring-blue-600` : 'bg-white border-blue-100 hover:shadow-sm hover:border-blue-200'}`}>
                   <div className={`w-12 h-12 rounded-full ${r.bg} flex items-center justify-center`}><r.icon className={`w-6 h-6 ${r.color}`} /></div>
-                  <p className="text-sm font-semibold text-slate-900 text-center">{r.name}</p>
+                  <p className="text-sm font-semibold text-blue-950 text-center">{r.name}</p>
                 </button>
               </FadeInCard>
             );
@@ -139,7 +139,7 @@ function CTASection() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="text-3xl font-bold text-white mb-6">Ready to transform your school?</h2>
         <Link to={createPageUrl('Demo')}>
-          <Button size="lg" className="bg-white text-blue-600 hover:bg-slate-100 rounded-full px-8 h-12 text-lg font-semibold">
+          <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-100 rounded-full px-8 h-12 text-lg font-semibold">
             Schedule a Demo
           </Button>
         </Link>
