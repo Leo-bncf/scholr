@@ -63,14 +63,14 @@ function HeroSection() {
 
 function FeaturesGrid() {
   const features = [
-    { title: 'Executive Dashboards', short: 'Role-specific insights', desc: 'Customizable dashboards that give every stakeholder exactly the data they need, when they need it.', icon: PieChart, color: 'bg-white text-zinc-500' },
-    { title: 'Academic Workflows', short: 'Complete assignment lifecycle', desc: 'From planning to submission and grading, streamline the entire academic workflow in one place.', icon: ListChecks, color: 'bg-white text-zinc-500' },
-    { title: 'Gradebook', short: 'Multi-framework grading', desc: 'Support for IB, IGCSE, and standard grading scales, allowing mixed curriculum tracking.', icon: Award, color: 'bg-white text-zinc-500' },
-    { title: 'Parent Portal', short: 'Real-time family engagement', desc: 'Keep parents informed with real-time updates on attendance, behavior, and academic progress.', icon: HeartHandshake, color: 'bg-white text-zinc-500' },
-    { title: 'Timetable Integration', short: 'Schedule synchronisation', desc: 'Seamlessly sync with your school\'s timetabling software to keep everyone in the right place.', icon: CalendarDays, color: 'bg-white text-zinc-500' },
-    { title: 'Internal Messaging', short: 'Secure communication hub', desc: 'Safe, monitored communication channels between staff, students, and parents.', icon: MessageSquareShare, color: 'bg-white text-zinc-500' },
-    { title: 'Enterprise Security', short: 'Data protection', desc: 'Bank-grade security and GDPR compliance to keep your school\'s sensitive data protected.', icon: ShieldCheck, color: 'bg-white text-zinc-500' },
-    { title: 'Extended Curriculum', short: 'CAS, EE, TOK & more', desc: 'Dedicated modules for core curriculum components, built specifically for IB schools.', icon: Globe2, color: 'bg-white text-zinc-500' },
+    { title: 'Executive Dashboards', short: 'Role-specific insights', desc: 'Customizable dashboards that give every stakeholder exactly the data they need, when they need it.', icon: PieChart, color: 'bg-white text-sky-500' },
+    { title: 'Academic Workflows', short: 'Complete assignment lifecycle', desc: 'From planning to submission and grading, streamline the entire academic workflow in one place.', icon: ListChecks, color: 'bg-white text-blue-500' },
+    { title: 'Gradebook', short: 'Multi-framework grading', desc: 'Support for IB, IGCSE, and standard grading scales, allowing mixed curriculum tracking.', icon: Award, color: 'bg-white text-indigo-500' },
+    { title: 'Parent Portal', short: 'Real-time family engagement', desc: 'Keep parents informed with real-time updates on attendance, behavior, and academic progress.', icon: HeartHandshake, color: 'bg-white text-cyan-600' },
+    { title: 'Timetable Integration', short: 'Schedule synchronisation', desc: 'Seamlessly sync with your school\'s timetabling software to keep everyone in the right place.', icon: CalendarDays, color: 'bg-white text-blue-600' },
+    { title: 'Internal Messaging', short: 'Secure communication hub', desc: 'Safe, monitored communication channels between staff, students, and parents.', icon: MessageSquareShare, color: 'bg-white text-sky-600' },
+    { title: 'Enterprise Security', short: 'Data protection', desc: 'Bank-grade security and GDPR compliance to keep your school\'s sensitive data protected.', icon: ShieldCheck, color: 'bg-white text-indigo-600' },
+    { title: 'Extended Curriculum', short: 'CAS, EE, TOK & more', desc: 'Dedicated modules for core curriculum components, built specifically for IB schools.', icon: Globe2, color: 'bg-white text-blue-400' },
   ];
   return (
     <section className="py-24 bg-transparent">
