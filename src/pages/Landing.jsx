@@ -11,14 +11,9 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ArrowRight, BookOpen, Users, BarChart3, Shield, 
-  MessageSquare, Calendar, ClipboardCheck, Star,
-  ChevronRight, Sparkles, GraduationCap, UserCheck,
-  UserCircle, Compass, Settings2, CheckCircle2,
-  LayoutDashboard, LibraryBig, FilePenLine, UsersRound, 
-  CalendarClock, MessageCircleMore, ShieldCheck, Trophy,
-  PieChart, ListChecks, Award, HeartHandshake, CalendarDays,
-  MessageSquareShare, Globe2
+  ArrowRight,
+  PieChart, ListChecks, Award, HeartHandshake, CalendarDays, MessageCircle, ShieldCheck, Globe,
+  GraduationCap, BookOpen, UserCircle, Compass, Settings2, Sparkles, ChevronRight, CheckCircle2
 } from 'lucide-react';
 
 function HeroSection() {
@@ -144,7 +139,7 @@ function FeaturesGrid() {
       title: 'Internal Messaging', 
       short: 'Secure communication hub', 
       desc: 'Role-aware messaging between teachers, students, and parents with granular permission controls. Create class announcements, manage discussions, implement quiet hours policies, and maintain compliance logging for all communications. Thread-based conversations keep context clear and searchable.',
-      icon: MessageSquareShare,
+      icon: MessageCircle,
       color: 'bg-gradient-to-br from-indigo-600 to-violet-500 text-white shadow-inner'
     },
     { 
@@ -158,7 +153,7 @@ function FeaturesGrid() {
       title: 'Extended Curriculum', 
       short: 'CAS, EE, TOK & more', 
       desc: 'Manage CAS experiences with strand mapping, supervisor tracking, and hourly reflection submissions. Track Extended Essay milestones from initial proposal through final viva voce. Manage TOK deadlines, student reflections, and coordinator approvals in one unified interface.',
-      icon: Globe2,
+      icon: Globe,
       color: 'bg-gradient-to-br from-violet-600 to-purple-600 text-white shadow-inner'
     },
   ];
