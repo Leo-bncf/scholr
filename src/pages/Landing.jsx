@@ -63,14 +63,14 @@ function HeroSection() {
 
 function FeaturesGrid() {
   const features = [
-    { title: 'Executive Dashboards', short: 'Role-specific insights', desc: 'Customizable dashboards that give every stakeholder exactly the data they need, when they need it.', icon: PieChart, color: 'bg-zinc-100 text-sky-500' },
-    { title: 'Academic Workflows', short: 'Complete assignment lifecycle', desc: 'From planning to submission and grading, streamline the entire academic workflow in one place.', icon: ListChecks, color: 'bg-zinc-100 text-blue-500' },
-    { title: 'Gradebook', short: 'Multi-framework grading', desc: 'Support for IB, IGCSE, and standard grading scales, allowing mixed curriculum tracking.', icon: Award, color: 'bg-zinc-100 text-indigo-500' },
-    { title: 'Parent Portal', short: 'Real-time family engagement', desc: 'Keep parents informed with real-time updates on attendance, behavior, and academic progress.', icon: HeartHandshake, color: 'bg-zinc-100 text-cyan-600' },
-    { title: 'Timetable Integration', short: 'Schedule synchronisation', desc: 'Seamlessly sync with your school\'s timetabling software to keep everyone in the right place.', icon: CalendarDays, color: 'bg-zinc-100 text-blue-600' },
-    { title: 'Internal Messaging', short: 'Secure communication hub', desc: 'Safe, monitored communication channels between staff, students, and parents.', icon: MessageSquareShare, color: 'bg-zinc-100 text-sky-600' },
-    { title: 'Enterprise Security', short: 'Data protection', desc: 'Bank-grade security and GDPR compliance to keep your school\'s sensitive data protected.', icon: ShieldCheck, color: 'bg-zinc-100 text-indigo-600' },
-    { title: 'Extended Curriculum', short: 'CAS, EE, TOK & more', desc: 'Dedicated modules for core curriculum components, built specifically for IB schools.', icon: Globe2, color: 'bg-zinc-100 text-blue-400' },
+    { title: 'Executive Dashboards', short: 'Role-specific insights', desc: 'Customizable dashboards that give every stakeholder exactly the data they need, when they need it.', icon: PieChart, color: 'bg-sky-50 text-sky-500' },
+    { title: 'Academic Workflows', short: 'Complete assignment lifecycle', desc: 'From planning to submission and grading, streamline the entire academic workflow in one place.', icon: ListChecks, color: 'bg-blue-50 text-blue-500' },
+    { title: 'Gradebook', short: 'Multi-framework grading', desc: 'Support for IB, IGCSE, and standard grading scales, allowing mixed curriculum tracking.', icon: Award, color: 'bg-indigo-50 text-indigo-500' },
+    { title: 'Parent Portal', short: 'Real-time family engagement', desc: 'Keep parents informed with real-time updates on attendance, behavior, and academic progress.', icon: HeartHandshake, color: 'bg-cyan-50 text-cyan-600' },
+    { title: 'Timetable Integration', short: 'Schedule synchronisation', desc: 'Seamlessly sync with your school\'s timetabling software to keep everyone in the right place.', icon: CalendarDays, color: 'bg-blue-50 text-blue-600' },
+    { title: 'Internal Messaging', short: 'Secure communication hub', desc: 'Safe, monitored communication channels between staff, students, and parents.', icon: MessageSquareShare, color: 'bg-sky-50 text-sky-600' },
+    { title: 'Enterprise Security', short: 'Data protection', desc: 'Bank-grade security and GDPR compliance to keep your school\'s sensitive data protected.', icon: ShieldCheck, color: 'bg-indigo-50 text-indigo-600' },
+    { title: 'Extended Curriculum', short: 'CAS, EE, TOK & more', desc: 'Dedicated modules for core curriculum components, built specifically for IB schools.', icon: Globe2, color: 'bg-blue-50 text-blue-400' },
   ];
   return (
     <section className="py-24 bg-transparent">
@@ -101,12 +101,12 @@ function FadeInCard({ children, delay = 0 }) {
 function RolesSection() {
   const [selectedRole, setSelectedRole] = useState(0);
   const roles = [
-    { name: 'Students', short: 'Learn and track progress', icon: GraduationCap, color: 'text-sky-500' },
-    { name: 'Teachers', short: 'Manage and assess', icon: BookOpen, color: 'text-blue-500' },
-    { name: 'Parents', short: 'Stay informed and engaged', icon: UserCircle, color: 'text-cyan-600' },
-    { name: 'Coordinators', short: 'Oversee programmes', icon: Compass, color: 'text-indigo-500' },
-    { name: 'Administrators', short: 'Control everything', icon: Settings2, color: 'text-blue-600' },
-    { name: 'Curriculum-Aware UI', short: 'No irrelevant clutter', icon: Sparkles, color: 'text-sky-600' },
+    { name: 'Students', short: 'Learn and track progress', icon: GraduationCap, color: 'text-sky-500', bg: 'bg-sky-50' },
+    { name: 'Teachers', short: 'Manage and assess', icon: BookOpen, color: 'text-blue-500', bg: 'bg-blue-50' },
+    { name: 'Parents', short: 'Stay informed and engaged', icon: UserCircle, color: 'text-cyan-600', bg: 'bg-cyan-50' },
+    { name: 'Coordinators', short: 'Oversee programmes', icon: Compass, color: 'text-indigo-500', bg: 'bg-indigo-50' },
+    { name: 'Administrators', short: 'Control everything', icon: Settings2, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { name: 'Curriculum-Aware UI', short: 'No irrelevant clutter', icon: Sparkles, color: 'text-sky-600', bg: 'bg-sky-50' },
   ];
 
   return (
@@ -121,7 +121,7 @@ function RolesSection() {
             return (
               <FadeInCard key={i} delay={i * 0.07}>
                 <button onClick={() => setSelectedRole(i)} className={`w-full flex flex-col items-center gap-3 p-6 rounded-2xl border transition-all duration-200 cursor-pointer ${isActive ? `bg-white border-blue-600 shadow-md ring-1 ring-blue-600` : 'bg-white border-slate-200 hover:shadow-sm hover:border-slate-300'}`}>
-                  <div className={`w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center`}><r.icon className={`w-6 h-6 ${r.color}`} /></div>
+                  <div className={`w-12 h-12 rounded-full ${r.bg} flex items-center justify-center`}><r.icon className={`w-6 h-6 ${r.color}`} /></div>
                   <p className="text-sm font-semibold text-slate-900 text-center">{r.name}</p>
                 </button>
               </FadeInCard>
