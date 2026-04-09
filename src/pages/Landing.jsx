@@ -46,11 +46,11 @@ function HeroSection() {
             A unified platform built for international schools — supporting multiple curricula, grading frameworks, and reporting standards.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-             <Button size="lg" className="bg-slate-900 hover:bg-slate-700 text-white rounded-full px-8 h-12 text-base font-medium shadow-sm transition-all" onClick={handleSignIn}>
+             <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 h-12 text-base font-medium shadow-sm transition-all" onClick={handleSignIn}>
                Sign In <ArrowRight className="ml-2 w-4 h-4" />
              </Button>
              <Link to={createPageUrl('Demo')}>
-               <Button size="lg" variant="outline" className="rounded-full px-8 h-12 text-base font-medium border-slate-300 hover:bg-slate-50 text-slate-800">
+               <Button size="lg" variant="outline" className="rounded-full px-8 h-12 text-base font-medium border-blue-200 hover:bg-blue-50 text-blue-900">
                  Contact Sales for a Free Demo
                </Button>
              </Link>
@@ -110,7 +110,7 @@ function RolesSection() {
   ];
 
   return (
-    <section className="py-24 bg-slate-50">
+    <section className="py-24 bg-blue-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-slate-900">Tailored for every role</h2>
@@ -120,7 +120,7 @@ function RolesSection() {
             const isActive = selectedRole === i;
             return (
               <FadeInCard key={i} delay={i * 0.07}>
-                <button onClick={() => setSelectedRole(i)} className={`w-full flex flex-col items-center gap-3 p-6 rounded-2xl border transition-all duration-200 cursor-pointer ${isActive ? `bg-white border-blue-600 shadow-md ring-1 ring-blue-600` : 'bg-white border-slate-200 hover:shadow-sm hover:border-slate-300'}`}>
+                <button onClick={() => setSelectedRole(i)} className={`w-full flex flex-col items-center gap-3 p-6 rounded-2xl border transition-all duration-200 cursor-pointer ${isActive ? `bg-white border-blue-600 shadow-md ring-1 ring-blue-600` : 'bg-white border-blue-100 hover:shadow-sm hover:border-blue-200'}`}>
                   <div className={`w-12 h-12 rounded-full ${r.bg} flex items-center justify-center`}><r.icon className={`w-6 h-6 ${r.color}`} /></div>
                   <p className="text-sm font-semibold text-slate-900 text-center">{r.name}</p>
                 </button>
