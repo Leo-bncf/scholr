@@ -14,26 +14,26 @@ export default function EnvironmentStatus() {
   useEffect(() => {
     // Gather environment information from what we can detect
     const status = {
-      nodeEnv: typeof process !== 'undefined' ? process.env.NODE_ENV : 'unknown',
-      isProduction: typeof process !== 'undefined' && process.env.NODE_ENV === 'production',
+      nodeEnv: import.meta.env.MODE || 'unknown',
+      isProduction: import.meta.env.MODE === 'production',
       timestamp: new Date().toISOString(),
       environmentVariables: {
         configured: [
-          { name: 'BASE44_APP_ID', present: !!Deno?.env?.get?.('BASE44_APP_ID'), critical: true },
-          { name: 'STRIPE_SECRET_KEY', present: !!Deno?.env?.get?.('STRIPE_SECRET_KEY'), critical: true },
-          { name: 'STRIPE_WEBHOOK_SECRET', present: !!Deno?.env?.get?.('STRIPE_WEBHOOK_SECRET'), critical: true },
-          { name: 'STRIPE_PUBLISHABLE_KEY', present: !!Deno?.env?.get?.('STRIPE_PUBLISHABLE_KEY'), critical: false },
+          { name: 'BASE44_APP_ID', present: !!globalThis.Deno?.env?.get?.('BASE44_APP_ID'), critical: true },
+          { name: 'STRIPE_SECRET_KEY', present: !!globalThis.Deno?.env?.get?.('STRIPE_SECRET_KEY'), critical: true },
+          { name: 'STRIPE_WEBHOOK_SECRET', present: !!globalThis.Deno?.env?.get?.('STRIPE_WEBHOOK_SECRET'), critical: true },
+          { name: 'STRIPE_PUBLISHABLE_KEY', present: !!globalThis.Deno?.env?.get?.('STRIPE_PUBLISHABLE_KEY'), critical: false },
         ],
       },
     };
     setEnvStatus(status);
   }, []);
 
+  const [showSecrets, setShowSecrets] = useState(false);
+
   if (!envStatus) {
     return <div className="text-slate-600">Loading environment status...</div>;
   }
-
-  const [showSecrets, setShowSecrets] = useState(false);
 
   return (
     <div className="space-y-4">

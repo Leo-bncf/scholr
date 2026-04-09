@@ -14,7 +14,9 @@ import {
   ArrowRight, BookOpen, Users, BarChart3, Shield, 
   MessageSquare, Calendar, ClipboardCheck, Star,
   ChevronRight, Sparkles, GraduationCap, UserCheck,
-  UserCircle, Compass, Settings2, CheckCircle2
+  UserCircle, Compass, Settings2, CheckCircle2,
+  LayoutDashboard, LibraryBig, FilePenLine, UsersRound, 
+  CalendarClock, MessageCircleMore, ShieldCheck, Trophy
 } from 'lucide-react';
 
 function HeroSection() {
@@ -105,57 +107,57 @@ function FeaturesGrid() {
       title: 'Executive Dashboards', 
       short: 'Role-specific insights', 
       desc: 'Personalized dashboards for every stakeholder — students see academic progress, teachers manage their classes, coordinators oversee cohorts, parents track their children, and admins control the entire school. Each role receives contextual information tailored to their responsibilities, with quick actions and performance indicators prominently displayed.',
-      icon: BarChart3,
-      color: 'bg-blue-50 text-blue-500'
+      icon: LayoutDashboard,
+      color: 'bg-sky-50 text-sky-500'
     },
     { 
       title: 'Academic Workflows', 
       short: 'Complete assignment lifecycle', 
       desc: 'From creation to grading — publish assignments with IB criteria alignment, students submit work through Google Docs, files, or links, teachers provide criterion-based feedback, and grades sync automatically. Support for multiple submission formats, late submission handling, and comprehensive submission tracking ensure transparency throughout.',
-      icon: ClipboardCheck,
-      color: 'bg-indigo-50 text-indigo-500'
+      icon: LibraryBig,
+      color: 'bg-sky-100 text-sky-600'
     },
     { 
       title: 'Gradebook', 
       short: 'Multi-framework grading', 
       desc: 'Support for multiple grading scales including 1-7 IB, A*-E, letter grades, and percentages. Predicted grade tracking with historical trends, rubric-based criterion assessment, and comprehensive term reports aligned to your curriculum. Generate assessment reports by criterion and lock grades for compliance.',
-      icon: Star,
-      color: 'bg-amber-50 text-amber-500'
+      icon: FilePenLine,
+      color: 'bg-blue-50 text-blue-500'
     },
     { 
       title: 'Parent Portal', 
       short: 'Real-time family engagement', 
       desc: 'Parents see grades, attendance records, upcoming assignments, teacher feedback, and behavioral notes — all updated in real-time. Direct messaging with teachers keeps communication secure, organised, and compliant with school policies. Parents can also receive progress alerts and attendance warnings.',
-      icon: Users,
-      color: 'bg-emerald-50 text-emerald-500'
+      icon: UsersRound,
+      color: 'bg-blue-100 text-blue-600'
     },
     { 
       title: 'Timetable Integration', 
       short: 'Schedule synchronisation', 
       desc: 'Sync with external timetable systems like Veracross or iSAMS, display daily class schedules, manage periods and rooms, resolve scheduling conflicts automatically, and track historical schedule changes. Supports multiple concurrent timetables and handles special events and exam schedules.',
-      icon: Calendar,
-      color: 'bg-orange-50 text-orange-500'
+      icon: CalendarClock,
+      color: 'bg-indigo-50 text-indigo-500'
     },
     { 
       title: 'Internal Messaging', 
       short: 'Secure communication hub', 
       desc: 'Role-aware messaging between teachers, students, and parents with granular permission controls. Create class announcements, manage discussions, implement quiet hours policies, and maintain compliance logging for all communications. Thread-based conversations keep context clear and searchable.',
-      icon: MessageSquare,
-      color: 'bg-sky-50 text-sky-500'
+      icon: MessageCircleMore,
+      color: 'bg-indigo-100 text-indigo-600'
     },
     { 
       title: 'Enterprise Security', 
       short: 'Data protection', 
       desc: 'Complete multi-tenant isolation ensures schools cannot access each other\'s data. Granular role-based access control, audit logging of all critical actions, GDPR compliance tools including data export and deletion, and encrypted data storage at rest and in transit.',
-      icon: Shield,
-      color: 'bg-rose-50 text-rose-500'
+      icon: ShieldCheck,
+      color: 'bg-violet-50 text-violet-500'
     },
     { 
       title: 'Extended Curriculum', 
       short: 'CAS, EE, TOK & more', 
       desc: 'Manage CAS experiences with strand mapping, supervisor tracking, and hourly reflection submissions. Track Extended Essay milestones from initial proposal through final viva voce. Manage TOK deadlines, student reflections, and coordinator approvals in one unified interface.',
-      icon: Sparkles,
-      color: 'bg-violet-50 text-violet-500'
+      icon: Trophy,
+      color: 'bg-violet-100 text-violet-600'
     },
   ];
 
