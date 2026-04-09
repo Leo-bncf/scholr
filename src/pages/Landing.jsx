@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import PricingTiersSection from '@/components/landing/PricingTiersSection';
 import { 
   ArrowRight, BookOpen, Users, BarChart3, Shield, 
   MessageSquare, Calendar, ClipboardCheck, Star,
@@ -383,57 +384,7 @@ function RolesSection() {
   );
 }
 
-function PricingSection() {
-  const tiers = [
-    { range: 'First 200 students', price: '€20.99', description: 'Per student' },
-    { range: 'Students 201-600', price: '€16.99', description: 'Per student' },
-    { range: '600+ students', price: '€13.99', description: 'Per student', bonus: 'Includes Schedual' },
-  ];
-
-  return (
-    <section className="py-24 bg-transparent">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-slate-900">Simple, Transparent Pricing</h2>
-          <p className="mt-3 text-lg text-slate-500">Scale your investment as your school grows</p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {tiers.map((tier, i) => (
-            <div key={i} className="bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200 shadow-sm p-8 text-center hover:shadow-md transition-shadow">
-              <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide">{tier.range}</p>
-              <div className="mt-4 mb-2">
-                <span className="text-4xl font-bold text-slate-900">{tier.price}</span>
-              </div>
-              <p className="text-sm text-slate-600">{tier.description}</p>
-              {tier.bonus && (
-                <div className="mt-4 bg-blue-50 rounded-lg p-3">
-                  <p className="text-xs font-semibold text-blue-700">{tier.bonus}</p>
-                  <p className="text-xs text-blue-600 mt-1">Discounted Schedual package available</p>
-                  <p className="text-xs text-blue-600 mt-2">Advanced scheduling and timetable management at special rates</p>
-                </div>
-              )}
-              <div className="mt-6 pt-6 border-t border-slate-100">
-                <p className="text-xs text-slate-500">Billed monthly • No setup fees</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="mt-12 text-center">
-          <p className="text-slate-600 max-w-2xl mx-auto">
-            Our tiered pricing model ensures you only pay for the students you have. Get volume discounts as your school scales with Scholr.
-          </p>
-          <div className="mt-8">
-            <Link to={createPageUrl('Contact')}>
-              <Button variant="outline" className="border-slate-300 text-slate-800 hover:bg-slate-50 rounded-lg px-8 h-12 text-base font-medium">
-                Contact Sales for Custom Solutions
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+// PricingTiersSection replaced the legacy PricingSection
 
 function CTASection() {
   const benefits = [
@@ -510,7 +461,7 @@ export default function Landing() {
         <FeaturesGrid />
         <RolesSection />
         <ProblemSection />
-        <PricingSection />
+        <PricingTiersSection />
         <CTASection />
         <PublicFooter />
       </div>
