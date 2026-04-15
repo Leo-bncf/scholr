@@ -2,15 +2,10 @@
 
 import { motion } from "framer-motion";
 
-interface HandWrittenTitleProps {
-  title?: string;
-  subtitle?: string;
-}
-
 function HandWrittenTitle({
   title = "Hand Written",
   subtitle = "Optional subtitle",
-}: HandWrittenTitleProps) {
+}) {
   const draw = {
     hidden: { pathLength: 0, opacity: 0 },
     visible: {
