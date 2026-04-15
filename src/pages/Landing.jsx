@@ -11,6 +11,7 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
+import TopMarqueeSection from '@/components/landing/TopMarqueeSection';
 import { 
   ArrowRight, BookOpen, Users, BarChart3, Shield, 
   MessageSquare, Calendar, ClipboardCheck, Star,
@@ -457,6 +458,7 @@ export default function Landing() {
         <DetachedNavbar />
       </div>
       <div className="relative z-10">
+        <TopMarqueeSection />
         <HeroSection />
         <FeaturesGrid />
         <RolesSection />

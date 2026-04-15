@@ -1,0 +1,115 @@
+import * as React from "react";
+import { motion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
+
+type InfiniteTextMarqueeProps = {
+  text?: string;
+  link?: string;
+  speed?: number;
+  showTooltip?: boolean;
+  tooltipText?: string;
+  fontSize?: string;
+  textColor?: string;
+  hoverColor?: string;
+};
+
+export const InfiniteTextMarquee: React.FC<InfiniteTextMarqueeProps> = ({
+  text = "Let's Get Started",
+  link,
+  speed = 30,
+  showTooltip = true,
+  tooltipText = "Time to Flex💪",
+  fontSize = "8rem",
+  textColor = "",
+  hoverColor = "",
+}) => {
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const [rotation, setRotation] = useState(0);
+  const maxRotation = 8;
+
+  useEffect(() => {
+    if (!showTooltip) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      setCursorPosition({ x: e.clientX, y: e.clientY });
+
+      const midpoint = window.innerWidth / 2;
+      const distanceFromMidpoint = Math.abs(e.clientX - midpoint);
+      const nextRotation = (distanceFromMidpoint / midpoint) * maxRotation;
+
+      setRotation(e.clientX > midpoint ? nextRotation : -nextRotation);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [showTooltip]);
+
+  const repeatedText = useMemo(() => Array(12).fill(text).join(" • ") + " •", [text]);
+
+  const content = (
+    <span
+      className={`cursor-pointer font-bold tracking-tight py-10 m-0 transition-colors ${textColor ? "" : "text-slate-900 dark:text-white"}`}
+      style={{
+        fontSize,
+        color: textColor || undefined,
+      }}
+    >
+      <span
+        className="hoverable-text"
+        style={{
+          color: undefined,
+        }}
+      >
+        {repeatedText}
+      </span>
+    </span>
+  );
+
+  return (
+    <>
+      {showTooltip && (
+        <div
+          className={`pointer-events-none fixed z-[99] rounded-3xl bg-primary px-8 py-4 text-sm font-bold text-primary-foreground transition-opacity duration-300 md:px-12 md:py-6 md:text-base ${isHovered ? "opacity-100" : "opacity-0"}`}
+          style={{
+            top: `${cursorPosition.y}px`,
+            left: `${cursorPosition.x}px`,
+            transform: `rotateZ(${rotation}deg) translate(-50%, -140%)`,
+          }}
+        >
+          <p>{tooltipText}</p>
+        </div>
+      )}
+
+      <div className="relative w-full overflow-hidden">
+        <motion.div
+          className="whitespace-nowrap"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          animate={{
+            x: [0, -1000],
+            transition: {
+              repeat: Infinity,
+              duration: speed,
+              ease: "linear",
+            },
+          }}
+        >
+          {link ? (
+            <a href={link} className="block" target="_blank" rel="noreferrer">
+              {content}
+            </a>
+          ) : (
+            <div className="block">{content}</div>
+          )}
+        </motion.div>
+
+        <style>{`
+          .hoverable-text:hover {
+            color: ${hoverColor || "hsl(var(--primary))"};
+          }
+        `}</style>
+      </div>
+    </>
+  );
+};
