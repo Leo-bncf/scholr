@@ -2,18 +2,7 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 
-type InfiniteTextMarqueeProps = {
-  text?: string;
-  link?: string;
-  speed?: number;
-  showTooltip?: boolean;
-  tooltipText?: string;
-  fontSize?: string;
-  textColor?: string;
-  hoverColor?: string;
-};
-
-export const InfiniteTextMarquee: React.FC<InfiniteTextMarqueeProps> = ({
+export const InfiniteTextMarquee = ({
   text = "Let's Get Started",
   link,
   speed = 30,
