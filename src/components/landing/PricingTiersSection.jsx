@@ -21,7 +21,7 @@ import PricingTierSwitch from './PricingTierSwitch';
 
 const TIERS = {
   tier1: {
-    name: 'Starter',
+    name: 'Up to 200 Students',
     price: '€20.99',
     priceId: 'price_starter',
     subtitle: 'Best for smaller schools starting with a unified LMS platform',
@@ -41,7 +41,7 @@ const TIERS = {
     featured: false,
   },
   tier2: {
-    name: 'Growth',
+    name: 'Up to 600 Students',
     price: '€16.99',
     priceId: 'price_growth',
     subtitle: 'Best for growing schools that need advanced IB tracking, multiple admins, and extended tools',
@@ -61,7 +61,7 @@ const TIERS = {
     featured: true,
   },
   tier3: {
-    name: 'Enterprise',
+    name: 'Unlimited Students',
     price: '€13.99',
     priceId: 'price_enterprise',
     subtitle: 'Best for large schools that need scale, comprehensive reporting, and dedicated support',
@@ -134,9 +134,9 @@ export default function PricingTiersSection() {
   const summaryLines = [
     'The school can only operate within the limits of this tier.',
     'Student capacity is capped by the selected plan.',
-    selectedTier.name === 'Enterprise' ? 'Platform capabilities are fully unlocked on this plan.' : 'Advanced features follow the plan allowance.',
+    selectedTier.name === 'Unlimited Students' ? 'Platform capabilities are fully unlocked on this plan.' : 'Advanced features follow the plan allowance.',
     'Access is available on web from any desktop or mobile device.',
-    selectedTier.name === 'Enterprise' ? 'Admin accounts are unlimited on this plan.' : 'Admin accounts are limited by the plan.',
+    selectedTier.name === 'Unlimited Students' ? 'Admin accounts are unlimited on this plan.' : 'Admin accounts are limited by the plan.',
     'Support response level follows the selected plan.',
   ];
 
