@@ -20,7 +20,7 @@ export const InfiniteTextMarquee = ({
   useEffect(() => {
     if (!showTooltip) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = (e) => {
       setCursorPosition({ x: e.clientX, y: e.clientY });
 
       const midpoint = window.innerWidth / 2;
