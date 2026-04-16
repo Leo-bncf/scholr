@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 export const BoxesCore = ({ className, ...rest }) => {
   const rows = new Array(150).fill(1);
   const cols = new Array(100).fill(1);
+  const tracks = [0, 1];
   
   // Using direct color values instead of CSS variables
   const colors = [
@@ -25,56 +26,64 @@ export const BoxesCore = ({ className, ...rest }) => {
   };
 
   return (
-    <motion.div
+    <div
       style={{
         transform: `translate(-40%,-60%) skewX(-48deg) skewY(14deg) scale(0.675) rotate(0deg) translateZ(0)`,
       }}
-      animate={{ x: [0, -240] }}
-      transition={{ repeat: Infinity, duration: 14, ease: "linear" }}
       className={cn(
-        "absolute inset-0 flex w-[200%] h-[140%] z-0",
+        "absolute inset-0 overflow-hidden z-0",
         className
       )}
       {...rest}
     >
-      {rows.map((_, i) => (
-        <motion.div
-          key={`row` + i}
-          className="w-16 h-8 border-l border-slate-200 relative"
-        >
-          {cols.map((_, j) => (
-            <motion.div
-              whileHover={{
-                backgroundColor: getRandomColor(),
-                transition: { duration: 0 },
-              }}
-              animate={{
-                transition: { duration: 2 },
-              }}
-              key={`col` + j}
-              className="w-16 h-8 border-r border-t border-slate-200 relative"
-            >
-              {j % 2 === 0 && i % 2 === 0 ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="absolute h-6 w-10 -top-[14px] -left-[22px] text-slate-200 stroke-[1px] pointer-events-none"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 6v12m6-6H6"
-                  />
-                </svg>
-              ) : null}
-            </motion.div>
-          ))}
-        </motion.div>
-      ))}
-    </motion.div>
+      <motion.div
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{ repeat: Infinity, duration: 18, ease: "linear" }}
+        className="flex w-[200%] h-[140%]"
+      >
+        {tracks.map((track) => (
+          <div key={track} className="flex-shrink-0 flex w-1/2 h-full">
+            {rows.map((_, i) => (
+              <motion.div
+                key={`${track}-row-${i}`}
+                className="w-16 h-8 border-l border-slate-200 relative"
+              >
+                {cols.map((_, j) => (
+                  <motion.div
+                    whileHover={{
+                      backgroundColor: getRandomColor(),
+                      transition: { duration: 0 },
+                    }}
+                    animate={{
+                      transition: { duration: 2 },
+                    }}
+                    key={`${track}-col-${i}-${j}`}
+                    className="w-16 h-8 border-r border-t border-slate-200 relative"
+                  >
+                    {j % 2 === 0 && i % 2 === 0 ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="absolute h-6 w-10 -top-[14px] -left-[22px] text-slate-200 stroke-[1px] pointer-events-none"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 6v12m6-6H6"
+                        />
+                      </svg>
+                    ) : null}
+                  </motion.div>
+                ))}
+              </motion.div>
+            ))}
+          </div>
+        ))}
+      </motion.div>
+    </div>
   );
 };
 
