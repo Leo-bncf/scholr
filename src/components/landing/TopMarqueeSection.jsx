@@ -11,7 +11,7 @@ export default function TopMarqueeSection() {
 
   return (
     <section className="relative z-10 overflow-hidden pt-56 pb-20 lg:pt-64 lg:pb-24">
-      <div className="relative z-10 mx-auto max-w-full isolate space-y-0">
+      <div className="relative z-10 mx-auto max-w-full isolate -space-y-3">
         {marquees.map((marquee, index) => (
           <div key={index} className="py-0">
             <InfiniteTextMarquee
