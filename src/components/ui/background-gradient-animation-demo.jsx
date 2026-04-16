@@ -3,20 +3,9 @@ import { BackgroundGradientAnimation } from "@/components/ui/background-gradient
 
 export default function BackgroundGradientAnimationDemo() {
   return (
-    <BackgroundGradientAnimation
-      containerClassName="min-h-screen w-full"
-      className="min-h-screen"
-      gradientBackgroundStart="rgb(255, 255, 255)"
-      gradientBackgroundEnd="rgb(248, 250, 252)"
-      firstColor="37, 99, 235"
-      secondColor="59, 130, 246"
-      thirdColor="96, 165, 250"
-      fourthColor="147, 197, 253"
-      fifthColor="191, 219, 254"
-      pointerColor="29, 78, 216"
-    >
-      <div className="absolute inset-0 z-50 flex items-center justify-center px-4 text-center pointer-events-none">
-        <p className="bg-gradient-to-b from-slate-900 to-blue-600 bg-clip-text text-3xl font-bold text-transparent drop-shadow-sm md:text-4xl lg:text-7xl">
+    <BackgroundGradientAnimation>
+      <div className="absolute inset-0 z-50 flex items-center justify-center px-4 text-center text-3xl font-bold text-white pointer-events-none md:text-4xl lg:text-7xl">
+        <p className="bg-gradient-to-b from-white/80 to-white/20 bg-clip-text text-transparent drop-shadow-2xl">
           Gradients X Animations
         </p>
       </div>
