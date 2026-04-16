@@ -73,15 +73,22 @@ export const InfiniteTextMarquee = ({
 
       <div className="relative w-full overflow-hidden">
         <motion.div
-          className="whitespace-nowrap"
+          className="whitespace-nowrap origin-center"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           animate={{
             x: [0, -1000],
-            transition: {
+            scale: isHovered ? 1.08 : 1,
+          }}
+          transition={{
+            x: {
               repeat: Infinity,
               duration: speed,
               ease: "linear",
+            },
+            scale: {
+              duration: 0.45,
+              ease: "easeOut",
             },
           }}
         >
@@ -97,7 +104,6 @@ export const InfiniteTextMarquee = ({
         <style>{`
           .hoverable-text:hover {
             color: ${hoverColor || "hsl(var(--primary))"};
-            transform: scale(1.08);
           }
         `}</style>
       </div>
