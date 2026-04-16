@@ -75,11 +75,11 @@ export const InfiniteTextMarquee = ({
 
       <div className="relative w-full overflow-hidden">
         <motion.div
-          className="whitespace-nowrap origin-center"
+          className="flex w-max whitespace-nowrap origin-center"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           animate={{
-            x: reverse ? [-1000, 0] : [0, -1000],
+            x: reverse ? ["-50%", "0%"] : ["0%", "-50%"],
             scale: isHovered ? 1.18 : 1,
           }}
           transition={{
@@ -95,11 +95,19 @@ export const InfiniteTextMarquee = ({
           }}
         >
           {link ? (
-            <a href={link} className="block" target="_blank" rel="noreferrer">
-              {content}
-            </a>
+            <>
+              <a href={link} className="block shrink-0" target="_blank" rel="noreferrer">
+                {content}
+              </a>
+              <a href={link} className="block shrink-0" target="_blank" rel="noreferrer" aria-hidden="true">
+                {content}
+              </a>
+            </>
           ) : (
-            <div className="block">{content}</div>
+            <>
+              <div className="block shrink-0">{content}</div>
+              <div className="block shrink-0" aria-hidden="true">{content}</div>
+            </>
           )}
         </motion.div>
 
