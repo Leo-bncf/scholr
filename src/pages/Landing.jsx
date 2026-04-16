@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DetachedNavbar from '@/components/public/DetachedNavbar';
-import { ExpandableCard } from '@/components/ui/expandable-card';
+import ExpandableCard from '@/components/ui/expandable-card';
 import PublicFooter from '@/components/public/PublicFooter';
 import AnimatedBackground from '@/components/public/AnimatedBackground';
 import ConsentModal from '@/components/public/ConsentModal';
