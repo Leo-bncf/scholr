@@ -493,10 +493,13 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen bg-transparent font-landing">
-      <div className="absolute inset-0 z-0 opacity-100 pointer-events-none">
-        <BackgroundPaths />
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 opacity-90">
+          <BackgroundPaths />
+        </div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,_rgba(96,165,250,0.18),_transparent_18%),radial-gradient(circle_at_85%_20%,_rgba(59,130,246,0.16),_transparent_24%),radial-gradient(circle_at_50%_60%,_rgba(147,197,253,0.12),_transparent_28%)]" />
       </div>
-      <AnimatedBackground />
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.18),_transparent_32%),linear-gradient(180deg,_rgba(239,246,255,0.96)_0%,_rgba(248,250,252,0.92)_32%,_rgba(255,255,255,0.98)_100%)]" />
       <div className="fixed top-16 left-0 right-0 z-50 px-4 flex justify-center">
         <DetachedNavbar />
       </div>
