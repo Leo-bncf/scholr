@@ -48,13 +48,13 @@ function HeroSection() {
     <section className="pt-28 pb-20 lg:pt-40 lg:pb-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div className="max-w-4xl mx-auto text-center" style={{ opacity, y, scale }}>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1]">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1]">
            The LMS designed for
            <span className="text-blue-600"> the needs of</span>
            {' '}International Schools
           </h1>
 
-          <p className="mt-6 text-xl text-white/80 leading-relaxed max-w-2xl mx-auto">
+          <p className="mt-6 text-xl text-slate-600 leading-relaxed max-w-2xl mx-auto">
             A unified platform built for international schools — supporting multiple curricula, grading frameworks, and reporting standards.
           </p>
           
@@ -75,7 +75,7 @@ function HeroSection() {
         </motion.div>
         
         <div className="mt-16 mx-auto max-w-3xl">
-          <p className="text-lg text-white/80 leading-relaxed text-center">
+          <p className="text-lg text-slate-600 leading-relaxed text-center">
             <span className="font-semibold text-slate-900">Multi-curricular</span> — built for schools running IB, IGCSE, A-Levels, US Common Core, and more. <span className="font-semibold text-slate-900">Flexible frameworks</span> — every workflow adapts to your curriculum's structure, criteria, and terminology. <span className="font-semibold text-slate-900">Zero noise</span> — trimmed to exactly what international educators and students need, nothing more.
           </p>
         </div>
@@ -486,7 +486,7 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black font-landing">
+    <div className="min-h-screen bg-transparent font-landing">
       <div className="fixed top-16 left-0 right-0 z-50 px-4 flex justify-center">
         <DetachedNavbar />
       </div>
