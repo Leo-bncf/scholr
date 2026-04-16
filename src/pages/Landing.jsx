@@ -9,7 +9,6 @@ import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
 import TopMarqueeSection from '@/components/landing/TopMarqueeSection';
-import { GradientBackground } from '@/components/ui/paper-design-shader-background';
 import {
   ArrowRight,
   BookOpen,
@@ -490,8 +489,7 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black font-landing">
-      <GradientBackground />
-      <div className="absolute inset-0 bg-black/10" />
+      <div className="absolute inset-0 bg-black" />
       <div className="fixed top-16 left-0 right-0 z-50 px-4 flex justify-center">
         <DetachedNavbar />
       </div>
