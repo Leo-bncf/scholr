@@ -25,10 +25,12 @@ export const BoxesCore = ({ className, ...rest }) => {
   };
 
   return (
-    <div
+    <motion.div
       style={{
         transform: `translate(-40%,-60%) skewX(-48deg) skewY(14deg) scale(0.675) rotate(0deg) translateZ(0)`,
       }}
+      animate={{ x: [0, -120] }}
+      transition={{ repeat: Infinity, repeatType: "reverse", duration: 18, ease: "linear" }}
       className={cn(
         "absolute left-1/4 p-4 -top-1/4 flex -translate-x-1/2 -translate-y-1/2 w-full h-full z-0",
         className
@@ -72,7 +74,7 @@ export const BoxesCore = ({ className, ...rest }) => {
           ))}
         </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 };
 
