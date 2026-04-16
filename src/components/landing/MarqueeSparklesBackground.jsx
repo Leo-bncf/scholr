@@ -10,7 +10,7 @@ export default function MarqueeSparklesBackground() {
           background="transparent"
           minSize={1.2}
           maxSize={3.2}
-          particleDensity={260}
+          particleDensity={150}
           className="h-full w-full"
           particleColor="#2563eb"
           speed={1.2}
