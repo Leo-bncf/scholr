@@ -32,7 +32,7 @@ export const BoxesCore = ({ className, ...rest }) => {
       animate={{ x: [0, -240] }}
       transition={{ repeat: Infinity, duration: 14, ease: "linear" }}
       className={cn(
-        "absolute left-1/4 p-4 -top-1/4 flex -translate-x-1/2 -translate-y-1/2 w-full h-full z-0",
+        "absolute inset-0 flex w-[200%] h-[140%] z-0",
         className
       )}
       {...rest}
