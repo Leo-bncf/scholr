@@ -10,7 +10,6 @@ import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
 import TopMarqueeSection from '@/components/landing/TopMarqueeSection';
-import BloomingBlobBackground from '@/components/landing/BloomingBlobBackground';
 import {
   ArrowRight,
   BookOpen,
@@ -494,7 +493,6 @@ export default function Landing() {
   return (
     <div className="relative min-h-screen bg-transparent font-landing overflow-hidden">
       <div className="absolute inset-0 z-0 bg-[linear-gradient(180deg,_rgba(255,255,255,0.96)_0%,_rgba(248,250,252,0.94)_32%,_rgba(255,255,255,0.98)_100%)]" />
-      <BloomingBlobBackground />
       <div className="fixed top-16 left-0 right-0 z-50 px-4 flex justify-center">
         <DetachedNavbar />
       </div>
