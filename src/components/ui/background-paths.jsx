@@ -29,12 +29,14 @@ function FloatingPaths({ position }) {
             strokeLinecap="round"
             strokeLinejoin="round"
             vectorEffect="non-scaling-stroke"
-            initial={{ opacity: 0.55 }}
+            initial={{ pathLength: 0.92, pathOffset: 0, opacity: 0.5 }}
             animate={{
-              opacity: [0.45, 0.7, 0.45],
+              pathLength: [0.92, 1, 0.92],
+              pathOffset: [0, position * 0.08, 0],
+              opacity: [0.45, 0.72, 0.45],
             }}
             transition={{
-              duration: 12 + path.id * 0.18,
+              duration: 10 + path.id * 0.15,
               repeat: Number.POSITIVE_INFINITY,
               repeatType: "mirror",
               ease: "easeInOut",
