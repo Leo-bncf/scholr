@@ -46,7 +46,7 @@ export const InfiniteTextMarquee = ({
       }}
     >
       <span
-        className="hoverable-text"
+        className="hoverable-text inline-block transition-transform duration-500 ease-out origin-center"
         style={{
           color: undefined,
         }}
@@ -97,6 +97,7 @@ export const InfiniteTextMarquee = ({
         <style>{`
           .hoverable-text:hover {
             color: ${hoverColor || "hsl(var(--primary))"};
+            transform: scale(1.08);
           }
         `}</style>
       </div>
