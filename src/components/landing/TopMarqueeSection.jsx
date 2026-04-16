@@ -3,10 +3,10 @@ import { InfiniteTextMarquee } from "@/components/ui/infinite-text-marquee";
 
 export default function TopMarqueeSection() {
   const marquees = [
-    { text: "Scholr — Designed for International Schools", speed: 18, reverse: false },
-    { text: "Built for IB, IGCSE, A-Levels, and US Curricula", speed: 22, reverse: false },
-    { text: "Role-Based Dashboards for Students, Teachers, Parents, and Admins", speed: 20, reverse: true },
-    { text: "Assignments, Gradebooks, Reports, Messaging, and Timetables in One Place", speed: 26, reverse: false },
+    { text: "Scholr — Designed for International Schools", speed: 18, reverse: false, fontFamily: 'Arial Black, Inter, Helvetica, sans-serif' },
+    { text: "Built for IB, IGCSE, A-Levels, and US Curricula", speed: 22, reverse: false, fontFamily: 'Georgia, Times New Roman, serif' },
+    { text: "Role-Based Dashboards for Students, Teachers, Parents, and Admins", speed: 20, reverse: true, fontFamily: 'Trebuchet MS, Inter, sans-serif' },
+    { text: "Assignments, Gradebooks, Reports, Messaging, and Timetables in One Place", speed: 26, reverse: false, fontFamily: 'Verdana, Inter, sans-serif' },
   ];
 
   return (
@@ -20,6 +20,7 @@ export default function TopMarqueeSection() {
               reverse={marquee.reverse}
               tooltipText="Built for international schools"
               fontSize="clamp(2rem, 7vw, 5rem)"
+              fontFamily={marquee.fontFamily}
               textColor="#2563eb"
               hoverColor="#0f172a"
               showTooltip={true}

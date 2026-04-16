@@ -12,6 +12,7 @@ export const InfiniteTextMarquee = ({
   fontSize = "8rem",
   textColor = "",
   hoverColor = "",
+  fontFamily = 'Arial Black, Inter, Helvetica, sans-serif',
 }) => {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -43,7 +44,7 @@ export const InfiniteTextMarquee = ({
       style={{
         fontSize,
         color: textColor || undefined,
-        fontFamily: 'Arial Black, Inter, Helvetica, sans-serif',
+        fontFamily,
       }}
     >
       <span
