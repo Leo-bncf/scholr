@@ -9,6 +9,7 @@ import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
 import TopMarqueeSection from '@/components/landing/TopMarqueeSection';
+import LandingAnimatedBackground from '@/components/landing/LandingAnimatedBackground';
 import {
   ArrowRight,
   BookOpen,
@@ -487,6 +488,7 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-transparent font-landing">
+      <LandingAnimatedBackground />
       <div className="fixed top-16 left-0 right-0 z-50 px-4 flex justify-center">
         <DetachedNavbar />
       </div>
