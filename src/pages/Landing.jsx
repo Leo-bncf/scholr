@@ -117,7 +117,7 @@ function ProblemSection() {
           ))}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
@@ -214,7 +214,7 @@ function FeaturesGrid() {
           ))}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
 
