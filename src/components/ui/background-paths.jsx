@@ -5,8 +5,8 @@ import { motion } from "framer-motion";
 function FloatingPaths({ position }) {
   const paths = Array.from({ length: 48 }, (_, i) => ({
     id: i,
-    d: `M-${420 - i * 3.2 * position} ${-120 + i * 3.5}C${-260 - i * 2.2 * position} ${10 + i * 1.5} ${120 - i * 1.8 * position} ${160 - i * 2.5} ${360 - i * 1.4 * position} ${210 - i * 1.2}C${560 - i * 1.1 * position} ${250 - i * 0.8} ${700 - i * 0.8 * position} ${220 - i * 0.4} ${820 - i * 0.6 * position} ${180 + i * 0.5}`,
-    width: 0.28 + i * 0.014,
+    d: `M-${380 - i * 4 * position} -${189 + i * 5}C-${380 - i * 4 * position} -${189 + i * 5} -${312 - i * 4 * position} ${216 - i * 5} ${152 - i * 4 * position} ${343 - i * 5}C${616 - i * 4 * position} ${470 - i * 5} ${684 - i * 4 * position} ${875 - i * 5} ${684 - i * 4 * position} ${875 - i * 5}`,
+    width: 0.32 + i * 0.018,
   }));
 
   return (
@@ -16,7 +16,6 @@ function FloatingPaths({ position }) {
         viewBox="0 0 696 316"
         fill="none"
         aria-hidden="true"
-        preserveAspectRatio="xMidYMid slice"
       >
         <title>Background Paths</title>
         {paths.map((path) => (
@@ -25,17 +24,17 @@ function FloatingPaths({ position }) {
             d={path.d}
             stroke="currentColor"
             strokeWidth={path.width}
-            strokeOpacity={0.42 + path.id * 0.008}
-            initial={{ pathLength: 0.92, opacity: 0.7, pathOffset: 0 }}
+            strokeOpacity={0.36 + path.id * 0.012}
+            initial={{ pathLength: 0.3, opacity: 0.6 }}
             animate={{
-              pathLength: [0.92, 1, 0.92],
-              opacity: [0.7, 0.9, 0.7],
-              pathOffset: [0, 0.08, 0],
+              pathLength: 1,
+              opacity: [0.3, 0.6, 0.3],
+              pathOffset: [0, 1, 0],
             }}
             transition={{
-              duration: 14 + path.id * 0.18,
+              duration: 20 + path.id * 0.2,
               repeat: Number.POSITIVE_INFINITY,
-              ease: "easeInOut",
+              ease: "linear",
             }}
           />
         ))}
