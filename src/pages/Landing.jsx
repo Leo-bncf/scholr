@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import DetachedNavbar from '@/components/public/DetachedNavbar';
+import CTASection from '@/components/landing/CTASection';
+import FeaturesGrid from '@/components/landing/FeaturesGrid';
+import ProblemSection from '@/components/landing/ProblemSection';
+import RolesSection from '@/components/landing/RolesSection';
 import { ExpandableCard } from '@/components/ui/expandable-card';
 import PublicFooter from '@/components/public/PublicFooter';
 import AnimatedBackground from '@/components/public/AnimatedBackground';
