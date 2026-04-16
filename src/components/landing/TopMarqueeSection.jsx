@@ -10,7 +10,8 @@ export default function TopMarqueeSection() {
           speed={18}
           tooltipText="Built for international schools"
           fontSize="clamp(2rem, 7vw, 5rem)"
-          hoverColor="#2563eb"
+          textColor="#ff5a1f"
+          hoverColor="#ff5a1f"
           showTooltip={true}
         />
       </div>

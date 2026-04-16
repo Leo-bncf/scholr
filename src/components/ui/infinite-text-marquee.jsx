@@ -38,10 +38,11 @@ export const InfiniteTextMarquee = ({
 
   const content = (
     <span
-      className={`cursor-pointer font-bold tracking-tight py-10 m-0 transition-colors ${textColor ? "" : "text-slate-900 dark:text-white"}`}
+      className={`cursor-pointer py-10 m-0 font-black tracking-[-0.04em] transition-colors ${textColor ? "" : "text-slate-900 dark:text-white"}`}
       style={{
         fontSize,
         color: textColor || undefined,
+        fontFamily: 'Arial Black, Inter, Helvetica, sans-serif',
       }}
     >
       <span
