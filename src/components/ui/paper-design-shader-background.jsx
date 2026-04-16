@@ -1,24 +1,24 @@
-"use client"
-
-import { GrainGradient } from "@paper-design/shaders-react"
+import { GrainGradient } from "@paper-design/shaders-react";
 
 export function GradientBackground() {
   return (
-    <div className="absolute inset-0 -z-10">
+    <div className="absolute inset-0 -z-10 overflow-hidden">
       <GrainGradient
-        style={{ height: "100%", width: "100%" }}
-        colorBack="hsl(0, 0%, 0%)"
-        softness={0.76}
-        intensity={0.45}
-        noise={0}
+        width="100%"
+        height="100%"
+        fit="cover"
+        colors={["#ff6a3d", "#ffb703", "#ff006e", "#7c3aed"]}
+        colorBack="#050816"
+        softness={0.72}
+        intensity={0.38}
+        noise={0.18}
         shape="corners"
+        speed={1}
+        scale={1.15}
+        rotation={0}
         offsetX={0}
         offsetY={0}
-        scale={1}
-        rotation={0}
-        speed={1}
-        colors={["hsl(14, 100%, 57%)", "hsl(45, 100%, 51%)", "hsl(340, 82%, 52%)"]}
       />
     </div>
-  )
+  );
 }
