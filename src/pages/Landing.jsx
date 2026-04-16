@@ -491,11 +491,11 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen bg-white font-landing overflow-hidden">
-      <div className="absolute inset-x-0 top-0 z-0 h-[44rem] bg-[radial-gradient(circle_at_32%_18%,rgba(34,211,238,0.86),transparent_24%),radial-gradient(circle_at_50%_14%,rgba(59,130,246,0.76),transparent_26%),radial-gradient(circle_at_68%_20%,rgba(99,102,241,0.72),transparent_28%),radial-gradient(circle_at_54%_44%,rgba(192,132,252,0.52),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.82)_0%,rgba(255,255,255,0.96)_58%,rgba(255,255,255,1)_100%)]" />
-      <div className="absolute left-[14%] top-[-5rem] z-0 h-[30rem] w-[30rem] rounded-full bg-cyan-300/55 blur-[130px]" />
-      <div className="absolute left-[32%] top-[-3rem] z-0 h-[32rem] w-[32rem] rounded-full bg-sky-300/48 blur-[145px]" />
-      <div className="absolute right-[16%] top-[-4rem] z-0 h-[32rem] w-[32rem] rounded-full bg-indigo-300/45 blur-[150px]" />
-      <div className="absolute left-[40%] top-[10rem] z-0 h-[24rem] w-[24rem] rounded-full bg-fuchsia-200/34 blur-[130px]" />
+      <div className="absolute inset-x-0 top-0 z-0 h-[56rem] bg-[radial-gradient(circle_at_28%_16%,rgba(34,211,238,0.98),transparent_26%),radial-gradient(circle_at_50%_12%,rgba(56,189,248,0.95),transparent_28%),radial-gradient(circle_at_72%_18%,rgba(99,102,241,0.9),transparent_30%),radial-gradient(circle_at_52%_36%,rgba(168,85,247,0.7),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.72)_0%,rgba(255,255,255,0.92)_56%,rgba(255,255,255,1)_100%)]" />
+      <div className="absolute left-[8%] top-[-8rem] z-0 h-[38rem] w-[38rem] rounded-full bg-cyan-300/70 blur-[150px]" />
+      <div className="absolute left-[28%] top-[-6rem] z-0 h-[40rem] w-[40rem] rounded-full bg-sky-300/62 blur-[165px]" />
+      <div className="absolute right-[10%] top-[-7rem] z-0 h-[40rem] w-[40rem] rounded-full bg-indigo-300/58 blur-[170px]" />
+      <div className="absolute left-[38%] top-[8rem] z-0 h-[30rem] w-[30rem] rounded-full bg-fuchsia-300/40 blur-[145px]" />
       <div className="fixed top-16 left-0 right-0 z-50 px-4 flex justify-center">
         <DetachedNavbar />
       </div>
