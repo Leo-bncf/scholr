@@ -7,7 +7,7 @@ import ConsentModal from '@/components/public/ConsentModal';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
 import TopMarqueeSection from '@/components/landing/TopMarqueeSection';
 import {
@@ -31,6 +31,10 @@ import {
 } from 'lucide-react';
 
 function HeroSection() {
+  const { scrollY } = useScroll();
+  const opacity = useTransform(scrollY, [0, 120, 260], [0, 0.4, 1]);
+  const y = useTransform(scrollY, [0, 260], [180, 0]);
+  const scale = useTransform(scrollY, [0, 260], [0.96, 1]);
 
   const handleSignIn = async () => {
     const isAuthed = await base44.auth.isAuthenticated();
@@ -46,7 +50,7 @@ function HeroSection() {
       <div className="absolute inset-0 bg-transparent" />
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
+        <motion.div className="max-w-4xl mx-auto text-center" style={{ opacity, y, scale }}>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1]">
            The LMS designed for
            <span className="text-blue-600"> the needs of</span>
@@ -71,7 +75,7 @@ function HeroSection() {
                </Button>
              </Link>
            </div>
-        </div>
+        </motion.div>
         
         <div className="mt-16 mx-auto max-w-3xl">
           <p className="text-lg text-slate-600 leading-relaxed text-center">
