@@ -489,7 +489,6 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black font-landing">
-      <div className="absolute inset-0 bg-black" />
       <div className="fixed top-16 left-0 right-0 z-50 px-4 flex justify-center">
         <DetachedNavbar />
       </div>
