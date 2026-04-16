@@ -89,3 +89,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes notebook-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-64px, 64px, 0);
+  }
+}

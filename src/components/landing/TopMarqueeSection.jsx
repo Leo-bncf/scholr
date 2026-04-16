@@ -1,5 +1,6 @@
 import React from "react";
 import { InfiniteTextMarquee } from "@/components/ui/infinite-text-marquee";
+import NotebookCheckerBackground from "@/components/landing/NotebookCheckerBackground";
 
 export default function TopMarqueeSection() {
   const marquees = [
@@ -11,6 +12,7 @@ export default function TopMarqueeSection() {
 
   return (
     <section className="relative z-10 overflow-hidden bg-white pt-56 pb-20 lg:pt-64 lg:pb-24">
+      <NotebookCheckerBackground />
       <div className="relative z-10 mx-auto max-w-full isolate space-y-3">
         {marquees.map((marquee, index) => (
           <div key={index} className="py-2">
