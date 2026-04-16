@@ -465,8 +465,6 @@ function CTASection() {
   );
 }
 
-// PricingTiersSection replaced the legacy PricingSection
-
 export default function Landing() {
   const [showConsent, setShowConsent] = useState(true);
 
