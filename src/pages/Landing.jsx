@@ -96,7 +96,13 @@ function ProblemSection() {
   ];
 
   return (
-    <section className="py-20 bg-transparent">
+    <motion.section
+      className="py-20 bg-transparent"
+      initial={{ opacity: 0, y: 70, scale: 0.96 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.55, ease: 'easeOut' }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">International schools deserve better tools</h2>
@@ -185,6 +191,13 @@ function FeaturesGrid() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((f, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 60, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.45, delay: i * 0.05, ease: 'easeOut' }}
+            >
             <ExpandableCard
               key={i}
               title={f.title}
@@ -197,10 +210,11 @@ function FeaturesGrid() {
                 {f.desc}
               </p>
             </ExpandableCard>
+            </motion.div>
           ))}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
@@ -402,7 +416,13 @@ function CTASection() {
   ];
 
   return (
-    <section className="py-24 bg-transparent">
+    <motion.section
+      className="py-24 bg-transparent"
+      initial={{ opacity: 0, y: 70, scale: 0.96 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.18 }}
+      transition={{ duration: 0.55, ease: 'easeOut' }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-slate-900">Why Choose Scholr?</h2>
@@ -410,14 +430,27 @@ function CTASection() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
           {benefits.map((b, i) => (
-            <div key={i} className="bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200 shadow-sm p-6">
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 60, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.45, delay: i * 0.05, ease: 'easeOut' }}
+              className="bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200 shadow-sm p-6"
+            >
               <div className="w-3 h-3 rounded-full bg-blue-600 mb-4"></div>
               <h3 className="font-bold text-slate-900 mb-2">{b.title}</h3>
               <p className="text-sm text-slate-500 leading-relaxed">{b.desc}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
-        <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-sm p-12 text-center">
+        <motion.div
+          className="bg-white/70 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-sm p-12 text-center"
+          initial={{ opacity: 0, y: 70, scale: 0.96 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.55, delay: 0.1, ease: 'easeOut' }}
+        >
           <h3 className="text-2xl font-bold text-slate-900 mb-4">Ready to transform your school?</h3>
           <p className="text-slate-600 mb-8 max-w-2xl mx-auto">See how Scholr can streamline your academic operations. Request a personalized demo or explore our flexible licensing plans.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -427,9 +460,9 @@ function CTASection() {
               </Button>
             </Link>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
