@@ -491,11 +491,11 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen bg-white font-landing overflow-hidden">
-      <div className="absolute inset-x-0 top-0 z-0 h-[34rem] bg-[radial-gradient(circle_at_18%_20%,rgba(125,211,252,0.55),transparent_28%),radial-gradient(circle_at_72%_22%,rgba(129,140,248,0.45),transparent_32%),radial-gradient(circle_at_58%_52%,rgba(216,180,254,0.32),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.92)_0%,rgba(255,255,255,0.98)_58%,rgba(255,255,255,1)_100%)]" />
-      <div className="absolute left-[-10rem] top-[-5rem] z-0 h-[24rem] w-[24rem] rounded-full bg-sky-300/30 blur-[120px]" />
-      <div className="absolute left-[18%] top-[4rem] z-0 h-[22rem] w-[22rem] rounded-full bg-cyan-200/30 blur-[130px]" />
-      <div className="absolute right-[-8rem] top-[-1rem] z-0 h-[28rem] w-[28rem] rounded-full bg-indigo-300/25 blur-[140px]" />
-      <div className="absolute right-[16%] top-[10rem] z-0 h-[18rem] w-[18rem] rounded-full bg-purple-200/20 blur-[120px]" />
+      <div className="absolute inset-x-0 top-0 z-0 h-[36rem] bg-[radial-gradient(circle_at_34%_18%,rgba(103,232,249,0.72),transparent_24%),radial-gradient(circle_at_52%_14%,rgba(96,165,250,0.62),transparent_26%),radial-gradient(circle_at_66%_20%,rgba(129,140,248,0.58),transparent_28%),radial-gradient(circle_at_54%_42%,rgba(216,180,254,0.42),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.88)_0%,rgba(255,255,255,0.97)_56%,rgba(255,255,255,1)_100%)]" />
+      <div className="absolute left-[18%] top-[-4rem] z-0 h-[24rem] w-[24rem] rounded-full bg-cyan-300/45 blur-[120px]" />
+      <div className="absolute left-[34%] top-[-2rem] z-0 h-[26rem] w-[26rem] rounded-full bg-sky-300/40 blur-[130px]" />
+      <div className="absolute right-[20%] top-[-3rem] z-0 h-[26rem] w-[26rem] rounded-full bg-indigo-300/38 blur-[135px]" />
+      <div className="absolute left-[42%] top-[8rem] z-0 h-[20rem] w-[20rem] rounded-full bg-purple-200/28 blur-[120px]" />
       <div className="fixed top-16 left-0 right-0 z-50 px-4 flex justify-center">
         <DetachedNavbar />
       </div>
