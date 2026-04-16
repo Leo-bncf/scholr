@@ -493,7 +493,7 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen bg-transparent font-landing">
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      <div className="fixed inset-0 z-20 pointer-events-none">
         <div className="absolute inset-0 opacity-90">
           <BackgroundPaths />
         </div>
@@ -504,6 +504,8 @@ export default function Landing() {
         <DetachedNavbar />
       </div>
       <div className="relative z-10">
+        <div className="absolute inset-0 bg-white/30 pointer-events-none" />
+        <div className="relative z-10">
         <TopMarqueeSection />
         <HeroSection />
         <FeaturesGrid />
@@ -512,6 +514,7 @@ export default function Landing() {
         <PricingTiersSection />
         <CTASection />
         <PublicFooter />
+        </div>
       </div>
       <ConsentModal isOpen={showConsent} onClose={() => setShowConsent(false)} />
     </div>
