@@ -5,7 +5,7 @@ import MarqueeSparklesBackground from "@/components/landing/MarqueeSparklesBackg
 export default function TopMarqueeSection() {
   return (
     <section className="relative z-10 overflow-hidden bg-transparent pt-56 pb-12 lg:pt-64 lg:pb-16">
-      <div className="relative z-10 mx-auto max-w-full">
+      <div className="relative z-10 mx-auto max-w-full isolate">
         <MarqueeSparklesBackground />
         <InfiniteTextMarquee
           text="Scholr — Designed for International Schools"
