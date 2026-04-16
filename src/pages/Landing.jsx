@@ -45,10 +45,8 @@ function HeroSection() {
   };
 
   return (
-    <section className="relative pt-28 pb-20 lg:pt-40 lg:pb-32 overflow-hidden">
-      <div className="absolute inset-0 bg-transparent" />
-      
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="pt-28 pb-20 lg:pt-40 lg:pb-32">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div className="max-w-4xl mx-auto text-center" style={{ opacity, y, scale }}>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1]">
            The LMS designed for
@@ -96,7 +94,7 @@ function ProblemSection() {
 
   return (
     <motion.section
-      className="py-20 bg-transparent"
+      className="py-20"
       initial={{ opacity: 0, y: 70, scale: 0.96 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, amount: 0.2 }}
@@ -181,7 +179,7 @@ function FeaturesGrid() {
   ];
 
   return (
-    <section className="py-24 bg-transparent">
+    <section className="py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-slate-900">Comprehensive Platform Capabilities</h2>
@@ -339,7 +337,7 @@ function RolesSection() {
   const sc = selected ? colorMap[selected.color] : null;
 
   return (
-    <section className="py-24 bg-transparent">
+    <section className="py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-slate-900">Purpose-Built Roles</h2>
@@ -416,7 +414,7 @@ function CTASection() {
 
   return (
     <motion.section
-      className="py-24 bg-transparent"
+      className="py-24"
       initial={{ opacity: 0, y: 70, scale: 0.96 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, amount: 0.18 }}
@@ -488,7 +486,7 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-black font-landing">
+    <div className="min-h-screen bg-black font-landing">
       <div className="fixed top-16 left-0 right-0 z-50 px-4 flex justify-center">
         <DetachedNavbar />
       </div>
