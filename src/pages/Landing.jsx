@@ -493,19 +493,18 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen bg-transparent font-landing">
-      <div className="fixed inset-0 z-20 pointer-events-none">
+      <div className="fixed inset-0 z-10 pointer-events-none">
         <div className="absolute inset-0 opacity-90">
           <BackgroundPaths />
         </div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,_rgba(96,165,250,0.18),_transparent_18%),radial-gradient(circle_at_85%_20%,_rgba(59,130,246,0.16),_transparent_24%),radial-gradient(circle_at_50%_60%,_rgba(147,197,253,0.12),_transparent_28%)]" />
       </div>
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.18),_transparent_32%),linear-gradient(180deg,_rgba(239,246,255,0.96)_0%,_rgba(248,250,252,0.92)_32%,_rgba(255,255,255,0.98)_100%)]" />
+      <div className="absolute inset-0 z-0 bg-[linear-gradient(180deg,_rgba(255,255,255,0.96)_0%,_rgba(248,250,252,0.94)_32%,_rgba(255,255,255,0.98)_100%)]" />
       <div className="fixed top-16 left-0 right-0 z-50 px-4 flex justify-center">
         <DetachedNavbar />
       </div>
-      <div className="relative z-10">
+      <div className="relative z-20">
         <div className="absolute inset-0 bg-white/30 pointer-events-none" />
-        <div className="relative z-10">
+        <div className="relative z-20">
         <TopMarqueeSection />
         <HeroSection />
         <FeaturesGrid />
