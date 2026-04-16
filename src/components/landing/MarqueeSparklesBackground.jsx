@@ -3,7 +3,7 @@ import { SparklesCore } from "@/components/ui/sparkles";
 
 export default function MarqueeSparklesBackground() {
   return (
-    <div className="fixed inset-x-0 top-0 z-0 pointer-events-none bg-transparent h-screen min-h-screen">
+    <div className="fixed inset-x-0 bottom-0 z-0 pointer-events-none bg-transparent h-screen min-h-screen overflow-hidden">
       <div className="absolute inset-0">
         <SparklesCore
           id="landing-marquee-sparkles"
@@ -16,7 +16,7 @@ export default function MarqueeSparklesBackground() {
           speed={1.2}
         />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-white via-white/55 via-30% to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-transparent from-0% via-white/85 via-35% to-white to-50%" />
     </div>
   );
 }
