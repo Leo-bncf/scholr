@@ -3,10 +3,10 @@
 import { motion } from "framer-motion";
 
 function FloatingPaths({ position }) {
-  const paths = Array.from({ length: 36 }, (_, i) => ({
+  const paths = Array.from({ length: 48 }, (_, i) => ({
     id: i,
-    d: `M-${380 - i * 5 * position} -${189 + i * 6}C-${380 - i * 5 * position} -${189 + i * 6} -${312 - i * 5 * position} ${216 - i * 6} ${152 - i * 5 * position} ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${684 - i * 5 * position} ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`,
-    width: 0.5 + i * 0.03,
+    d: `M-${380 - i * 4 * position} -${189 + i * 5}C-${380 - i * 4 * position} -${189 + i * 5} -${312 - i * 4 * position} ${216 - i * 5} ${152 - i * 4 * position} ${343 - i * 5}C${616 - i * 4 * position} ${470 - i * 5} ${684 - i * 4 * position} ${875 - i * 5} ${684 - i * 4 * position} ${875 - i * 5}`,
+    width: 0.32 + i * 0.018,
   }));
 
   return (
