@@ -3,7 +3,7 @@ import { InfiniteTextMarquee } from "@/components/ui/infinite-text-marquee";
 
 export default function TopMarqueeSection() {
   return (
-    <section className="relative z-10 overflow-hidden border-b border-slate-200/70 bg-white/80 pt-4 backdrop-blur-sm">
+    <section className="relative z-10 overflow-hidden bg-transparent pt-28">
       <div className="mx-auto max-w-full">
         <InfiniteTextMarquee
           text="Scholr — Designed for International Schools"
