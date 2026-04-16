@@ -104,8 +104,8 @@ export function SparklesCore({
               },
               opacity: {
                 value: {
-                  min: 0.05,
-                  max: 0.45,
+                  min: 0.015,
+                  max: 0.18,
                 },
                 animation: {
                   enable: true,
@@ -113,6 +113,7 @@ export function SparklesCore({
                   sync: false,
                   mode: "auto",
                   startValue: "random",
+                  minimumValue: 0.015,
                 },
               },
               shape: {
