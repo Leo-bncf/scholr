@@ -10,15 +10,24 @@ import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
 import TopMarqueeSection from '@/components/landing/TopMarqueeSection';
-import { 
-  ArrowRight, BookOpen, Users, BarChart3, Shield, 
-  MessageSquare, Calendar, ClipboardCheck, Star,
-  ChevronRight, Sparkles, GraduationCap, UserCheck,
-  UserCircle, Compass, Settings2, CheckCircle2,
-  LayoutDashboard, LibraryBig, FilePenLine, UsersRound, 
-  CalendarClock, MessageCircleMore, ShieldCheck, Trophy,
-  PieChart, ListChecks, Award, HeartHandshake, CalendarDays,
-  MessageSquareShare, Globe2
+import {
+  ArrowRight,
+  BookOpen,
+  ChevronRight,
+  Sparkles,
+  GraduationCap,
+  UserCircle,
+  Compass,
+  Settings2,
+  CheckCircle2,
+  ShieldCheck,
+  PieChart,
+  ListChecks,
+  Award,
+  HeartHandshake,
+  CalendarDays,
+  MessageSquareShare,
+  Globe2,
 } from 'lucide-react';
 
 function HeroSection() {
