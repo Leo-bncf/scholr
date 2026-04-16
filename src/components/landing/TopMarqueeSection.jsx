@@ -4,15 +4,14 @@ import NotebookCheckerBackground from "@/components/landing/NotebookCheckerBackg
 
 export default function TopMarqueeSection() {
   const marquees = [
-    { text: "Scholr — Designed for International Schools", speed: 18, reverse: false, fontFamily: 'Arial Black, Inter, Helvetica, sans-serif' },
-    { text: "Built for IB, IGCSE, A-Levels, and US Curricula", speed: 22, reverse: false, fontFamily: 'Georgia, Times New Roman, serif' },
-    { text: "Role-Based Dashboards for Students, Teachers, Parents, and Admins", speed: 20, reverse: true, fontFamily: 'Trebuchet MS, Inter, sans-serif' },
-    { text: "Assignments, Gradebooks, Reports, Messaging, and Timetables in One Place", speed: 26, reverse: false, fontFamily: 'Verdana, Inter, sans-serif' },
+    { text: "Scholr — Designed for International Schools", speed: 18, reverse: false, fontFamily: 'Arial Black, Inter, Helvetica, sans-serif', textColor: '#2563eb' },
+    { text: "Built for IB, IGCSE, A-Levels, and US Curricula", speed: 22, reverse: false, fontFamily: 'Georgia, Times New Roman, serif', textColor: '#1d4ed8' },
+    { text: "Role-Based Dashboards for Students, Teachers, Parents, and Admins", speed: 20, reverse: true, fontFamily: 'Trebuchet MS, Inter, sans-serif', textColor: '#3b82f6' },
+    { text: "Assignments, Gradebooks, Reports, Messaging, and Timetables in One Place", speed: 26, reverse: false, fontFamily: 'Verdana, Inter, sans-serif', textColor: '#2563eb' },
   ];
 
   return (
-    <section className="relative z-10 overflow-hidden bg-white pt-56 pb-20 lg:pt-64 lg:pb-24">
-      <NotebookCheckerBackground />
+    <section className="relative z-10 overflow-hidden bg-white/20 pt-56 pb-20 lg:pt-64 lg:pb-24">
       <div className="relative z-10 mx-auto max-w-full isolate space-y-3">
         {marquees.map((marquee, index) => (
           <div key={index} className="py-2">
@@ -23,7 +22,7 @@ export default function TopMarqueeSection() {
               tooltipText="Built for international schools"
               fontSize="clamp(2rem, 7vw, 5rem)"
               fontFamily={marquee.fontFamily}
-              textColor="#2563eb"
+              textColor={marquee.textColor}
               hoverColor="#0f172a"
               showTooltip={true}
             />

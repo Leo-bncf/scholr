@@ -18,7 +18,6 @@ export default function NotebookCheckerBackground() {
           }}
         />
       </div>
-      <div className="absolute left-[10%] top-0 h-full w-px bg-red-300/50" />
     </div>
   );
 }
