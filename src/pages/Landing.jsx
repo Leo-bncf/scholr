@@ -22,7 +22,6 @@ import {
 } from 'lucide-react';
 
 function HeroSection() {
-  const navigate = useNavigate();
 
   const handleSignIn = async () => {
     const isAuthed = await base44.auth.isAuthenticated();
@@ -413,7 +412,7 @@ function CTASection() {
           <h3 className="text-2xl font-bold text-slate-900 mb-4">Ready to transform your school?</h3>
           <p className="text-slate-600 mb-8 max-w-2xl mx-auto">See how Scholr can streamline your academic operations. Request a personalized demo or explore our flexible licensing plans.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to={createPageUrl('Demo')}>
+            <Link to="/Demo">
               <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-8 h-12 text-base font-medium shadow-sm border-none">
                 Schedule Demo <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
