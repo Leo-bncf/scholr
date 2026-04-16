@@ -82,7 +82,7 @@ export const InfiniteTextMarquee = ({
             opacity: 1,
             y: 0,
             x: reverse ? [-1000, 0] : [0, -1000],
-            scale: isHovered ? 1.18 : 1,
+            scale: 1,
           }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
