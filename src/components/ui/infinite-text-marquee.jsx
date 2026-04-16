@@ -78,7 +78,7 @@ export const InfiniteTextMarquee = ({
           onMouseLeave={() => setIsHovered(false)}
           animate={{
             x: [0, -1000],
-            scale: isHovered ? 1.08 : 1,
+            scale: isHovered ? 1.18 : 1,
           }}
           transition={{
             x: {
