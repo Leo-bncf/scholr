@@ -10,6 +10,7 @@ import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
 import TopMarqueeSection from '@/components/landing/TopMarqueeSection';
+import { BackgroundPaths } from '@/components/ui/background-paths';
 import {
   ArrowRight,
   BookOpen,
