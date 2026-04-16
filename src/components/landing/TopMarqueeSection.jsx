@@ -9,7 +9,7 @@ export default function TopMarqueeSection() {
           text="Scholr — Designed for International Schools"
           speed={18}
           tooltipText="Built for international schools"
-          fontSize="clamp(2.75rem, 9vw, 6.75rem)"
+          fontSize="clamp(2rem, 7vw, 5rem)"
           hoverColor="#2563eb"
           showTooltip={true}
         />
