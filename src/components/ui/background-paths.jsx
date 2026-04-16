@@ -26,17 +26,16 @@ function FloatingPaths({ position }) {
             stroke="currentColor"
             strokeWidth={path.width}
             strokeOpacity={0.42 + path.id * 0.008}
-            initial={{ pathLength: 0.75, opacity: 0 }}
+            initial={{ pathLength: 0.92, opacity: 0.7, pathOffset: 0 }}
             animate={{
-              pathLength: [0.75, 1, 0.9, 0.55],
-              opacity: [0, 0.85, 0.65, 0],
-              pathOffset: [0, 0.18, 0.45, 0.72],
+              pathLength: [0.92, 1, 0.92],
+              opacity: [0.7, 0.9, 0.7],
+              pathOffset: [0, 0.08, 0],
             }}
             transition={{
-              duration: 16 + path.id * 0.18,
+              duration: 14 + path.id * 0.18,
               repeat: Number.POSITIVE_INFINITY,
               ease: "easeInOut",
-              times: [0, 0.28, 0.68, 1],
             }}
           />
         ))}
