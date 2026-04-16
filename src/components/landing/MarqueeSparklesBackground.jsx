@@ -8,8 +8,8 @@ export default function MarqueeSparklesBackground() {
         <SparklesCore
           id="landing-marquee-sparkles"
           background="transparent"
-          minSize={0.6}
-          maxSize={1.8}
+          minSize={1.2}
+          maxSize={3.2}
           particleDensity={260}
           className="h-full w-full"
           particleColor="#2563eb"
