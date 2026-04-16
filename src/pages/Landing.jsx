@@ -33,7 +33,7 @@ function HeroSection() {
   };
 
   return (
-    <section className="relative pt-16 pb-20 lg:pt-24 lg:pb-32 overflow-hidden">
+    <section className="relative pt-20 pb-20 lg:pt-28 lg:pb-32 overflow-hidden">
       <div className="absolute inset-0 bg-transparent" />
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
