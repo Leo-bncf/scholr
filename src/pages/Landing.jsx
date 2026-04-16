@@ -493,8 +493,8 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen bg-transparent font-landing">
-      <div className="absolute inset-0 opacity-[0.22] pointer-events-none">
-        <BackgroundPaths title="Scholr" />
+      <div className="absolute inset-0 z-0 opacity-100 pointer-events-none">
+        <BackgroundPaths />
       </div>
       <AnimatedBackground />
       <div className="fixed top-16 left-0 right-0 z-50 px-4 flex justify-center">
