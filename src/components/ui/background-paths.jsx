@@ -16,7 +16,6 @@ function FloatingPaths({ position }) {
         viewBox="0 0 696 316"
         fill="none"
         aria-hidden="true"
-        shapeRendering="geometricPrecision"
       >
         <title>Background Paths</title>
         {paths.map((path) => (
@@ -25,19 +24,17 @@ function FloatingPaths({ position }) {
             d={path.d}
             stroke="currentColor"
             strokeWidth={path.width}
-            strokeOpacity={0.44 + path.id * 0.008}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            vectorEffect="non-scaling-stroke"
-            initial={{ opacity: 0.55 }}
+            strokeOpacity={0.36 + path.id * 0.012}
+            initial={{ pathLength: 0.3, opacity: 0.6 }}
             animate={{
-              opacity: [0.45, 0.7, 0.45],
+              pathLength: 1,
+              opacity: [0.3, 0.6, 0.3],
+              pathOffset: [0, 1, 0],
             }}
             transition={{
-              duration: 12 + path.id * 0.18,
+              duration: 20 + path.id * 0.2,
               repeat: Number.POSITIVE_INFINITY,
-              repeatType: "mirror",
-              ease: "easeInOut",
+              ease: "linear",
             }}
           />
         ))}
