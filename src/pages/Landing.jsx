@@ -5,10 +5,8 @@ import PublicFooter from '@/components/public/PublicFooter';
 import AnimatedBackground from '@/components/public/AnimatedBackground';
 import ConsentModal from '@/components/public/ConsentModal';
 import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
-import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
 import TopMarqueeSection from '@/components/landing/TopMarqueeSection';
@@ -29,9 +27,9 @@ function HeroSection() {
   const handleSignIn = async () => {
     const isAuthed = await base44.auth.isAuthenticated();
     if (isAuthed) {
-      navigate(createPageUrl('AppHome'));
+      window.location.href = '/AppHome';
     } else {
-      base44.auth.redirectToLogin(createPageUrl('AppHome'));
+      base44.auth.redirectToLogin('/AppHome');
     }
   };
 
@@ -59,7 +57,7 @@ function HeroSection() {
              >
                Sign In <ArrowRight className="ml-2 w-4 h-4" />
              </Button>
-             <Link to={createPageUrl('Demo')}>
+             <Link to="/Demo">
                <Button size="lg" variant="outline" className="rounded-full px-8 h-12 text-base font-medium border-slate-300 hover:bg-slate-50 text-slate-800">
                  Contact Sales for a Free Demo
                </Button>
@@ -429,7 +427,6 @@ function CTASection() {
 }
 
 export default function Landing() {
-  const navigate = useNavigate();
   const [showConsent, setShowConsent] = useState(true);
 
   useEffect(() => {
