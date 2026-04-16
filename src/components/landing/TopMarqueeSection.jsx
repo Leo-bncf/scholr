@@ -1,6 +1,5 @@
 import React from "react";
 import { InfiniteTextMarquee } from "@/components/ui/infinite-text-marquee";
-import NotebookCheckerBackground from "@/components/landing/NotebookCheckerBackground";
 
 export default function TopMarqueeSection() {
   const marquees = [
