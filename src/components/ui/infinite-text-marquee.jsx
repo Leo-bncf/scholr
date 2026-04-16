@@ -6,6 +6,7 @@ export const InfiniteTextMarquee = ({
   text = "Let's Get Started",
   link,
   speed = 30,
+  reverse = false,
   showTooltip = true,
   tooltipText = "Time to Flex💪",
   fontSize = "8rem",
@@ -77,7 +78,7 @@ export const InfiniteTextMarquee = ({
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           animate={{
-            x: [0, -1000],
+            x: reverse ? [-1000, 0] : [0, -1000],
             scale: isHovered ? 1.18 : 1,
           }}
           transition={{
