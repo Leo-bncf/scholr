@@ -3,10 +3,10 @@ import { InfiniteTextMarquee } from "@/components/ui/infinite-text-marquee";
 
 export default function TopMarqueeSection() {
   const marquees = [
-    { text: "Scholr — Designed for International Schools", speed: 34, reverse: false, fontFamily: 'Arial Black, Inter, Helvetica, sans-serif' },
-    { text: "Built for IB, IGCSE, A-Levels, and US Curricula", speed: 40, reverse: false, fontFamily: 'Georgia, Times New Roman, serif' },
-    { text: "Role-Based Dashboards for Students, Teachers, Parents, and Admins", speed: 37, reverse: true, fontFamily: 'Trebuchet MS, Inter, sans-serif' },
-    { text: "Assignments, Gradebooks, Reports, Messaging, and Timetables in One Place", speed: 44, reverse: false, fontFamily: 'Verdana, Inter, sans-serif' },
+    { text: "Scholr — Designed for International Schools", speed: 22, reverse: false, fontFamily: 'Arial Black, Inter, Helvetica, sans-serif' },
+    { text: "Built for IB, IGCSE, A-Levels, and US Curricula", speed: 27, reverse: false, fontFamily: 'Georgia, Times New Roman, serif' },
+    { text: "Role-Based Dashboards for Students, Teachers, Parents, and Admins", speed: 25, reverse: true, fontFamily: 'Trebuchet MS, Inter, sans-serif' },
+    { text: "Assignments, Gradebooks, Reports, Messaging, and Timetables in One Place", speed: 31, reverse: false, fontFamily: 'Verdana, Inter, sans-serif' },
   ];
 
   return (
