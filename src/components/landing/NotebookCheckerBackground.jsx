@@ -2,8 +2,8 @@ import React from "react";
 
 export default function NotebookCheckerBackground() {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute inset-[-20%] animate-[notebook-drift_22s_linear_infinite] opacity-70">
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+      <div className="absolute inset-0 opacity-70">
         <div
           className="h-full w-full"
           style={{

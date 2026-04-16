@@ -13,6 +13,7 @@ export const InfiniteTextMarquee = ({
   textColor = "",
   hoverColor = "",
   fontFamily = 'Arial Black, Inter, Helvetica, sans-serif',
+  initialDelay = 0,
 }) => {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -76,17 +77,31 @@ export const InfiniteTextMarquee = ({
       <div className="relative w-full overflow-hidden">
         <motion.div
           className="whitespace-nowrap origin-center"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          initial={{ opacity: 0, y: 42, scale: 0.96 }}
           animate={{
+            opacity: 1,
+            y: 0,
             x: reverse ? [-1000, 0] : [0, -1000],
             scale: isHovered ? 1.18 : 1,
           }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
           transition={{
+            opacity: {
+              duration: 0.7,
+              delay: initialDelay,
+              ease: "easeOut",
+            },
+            y: {
+              duration: 0.7,
+              delay: initialDelay,
+              ease: "easeOut",
+            },
             x: {
               repeat: Infinity,
               duration: speed,
               ease: "linear",
+              delay: initialDelay,
             },
             scale: {
               duration: 0.45,
