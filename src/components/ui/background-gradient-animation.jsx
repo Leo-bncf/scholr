@@ -20,9 +20,9 @@ export const BackgroundGradientAnimation = ({
   containerClassName,
 }) => {
   const interactiveRef = useRef(null);
+
   const [tgX, setTgX] = useState(0);
   const [tgY, setTgY] = useState(0);
-  const [isSafari, setIsSafari] = useState(false);
 
   const interactiveStyle = useMemo(
     () => ({
@@ -55,16 +55,18 @@ export const BackgroundGradientAnimation = ({
     blendingValue,
   ]);
 
-  useEffect(() => {
-    setIsSafari(/^((?!chrome|android).)*safari/i.test(navigator.userAgent));
-  }, []);
-
   const handleMouseMove = (event) => {
     if (!interactiveRef.current) return;
     const rect = interactiveRef.current.getBoundingClientRect();
     setTgX(event.clientX - rect.left);
     setTgY(event.clientY - rect.top);
   };
+
+  const [isSafari, setIsSafari] = useState(false);
+
+  useEffect(() => {
+    setIsSafari(/^((?!chrome|android).)*safari/i.test(navigator.userAgent));
+  }, []);
 
   return (
     <div
