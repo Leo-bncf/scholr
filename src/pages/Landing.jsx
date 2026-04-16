@@ -491,10 +491,12 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen bg-white font-landing overflow-hidden">
-      <div className="absolute inset-0 z-0 bg-[linear-gradient(180deg,_rgba(255,255,255,0.96)_0%,_rgba(248,250,252,0.94)_32%,_rgba(255,255,255,0.98)_100%)]" />
-      <div className="absolute left-[-12rem] top-[-6rem] z-0 h-[24rem] w-[24rem] rounded-full bg-blue-200/40 blur-3xl" />
-      <div className="absolute right-[-10rem] top-[8rem] z-0 h-[22rem] w-[22rem] rounded-full bg-sky-200/35 blur-3xl" />
-      <div className="absolute left-[20%] top-[28rem] z-0 h-[20rem] w-[20rem] rounded-full bg-indigo-200/25 blur-3xl" />
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_18%_20%,rgba(125,211,252,0.62),transparent_30%),radial-gradient(circle_at_72%_26%,rgba(129,140,248,0.52),transparent_34%),radial-gradient(circle_at_68%_62%,rgba(216,180,254,0.42),transparent_30%),radial-gradient(circle_at_32%_64%,rgba(186,230,253,0.32),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(248,250,252,0.96)_40%,rgba(255,255,255,1)_100%)]" />
+      <div className="absolute left-[-10rem] top-[-4rem] z-0 h-[28rem] w-[28rem] rounded-full bg-sky-300/35 blur-[120px]" />
+      <div className="absolute left-[18%] top-[7rem] z-0 h-[26rem] w-[26rem] rounded-full bg-cyan-200/35 blur-[140px]" />
+      <div className="absolute right-[-8rem] top-[1rem] z-0 h-[32rem] w-[32rem] rounded-full bg-indigo-300/30 blur-[140px]" />
+      <div className="absolute right-[14%] top-[14rem] z-0 h-[24rem] w-[24rem] rounded-full bg-purple-200/30 blur-[130px]" />
+      <div className="absolute left-[28%] top-[24rem] z-0 h-[22rem] w-[22rem] rounded-full bg-sky-100/40 blur-[120px]" />
       <div className="fixed top-16 left-0 right-0 z-50 px-4 flex justify-center">
         <DetachedNavbar />
       </div>
