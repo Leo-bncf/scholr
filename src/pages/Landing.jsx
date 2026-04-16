@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import DetachedNavbar from '@/components/public/DetachedNavbar';
 import { ExpandableCard } from '@/components/ui/expandable-card';
 import PublicFooter from '@/components/public/PublicFooter';
-import AnimatedBackground from '@/components/public/AnimatedBackground';
 import ConsentModal from '@/components/public/ConsentModal';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -491,8 +490,11 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-transparent font-landing overflow-hidden">
+    <div className="relative min-h-screen bg-white font-landing overflow-hidden">
       <div className="absolute inset-0 z-0 bg-[linear-gradient(180deg,_rgba(255,255,255,0.96)_0%,_rgba(248,250,252,0.94)_32%,_rgba(255,255,255,0.98)_100%)]" />
+      <div className="absolute left-[-12rem] top-[-6rem] z-0 h-[24rem] w-[24rem] rounded-full bg-blue-200/40 blur-3xl" />
+      <div className="absolute right-[-10rem] top-[8rem] z-0 h-[22rem] w-[22rem] rounded-full bg-sky-200/35 blur-3xl" />
+      <div className="absolute left-[20%] top-[28rem] z-0 h-[20rem] w-[20rem] rounded-full bg-indigo-200/25 blur-3xl" />
       <div className="fixed top-16 left-0 right-0 z-50 px-4 flex justify-center">
         <DetachedNavbar />
       </div>
