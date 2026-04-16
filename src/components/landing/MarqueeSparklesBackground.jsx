@@ -16,7 +16,7 @@ export default function MarqueeSparklesBackground() {
           speed={1.2}
         />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-transparent from-0% via-white/85 via-35% to-white to-50%" />
+      <div className="absolute inset-0 bg-gradient-to-t from-transparent from-0% via-white/55 via-28% to-white to-42%" />
     </div>
   );
 }

@@ -497,7 +497,6 @@ export default function Landing() {
         <DetachedNavbar />
       </div>
       <div className="relative z-20">
-        <div className="absolute inset-0 bg-white/30 pointer-events-none" />
         <div className="relative z-20">
         <TopMarqueeSection />
         <HeroSection />
