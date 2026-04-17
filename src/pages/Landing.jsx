@@ -36,9 +36,9 @@ function HeroSection() {
   const opacity = useTransform(scrollY, [0, 120, 260], [0, 0.4, 1]);
   const y = useTransform(scrollY, [0, 260], [180, 0]);
   const scale = useTransform(scrollY, [0, 260], [0.96, 1]);
-  const wordmarkY = useTransform(scrollY, [0, 220, 520], ["-74vh", "-52vh", "-60vh"]);
+  const wordmarkY = useTransform(scrollY, [0, 220, 520], ["-72vh", "-50vh", "-58vh"]);
   const wordmarkOpacity = useTransform(scrollY, [0, 180, 420, 620], [0.92, 1, 0.55, 0]);
-  const wordmarkScale = useTransform(scrollY, [0, 220, 520], [1.08, 1, 0.92]);
+  const wordmarkScale = useTransform(scrollY, [0, 220, 520], [1.16, 1.08, 0.98]);
 
   const handleSignIn = async () => {
     const isAuthed = await base44.auth.isAuthenticated();
@@ -55,7 +55,7 @@ function HeroSection() {
         className="pointer-events-none absolute inset-x-0 z-0 overflow-hidden"
         style={{ y: wordmarkY, opacity: wordmarkOpacity, scale: wordmarkScale }}
       >
-        <span className="block w-full text-center select-none text-[7rem] sm:text-[11rem] lg:text-[16rem] font-semibold tracking-[0.02em] text-slate-200/70 leading-none whitespace-nowrap scale-x-[1.18] origin-center">
+        <span className="block w-full text-center select-none text-[8.5rem] sm:text-[13rem] lg:text-[18rem] font-semibold tracking-[0.02em] text-slate-200/70 leading-none whitespace-nowrap scale-x-[1.18] origin-center">
           Scholr
         </span>
       </motion.div>
