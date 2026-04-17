@@ -49,7 +49,7 @@ function HeroSection() {
   };
 
   return (
-    <section className="relative overflow-hidden pt-40 pb-36 lg:pt-56 lg:pb-52 min-h-[145vh] flex items-start">
+    <section className="relative overflow-hidden pt-28 pb-20 lg:pt-40 lg:pb-32 min-h-[145vh] flex items-center">
       <motion.div
         className="pointer-events-none absolute inset-x-0 z-0 overflow-hidden"
         style={{ y: wordmarkY, opacity: wordmarkOpacity, scale: wordmarkScale }}
@@ -59,7 +59,7 @@ function HeroSection() {
         </span>
       </motion.div>
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div className="max-w-4xl mx-auto text-center" style={{ opacity, y, scale }}>
+        <motion.div className="max-w-4xl mx-auto text-center pt-[42vh] lg:pt-[48vh]" style={{ opacity, y, scale }}>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1]">
            The LMS designed for
            <span className="text-primary"> the needs of</span>
