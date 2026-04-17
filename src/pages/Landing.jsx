@@ -55,7 +55,7 @@ function HeroSection() {
         className="pointer-events-none absolute inset-x-0 z-0 overflow-hidden"
         style={{ y: wordmarkY, opacity: wordmarkOpacity, scale: wordmarkScale }}
       >
-        <span className="block w-full text-center select-none text-[8.5rem] sm:text-[13rem] lg:text-[18rem] font-semibold tracking-[0.02em] text-white/25 leading-none whitespace-nowrap scale-x-[1.18] origin-center [text-shadow:0_2px_12px_rgba(255,255,255,0.35),0_10px_30px_rgba(148,163,184,0.18)] [background:linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.45)_32%,rgba(226,232,240,0.18)_68%,rgba(255,255,255,0.08)_100%)] bg-clip-text text-transparent">
+        <span className="block w-full text-center select-none text-[8.5rem] sm:text-[13rem] lg:text-[18rem] font-semibold tracking-[0.02em] text-white/55 leading-none whitespace-nowrap scale-x-[1.18] origin-center [text-shadow:0_2px_8px_rgba(255,255,255,0.22)]">
           Scholr
         </span>
       </motion.div>
