@@ -8,7 +8,7 @@ export function ExpandableCard({
   title,
   src,
   icon: Icon,
-  color = "bg-blue-100 text-blue-500",
+  color = "bg-primary/10 text-primary",
   description,
   children,
   className,
@@ -66,13 +66,13 @@ export function ExpandableCard({
               layoutId={`card-${title}-${cardId}`}
               ref={cardRef}
               className={cn(
-                "w-full max-w-[850px] h-full flex flex-col overflow-auto [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] sm:rounded-t-3xl bg-white shadow-sm dark:shadow-none dark:bg-blue-950 relative",
+                "w-full max-w-[850px] h-full flex flex-col overflow-auto [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] sm:rounded-t-3xl bg-white shadow-sm dark:shadow-none dark:bg-slate-950 relative",
                 classNameExpanded,
               )}
               {...props}
             >
               <motion.div layoutId={`image-${title}-${cardId}`}>
-                <div className="relative before:absolute before:inset-x-0 before:bottom-[-1px] before:h-[70px] before:z-50 before:bg-gradient-to-t dark:before:from-blue-950 before:from-white">
+                <div className="relative before:absolute before:inset-x-0 before:bottom-[-1px] before:h-[70px] before:z-50 before:bg-gradient-to-t dark:before:from-slate-950 before:from-white">
                   {src ? (
                     <img
                       src={src}
@@ -86,18 +86,18 @@ export function ExpandableCard({
                   )}
                 </div>
               </motion.div>
-              <div className="relative h-full before:fixed before:inset-x-0 before:bottom-0 before:h-[70px] before:z-50 before:bg-gradient-to-t dark:before:from-blue-950 before:from-white">
+              <div className="relative h-full before:fixed before:inset-x-0 before:bottom-0 before:h-[70px] before:z-50 before:bg-gradient-to-t dark:before:from-slate-950 before:from-white">
                 <div className="flex justify-between items-start p-8 h-auto">
                   <div>
                     <motion.p
                       layoutId={`description-${description}-${cardId}`}
-                      className="text-blue-500 dark:text-blue-400 text-lg"
+                      className="text-primary dark:text-primary text-lg"
                     >
                       {description}
                     </motion.p>
                     <motion.h3
                       layoutId={`title-${title}-${cardId}`}
-                      className="font-semibold text-blue-950 dark:text-white text-4xl sm:text-4xl mt-0.5"
+                      className="font-semibold text-slate-900 dark:text-white text-4xl sm:text-4xl mt-0.5"
                     >
                       {title}
                     </motion.h3>
@@ -105,7 +105,7 @@ export function ExpandableCard({
                   <motion.button
                     aria-label="Close card"
                     layoutId={`button-${title}-${cardId}`}
-                    className="h-10 w-10 shrink-0 flex items-center justify-center rounded-full bg-white dark:bg-blue-950 text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-950 dark:text-white/70 text-blue-950/70 border border-blue-200/90 dark:border-blue-900 hover:border-blue-300/90 hover:text-blue-950 dark:hover:text-white dark:hover:border-blue-800 transition-colors duration-300 focus:outline-none z-50"
+                    className="h-10 w-10 shrink-0 flex items-center justify-center rounded-full bg-white dark:bg-slate-950 text-primary dark:text-white/70 border border-primary/20 dark:border-primary/30 hover:bg-primary/5 dark:hover:bg-slate-900 hover:border-primary/40 hover:text-primary dark:hover:text-white dark:hover:border-primary/50 transition-colors duration-300 focus:outline-none z-50"
                     onClick={() => setActive(false)}
                   >
                     <motion.div
@@ -135,7 +135,7 @@ export function ExpandableCard({
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="text-blue-500 dark:text-blue-400 text-base pb-10 flex flex-col items-start gap-4 overflow-auto "
+                    className="text-primary dark:text-primary text-base pb-10 flex flex-col items-start gap-4 overflow-auto "
                   >
                     {children}
                   </motion.div>
@@ -153,7 +153,7 @@ export function ExpandableCard({
         layoutId={`card-${title}-${cardId}`}
         onClick={() => setActive(true)}
         className={cn(
-          "p-3 flex flex-col justify-between items-center bg-white shadow-sm dark:shadow-none dark:bg-blue-950 rounded-2xl cursor-pointer border border-blue-100/70 dark:border-blue-900 hover:shadow-md transition-shadow",
+          "p-3 flex flex-col justify-between items-center bg-white shadow-sm dark:shadow-none dark:bg-slate-950 rounded-2xl cursor-pointer border border-primary/15 dark:border-primary/30 hover:shadow-md transition-shadow",
           className,
         )}
       >
@@ -175,13 +175,13 @@ export function ExpandableCard({
             <div className="flex flex-col">
               <motion.p
                 layoutId={`description-${description}-${cardId}`}
-                className="text-blue-500 dark:text-blue-400 md:text-left text-xs font-medium"
+                className="text-primary dark:text-primary md:text-left text-xs font-medium"
               >
                 {description}
               </motion.p>
               <motion.h3
                 layoutId={`title-${title}-${cardId}`}
-                className="text-blue-950 dark:text-white md:text-left font-semibold text-sm mt-1"
+                className="text-slate-900 dark:text-white md:text-left font-semibold text-sm mt-1"
               >
                 {title}
               </motion.h3>
@@ -190,7 +190,7 @@ export function ExpandableCard({
               aria-label="Open card"
               layoutId={`button-${title}-${cardId}`}
               className={cn(
-                "h-8 w-8 shrink-0 flex items-center justify-center rounded-full bg-white dark:bg-blue-950 text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-950 dark:text-white/70 text-blue-950/70 border border-blue-200/90 dark:border-blue-900 hover:border-blue-300/90 hover:text-blue-950 dark:hover:text-white dark:hover:border-blue-800 transition-colors duration-300  focus:outline-none",
+                "h-8 w-8 shrink-0 flex items-center justify-center rounded-full bg-white dark:bg-slate-950 text-primary dark:text-white/70 border border-primary/20 dark:border-primary/30 hover:bg-primary/5 dark:hover:bg-slate-900 hover:border-primary/40 hover:text-primary dark:hover:text-white dark:hover:border-primary/50 transition-colors duration-300 focus:outline-none",
                 className,
               )}
             >
