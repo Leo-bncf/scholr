@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DetachedNavbar from '@/components/public/DetachedNavbar';
+import TopInfoRibbon from '@/components/public/TopInfoRibbon';
 import { ExpandableCard } from '@/components/ui/expandable-card';
 import PublicFooter from '@/components/public/PublicFooter';
 import ConsentModal from '@/components/public/ConsentModal';
@@ -500,7 +501,8 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-transparent font-landing">
       <LandingAnimatedBackground />
-      <div className="fixed top-10 left-0 right-0 z-50 px-4 flex justify-center">
+      <TopInfoRibbon />
+      <div className="fixed top-10 left-0 right-0 z-50 px-4 flex justify-center sm:top-12">
         <DetachedNavbar />
       </div>
       <div className="relative z-20">
