@@ -109,7 +109,7 @@ function ProblemSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl mx-auto">
           {problems.map((p, i) => (
             <div key={i} className="flex items-start gap-4 p-5 bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200 shadow-sm">
-              <div className="w-1 h-1 rounded-full bg-blue-600 mt-2 flex-shrink-0"></div>
+              <div className="w-1 h-1 rounded-full bg-primary600 mt-2 flex-shrink-0"></div>
               <p className="text-sm text-slate-600 leading-relaxed">{p.text}</p>
             </div>
           ))}
@@ -133,21 +133,21 @@ function FeaturesGrid() {
       short: 'Complete assignment lifecycle',
       desc: 'From creation to grading — publish assignments with IB criteria alignment, students submit work through Google Docs, files, or links, teachers provide criterion-based feedback, and grades sync automatically. Support for multiple submission formats, late submission handling, and comprehensive submission tracking ensure transparency throughout.',
       icon: ListChecks,
-      color: 'bg-gradient-to-br from-sky-500 to-blue-500 text-white shadow-inner'
+      color: 'bg-gradient-to-br from-sky-500 to-primary500 text-white shadow-inner'
     },
     {
       title: 'Gradebook',
       short: 'Multi-framework grading',
       desc: 'Support for multiple grading scales including 1-7 IB, A*-E, letter grades, and percentages. Predicted grade tracking with historical trends, rubric-based criterion assessment, and comprehensive term reports aligned to your curriculum. Generate assessment reports by criterion and lock grades for compliance.',
       icon: Award,
-      color: 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-inner'
+      color: 'bg-gradient-to-br from-primary500 to-primary600 text-white shadow-inner'
     },
     {
       title: 'Parent Portal',
       short: 'Real-time family engagement',
       desc: 'Parents see grades, attendance records, upcoming assignments, teacher feedback, and behavioral notes — all updated in real-time. Direct messaging with teachers keeps communication secure, organised, and compliant with school policies. Parents can also receive progress alerts and attendance warnings.',
       icon: HeartHandshake,
-      color: 'bg-gradient-to-br from-blue-600 to-indigo-500 text-white shadow-inner'
+      color: 'bg-gradient-to-br from-primary600 to-indigo-500 text-white shadow-inner'
     },
     {
       title: 'Timetable Integration',
@@ -327,7 +327,7 @@ function RolesSection() {
 
   const colorMap = {
     sky: { bg: 'bg-sky-50', border: 'border-sky-100', icon: 'text-sky-500', activeBorder: 'border-sky-400' },
-    blue: { bg: 'bg-blue-50', border: 'border-blue-100', icon: 'text-blue-600', activeBorder: 'border-blue-400' },
+    blue: { bg: 'bg-primary50', border: 'border-primary100', icon: 'text-primary600', activeBorder: 'border-primary400' },
     cyan: { bg: 'bg-cyan-50', border: 'border-cyan-100', icon: 'text-cyan-600', activeBorder: 'border-cyan-400' },
     indigo: { bg: 'bg-indigo-50', border: 'border-indigo-100', icon: 'text-indigo-600', activeBorder: 'border-indigo-400' },
     violet: { bg: 'bg-violet-50', border: 'border-violet-100', icon: 'text-violet-600', activeBorder: 'border-violet-400' },
