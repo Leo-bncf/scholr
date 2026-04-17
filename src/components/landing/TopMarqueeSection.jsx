@@ -23,7 +23,7 @@ export default function TopMarqueeSection() {
               fontSize={marquee.fontSize || "clamp(1.5rem, 4.8vw, 3.75rem)"}
               fontFamily={marquee.fontFamily}
               letterSpacing={marquee.letterSpacing}
-              textColor="rgba(255,255,255,0.48)"
+              textColor="#FFFFFF"
               hoverColor="#0f172a"
               showTooltip={true}
               highlightWords={marquee.highlightWords || []}
