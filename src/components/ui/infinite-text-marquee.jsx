@@ -15,6 +15,8 @@ export const InfiniteTextMarquee = ({
   fontFamily = 'Arial Black, Inter, Helvetica, sans-serif',
   initialDelay = 0,
   uppercaseColor = '',
+  highlightWords = [],
+  highlightColor = '#000000',
 }) => {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -39,13 +41,25 @@ export const InfiniteTextMarquee = ({
   }, [showTooltip]);
 
   const repeatedText = useMemo(() => Array(12).fill(text).join(" • ") + " •", [text]);
-  const styledText = useMemo(() => repeatedText.split('').map((char, index) => (
-    /[A-Z]/.test(char) ? (
-      <span key={`${char}-${index}`} style={{ color: uppercaseColor || '#000000' }}>{char}</span>
-    ) : (
-      <span key={`${char}-${index}`}>{char}</span>
-    )
-  )), [repeatedText, uppercaseColor]);
+  const styledText = useMemo(() => {
+    const tokens = repeatedText.split(/(\b)/);
+
+    return tokens.map((token, tokenIndex) => {
+      const isHighlightedWord = highlightWords.some((word) => word.toLowerCase() === token.toLowerCase());
+
+      if (isHighlightedWord) {
+        return <span key={`token-${tokenIndex}`} style={{ color: highlightColor }}>{token}</span>;
+      }
+
+      return token.split('').map((char, charIndex) => (
+        /[A-Z]/.test(char) ? (
+          <span key={`char-${tokenIndex}-${charIndex}`} style={{ color: uppercaseColor || textColor || undefined }}>{char}</span>
+        ) : (
+          <span key={`char-${tokenIndex}-${charIndex}`}>{char}</span>
+        )
+      ));
+    });
+  }, [repeatedText, highlightWords, highlightColor, uppercaseColor, textColor]);
 
   const content = (
     <span

@@ -3,8 +3,8 @@ import { InfiniteTextMarquee } from "@/components/ui/infinite-text-marquee";
 
 export default function TopMarqueeSection() {
   const marquees = [
-    { text: "Scholr — Designed for International Schools", speed: 18, reverse: false, fontFamily: 'Arial Black, Inter, Helvetica, sans-serif', textColor: '#1e514b' },
-    { text: "Built for IB, IGCSE, A-Levels, and US Curricula", speed: 22, reverse: false, fontFamily: 'Georgia, Times New Roman, serif', textColor: '#1e514b' },
+    { text: "Scholr — Designed for International Schools", speed: 18, reverse: false, fontFamily: 'Arial Black, Inter, Helvetica, sans-serif', textColor: '#1e514b', highlightWords: ['Scholr'] },
+    { text: "Built for IB, IGCSE, A-Levels, and US Curricula", speed: 22, reverse: false, fontFamily: 'Georgia, Times New Roman, serif', textColor: '#1e514b', highlightWords: ['IB', 'IGCSE', 'US'] },
     { text: "Role-Based Dashboards for Students, Teachers, Parents, and Admins", speed: 20, reverse: true, fontFamily: 'Trebuchet MS, Inter, sans-serif', textColor: '#1e514b' },
     { text: "Assignments, Gradebooks, Reports, Messaging, and Timetables in One Place", speed: 26, reverse: false, fontFamily: 'Verdana, Inter, sans-serif', textColor: '#1e514b' },
   ];
@@ -24,7 +24,9 @@ export default function TopMarqueeSection() {
               textColor={marquee.textColor}
               hoverColor="#0f172a"
               showTooltip={true}
-              uppercaseColor="#000000"
+              uppercaseColor={marquee.textColor}
+              highlightWords={marquee.highlightWords || []}
+              highlightColor="#000000"
               initialDelay={0.15 + index * 0.12}
             />
           </div>
