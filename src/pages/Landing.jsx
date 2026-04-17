@@ -61,13 +61,13 @@ function HeroSection() {
       </motion.div>
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div className="max-w-4xl mx-auto text-center pt-[70vh] lg:pt-[82vh]" style={{ opacity, y, scale }}>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1]">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1] drop-shadow-[0_6px_24px_rgba(0,0,0,0.22)]">
            The LMS designed for
-           <span className="text-primary"> the needs of</span>
+           <span className="text-emerald-100"> the needs of</span>
            {' '}International Schools
           </h1>
 
-          <p className="mt-6 text-xl text-slate-600 leading-relaxed max-w-2xl mx-auto">
+          <p className="mt-6 text-xl text-white/88 leading-relaxed max-w-2xl mx-auto drop-shadow-[0_4px_18px_rgba(0,0,0,0.18)]">
             A unified platform built for international schools — supporting multiple curricula, grading frameworks, and reporting standards.
           </p>
           
@@ -88,8 +88,8 @@ function HeroSection() {
         </motion.div>
         
         <div className="mt-40 lg:mt-52 mx-auto max-w-3xl">
-          <p className="text-lg text-slate-600 leading-relaxed text-center">
-            <span className="font-semibold text-slate-900">Multi-curricular</span> — built for schools running IB, IGCSE, A-Levels, US Common Core, and more. <span className="font-semibold text-slate-900">Flexible frameworks</span> — every workflow adapts to your curriculum's structure, criteria, and terminology. <span className="font-semibold text-slate-900">Zero noise</span> — trimmed to exactly what international educators and students need, nothing more.
+          <p className="text-lg text-white/85 leading-relaxed text-center drop-shadow-[0_4px_18px_rgba(0,0,0,0.18)]">
+            <span className="font-semibold text-white">Multi-curricular</span> — built for schools running IB, IGCSE, A-Levels, US Common Core, and more. <span className="font-semibold text-white">Flexible frameworks</span> — every workflow adapts to your curriculum's structure, criteria, and terminology. <span className="font-semibold text-white">Zero noise</span> — trimmed to exactly what international educators and students need, nothing more.
           </p>
         </div>
       </div>
@@ -115,8 +115,8 @@ function ProblemSection() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">International schools deserve better tools</h2>
-          <p className="mt-3 text-lg text-slate-500">Current platforms weren't built for the unique demands of multi-curricular international schools</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white">International schools deserve better tools</h2>
+          <p className="mt-3 text-lg text-white/72">Current platforms weren't built for the unique demands of multi-curricular international schools</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl mx-auto">
           {problems.map((p, i) => (
@@ -195,8 +195,8 @@ function FeaturesGrid() {
     <section className="py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-slate-900">Comprehensive Platform Capabilities</h2>
-          <p className="mt-3 text-lg text-slate-500">Engineered for the rigorous demands of international multi-curricular institutions</p>
+          <h2 className="text-3xl font-bold text-white">Comprehensive Platform Capabilities</h2>
+          <p className="mt-3 text-lg text-white/72">Engineered for the rigorous demands of international multi-curricular institutions</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -353,8 +353,8 @@ function RolesSection() {
     <section className="py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-slate-900">Purpose-Built Roles</h2>
-          <p className="mt-3 text-lg text-slate-500">Every user type has a tailored experience. Click a role to explore its features.</p>
+          <h2 className="text-3xl font-bold text-white">Purpose-Built Roles</h2>
+          <p className="mt-3 text-lg text-white/72">Every user type has a tailored experience. Click a role to explore its features.</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
@@ -435,8 +435,8 @@ function CTASection() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-slate-900">Why Choose Scholr?</h2>
-          <p className="mt-3 text-lg text-slate-500">Built by educators, for educators.</p>
+          <h2 className="text-3xl font-bold text-white">Why Choose Scholr?</h2>
+          <p className="mt-3 text-lg text-white/72">Built by educators, for educators.</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
           {benefits.map((b, i) => (
