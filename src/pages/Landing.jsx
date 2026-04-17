@@ -35,6 +35,9 @@ function HeroSection() {
   const opacity = useTransform(scrollY, [0, 120, 260], [0, 0.4, 1]);
   const y = useTransform(scrollY, [0, 260], [180, 0]);
   const scale = useTransform(scrollY, [0, 260], [0.96, 1]);
+  const wordmarkY = useTransform(scrollY, [0, 220, 520], ["42vh", "2vh", "-24vh"]);
+  const wordmarkOpacity = useTransform(scrollY, [0, 180, 420, 620], [0.92, 1, 0.55, 0]);
+  const wordmarkScale = useTransform(scrollY, [0, 220, 520], [1.08, 1, 0.92]);
 
   const handleSignIn = async () => {
     const isAuthed = await base44.auth.isAuthenticated();
@@ -46,13 +49,16 @@ function HeroSection() {
   };
 
   return (
-    <section className="relative overflow-hidden pt-28 pb-20 lg:pt-40 lg:pb-32">
-      <div className="pointer-events-none absolute inset-x-0 top-0 overflow-hidden pt-4 sm:pt-6 lg:pt-8">
+    <section className="relative overflow-hidden pt-28 pb-20 lg:pt-40 lg:pb-32 min-h-screen flex items-center">
+      <motion.div
+        className="pointer-events-none absolute inset-x-0 z-0 overflow-hidden"
+        style={{ y: wordmarkY, opacity: wordmarkOpacity, scale: wordmarkScale }}
+      >
         <span className="block w-full text-center select-none text-[7rem] sm:text-[11rem] lg:text-[16rem] font-semibold tracking-[0.02em] text-slate-200/70 leading-none whitespace-nowrap scale-x-[1.18] origin-center">
           Scholr
         </span>
-      </div>
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      </motion.div>
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div className="max-w-4xl mx-auto text-center" style={{ opacity, y, scale }}>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1]">
            The LMS designed for
