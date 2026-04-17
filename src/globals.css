@@ -4,17 +4,17 @@
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   
   /* Professional Dark Blue Theme Overrides */
-  --primary: 221 83% 53%;
+  --primary: 173 46% 22%;
   --primary-foreground: 210 40% 98%;
   --secondary: 214 100% 97%;
   --secondary-foreground: 222 84% 11%;
   --muted: 214 100% 97%;
-  --muted-foreground: 221 83% 53%;
+  --muted-foreground: 173 46% 22%;
   --accent: 214 100% 97%;
   --accent-foreground: 222 84% 11%;
   --border: 214 60% 90%;
   --input: 214 60% 90%;
-  --ring: 221 83% 53%;
+  --ring: 173 46% 22%;
   --radius: 0.3rem;
 }
 
