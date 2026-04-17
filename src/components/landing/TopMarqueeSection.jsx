@@ -13,7 +13,7 @@ export default function TopMarqueeSection() {
     <section className="relative z-10 overflow-hidden pt-36 pb-10 lg:pt-40 lg:pb-14">
       <div className="relative z-10 mx-auto max-w-full isolate -space-y-9">
         {marquees.map((marquee, index) => (
-          <div key={index} className="py-0">
+          <div key={index} className="py-0 [mask-image:linear-gradient(90deg,transparent,white_8%,white_92%,transparent)]">
             <InfiniteTextMarquee
               text={marquee.text}
               speed={marquee.speed}
@@ -21,12 +21,12 @@ export default function TopMarqueeSection() {
               tooltipText="Built for international schools"
               fontSize={marquee.fontSize || "clamp(1.5rem, 4.8vw, 3.75rem)"}
               fontFamily={marquee.fontFamily}
-              textColor={marquee.textColor}
+              textColor="rgba(255,255,255,0.34)"
               hoverColor="#0f172a"
               showTooltip={true}
-              uppercaseColor={marquee.textColor}
+              uppercaseColor="rgba(255,255,255,0.92)"
               highlightWords={marquee.highlightWords || []}
-              highlightColor="#000000"
+              highlightColor="rgba(255,255,255,0.9)"
               initialDelay={0.15 + index * 0.12}
             />
           </div>
