@@ -23,11 +23,11 @@ export default function TopMarqueeSection() {
               fontSize={marquee.fontSize || "clamp(1.5rem, 4.8vw, 3.75rem)"}
               fontFamily={marquee.fontFamily}
               letterSpacing={marquee.letterSpacing}
-              textColor="#9ad6bd"
+              textColor="#7ecbaa"
               hoverColor="#0f172a"
               showTooltip={true}
               highlightWords={[]}
-              highlightColor="#9ad6bd"
+              highlightColor="#7ecbaa"
               initialDelay={0.15 + index * 0.12}
             />
           </div>
