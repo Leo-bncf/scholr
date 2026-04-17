@@ -35,7 +35,7 @@ function HeroSection() {
   const opacity = useTransform(scrollY, [0, 120, 260], [0, 0.4, 1]);
   const y = useTransform(scrollY, [0, 260], [180, 0]);
   const scale = useTransform(scrollY, [0, 260], [0.96, 1]);
-  const wordmarkY = useTransform(scrollY, [0, 220, 520], ["-78vh", "-54vh", "-60vh"]);
+  const wordmarkY = useTransform(scrollY, [0, 220, 520], ["-68vh", "-46vh", "-54vh"]);
   const wordmarkOpacity = useTransform(scrollY, [0, 180, 420, 620], [0.92, 1, 0.55, 0]);
   const wordmarkScale = useTransform(scrollY, [0, 220, 520], [1.08, 1, 0.92]);
 
