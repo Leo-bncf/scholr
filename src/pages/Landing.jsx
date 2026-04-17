@@ -46,8 +46,13 @@ function HeroSection() {
   };
 
   return (
-    <section className="pt-28 pb-20 lg:pt-40 lg:pb-32">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden pt-28 pb-20 lg:pt-40 lg:pb-32">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center overflow-hidden">
+        <span className="select-none text-[5rem] sm:text-[8rem] lg:text-[12rem] font-semibold tracking-[-0.08em] text-slate-200/70 leading-none whitespace-nowrap">
+          Scholr
+        </span>
+      </div>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div className="max-w-4xl mx-auto text-center" style={{ opacity, y, scale }}>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1]">
            The LMS designed for
