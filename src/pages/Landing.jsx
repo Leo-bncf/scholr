@@ -514,12 +514,17 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             exit={{ opacity: 0, y: -14, filter: 'blur(4px)' }}
             transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+            className="backdrop-blur-xl supports-[backdrop-filter]:bg-white/10"
+            style={{ filter: 'drop-shadow(0 10px 30px rgba(255,255,255,0.18)) drop-shadow(0 18px 40px rgba(30,81,75,0.08))' }}
           >
             <TopInfoRibbon />
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="fixed top-12 left-0 right-0 z-50 px-4 flex justify-center sm:top-14">
+      <div
+        className="fixed top-12 left-0 right-0 z-50 px-4 flex justify-center sm:top-14 backdrop-blur-xl supports-[backdrop-filter]:bg-white/10"
+        style={{ filter: 'drop-shadow(0 10px 30px rgba(255,255,255,0.18)) drop-shadow(0 18px 40px rgba(30,81,75,0.08))' }}
+      >
         <DetachedNavbar />
       </div>
       <div className="relative z-20">
