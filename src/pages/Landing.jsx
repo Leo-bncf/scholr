@@ -47,8 +47,8 @@ function HeroSection() {
 
   return (
     <section className="relative overflow-hidden pt-28 pb-20 lg:pt-40 lg:pb-32">
-      <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center overflow-hidden pt-6 sm:pt-10 lg:pt-12">
-        <span className="select-none text-[5rem] sm:text-[8rem] lg:text-[12rem] font-semibold tracking-[-0.08em] text-slate-200/70 leading-none whitespace-nowrap">
+      <div className="pointer-events-none absolute inset-x-0 top-0 overflow-hidden pt-4 sm:pt-6 lg:pt-8">
+        <span className="block w-full text-center select-none text-[7rem] sm:text-[11rem] lg:text-[16rem] font-semibold tracking-[-0.12em] text-slate-200/70 leading-none whitespace-nowrap scale-x-[1.18] origin-center">
           Scholr
         </span>
       </div>
