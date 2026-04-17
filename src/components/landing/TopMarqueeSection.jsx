@@ -26,7 +26,6 @@ export default function TopMarqueeSection() {
               textColor="rgba(30,81,75,0.34)"
               hoverColor="#0f172a"
               showTooltip={true}
-              uppercaseColor="#1e514b"
               highlightWords={marquee.highlightWords || []}
               highlightColor="#1e514b"
               initialDelay={0.15 + index * 0.12}
