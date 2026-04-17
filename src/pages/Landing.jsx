@@ -7,7 +7,7 @@ import ConsentModal from '@/components/public/ConsentModal';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
 import TopMarqueeSection from '@/components/landing/TopMarqueeSection';
 import LandingAnimatedBackground from '@/components/landing/LandingAnimatedBackground';
@@ -478,6 +478,12 @@ function CTASection() {
 
 export default function Landing() {
   const [showConsent, setShowConsent] = useState(true);
+  const [showTopRibbon, setShowTopRibbon] = useState(true);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    setShowTopRibbon(latest < 80);
+  });
 
   useEffect(() => {
     const checkConsent = async () => {
@@ -501,8 +507,19 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-transparent font-landing">
       <LandingAnimatedBackground />
-      <TopInfoRibbon />
-      <div className="fixed top-10 left-0 right-0 z-50 px-4 flex justify-center sm:top-12">
+      <AnimatePresence>
+        {showTopRibbon && (
+          <motion.div
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+          >
+            <TopInfoRibbon />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <div className="fixed top-14 left-0 right-0 z-50 px-4 flex justify-center sm:top-16">
         <DetachedNavbar />
       </div>
       <div className="relative z-20">
