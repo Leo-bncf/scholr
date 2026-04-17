@@ -519,7 +519,7 @@ export default function Landing() {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="fixed top-14 left-0 right-0 z-50 px-4 flex justify-center sm:top-16">
+      <div className="fixed top-12 left-0 right-0 z-50 px-4 flex justify-center sm:top-14">
         <DetachedNavbar />
       </div>
       <div className="relative z-20">
