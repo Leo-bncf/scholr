@@ -35,7 +35,7 @@ function HeroSection() {
   const opacity = useTransform(scrollY, [0, 120, 260], [0, 0.4, 1]);
   const y = useTransform(scrollY, [0, 260], [180, 0]);
   const scale = useTransform(scrollY, [0, 260], [0.96, 1]);
-  const wordmarkY = useTransform(scrollY, [0, 220, 520], ["-29vh", "-12vh", "-24vh"]);
+  const wordmarkY = useTransform(scrollY, [0, 220, 520], ["-18vh", "-6vh", "-20vh"]);
   const wordmarkOpacity = useTransform(scrollY, [0, 180, 420, 620], [0.92, 1, 0.55, 0]);
   const wordmarkScale = useTransform(scrollY, [0, 220, 520], [1.08, 1, 0.92]);
 
@@ -59,7 +59,7 @@ function HeroSection() {
         </span>
       </motion.div>
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div className="max-w-4xl mx-auto text-center pt-[42vh] lg:pt-[48vh]" style={{ opacity, y, scale }}>
+        <motion.div className="max-w-4xl mx-auto text-center pt-[70vh] lg:pt-[82vh]" style={{ opacity, y, scale }}>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1]">
            The LMS designed for
            <span className="text-primary"> the needs of</span>
@@ -86,7 +86,7 @@ function HeroSection() {
            </div>
         </motion.div>
         
-        <div className="mt-16 mx-auto max-w-3xl">
+        <div className="mt-40 lg:mt-52 mx-auto max-w-3xl">
           <p className="text-lg text-slate-600 leading-relaxed text-center">
             <span className="font-semibold text-slate-900">Multi-curricular</span> — built for schools running IB, IGCSE, A-Levels, US Common Core, and more. <span className="font-semibold text-slate-900">Flexible frameworks</span> — every workflow adapts to your curriculum's structure, criteria, and terminology. <span className="font-semibold text-slate-900">Zero noise</span> — trimmed to exactly what international educators and students need, nothing more.
           </p>
