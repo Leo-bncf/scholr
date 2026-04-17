@@ -21,12 +21,12 @@ export default function TopMarqueeSection() {
               tooltipText="Built for international schools"
               fontSize={marquee.fontSize || "clamp(1.5rem, 4.8vw, 3.75rem)"}
               fontFamily={marquee.fontFamily}
-              textColor="rgba(255,255,255,0.52)"
+              textColor="rgba(214,244,233,0.58)"
               hoverColor="#0f172a"
               showTooltip={true}
-              uppercaseColor="rgba(255,255,255,0.98)"
+              uppercaseColor="rgba(228,249,240,0.98)"
               highlightWords={marquee.highlightWords || []}
-              highlightColor="rgba(255,255,255,1)"
+              highlightColor="rgba(236,252,245,1)"
               initialDelay={0.15 + index * 0.12}
             />
           </div>
