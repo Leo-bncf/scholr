@@ -24,6 +24,7 @@ export default function TopMarqueeSection() {
               textColor={marquee.textColor}
               hoverColor="#0f172a"
               showTooltip={true}
+              uppercaseColor="#000000"
               initialDelay={0.15 + index * 0.12}
             />
           </div>

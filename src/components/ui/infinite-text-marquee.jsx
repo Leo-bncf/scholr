@@ -14,6 +14,7 @@ export const InfiniteTextMarquee = ({
   hoverColor = "",
   fontFamily = 'Arial Black, Inter, Helvetica, sans-serif',
   initialDelay = 0,
+  uppercaseColor = '',
 }) => {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -38,6 +39,13 @@ export const InfiniteTextMarquee = ({
   }, [showTooltip]);
 
   const repeatedText = useMemo(() => Array(12).fill(text).join(" • ") + " •", [text]);
+  const styledText = useMemo(() => repeatedText.split('').map((char, index) => (
+    /[A-Z]/.test(char) ? (
+      <span key={`${char}-${index}`} style={{ color: uppercaseColor || '#000000' }}>{char}</span>
+    ) : (
+      <span key={`${char}-${index}`}>{char}</span>
+    )
+  )), [repeatedText, uppercaseColor]);
 
   const content = (
     <span
@@ -54,7 +62,7 @@ export const InfiniteTextMarquee = ({
           color: undefined,
         }}
       >
-        {repeatedText}
+        {styledText}
       </span>
     </span>
   );
