@@ -17,6 +17,7 @@ export const InfiniteTextMarquee = ({
   uppercaseColor = '',
   highlightWords = [],
   highlightColor = '#000000',
+  letterSpacing = "0em",
 }) => {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -63,11 +64,12 @@ export const InfiniteTextMarquee = ({
 
   const content = (
     <span
-      className={`cursor-pointer py-2 m-0 font-black tracking-[-0.08em] transition-colors ${textColor ? "" : "text-slate-900 dark:text-white"}`}
+      className={`cursor-pointer py-2 m-0 font-black transition-colors ${textColor ? "" : "text-slate-900 dark:text-white"}`}
       style={{
         fontSize,
         color: textColor || undefined,
         fontFamily,
+        letterSpacing,
       }}
     >
       <span
