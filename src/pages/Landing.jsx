@@ -518,6 +518,8 @@ export default function Landing() {
           >
             <TopInfoRibbon />
           </motion.div>
+        )}
+      </AnimatePresence>
       <div
         className="fixed top-12 left-0 right-0 z-50 px-4 flex justify-center sm:top-14 [&>*]:bg-white/12 [&>*]:backdrop-blur-xl [&>*]:border-white/30 [&>*]:shadow-[0_8px_30px_rgba(255,255,255,0.16),0_18px_40px_rgba(30,81,75,0.10)]"
       >
