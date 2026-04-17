@@ -51,7 +51,7 @@ function HeroSection() {
         <motion.div className="max-w-4xl mx-auto text-center" style={{ opacity, y, scale }}>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1]">
            The LMS designed for
-           <span className="text-blue-600"> the needs of</span>
+           <span className="text-primary"> the needs of</span>
            {' '}International Schools
           </h1>
 
@@ -436,7 +436,7 @@ function CTASection() {
               transition={{ duration: 0.45, delay: i * 0.05, ease: 'easeOut' }}
               className="bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200 shadow-sm p-6"
             >
-              <div className="w-3 h-3 rounded-full bg-blue-600 mb-4"></div>
+              <div className="w-3 h-3 rounded-full bg-primary mb-4"></div>
               <h3 className="font-bold text-slate-900 mb-2">{b.title}</h3>
               <p className="text-sm text-slate-500 leading-relaxed">{b.desc}</p>
             </motion.div>
@@ -453,7 +453,7 @@ function CTASection() {
           <p className="text-slate-600 mb-8 max-w-2xl mx-auto">See how Scholr can streamline your academic operations. Request a personalized demo or explore our flexible licensing plans.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/Demo">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-8 h-12 text-base font-medium shadow-sm border-none">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-8 h-12 text-base font-medium shadow-sm border-none">
                 Schedule Demo <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>
