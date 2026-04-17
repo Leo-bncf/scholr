@@ -49,7 +49,7 @@ function HeroSection() {
   };
 
   return (
-    <section className="relative overflow-hidden pt-28 pb-20 lg:pt-40 lg:pb-32 min-h-screen flex items-center">
+    <section className="relative overflow-hidden pt-40 pb-36 lg:pt-56 lg:pb-52 min-h-[145vh] flex items-start">
       <motion.div
         className="pointer-events-none absolute inset-x-0 z-0 overflow-hidden"
         style={{ y: wordmarkY, opacity: wordmarkOpacity, scale: wordmarkScale }}
