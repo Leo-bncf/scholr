@@ -520,9 +520,7 @@ export default function Landing() {
         )}
       </AnimatePresence>
       <div className="fixed top-14 left-0 right-0 z-50 px-4 flex justify-center sm:top-16">
-        <div className="rounded-[999px] border border-white/35 bg-white/18 shadow-[0_8px_30px_rgba(15,23,42,0.12)] backdrop-blur-xl backdrop-saturate-150">
-          <DetachedNavbar />
-        </div>
+        <DetachedNavbar />
       </div>
       <div className="relative z-20">
         <div className="relative z-20">
