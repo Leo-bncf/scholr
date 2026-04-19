@@ -13,7 +13,7 @@ export default function TopMarqueeSection() {
 
   return (
     <section className="relative z-10 overflow-hidden pt-40 pb-8 lg:pt-52 lg:pb-10">
-      <div className="relative z-10 mx-auto max-w-full isolate -space-y-10">
+      <div className="relative z-10 mx-auto max-w-full -space-y-10">
         {marquees.map((marquee, index) => (
           <div key={index} className="py-0 [mask-image:linear-gradient(90deg,transparent,white_8%,white_92%,transparent)] [&_.hoverable-text]:[color:rgba(220,242,232,0.72)] [&_.hoverable-text]:[text-shadow:0_0_22px_rgba(120,200,170,0.35)]">
             <InfiniteTextMarquee
