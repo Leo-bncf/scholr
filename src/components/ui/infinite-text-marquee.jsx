@@ -44,23 +44,18 @@ export const InfiniteTextMarquee = ({
     return unit.repeat(6);
   }, [text]);
 
+  const textStyle = {
+    fontSize,
+    color: textColor || undefined,
+    fontFamily,
+    letterSpacing,
+  };
+  const textClass = `hoverable-text shrink-0 cursor-pointer py-2 m-0 font-black transition-colors ${textColor ? "" : "text-slate-900 dark:text-white"}`;
   const content = (
-    <span
-      className={`cursor-pointer py-2 m-0 font-black transition-colors ${textColor ? "" : "text-slate-900 dark:text-white"}`}
-      style={{
-        fontSize,
-        color: textColor || undefined,
-        fontFamily,
-        letterSpacing,
-      }}
-    >
-      <span className="hoverable-text inline-block origin-center">
-        {repeatedText}
-      </span>
-      <span className="hoverable-text inline-block origin-center" aria-hidden="true">
-        {repeatedText}
-      </span>
-    </span>
+    <>
+      <span className={textClass} style={textStyle}>{repeatedText}</span>
+      <span className={textClass} style={textStyle} aria-hidden="true">{repeatedText}</span>
+    </>
   );
 
   return (
@@ -81,7 +76,7 @@ export const InfiniteTextMarquee = ({
 
       <div className="relative w-full overflow-hidden">
         <motion.div
-          className="whitespace-nowrap origin-center marquee-track"
+          className="flex w-max whitespace-nowrap origin-center marquee-track"
           initial={{ opacity: 0, y: 42 }}
           animate={{ opacity: 1, y: 0 }}
           onMouseEnter={() => setIsHovered(true)}
@@ -97,11 +92,12 @@ export const InfiniteTextMarquee = ({
           }}
         >
           {link ? (
-            <a href={link} className="block" target="_blank" rel="noreferrer">
-              {content}
-            </a>
+            <>
+              <a href={link} className={textClass} style={textStyle} target="_blank" rel="noreferrer">{repeatedText}</a>
+              <a href={link} className={textClass} style={textStyle} target="_blank" rel="noreferrer" aria-hidden="true">{repeatedText}</a>
+            </>
           ) : (
-            <div className="block">{content}</div>
+            content
           )}
         </motion.div>
 
