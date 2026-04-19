@@ -43,7 +43,7 @@ export const InfiniteTextMarquee = ({
 
   const content = (
     <span
-      className={`cursor-pointer py-2 m-0 font-black ${textColor ? "" : "text-slate-900 dark:text-white"}`}
+      className={`cursor-pointer py-2 m-0 font-black transition-colors ${textColor ? "" : "text-slate-900 dark:text-white"}`}
       style={{
         fontSize,
         color: textColor || undefined,
@@ -110,9 +110,6 @@ export const InfiniteTextMarquee = ({
           @keyframes marquee-reverse {
             0% { transform: translate3d(-50%, 0, 0); }
             100% { transform: translate3d(0, 0, 0); }
-          }
-          .hoverable-text {
-            transition: color 120ms ease-out, text-shadow 120ms ease-out;
           }
           .hoverable-text:hover {
             color: ${hoverColor || "hsl(var(--primary))"};
