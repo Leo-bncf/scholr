@@ -15,10 +15,8 @@ export default function TopMarqueeSection() {
   const [isHovered, setIsHovered] = useState(false);
   const [cursor, setCursor] = useState({ x: 0, y: 0 });
   const [rotation, setRotation] = useState(0);
-  const [scale, setScale] = useState(1);
+  const [maxWidth, setMaxWidth] = useState(9999);
   const maxRotation = 8;
-  const edgeThreshold = 260;
-  const minScale = 0.55;
 
   useEffect(() => {
     if (!isHovered) return;
@@ -29,9 +27,10 @@ export default function TopMarqueeSection() {
       const next = (dist / mid) * maxRotation;
       setRotation(e.clientX > mid ? next : -next);
 
+      // Mirror the natural right-edge wrapping onto the left edge:
+      // available width = 2 * distance from cursor to nearest horizontal edge
       const distToEdge = Math.min(e.clientX, window.innerWidth - e.clientX);
-      const edgeRatio = Math.max(0, Math.min(1, distToEdge / edgeThreshold));
-      setScale(minScale + (1 - minScale) * edgeRatio);
+      setMaxWidth(Math.max(120, distToEdge * 2));
     };
     window.addEventListener("mousemove", handleMove);
     return () => window.removeEventListener("mousemove", handleMove);
@@ -68,7 +67,8 @@ export default function TopMarqueeSection() {
             style={{
               top: `${cursor.y}px`,
               left: `${cursor.x}px`,
-              transform: `rotateZ(${rotation}deg) translate(-50%, -140%) scale(${scale})`,
+              maxWidth: `${maxWidth}px`,
+              transform: `rotateZ(${rotation}deg) translate(-50%, -140%)`,
             }}
           >
             <p>Built for international schools</p>
