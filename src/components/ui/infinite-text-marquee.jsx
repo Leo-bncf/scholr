@@ -14,9 +14,6 @@ export const InfiniteTextMarquee = ({
   hoverColor = "",
   fontFamily = 'Arial Black, Inter, Helvetica, sans-serif',
   initialDelay = 0,
-  uppercaseColor = '',
-  highlightWords = [],
-  highlightColor = '#000000',
   letterSpacing = "0em",
 }) => {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
@@ -42,25 +39,6 @@ export const InfiniteTextMarquee = ({
   }, [showTooltip]);
 
   const repeatedText = useMemo(() => Array(12).fill(text).join(" • ") + " •", [text]);
-  const styledText = useMemo(() => {
-    const tokens = repeatedText.split(/(\b)/);
-
-    return tokens.map((token, tokenIndex) => {
-      const isHighlightedWord = highlightWords.some((word) => word.toLowerCase() === token.toLowerCase());
-
-      if (isHighlightedWord) {
-        return <span key={`token-${tokenIndex}`} style={{ color: highlightColor }}>{token}</span>;
-      }
-
-      return token.split('').map((char, charIndex) => (
-        /[A-Z]/.test(char) ? (
-          <span key={`char-${tokenIndex}-${charIndex}`} style={{ color: uppercaseColor || textColor || undefined }}>{char}</span>
-        ) : (
-          <span key={`char-${tokenIndex}-${charIndex}`}>{char}</span>
-        )
-      ));
-    });
-  }, [repeatedText, highlightWords, highlightColor, uppercaseColor, textColor]);
 
   const content = (
     <span
@@ -74,11 +52,8 @@ export const InfiniteTextMarquee = ({
     >
       <span
         className="hoverable-text inline-block transition-transform duration-500 ease-out origin-center"
-        style={{
-          color: undefined,
-        }}
       >
-        {styledText}
+        {repeatedText}
       </span>
     </span>
   );

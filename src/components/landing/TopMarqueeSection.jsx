@@ -3,11 +3,11 @@ import { InfiniteTextMarquee } from "@/components/ui/infinite-text-marquee";
 
 export default function TopMarqueeSection() {
   const marquees = [
-    { text: "Scholr — Designed for International Schools", speed: 18, reverse: false, fontFamily: 'New York, Times New Roman, serif', textColor: '#1e514b', highlightWords: ['Scholr'], fontSize: "clamp(2.8rem, 9vw, 6.8rem)", letterSpacing: "0.035em" },
-    { text: "Built for IB, IGCSE, A-Levels, and US Curricula", speed: 22, reverse: false, fontFamily: 'Times New Roman, Times, serif', textColor: '#1e514b', highlightWords: ['IB', 'IGCSE', 'US'], fontSize: "clamp(1.5rem, 4.8vw, 3.75rem)", letterSpacing: "0.025em" },
-    { text: "SCHOLR", speed: 16, reverse: true, fontFamily: 'New York, Georgia, serif', textColor: '#1e514b', highlightWords: ['SCHOLR'], fontSize: "clamp(2.1rem, 6vw, 5rem)", letterSpacing: "0.05em" },
-    { text: "Role-Based Dashboards for Students, Teachers, Parents, and Admins", speed: 20, reverse: true, fontFamily: 'Baskerville, Times New Roman, serif', textColor: '#1e514b', fontSize: "clamp(1.5rem, 4.8vw, 3.75rem)", letterSpacing: "0.02em" },
-    { text: "Assignments, Gradebooks, Reports, Messaging, and Timetables in One Place", speed: 26, reverse: false, fontFamily: 'Cambria, Times New Roman, serif', textColor: '#1e514b', fontSize: "clamp(1.5rem, 4.8vw, 3.75rem)", letterSpacing: "0.02em" },
+    { text: "Scholr — Designed for International Schools", speed: 18, reverse: false, fontFamily: 'New York, Times New Roman, serif', fontSize: "clamp(2.8rem, 9vw, 6.8rem)", letterSpacing: "0.035em" },
+    { text: "Built for IB, IGCSE, A-Levels, and US Curricula", speed: 22, reverse: false, fontFamily: 'Times New Roman, Times, serif', fontSize: "clamp(1.5rem, 4.8vw, 3.75rem)", letterSpacing: "0.025em" },
+    { text: "Scholr", speed: 16, reverse: true, fontFamily: 'New York, Georgia, serif', fontSize: "clamp(2.1rem, 6vw, 5rem)", letterSpacing: "0.05em" },
+    { text: "Role-Based Dashboards for Students, Teachers, Parents, and Admins", speed: 20, reverse: true, fontFamily: 'Baskerville, Times New Roman, serif', fontSize: "clamp(1.5rem, 4.8vw, 3.75rem)", letterSpacing: "0.02em" },
+    { text: "Assignments, Gradebooks, Reports, Messaging, and Timetables in One Place", speed: 26, reverse: false, fontFamily: 'Cambria, Times New Roman, serif', fontSize: "clamp(1.5rem, 4.8vw, 3.75rem)", letterSpacing: "0.02em" },
   ];
 
   return (
@@ -24,10 +24,8 @@ export default function TopMarqueeSection() {
               fontFamily={marquee.fontFamily}
               letterSpacing={marquee.letterSpacing}
               textColor="#eef8f4"
-              hoverColor="#0f172a"
+              hoverColor="#eef8f4"
               showTooltip={true}
-              highlightWords={[]}
-              highlightColor="#eef8f4"
               initialDelay={0.15 + index * 0.12}
             />
           </div>
