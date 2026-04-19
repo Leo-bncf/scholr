@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { InfiniteTextMarquee } from "@/components/ui/infinite-text-marquee";
 
 export default function TopMarqueeSection() {
@@ -11,27 +12,62 @@ export default function TopMarqueeSection() {
     { text: "Assignments, Gradebooks, Reports, Messaging, and Timetables in One Place", speed: 26, reverse: false, fontFamily: '"Copperplate", "Copperplate Gothic Light", "Optima", sans-serif', letterSpacing: "0.08em" },
   ];
 
+  const [isHovered, setIsHovered] = useState(false);
+  const [cursor, setCursor] = useState({ x: 0, y: 0 });
+  const [rotation, setRotation] = useState(0);
+  const maxRotation = 8;
+
+  useEffect(() => {
+    if (!isHovered) return;
+    const handleMove = (e) => {
+      setCursor({ x: e.clientX, y: e.clientY });
+      const mid = window.innerWidth / 2;
+      const dist = Math.abs(e.clientX - mid);
+      const next = (dist / mid) * maxRotation;
+      setRotation(e.clientX > mid ? next : -next);
+    };
+    window.addEventListener("mousemove", handleMove);
+    return () => window.removeEventListener("mousemove", handleMove);
+  }, [isHovered]);
+
   return (
     <section className="relative z-10 overflow-hidden pt-40 pb-8 lg:pt-52 lg:pb-10">
-      <div className="relative z-10 mx-auto max-w-full -space-y-10">
+      <div
+        className="relative z-10 mx-auto max-w-full -space-y-10"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         {marquees.map((marquee, index) => (
           <div key={index} className="py-0 [mask-image:linear-gradient(90deg,transparent,white_8%,white_92%,transparent)] [&_.hoverable-text]:[color:rgba(220,242,232,0.72)] [&_.hoverable-text]:[text-shadow:0_0_22px_rgba(120,200,170,0.35)]">
             <InfiniteTextMarquee
               text={marquee.text}
               speed={marquee.speed}
               reverse={marquee.reverse}
-              tooltipText="Built for international schools"
               fontSize={uniformFontSize}
               fontFamily={marquee.fontFamily}
               letterSpacing={marquee.letterSpacing}
               textColor="#eef8f4"
               hoverColor="#eef8f4"
-              showTooltip={true}
+              showTooltip={false}
               initialDelay={0.15 + index * 0.12}
             />
           </div>
         ))}
       </div>
+
+      {typeof document !== "undefined" && createPortal(
+        <div
+          className={`pointer-events-none fixed z-[9999] rounded-3xl bg-primary px-8 py-4 text-sm font-bold text-primary-foreground transition-opacity duration-300 md:px-12 md:py-6 md:text-base ${isHovered ? "opacity-100" : "opacity-0"}`}
+          style={{
+            top: `${cursor.y}px`,
+            left: `${cursor.x}px`,
+            transform: `rotateZ(${rotation}deg) translate(-50%, -140%)`,
+          }}
+        >
+          <p>Built for international schools</p>
+        </div>,
+        document.body
+      )}
     </section>
   );
 }
