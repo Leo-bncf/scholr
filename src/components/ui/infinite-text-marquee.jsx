@@ -38,7 +38,7 @@ export const InfiniteTextMarquee = ({
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [showTooltip]);
 
-  const repeatedText = useMemo(() => Array(12).fill(text).join(" • ") + " •", [text]);
+  const repeatedText = useMemo(() => Array(6).fill(text).join(" • ") + " • ", [text]);
 
   const content = (
     <span
@@ -50,9 +50,10 @@ export const InfiniteTextMarquee = ({
         letterSpacing,
       }}
     >
-      <span
-        className="hoverable-text inline-block transition-transform duration-500 ease-out origin-center"
-      >
+      <span className="hoverable-text inline-block origin-center">
+        {repeatedText}
+      </span>
+      <span className="hoverable-text inline-block origin-center" aria-hidden="true">
         {repeatedText}
       </span>
     </span>
