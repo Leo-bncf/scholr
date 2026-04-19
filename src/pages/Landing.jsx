@@ -277,7 +277,7 @@ function RolesSection() {
     },
     {
       name: 'Parents',
-      short: 'Stay informed and engaged',
+      short: 'Stay informed',
       icon: UserCircle,
       color: 'cyan',
       desc: "Real-time visibility into your child's academic life - grades, attendance, deadlines, and direct communication with teachers.",
