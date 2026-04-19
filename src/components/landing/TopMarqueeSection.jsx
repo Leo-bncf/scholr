@@ -5,11 +5,11 @@ import { InfiniteTextMarquee } from "@/components/ui/infinite-text-marquee";
 export default function TopMarqueeSection() {
   const uniformFontSize = "clamp(1.8rem, 5.5vw, 4.25rem)";
   const marquees = [
-    { text: "Scholr — Designed for International Schools", speed: 45, reverse: false, fontFamily: '"Georgia", "Times New Roman", serif', letterSpacing: "0.02em" },
-    { text: "Built for IB, IGCSE, A-Levels, and US Curricula", speed: 55, reverse: false, fontFamily: '"Bodoni MT", "Bodoni 72", "Didot", serif', letterSpacing: "0.05em" },
+    { text: "Scholr — Designed for International Schools", speed: 70, reverse: false, fontFamily: '"Georgia", "Times New Roman", serif', letterSpacing: "0.02em" },
+    { text: "Built for IB, IGCSE, A-Levels, and US Curricula", speed: 85, reverse: false, fontFamily: '"Bodoni MT", "Bodoni 72", "Didot", serif', letterSpacing: "0.05em" },
     { text: "Scholr", speed: 40, reverse: true, fontFamily: '"Palatino", "Palatino Linotype", "Book Antiqua", serif', letterSpacing: "0.12em" },
-    { text: "Role-Based Dashboards for Students, Teachers, Parents, and Admins", speed: 50, reverse: true, fontFamily: '"Snell Roundhand", "Segoe Script", "Brush Script MT", cursive', letterSpacing: "0.015em" },
-    { text: "Assignments, Gradebooks, Reports, Messaging, and Timetables in One Place", speed: 65, reverse: false, fontFamily: '"Copperplate", "Copperplate Gothic Light", "Optima", sans-serif', letterSpacing: "0.08em" },
+    { text: "Role-Based Dashboards for Students, Teachers, Parents, and Admins", speed: 80, reverse: true, fontFamily: '"Snell Roundhand", "Segoe Script", "Brush Script MT", cursive', letterSpacing: "0.015em" },
+    { text: "Assignments, Gradebooks, Reports, Messaging, and Timetables in One Place", speed: 100, reverse: false, fontFamily: '"Copperplate", "Copperplate Gothic Light", "Optima", sans-serif', letterSpacing: "0.08em" },
   ];
 
   const [isHovered, setIsHovered] = useState(false);
