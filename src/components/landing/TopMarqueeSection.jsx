@@ -55,15 +55,17 @@ export default function TopMarqueeSection() {
       </div>
 
       {typeof document !== "undefined" && createPortal(
-        <div
-          className={`pointer-events-none fixed z-[9999] rounded-3xl bg-primary px-8 py-4 text-sm font-bold text-primary-foreground transition-opacity duration-300 md:px-12 md:py-6 md:text-base ${isHovered ? "opacity-100" : "opacity-0"}`}
-          style={{
-            top: `${cursor.y}px`,
-            left: `${cursor.x}px`,
-            transform: `rotateZ(${rotation}deg) translate(-50%, -140%)`,
-          }}
-        >
-          <p>Built for international schools</p>
+        <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden">
+          <div
+            className={`pointer-events-none absolute rounded-3xl bg-primary px-8 py-4 text-sm font-bold text-primary-foreground transition-opacity duration-300 md:px-12 md:py-6 md:text-base ${isHovered ? "opacity-100" : "opacity-0"}`}
+            style={{
+              top: `${cursor.y}px`,
+              left: `${cursor.x}px`,
+              transform: `rotateZ(${rotation}deg) translate(-50%, -140%)`,
+            }}
+          >
+            <p>Built for international schools</p>
+          </div>
         </div>,
         document.body
       )}
