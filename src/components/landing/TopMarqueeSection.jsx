@@ -28,10 +28,10 @@ export default function TopMarqueeSection() {
       setRotation(e.clientX > mid ? next : -next);
 
       // Mirror the natural right-edge wrapping onto the left edge:
-      // available width = 2 * distance from cursor to nearest horizontal edge.
-      // Clamp to a minimum so text wraps to multiple lines but doesn't squish narrower than that.
+      // available width scales with distance from cursor to nearest horizontal edge.
+      // Multiplier < 2 makes shrinking start earlier; low minimum allows it to compress heavily.
       const distToEdge = Math.min(e.clientX, window.innerWidth - e.clientX);
-      setMaxWidth(Math.max(260, distToEdge * 2));
+      setMaxWidth(Math.max(90, distToEdge * 1.3));
     };
     window.addEventListener("mousemove", handleMove);
     return () => window.removeEventListener("mousemove", handleMove);
