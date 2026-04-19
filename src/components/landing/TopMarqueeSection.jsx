@@ -3,7 +3,6 @@ import { InfiniteTextMarquee } from "@/components/ui/infinite-text-marquee";
 
 export default function TopMarqueeSection() {
   const uniformFontSize = "clamp(1.8rem, 5.5vw, 4.25rem)";
-  const uniformFontSize = "clamp(1.8rem, 5.5vw, 4.25rem)";
   const marquees = [
     { text: "Scholr — Designed for International Schools", speed: 18, reverse: false, fontFamily: '"Playfair Display", "Didot", serif', letterSpacing: "0.035em" },
     { text: "Built for IB, IGCSE, A-Levels, and US Curricula", speed: 22, reverse: false, fontFamily: '"Courier New", "Courier", monospace', letterSpacing: "0.02em" },
