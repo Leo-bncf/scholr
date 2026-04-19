@@ -75,37 +75,19 @@ export const InfiniteTextMarquee = ({
 
       <div className="relative w-full overflow-hidden">
         <motion.div
-          className="whitespace-nowrap origin-center"
-          initial={{ opacity: 0, y: 42, scale: 0.96 }}
-          animate={{
-            opacity: 1,
-            y: 0,
-            x: reverse ? [-1000, 0] : [0, -1000],
-            scale: 1,
-          }}
+          className="whitespace-nowrap origin-center marquee-track"
+          initial={{ opacity: 0, y: 42 }}
+          animate={{ opacity: 1, y: 0 }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           transition={{
-            opacity: {
-              duration: 0.7,
-              delay: initialDelay,
-              ease: "easeOut",
-            },
-            y: {
-              duration: 0.7,
-              delay: initialDelay,
-              ease: "easeOut",
-            },
-            x: {
-              repeat: Infinity,
-              duration: speed,
-              ease: "linear",
-              delay: initialDelay,
-            },
-            scale: {
-              duration: 0.45,
-              ease: "easeOut",
-            },
+            opacity: { duration: 0.7, delay: initialDelay, ease: "easeOut" },
+            y: { duration: 0.7, delay: initialDelay, ease: "easeOut" },
+          }}
+          style={{
+            animation: `${reverse ? 'marquee-reverse' : 'marquee'} ${speed}s linear infinite`,
+            animationDelay: `${initialDelay}s`,
+            willChange: 'transform',
           }}
         >
           {link ? (
@@ -118,6 +100,14 @@ export const InfiniteTextMarquee = ({
         </motion.div>
 
         <style>{`
+          @keyframes marquee {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-50%, 0, 0); }
+          }
+          @keyframes marquee-reverse {
+            0% { transform: translate3d(-50%, 0, 0); }
+            100% { transform: translate3d(0, 0, 0); }
+          }
           .hoverable-text:hover {
             color: ${hoverColor || "hsl(var(--primary))"};
           }
