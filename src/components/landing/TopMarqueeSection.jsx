@@ -5,7 +5,7 @@ import { InfiniteTextMarquee } from "@/components/ui/infinite-text-marquee";
 export default function TopMarqueeSection() {
   const uniformFontSize = "clamp(1.8rem, 5.5vw, 4.25rem)";
   const marquees = [
-    { text: "Scholr — Designed for International Schools", speed: 360, reverse: false, fontFamily: '"Georgia", "Times New Roman", serif', letterSpacing: "0.02em" },
+    { text: "Scholr — Designed for International Schools", speed: 320, reverse: false, fontFamily: '"Georgia", "Times New Roman", serif', letterSpacing: "0.02em" },
     { text: "Built for IB, IGCSE, A-Levels, and US Curricula", speed: 420, reverse: false, fontFamily: '"Bodoni MT", "Bodoni 72", "Didot", serif', letterSpacing: "0.05em" },
     { text: "Scholr", speed: 40, reverse: true, fontFamily: '"Palatino", "Palatino Linotype", "Book Antiqua", serif', letterSpacing: "0.12em" },
     { text: "Role-Based Dashboards for Students, Teachers, Parents, and Admins", speed: 400, reverse: true, fontFamily: '"Snell Roundhand", "Segoe Script", "Brush Script MT", cursive', letterSpacing: "0.015em" },
@@ -38,7 +38,7 @@ export default function TopMarqueeSection() {
         onMouseLeave={() => setIsHovered(false)}
       >
         {marquees.map((marquee, index) => (
-          <div key={index} className="py-0 [mask-image:linear-gradient(90deg,transparent,white_8%,white_92%,transparent)] [&_.hoverable-text]:[color:rgba(220,242,232,0.72)] [&_.hoverable-text]:[text-shadow:0_0_22px_rgba(120,200,170,0.35)] [&_.hoverable-text:hover]:![color:#ffffff] [&_.hoverable-text:hover]:![text-shadow:0_0_32px_rgba(255,255,255,0.55)]">
+          <div key={index} className="py-0 [mask-image:linear-gradient(90deg,transparent,white_8%,white_92%,transparent)] [&_.hoverable-text]:[color:rgba(148,163,184,0.85)] [&_.hoverable-text:hover]:![color:#ffffff]">
             <InfiniteTextMarquee
               text={marquee.text}
               speed={marquee.speed}
