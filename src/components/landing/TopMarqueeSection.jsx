@@ -38,7 +38,7 @@ export default function TopMarqueeSection() {
         onMouseLeave={() => setIsHovered(false)}
       >
         {marquees.map((marquee, index) => (
-          <div key={index} className="py-0 [mask-image:linear-gradient(90deg,transparent,white_8%,white_92%,transparent)] [&_.hoverable-text]:[color:rgb(90,115,110)] [&_.hoverable-text:hover]:![color:rgb(238,248,244)]">
+          <div key={index} className="py-0 [mask-image:linear-gradient(90deg,transparent,white_8%,white_92%,transparent)] [&_.hoverable-text]:[color:rgb(40,72,66)] [&_.hoverable-text:hover]:![color:rgb(238,248,244)]">
             <InfiniteTextMarquee
               text={marquee.text}
               speed={marquee.speed}
