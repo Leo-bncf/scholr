@@ -36,7 +36,7 @@ function HeroSection() {
   const opacity = useTransform(scrollY, [0, 120, 260], [0, 0.4, 1]);
   const y = useTransform(scrollY, [0, 260], [180, 0]);
   const scale = useTransform(scrollY, [0, 260], [0.96, 1]);
-  const wordmarkY = useTransform(scrollY, [0, 220, 520], ["-70vh", "-48vh", "-56vh"]);
+  const wordmarkY = useTransform(scrollY, [0, 220, 520], ["18vh", "-20vh", "-40vh"]);
   const wordmarkOpacity = useTransform(scrollY, [0, 180, 420, 620], [0.92, 1, 0.55, 0]);
   const wordmarkScale = useTransform(scrollY, [0, 220, 520], [1.16, 1.08, 0.98]);
 
@@ -514,7 +514,7 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             exit={{ opacity: 0, y: -14, filter: 'blur(4px)' }}
             transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-            className="[&>*]:bg-white/12 [&>*]:backdrop-blur-xl [&>*]:border-white/30 [&>*]:shadow-[0_8px_30px_rgba(255,255,255,0.16),0_18px_40px_rgba(30,81,75,0.10)]"
+            className="[&>*]:bg-transparent"
           >
             <TopInfoRibbon />
           </motion.div>
