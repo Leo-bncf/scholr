@@ -1,4 +1,5 @@
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 
@@ -61,9 +62,9 @@ export const InfiniteTextMarquee = ({
 
   return (
     <>
-      {showTooltip && (
+      {showTooltip && typeof document !== "undefined" && createPortal(
         <div
-          className={`pointer-events-none fixed z-[99] rounded-3xl bg-primary px-8 py-4 text-sm font-bold text-primary-foreground transition-opacity duration-300 md:px-12 md:py-6 md:text-base ${isHovered ? "opacity-100" : "opacity-0"}`}
+          className={`pointer-events-none fixed z-[9999] rounded-3xl bg-primary px-8 py-4 text-sm font-bold text-primary-foreground transition-opacity duration-300 md:px-12 md:py-6 md:text-base ${isHovered ? "opacity-100" : "opacity-0"}`}
           style={{
             top: `${cursorPosition.y}px`,
             left: `${cursorPosition.x}px`,
@@ -71,7 +72,8 @@ export const InfiniteTextMarquee = ({
           }}
         >
           <p>{tooltipText}</p>
-        </div>
+        </div>,
+        document.body
       )}
 
       <div className="relative w-full overflow-hidden">
