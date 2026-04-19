@@ -39,7 +39,10 @@ export const InfiniteTextMarquee = ({
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [showTooltip]);
 
-  const repeatedText = useMemo(() => Array(6).fill(text).join(" • ") + " • ", [text]);
+  const repeatedText = useMemo(() => {
+    const unit = `${text} • `;
+    return unit.repeat(6);
+  }, [text]);
 
   const content = (
     <span
