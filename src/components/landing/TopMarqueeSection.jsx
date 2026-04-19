@@ -46,7 +46,6 @@ export default function TopMarqueeSection() {
               fontSize={uniformFontSize}
               fontFamily={marquee.fontFamily}
               letterSpacing={marquee.letterSpacing}
-              textColor="#eef8f4"
               hoverColor="#eef8f4"
               showTooltip={false}
               initialDelay={0.15 + index * 0.12}
