@@ -30,7 +30,7 @@ export default function TopMarqueeSection() {
       // Mirror the natural right-edge wrapping onto the left edge.
       // Only start capping width once cursor is within EDGE_ZONE of the edge.
       const distToEdge = Math.min(e.clientX, window.innerWidth - e.clientX);
-      const EDGE_ZONE = 280;
+      const EDGE_ZONE = 120;
       if (distToEdge >= EDGE_ZONE) {
         setMaxWidth(9999);
       } else {
