@@ -265,6 +265,88 @@ export const getAssignmentsForTeacher = (teacherId) => {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// 7b. RUBRICS (IB-aligned, per assignment)
+// ─────────────────────────────────────────────────────────────────────────────
+export const RUBRICS = {
+  asg_bio_ia: {
+    name: 'IB Biology IA — Internal Assessment',
+    criteria: [
+      { id: 'c_pe', name: 'Personal engagement',   max: 2, descriptor: 'Evidence of personal interest, input and initiative.' },
+      { id: 'c_ex', name: 'Exploration',           max: 6, descriptor: 'Clear research question, relevant background, appropriate methodology.' },
+      { id: 'c_an', name: 'Analysis',              max: 6, descriptor: 'Sufficient, relevant data processed correctly with uncertainty handled.' },
+      { id: 'c_ev', name: 'Evaluation',            max: 6, descriptor: 'Conclusion justified, realistic limitations and improvements identified.' },
+      { id: 'c_co', name: 'Communication',         max: 4, descriptor: 'Coherent, concise, well-structured, subject-specific terminology used.' },
+    ],
+  },
+  asg_hist_ia: {
+    name: 'IB History IA — Historical Investigation',
+    criteria: [
+      { id: 'c_sources', name: 'Identification & evaluation of sources', max: 6, descriptor: 'Appropriate sources with origin, purpose, value & limitations analysis.' },
+      { id: 'c_invest',  name: 'Investigation',                           max: 15, descriptor: 'Focused argument supported by evidence, analytical depth.' },
+      { id: 'c_reflect', name: 'Reflection',                              max: 4, descriptor: 'Awareness of methods and challenges faced by historians.' },
+    ],
+  },
+  asg_eng_beloved: {
+    name: 'English Literature — Critical Essay',
+    criteria: [
+      { id: 'c_know',  name: 'Knowledge & understanding', max: 10, descriptor: 'Detailed understanding of text and context.' },
+      { id: 'c_anal',  name: 'Analysis & evaluation',     max: 10, descriptor: 'Convincing analysis of language, structure and meaning.' },
+      { id: 'c_focus', name: 'Focus & organisation',      max: 5, descriptor: 'Coherent, sustained argument with effective structure.' },
+      { id: 'c_lang',  name: 'Language',                  max: 5, descriptor: 'Clear, precise, formal academic register.' },
+    ],
+  },
+};
+
+export const getRubricFor = (assignmentId) => RUBRICS[assignmentId] || null;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 7c. MOCK DRAFT CONTENT (for inline review)
+// ─────────────────────────────────────────────────────────────────────────────
+export const SUBMISSION_DRAFTS = {
+  // Amélie — Biology IA
+  sub_1: [
+    { id: 'p1', text: 'Research question: How does substrate concentration (0.05–0.50 mol dm⁻³) affect the rate of reaction of catalase on hydrogen peroxide at 25 °C?' },
+    { id: 'p2', text: 'Catalase catalyses the decomposition of H₂O₂ into water and oxygen. According to the Michaelis–Menten model, rate is expected to increase with substrate concentration until enzyme saturation is reached.' },
+    { id: 'p3', text: 'Five concentrations were prepared by serial dilution, each run in triplicate. Oxygen gas was collected by water displacement over 60 seconds and the initial rate (cm³ s⁻¹) calculated from the gradient of the first 10 s.' },
+    { id: 'p4', text: 'The mean initial rate rose from 0.08 cm³ s⁻¹ at 0.05 mol dm⁻³ to 0.41 cm³ s⁻¹ at 0.50 mol dm⁻³. A Michaelis–Menten curve was fitted with R² = 0.972, giving Vmax ≈ 0.48 cm³ s⁻¹ and Km ≈ 0.18 mol dm⁻³.' },
+    { id: 'p5', text: 'The data supports the hypothesis. Limitations include temperature drift during longer trials and uncertainty in the gas-collection volume (±0.5 cm³). A water bath and digital gas sensor would reduce both.' },
+  ],
+  // Noah — Biology IA
+  sub_10: [
+    { id: 'p1', text: 'Research question: How does temperature (10, 20, 30, 40, 50 °C) affect the activity of amylase on starch solution?' },
+    { id: 'p2', text: 'Amylase activity was measured via the time to complete starch digestion using iodine spot tests at 30 s intervals.' },
+    { id: 'p3', text: 'Activity peaked at 40 °C (mean 85 s) and dropped sharply at 50 °C (mean 210 s), consistent with enzyme denaturation above the optimum.' },
+    { id: 'p4', text: 'Limitations: subjective colour-change endpoint; only five temperatures tested. Improvements: spectrophotometer, narrower intervals near optimum.' },
+  ],
+  // Priya — Biology IA
+  sub_11: [
+    { id: 'p1', text: 'Research question: Does varying pH (3, 5, 7, 9, 11) affect the activity of pepsin on egg-white protein?' },
+    { id: 'p2', text: 'Pepsin activity was quantified by measuring the decrease in turbidity of a suspension over 5 minutes.' },
+    { id: 'p3', text: 'Optimum activity was observed at pH 3, with a 72 % reduction in turbidity. Activity was negligible above pH 7.' },
+  ],
+  // Kenji — Biology IA (late)
+  sub_12: [
+    { id: 'p1', text: 'Research question: How does exercise intensity affect heart rate recovery time in adolescents?' },
+    { id: 'p2', text: 'Ten participants performed cycling at 50 W, 100 W and 150 W for 3 minutes each with heart rate monitored for 5 minutes after.' },
+    { id: 'p3', text: 'Recovery time scaled with intensity: 62 s, 118 s, 184 s respectively. A linear relationship was observed (R² = 0.94).' },
+  ],
+  // Sofia — Biology IA
+  sub_13: [
+    { id: 'p1', text: 'Research question: How does light intensity affect the rate of photosynthesis in Elodea?' },
+    { id: 'p2', text: 'Oxygen bubble count per minute was recorded at six distances from a 40 W lamp.' },
+    { id: 'p3', text: 'Rate followed an inverse-square pattern, plateauing below 15 cm — consistent with light saturation of photosystem II.' },
+  ],
+  // Priya — English essay
+  sub_14: [
+    { id: 'p1', text: 'Morrison\'s Beloved resists linear memory; the novel\'s structure enacts trauma\'s refusal to be narrativised.' },
+    { id: 'p2', text: 'Sethe\'s "rememory" is not recollection but return — the past literally reoccupies present space at 124 Bluestone Road.' },
+    { id: 'p3', text: 'Through polyvocal narration, Morrison refuses to grant any single perspective authority, so the reader too must inhabit fragmentation.' },
+  ],
+};
+
+export const getDraftFor = (submissionId) => SUBMISSION_DRAFTS[submissionId] || [];
+
+// ─────────────────────────────────────────────────────────────────────────────
 // 8. SUBMISSIONS (student × assignment)
 //    status: 'not_started' | 'in_progress' | 'submitted' | 'late' | 'graded'
 // ─────────────────────────────────────────────────────────────────────────────
@@ -291,6 +373,13 @@ export const SUBMISSIONS = [
 
 export const getSubmission = (studentId, assignmentId) =>
   SUBMISSIONS.find((s) => s.studentId === studentId && s.assignmentId === assignmentId);
+export const getSubmissionById = (submissionId) => SUBMISSIONS.find((s) => s.id === submissionId);
+export const getSubmissionsForAssignment = (assignmentId) =>
+  SUBMISSIONS.filter((s) => s.assignmentId === assignmentId);
+export const getSubmissionsForClass = (classId) => {
+  const assignmentIds = getAssignmentsForClass(classId).map((a) => a.id);
+  return SUBMISSIONS.filter((s) => assignmentIds.includes(s.assignmentId));
+};
 export const getSubmissionsForTeacher = (teacherId) => {
   const classIds = getClassesForTeacher(teacherId).map((c) => c.id);
   const assignmentIds = ASSIGNMENTS.filter((a) => classIds.includes(a.classId)).map((a) => a.id);

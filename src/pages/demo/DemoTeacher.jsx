@@ -1,17 +1,26 @@
 import React from 'react';
 import DemoShell from '@/components/demo-sandbox/DemoShell';
 import DemoSectionCard from '@/components/demo-sandbox/DemoSectionCard';
-import { TEACHER, TEACHER_CLASSES, SUBMISSIONS_TO_REVIEW, TIMETABLE_TODAY, ANNOUNCEMENTS } from '@/components/demo-sandbox/mockSchoolData';
-import { Users, FileText, TrendingUp, AlertCircle } from 'lucide-react';
+import TeacherReviewQueue from '@/components/demo-sandbox/teacher/TeacherReviewQueue';
+import TeacherClassCard from '@/components/demo-sandbox/teacher/TeacherClassCard';
+import {
+  TEACHER, TEACHER_CLASSES, TIMETABLE_TODAY, ANNOUNCEMENTS,
+  getPendingGradingForTeacher,
+} from '@/components/demo-sandbox/mockSchoolData';
+import { Users, FileText, TrendingUp } from 'lucide-react';
 
 export default function DemoTeacher() {
-  const totalPending = TEACHER_CLASSES.reduce((s, c) => s + c.pendingGrading, 0);
+  const totalPending = getPendingGradingForTeacher(TEACHER.id).length;
   const totalStudents = TEACHER_CLASSES.reduce((s, c) => s + c.students, 0);
+  const avgValues = TEACHER_CLASSES.map((c) => c.avgGrade).filter((v) => typeof v === 'number');
+  const avgClass = avgValues.length
+    ? (avgValues.reduce((s, v) => s + v, 0) / avgValues.length).toFixed(1)
+    : '—';
 
   return (
     <DemoShell roleKey="teacher">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">Good morning, {TEACHER.name.split(' ')[1] || TEACHER.name}</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Good morning, Dr. {TEACHER.name.split(' ').pop()}</h1>
         <p className="text-sm text-slate-500 mt-1">{TEACHER.department} · {TEACHER_CLASSES.length} active classes</p>
       </div>
 
@@ -19,7 +28,7 @@ export default function DemoTeacher() {
         {[
           { label: 'Students', value: totalStudents, icon: Users, color: 'text-sky-600 bg-sky-50' },
           { label: 'Pending grading', value: totalPending, icon: FileText, color: 'text-amber-600 bg-amber-50' },
-          { label: 'Avg class grade', value: '6.0', icon: TrendingUp, color: 'text-emerald-600 bg-emerald-50' },
+          { label: 'Avg class grade', value: avgClass, icon: TrendingUp, color: 'text-emerald-600 bg-emerald-50' },
         ].map((s) => (
           <div key={s.label} className="bg-white rounded-2xl border border-slate-200 p-5 flex items-center gap-4">
             <div className={`h-11 w-11 rounded-xl flex items-center justify-center ${s.color}`}>
@@ -35,46 +44,12 @@ export default function DemoTeacher() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <DemoSectionCard title="My classes">
+          <TeacherReviewQueue teacherId={TEACHER.id} />
+
+          <DemoSectionCard title="Class overview" action={<span className="text-xs font-medium text-slate-500">Tap a class to open</span>}>
             <div className="space-y-3">
               {TEACHER_CLASSES.map((c) => (
-                <div key={c.id} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
-                  <div>
-                    <p className="font-semibold text-slate-900">{c.name}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{c.students} students · Avg grade {c.avgGrade}</p>
-                  </div>
-                  {c.pendingGrading > 0 ? (
-                    <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700">
-                      {c.pendingGrading} to grade
-                    </span>
-                  ) : (
-                    <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700">
-                      All graded
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
-          </DemoSectionCard>
-
-          <DemoSectionCard title="Submissions to review" action={<span className="text-xs font-medium text-slate-500">{SUBMISSIONS_TO_REVIEW.length} pending</span>}>
-            <div className="divide-y divide-slate-100">
-              {SUBMISSIONS_TO_REVIEW.map((s) => (
-                <div key={s.id} className="flex items-center justify-between py-3">
-                  <div>
-                    <p className="font-medium text-slate-900">{s.student}</p>
-                    <p className="text-xs text-slate-500">{s.assignment}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {s.late && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase text-rose-600">
-                        <AlertCircle className="w-3 h-3" /> Late
-                      </span>
-                    )}
-                    <span className="text-xs text-slate-500">{s.submittedAt}</span>
-                    <button className="text-xs font-semibold text-emerald-600 hover:text-emerald-700">Grade →</button>
-                  </div>
-                </div>
+                <TeacherClassCard key={c.id} classId={c.id} avgGrade={c.avgGrade} />
               ))}
             </div>
           </DemoSectionCard>
