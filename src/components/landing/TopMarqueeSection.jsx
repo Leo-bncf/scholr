@@ -29,11 +29,9 @@ export default function TopMarqueeSection() {
 
       // Mirror the natural right-edge wrapping onto the left edge:
       // available width scales with distance from cursor to nearest horizontal edge.
-      // Minimum is 1/2.2 of the widest state (reached at screen center).
-      const widestW = (window.innerWidth / 2) * 1.3;
-      const minW = widestW / 2.2;
+      // Multiplier < 2 makes shrinking start earlier; low minimum allows it to compress heavily.
       const distToEdge = Math.min(e.clientX, window.innerWidth - e.clientX);
-      setMaxWidth(Math.max(minW, distToEdge * 1.3));
+      setMaxWidth(Math.max(90, distToEdge * 1.3));
     };
     window.addEventListener("mousemove", handleMove);
     return () => window.removeEventListener("mousemove", handleMove);
