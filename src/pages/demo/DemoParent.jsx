@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import DemoShell from '@/components/demo-sandbox/DemoShell';
 import DemoSectionCard from '@/components/demo-sandbox/DemoSectionCard';
-import { PARENT, GRADES, UPCOMING_ASSIGNMENTS, ATTENDANCE, ANNOUNCEMENTS } from '@/components/demo-sandbox/mockSchoolData';
+import {
+  PARENT, ANNOUNCEMENTS, ATTENDANCE,
+  getGradesForStudent, getAssignmentsForStudent, getSubmission,
+  getClass, getSubject, getFeedbackForStudent, getTeacher, SUBMISSIONS,
+} from '@/components/demo-sandbox/mockSchoolData';
 import { MessageSquare, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 const trendIcon = (t) => {
@@ -12,6 +16,30 @@ const trendIcon = (t) => {
 
 export default function DemoParent() {
   const [selectedChild, setSelectedChild] = useState(PARENT.children[0]);
+
+  const childGrades = getGradesForStudent(selectedChild.id);
+  const childUpcoming = getAssignmentsForStudent(selectedChild.id)
+    .map((a) => {
+      const sub = getSubmission(selectedChild.id, a.id);
+      const cls = a.classId ? getClass(a.classId) : null;
+      return {
+        id: a.id,
+        title: a.title,
+        subject: cls ? getSubject(cls.subjectId)?.name : 'Core',
+        dueIn: a.dueIn,
+        status: sub?.status || 'not_started',
+      };
+    })
+    .filter((a) => a.status !== 'submitted' && a.status !== 'graded')
+    .slice(0, 5);
+
+  const childFeedback = getFeedbackForStudent(selectedChild.id)
+    .map((f) => ({
+      ...f,
+      teacher: getTeacher(f.teacherId),
+      submission: SUBMISSIONS.find((s) => s.id === f.submissionId),
+    }))
+    .slice(0, 3);
 
   return (
     <DemoShell roleKey="parent">
@@ -39,40 +67,48 @@ export default function DemoParent() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <DemoSectionCard title={`${selectedChild.name.split(' ')[0]}'s grades`}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {GRADES.map((g) => (
-                <div key={g.subject} className="p-4 rounded-xl border border-slate-100">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-medium text-slate-800 truncate pr-2">{g.subject}</p>
-                    {trendIcon(g.trend)}
-                  </div>
-                  <div className="flex items-baseline gap-4">
-                    <div>
-                      <p className="text-[10px] uppercase tracking-wide text-slate-500 font-semibold">Current</p>
-                      <p className="text-2xl font-bold text-slate-900">{g.current}</p>
+            {childGrades.length === 0 ? (
+              <p className="text-sm text-slate-500">No grades recorded this term yet.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {childGrades.map((g) => (
+                  <div key={g.subject} className="p-4 rounded-xl border border-slate-100">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-medium text-slate-800 truncate pr-2">{g.subject}</p>
+                      {trendIcon(g.trend)}
                     </div>
-                    <div>
-                      <p className="text-[10px] uppercase tracking-wide text-slate-500 font-semibold">Predicted</p>
-                      <p className="text-2xl font-bold text-amber-600">{g.predicted}</p>
+                    <div className="flex items-baseline gap-4">
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wide text-slate-500 font-semibold">Current</p>
+                        <p className="text-2xl font-bold text-slate-900">{g.current}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wide text-slate-500 font-semibold">Predicted</p>
+                        <p className="text-2xl font-bold text-amber-600">{g.predicted}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </DemoSectionCard>
 
           <DemoSectionCard title="Upcoming assignments">
-            <div className="space-y-3">
-              {UPCOMING_ASSIGNMENTS.map((a) => (
-                <div key={a.id} className="flex items-center justify-between p-3 rounded-xl border border-slate-100">
-                  <div>
-                    <p className="font-medium text-slate-900">{a.title}</p>
-                    <p className="text-xs text-slate-500">{a.subject}</p>
+            {childUpcoming.length === 0 ? (
+              <p className="text-sm text-slate-500">Nothing due soon — everything is up to date.</p>
+            ) : (
+              <div className="space-y-3">
+                {childUpcoming.map((a) => (
+                  <div key={a.id} className="flex items-center justify-between p-3 rounded-xl border border-slate-100">
+                    <div>
+                      <p className="font-medium text-slate-900">{a.title}</p>
+                      <p className="text-xs text-slate-500">{a.subject}</p>
+                    </div>
+                    <span className="text-xs text-slate-500">Due {a.dueIn.toLowerCase()}</span>
                   </div>
-                  <span className="text-xs text-slate-500">Due {a.dueIn.toLowerCase()}</span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </DemoSectionCard>
         </div>
 
@@ -94,19 +130,20 @@ export default function DemoParent() {
             </div>
           </DemoSectionCard>
 
-          <DemoSectionCard title="Messages" action={<MessageSquare className="w-4 h-4 text-slate-400" />}>
-            <div className="space-y-3">
-              <div className="p-3 rounded-xl bg-slate-50">
-                <p className="text-sm font-medium text-slate-900">Dr. Chen — Biology HL</p>
-                <p className="text-xs text-slate-600 mt-1">Great progress on the enzyme kinetics lab. Amélie's analysis was thorough.</p>
-                <p className="text-[10px] text-slate-400 mt-2">2 hours ago</p>
+          <DemoSectionCard title="Messages from teachers" action={<MessageSquare className="w-4 h-4 text-slate-400" />}>
+            {childFeedback.length === 0 ? (
+              <p className="text-sm text-slate-500">No new messages from teachers.</p>
+            ) : (
+              <div className="space-y-3">
+                {childFeedback.map((f) => (
+                  <div key={f.id} className="p-3 rounded-xl bg-slate-50">
+                    <p className="text-sm font-medium text-slate-900">{f.teacher?.name}</p>
+                    <p className="text-xs text-slate-600 mt-1">{f.body}</p>
+                    <p className="text-[10px] text-slate-400 mt-2">{f.createdAt}</p>
+                  </div>
+                ))}
               </div>
-              <div className="p-3 rounded-xl bg-slate-50">
-                <p className="text-sm font-medium text-slate-900">Mr. Harrow — Advisor</p>
-                <p className="text-xs text-slate-600 mt-1">Reminder: parent conferences are open for booking until Friday.</p>
-                <p className="text-[10px] text-slate-400 mt-2">Yesterday</p>
-              </div>
-            </div>
+            )}
           </DemoSectionCard>
 
           <DemoSectionCard title="School notices">
