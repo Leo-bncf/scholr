@@ -622,3 +622,93 @@ export const GRADE_DISTRIBUTION = [
   { grade: '2', count: 22 },
   { grade: '1', count: 6 },
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 16. LEADER ANALYTICS (subject trends, at-risk students, term-over-term)
+//     Intentionally school-wide figures for the leader persona.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Term-over-term average grade per subject (IB 1–7 scale).
+// Last entry = current term. Used to compute trend direction and delta.
+export const SUBJECT_TREND_BY_TERM = [
+  { subjectId: 'math_aa_hl', yearGroup: 'DP2', avg: [5.4, 5.6, 5.5, 5.7] },
+  { subjectId: 'math_aa_hl', yearGroup: 'DP1', avg: [4.9, 5.1, 5.2, 5.3] },
+  { subjectId: 'eng_lit_hl', yearGroup: 'DP2', avg: [5.8, 5.9, 6.0, 6.1] },
+  { subjectId: 'eng_lit_hl', yearGroup: 'DP1', avg: [5.3, 5.4, 5.5, 5.6] },
+  { subjectId: 'bio_hl',     yearGroup: 'DP2', avg: [6.0, 6.1, 6.2, 6.3] },
+  { subjectId: 'bio_hl',     yearGroup: 'DP1', avg: [5.5, 5.6, 5.6, 5.7] },
+  { subjectId: 'hist_sl',    yearGroup: 'DP2', avg: [5.2, 5.1, 4.9, 4.7] }, // declining
+  { subjectId: 'hist_sl',    yearGroup: 'DP1', avg: [5.0, 5.1, 5.0, 4.9] },
+  { subjectId: 'econ_sl',    yearGroup: 'DP2', avg: [5.5, 5.6, 5.7, 5.8] },
+  { subjectId: 'econ_sl',    yearGroup: 'DP1', avg: [5.2, 5.3, 5.3, 5.4] },
+  { subjectId: 'fre_b_sl',   yearGroup: 'DP2', avg: [5.3, 5.2, 5.0, 4.8] }, // declining
+  { subjectId: 'fre_b_sl',   yearGroup: 'DP1', avg: [5.1, 5.0, 4.9, 4.8] }, // declining
+  { subjectId: 'tok',        yearGroup: 'DP2', avg: [5.6, 5.7, 5.8, 5.9] },
+  { subjectId: 'tok',        yearGroup: 'DP1', avg: [5.4, 5.5, 5.5, 5.6] },
+];
+
+export const TERM_LABELS = ['T1 24/25', 'T2 24/25', 'T1 25/26', 'T2 25/26'];
+
+export const YEAR_GROUPS = ['All', 'DP1', 'DP2'];
+
+// At-risk flag heuristics (school-wide roster — richer than just enrolled demo students)
+// flag_reason: 'grade_drop' | 'low_attendance' | 'missing_work' | 'behavior'
+export const AT_RISK_STUDENTS = [
+  { id: 'ar_1', name: 'Marcus Halden',   yearGroup: 'DP2', subjectId: 'hist_sl',  flag: 'grade_drop',    detail: 'Down from 5 → 3 over two terms', severity: 'high' },
+  { id: 'ar_2', name: 'Yuki Tanaka',     yearGroup: 'DP2', subjectId: 'fre_b_sl', flag: 'grade_drop',    detail: 'Down from 5 → 4',                 severity: 'medium' },
+  { id: 'ar_3', name: 'Olivia Reeves',   yearGroup: 'DP1', subjectId: 'math_aa_hl', flag: 'missing_work', detail: '4 assignments overdue',           severity: 'high' },
+  { id: 'ar_4', name: 'Kenji Ito',       yearGroup: 'DP2', subjectId: 'bio_hl',   flag: 'missing_work',  detail: 'Biology IA submitted late',        severity: 'low' },
+  { id: 'ar_5', name: 'Hannah Cole',     yearGroup: 'DP1', subjectId: 'eng_lit_hl', flag: 'low_attendance', detail: '82% attendance this term',       severity: 'medium' },
+  { id: 'ar_6', name: 'Tomás Álvarez',   yearGroup: 'DP2', subjectId: 'hist_sl',  flag: 'grade_drop',    detail: 'Predicted grade lowered to 3',    severity: 'high' },
+  { id: 'ar_7', name: 'Sienna Brooks',   yearGroup: 'DP1', subjectId: 'fre_b_sl', flag: 'low_attendance', detail: '78% attendance, 3 lates',         severity: 'medium' },
+  { id: 'ar_8', name: 'Luca Moretti',    yearGroup: 'DP2', subjectId: 'math_aa_hl', flag: 'behavior',     detail: '2 incidents logged this month',   severity: 'low' },
+];
+
+// Helper: aggregate subject averages over latest term, optionally filtered
+export const getSubjectPerformance = ({ yearGroup = 'All', subjectId = 'All' } = {}) => {
+  const rows = SUBJECT_TREND_BY_TERM
+    .filter((r) => yearGroup === 'All' || r.yearGroup === yearGroup)
+    .filter((r) => subjectId === 'All' || r.subjectId === subjectId);
+
+  // Group by subject when "All" year groups selected
+  const grouped = {};
+  rows.forEach((r) => {
+    if (!grouped[r.subjectId]) grouped[r.subjectId] = [];
+    grouped[r.subjectId].push(r);
+  });
+
+  return Object.entries(grouped).map(([sid, entries]) => {
+    // Average across year groups for each term index
+    const terms = TERM_LABELS.map((_, idx) => {
+      const vals = entries.map((e) => e.avg[idx]).filter((v) => typeof v === 'number');
+      return vals.reduce((s, v) => s + v, 0) / vals.length;
+    });
+    const current = terms[terms.length - 1];
+    const previous = terms[terms.length - 2];
+    const delta = current - previous;
+    return {
+      subjectId: sid,
+      subject: getSubject(sid)?.name || sid,
+      current: Math.round(current * 10) / 10,
+      previous: Math.round(previous * 10) / 10,
+      delta: Math.round(delta * 10) / 10,
+      trend: delta > 0.05 ? 'up' : delta < -0.05 ? 'down' : 'flat',
+      termSeries: terms.map((v, i) => ({ term: TERM_LABELS[i], avg: Math.round(v * 10) / 10 })),
+    };
+  }).sort((a, b) => a.current - b.current); // lowest first — surface problems
+};
+
+// Helper: at-risk students filtered
+export const getAtRiskStudents = ({ yearGroup = 'All', subjectId = 'All' } = {}) =>
+  AT_RISK_STUDENTS
+    .filter((s) => yearGroup === 'All' || s.yearGroup === yearGroup)
+    .filter((s) => subjectId === 'All' || s.subjectId === subjectId)
+    .map((s) => ({ ...s, subject: getSubject(s.subjectId)?.name || s.subjectId }));
+
+// Helper: subjects that have declined most term-over-term (for trend panel)
+export const getTrendChanges = ({ yearGroup = 'All', subjectId = 'All' } = {}) => {
+  const perf = getSubjectPerformance({ yearGroup, subjectId });
+  const declining = perf.filter((p) => p.trend === 'down').sort((a, b) => a.delta - b.delta);
+  const improving = perf.filter((p) => p.trend === 'up').sort((a, b) => b.delta - a.delta);
+  return { declining, improving };
+};

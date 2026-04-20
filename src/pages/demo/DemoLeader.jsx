@@ -1,78 +1,139 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import DemoShell from '@/components/demo-sandbox/DemoShell';
-import DemoSectionCard from '@/components/demo-sandbox/DemoSectionCard';
-import { LEADER, SCHOOL_METRICS, ENROLLMENT_TREND, GRADE_DISTRIBUTION, ANNOUNCEMENTS } from '@/components/demo-sandbox/mockSchoolData';
-import { Users, GraduationCap, BookOpen, CheckCircle2, TrendingUp, LifeBuoy } from 'lucide-react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LineChart, Line, CartesianGrid } from 'recharts';
+import AppStyleCard from '@/components/demo-sandbox/AppStyleCard';
+import LeaderFilters from '@/components/demo-sandbox/leader/LeaderFilters';
+import SubjectPerformanceOverview from '@/components/demo-sandbox/leader/SubjectPerformanceOverview';
+import AtRiskStudentsList from '@/components/demo-sandbox/leader/AtRiskStudentsList';
+import TrendChangesPanel from '@/components/demo-sandbox/leader/TrendChangesPanel';
+import {
+  LEADER, SCHOOL_METRICS, getAtRiskStudents, getSubjectPerformance, getSubject,
+} from '@/components/demo-sandbox/mockSchoolData';
+import {
+  BarChart3, AlertTriangle, TrendingDown, Users, GraduationCap,
+  Telescope, Target,
+} from 'lucide-react';
+
+function StatCard({ label, value, icon: Icon, color, sub }) {
+  const colors = {
+    indigo:  'bg-indigo-50 text-indigo-600',
+    amber:   'bg-amber-50 text-amber-600',
+    emerald: 'bg-emerald-50 text-emerald-600',
+    rose:    'bg-rose-50 text-rose-600',
+  };
+  return (
+    <div className="bg-white rounded-md border border-slate-200 shadow-sm p-4 md:p-5">
+      <div className="flex items-center gap-3">
+        <div className={`h-10 w-10 rounded-md flex items-center justify-center ${colors[color]}`}>
+          <Icon className="w-5 h-5" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">{label}</p>
+          <p className="text-xl md:text-2xl font-bold text-slate-900 mt-0.5">{value}</p>
+          {sub && <p className="text-[10px] text-slate-500 mt-0.5">{sub}</p>}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function DemoLeader() {
-  const metrics = [
-    { label: 'Students', value: SCHOOL_METRICS.totalStudents, icon: GraduationCap, color: 'text-sky-600 bg-sky-50' },
-    { label: 'Teachers', value: SCHOOL_METRICS.totalTeachers, icon: Users, color: 'text-violet-600 bg-violet-50' },
-    { label: 'Active classes', value: SCHOOL_METRICS.activeClasses, icon: BookOpen, color: 'text-emerald-600 bg-emerald-50' },
-    { label: 'Attendance', value: `${SCHOOL_METRICS.attendanceRate}%`, icon: CheckCircle2, color: 'text-amber-600 bg-amber-50' },
-    { label: 'Avg predicted', value: SCHOOL_METRICS.avgPredictedGrade, icon: TrendingUp, color: 'text-rose-600 bg-rose-50' },
-    { label: 'Open tickets', value: SCHOOL_METRICS.openSupportTickets, icon: LifeBuoy, color: 'text-slate-600 bg-slate-100' },
-  ];
+  const [filters, setFilters] = useState({ yearGroup: 'All', subjectId: 'All' });
+
+  const atRisk = useMemo(() => getAtRiskStudents(filters), [filters]);
+  const subjectPerf = useMemo(() => getSubjectPerformance(filters), [filters]);
+  const decliningCount = subjectPerf.filter((s) => s.trend === 'down').length;
+
+  const filterLabel = useMemo(() => {
+    const y = filters.yearGroup === 'All' ? 'All year groups' : filters.yearGroup;
+    const s = filters.subjectId === 'All' ? 'all subjects' : getSubject(filters.subjectId)?.name;
+    return `${y} · ${s}`;
+  }, [filters]);
 
   return (
     <DemoShell roleKey="leader">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">School overview</h1>
-        <p className="text-sm text-slate-500 mt-1">{LEADER.title} · {LEADER.name}</p>
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-xl md:text-2xl font-bold text-slate-900">School performance overview</h1>
+        <p className="text-xs md:text-sm text-slate-500 mt-1">
+          {LEADER.title} · {LEADER.name}
+        </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-        {metrics.map((m) => (
-          <div key={m.label} className="bg-white rounded-2xl border border-slate-200 p-4">
-            <div className={`h-9 w-9 rounded-lg flex items-center justify-center ${m.color} mb-3`}>
-              <m.icon className="w-4 h-4" />
-            </div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{m.label}</p>
-            <p className="text-2xl font-bold text-slate-900 mt-1">{m.value}</p>
-          </div>
-        ))}
+      {/* Diagnostic hero — the core leader question */}
+      <div className="mb-6 rounded-md border border-slate-200 bg-gradient-to-r from-slate-900 to-slate-800 p-4 md:p-5 flex items-center gap-4 shadow-sm">
+        <div className="h-11 w-11 rounded-md bg-white/10 text-white flex items-center justify-center flex-shrink-0">
+          <Telescope className="w-5 h-5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[10px] font-bold uppercase tracking-wide text-indigo-300">Where are problems emerging?</p>
+          <p className="text-sm md:text-base font-semibold text-white truncate">
+            {decliningCount} subjects declining · {atRisk.length} students flagged · {filterLabel}
+          </p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <DemoSectionCard title="Enrollment trend" className="lg:col-span-2">
-          <div style={{ height: 260 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={ENROLLMENT_TREND} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="year" tick={{ fontSize: 12, fill: '#64748b' }} />
-                <YAxis tick={{ fontSize: 12, fill: '#64748b' }} />
-                <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 12 }} />
-                <Line type="monotone" dataKey="students" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 5, fill: '#8b5cf6' }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </DemoSectionCard>
+      <LeaderFilters
+        yearGroup={filters.yearGroup}
+        subjectId={filters.subjectId}
+        onChange={setFilters}
+      />
 
-        <DemoSectionCard title="Staff notices">
-          <div className="space-y-3">
-            {ANNOUNCEMENTS.map((n) => (
-              <div key={n.id} className="pb-3 border-b border-slate-100 last:border-0 last:pb-0">
-                <p className="text-sm font-medium text-slate-900">{n.title}</p>
-                <p className="text-xs text-slate-500 mt-0.5">{n.from} · {n.when}</p>
+      {/* Top KPIs */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
+        <StatCard label="Students" value={SCHOOL_METRICS.totalStudents} icon={GraduationCap} color="indigo" />
+        <StatCard label="Avg predicted" value={SCHOOL_METRICS.avgPredictedGrade} icon={BarChart3} color="emerald" sub="IB 1–7 scale" />
+        <StatCard label="Subjects declining" value={decliningCount} icon={TrendingDown} color="rose" sub="term-over-term" />
+        <StatCard label="At-risk students" value={atRisk.length} icon={AlertTriangle} color="amber" sub="across flags" />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <AppStyleCard
+            title="Subject performance overview"
+            icon={BarChart3}
+            action={<span className="text-xs font-medium text-slate-500">Sorted by current average</span>}
+          >
+            <SubjectPerformanceOverview yearGroup={filters.yearGroup} subjectId={filters.subjectId} />
+          </AppStyleCard>
+
+          <AppStyleCard
+            title="Trend changes over time"
+            icon={Target}
+            action={<span className="text-xs font-medium text-slate-500">Last 4 terms</span>}
+          >
+            <TrendChangesPanel yearGroup={filters.yearGroup} subjectId={filters.subjectId} />
+          </AppStyleCard>
+        </div>
+
+        <div className="space-y-6">
+          <AppStyleCard
+            title="At-risk students"
+            icon={AlertTriangle}
+            action={<span className="text-xs font-medium text-slate-500">{atRisk.length} flagged</span>}
+          >
+            <AtRiskStudentsList yearGroup={filters.yearGroup} subjectId={filters.subjectId} />
+          </AppStyleCard>
+
+          <AppStyleCard title="School at a glance" icon={Users}>
+            <div className="p-4 md:p-5 grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <p className="text-[10px] uppercase tracking-wide text-slate-500 font-semibold">Teachers</p>
+                <p className="text-lg font-bold text-slate-900">{SCHOOL_METRICS.totalTeachers}</p>
               </div>
-            ))}
-          </div>
-        </DemoSectionCard>
-
-        <DemoSectionCard title="Grade distribution (all students)" className="lg:col-span-3">
-          <div style={{ height: 240 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={GRADE_DISTRIBUTION} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="grade" tick={{ fontSize: 12, fill: '#64748b' }} />
-                <YAxis tick={{ fontSize: 12, fill: '#64748b' }} />
-                <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 12 }} />
-                <Bar dataKey="count" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </DemoSectionCard>
+              <div>
+                <p className="text-[10px] uppercase tracking-wide text-slate-500 font-semibold">Active classes</p>
+                <p className="text-lg font-bold text-slate-900">{SCHOOL_METRICS.activeClasses}</p>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-wide text-slate-500 font-semibold">Attendance</p>
+                <p className="text-lg font-bold text-emerald-600">{SCHOOL_METRICS.attendanceRate}%</p>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-wide text-slate-500 font-semibold">Open tickets</p>
+                <p className="text-lg font-bold text-slate-900">{SCHOOL_METRICS.openSupportTickets}</p>
+              </div>
+            </div>
+          </AppStyleCard>
+        </div>
       </div>
     </DemoShell>
   );
