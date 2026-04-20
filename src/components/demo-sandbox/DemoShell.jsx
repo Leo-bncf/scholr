@@ -1,10 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, LogOut } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowLeft } from 'lucide-react';
 import DemoRoleSwitcher from './DemoRoleSwitcher';
+import DemoContextBanner from './DemoContextBanner';
+import DemoOnboarding from './DemoOnboarding';
 import { SCHOOL } from './mockSchoolData';
+import { DEMO_ROLES } from './demoRolesConfig';
 
-export default function DemoShell({ roleLabel, userName, userInitials, accent = 'bg-primary', children }) {
+export default function DemoShell({ roleKey, children }) {
+  const role = DEMO_ROLES[roleKey];
+
   return (
     <div className="min-h-screen bg-slate-50">
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200">
@@ -23,20 +29,28 @@ export default function DemoShell({ roleLabel, userName, userInitials, accent = 
           </div>
           <div className="flex items-center gap-3">
             <div className="hidden sm:flex flex-col items-end">
-              <span className="text-xs text-slate-500">{roleLabel}</span>
-              <span className="text-sm font-semibold text-slate-900">{userName}</span>
+              <span className="text-xs text-slate-500">{role.name}</span>
+              <span className="text-sm font-semibold text-slate-900">{role.userName}</span>
             </div>
-            <div className={`h-9 w-9 rounded-full ${accent} text-white flex items-center justify-center text-sm font-bold`}>
-              {userInitials}
+            <div className={`h-9 w-9 rounded-full ${role.accent} text-white flex items-center justify-center text-sm font-bold`}>
+              {role.userInitials}
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <motion.main
+        key={roleKey}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+      >
+        <DemoContextBanner role={role} />
         {children}
-      </main>
+      </motion.main>
 
+      <DemoOnboarding role={role} />
       <DemoRoleSwitcher />
     </div>
   );

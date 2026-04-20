@@ -1,43 +1,26 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { GraduationCap, BookOpen, UserCircle, Settings2, ArrowRight, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Sparkles, Loader2 } from 'lucide-react';
 import DemoRoleSwitcher from '@/components/demo-sandbox/DemoRoleSwitcher';
 import { SCHOOL } from '@/components/demo-sandbox/mockSchoolData';
-
-const ROLES = [
-  {
-    path: '/demo/student',
-    name: 'Student',
-    icon: GraduationCap,
-    color: 'from-sky-500 to-blue-600',
-    desc: 'View grades, submit assignments, check timetable, track CAS & EE progress.',
-  },
-  {
-    path: '/demo/teacher',
-    name: 'Teacher',
-    icon: BookOpen,
-    color: 'from-emerald-500 to-teal-600',
-    desc: 'Manage classes, grade submissions, record attendance, message students.',
-  },
-  {
-    path: '/demo/parent',
-    name: 'Parent',
-    icon: UserCircle,
-    color: 'from-amber-500 to-orange-600',
-    desc: "Monitor your child's grades, attendance, and communicate with teachers.",
-  },
-  {
-    path: '/demo/leader',
-    name: 'School Leader',
-    icon: Settings2,
-    color: 'from-violet-500 to-purple-600',
-    desc: 'Oversee school-wide metrics, manage staff, configure policies, view reports.',
-  },
-];
+import { DEMO_ROLES, DEMO_ROLE_ORDER } from '@/components/demo-sandbox/demoRolesConfig';
 
 export default function DemoHub() {
+  const navigate = useNavigate();
+  const [selectedKey, setSelectedKey] = useState(null);
+
+  const handleSelect = (key) => {
+    if (selectedKey) return;
+    setSelectedKey(key);
+    // Short animation window, then navigate to the role dashboard
+    setTimeout(() => navigate(DEMO_ROLES[key].path), 700);
+  };
+
+  const selected = selectedKey ? DEMO_ROLES[selectedKey] : null;
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 rounded-full bg-white border border-slate-200 px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-sm">
@@ -45,31 +28,62 @@ export default function DemoHub() {
             Live sandbox · No sign-up required
           </div>
           <h1 className="mt-6 text-4xl sm:text-5xl font-bold tracking-tight text-slate-900">
-            Try Scholr as any role
+            Choose your role
           </h1>
           <p className="mt-4 text-lg text-slate-600">
-            Explore a pre-seeded school — <span className="font-semibold text-slate-800">{SCHOOL.name}</span> — from the perspective of every user type. Nothing you do is saved.
+            Explore <span className="font-semibold text-slate-800">{SCHOOL.name}</span> from the perspective of every user type. Nothing you do is saved.
           </p>
         </div>
 
         <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {ROLES.map((role) => (
-            <Link
-              key={role.path}
-              to={role.path}
-              className="group relative rounded-2xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
-            >
-              <div className={`absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-br ${role.color} opacity-10 group-hover:opacity-20 transition-opacity`} />
-              <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${role.color} text-white shadow-lg`}>
-                <role.icon className="w-6 h-6" />
-              </div>
-              <h3 className="mt-5 text-xl font-bold text-slate-900">{role.name}</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-relaxed">{role.desc}</p>
-              <div className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900 group-hover:gap-3 transition-all">
-                Enter demo <ArrowRight className="w-4 h-4" />
-              </div>
-            </Link>
-          ))}
+          {DEMO_ROLE_ORDER.map((key) => {
+            const role = DEMO_ROLES[key];
+            const Icon = role.icon;
+            const isSelected = selectedKey === key;
+            const isOther = selectedKey && selectedKey !== key;
+
+            return (
+              <motion.button
+                key={key}
+                onClick={() => handleSelect(key)}
+                disabled={!!selectedKey}
+                animate={{
+                  opacity: isOther ? 0.25 : 1,
+                  scale: isSelected ? 1.03 : 1,
+                  y: isSelected ? -4 : 0,
+                }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={!selectedKey ? { y: -4, transition: { duration: 0.2 } } : {}}
+                className={`group relative text-left rounded-2xl bg-white border p-7 shadow-sm overflow-hidden transition-shadow disabled:cursor-default ${
+                  isSelected ? 'border-slate-900 shadow-2xl' : 'border-slate-200 hover:shadow-xl'
+                }`}
+              >
+                <div className={`absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-br ${role.gradient} opacity-10 transition-opacity ${isSelected ? 'opacity-30' : 'group-hover:opacity-20'}`} />
+                <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${role.gradient} text-white shadow-lg`}>
+                  <Icon className="w-6 h-6" />
+                </div>
+                <div className="mt-5 flex items-center gap-2">
+                  <h3 className="text-xl font-bold text-slate-900">{role.name}</h3>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{role.tagline}</span>
+                </div>
+                <p className="mt-2 text-sm text-slate-600 leading-relaxed">{role.desc}</p>
+
+                <div className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900">
+                  {isSelected ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Loading your dashboard…
+                    </>
+                  ) : (
+                    <>
+                      Enter demo
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </>
+                  )}
+                </div>
+              </motion.button>
+            );
+          })}
         </div>
 
         <div className="mt-16 text-center">
@@ -78,6 +92,26 @@ export default function DemoHub() {
           </Link>
         </div>
       </div>
+
+      {/* Full-screen transition flourish when a role is selected */}
+      <AnimatePresence>
+        {selected && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35 }}
+            className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center"
+          >
+            <motion.div
+              initial={{ scale: 0, opacity: 0.8 }}
+              animate={{ scale: 30, opacity: 0 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className={`h-24 w-24 rounded-full bg-gradient-to-br ${selected.gradient}`}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <DemoRoleSwitcher />
     </div>

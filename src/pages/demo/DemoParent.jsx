@@ -14,7 +14,7 @@ export default function DemoParent() {
   const [selectedChild, setSelectedChild] = useState(PARENT.children[0]);
 
   return (
-    <DemoShell roleLabel="Parent" userName={PARENT.name} userInitials={PARENT.avatarInitials} accent="bg-amber-500">
+    <DemoShell roleKey="parent">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-slate-900">Welcome, {PARENT.name.split(' ')[0]}</h1>
         <p className="text-sm text-slate-500 mt-1">Monitoring {PARENT.children.length} children</p>

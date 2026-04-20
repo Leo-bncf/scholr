@@ -16,7 +16,7 @@ export default function DemoLeader() {
   ];
 
   return (
-    <DemoShell roleLabel="School Leader" userName={LEADER.name} userInitials={LEADER.avatarInitials} accent="bg-violet-500">
+    <DemoShell roleKey="leader">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">School overview</h1>
         <p className="text-sm text-slate-500 mt-1">{LEADER.title} · {LEADER.name}</p>

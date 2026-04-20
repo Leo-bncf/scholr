@@ -9,7 +9,7 @@ export default function DemoTeacher() {
   const totalStudents = TEACHER_CLASSES.reduce((s, c) => s + c.students, 0);
 
   return (
-    <DemoShell roleLabel="Teacher" userName={TEACHER.name} userInitials={TEACHER.avatarInitials} accent="bg-emerald-500">
+    <DemoShell roleKey="teacher">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">Good morning, {TEACHER.name.split(' ')[1] || TEACHER.name}</h1>
         <p className="text-sm text-slate-500 mt-1">{TEACHER.department} · {TEACHER_CLASSES.length} active classes</p>

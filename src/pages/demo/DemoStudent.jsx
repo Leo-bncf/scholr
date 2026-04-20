@@ -18,7 +18,7 @@ const statusStyle = {
 
 export default function DemoStudent() {
   return (
-    <DemoShell roleLabel="Student" userName={STUDENT.name} userInitials={STUDENT.avatarInitials} accent="bg-sky-500">
+    <DemoShell roleKey="student">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">Good afternoon, {STUDENT.name.split(' ')[0]}</h1>
         <p className="text-sm text-slate-500 mt-1">{STUDENT.grade} · Advisor: {STUDENT.advisor}</p>
