@@ -77,7 +77,7 @@ export default function TopMarqueeSection() {
               top: `${cursor.y}px`,
               left: `${cursor.x}px`,
               maxWidth: `${maxWidth}px`,
-              transform: `rotateZ(${rotation}deg) translate(-50%, -140%)`,
+              transform: `translate(-50%, -140%) rotateZ(${rotation}deg)`,
             }}
           >
             <p>Built for international schools</p>
