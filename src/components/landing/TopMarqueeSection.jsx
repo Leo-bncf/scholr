@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { InfiniteTextMarquee } from "@/components/ui/infinite-text-marquee";
 
@@ -16,6 +16,7 @@ export default function TopMarqueeSection() {
   const [cursor, setCursor] = useState({ x: 0, y: 0 });
   const [rotation, setRotation] = useState(0);
   const [maxWidth, setMaxWidth] = useState(9999);
+  const tooltipRef = useRef(null);
   const maxRotation = 8;
 
   useEffect(() => {
@@ -27,11 +28,12 @@ export default function TopMarqueeSection() {
       const next = (dist / mid) * maxRotation;
       setRotation(e.clientX > mid ? next : -next);
 
-      // Mirror the natural right-edge wrapping onto the left edge.
-      // Only start capping width once cursor is within EDGE_ZONE of the edge.
+      // Tooltip is centered on cursor (translate -50%). It only overflows the edge
+      // when distToEdge < tooltipWidth/2. Cap width only in that case.
       const distToEdge = Math.min(e.clientX, window.innerWidth - e.clientX);
-      const EDGE_ZONE = 120;
-      if (distToEdge >= EDGE_ZONE) {
+      const tooltipWidth = tooltipRef.current?.offsetWidth ?? 0;
+      const halfWidth = tooltipWidth / 2;
+      if (distToEdge >= halfWidth) {
         setMaxWidth(9999);
       } else {
         setMaxWidth(Math.max(200, distToEdge * 2));
@@ -68,6 +70,7 @@ export default function TopMarqueeSection() {
       {typeof document !== "undefined" && createPortal(
         <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden">
           <div
+            ref={tooltipRef}
             className={`pointer-events-none absolute rounded-3xl bg-primary px-8 py-4 text-sm font-bold text-primary-foreground transition-opacity duration-300 md:px-12 md:py-6 md:text-base ${isHovered ? "opacity-100" : "opacity-0"}`}
             style={{
               top: `${cursor.y}px`,
