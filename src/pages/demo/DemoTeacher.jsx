@@ -1,5 +1,6 @@
 import React from 'react';
 import DemoShell from '@/components/demo-sandbox/DemoShell';
+import DemoConclusion from '@/components/demo-sandbox/DemoConclusion';
 import DemoSectionCard from '@/components/demo-sandbox/DemoSectionCard';
 import TeacherReviewQueue from '@/components/demo-sandbox/teacher/TeacherReviewQueue';
 import TeacherClassCard from '@/components/demo-sandbox/teacher/TeacherClassCard';
@@ -88,6 +89,8 @@ export default function DemoTeacher() {
           </DemoSectionCard>
         </div>
       </div>
+
+      <DemoConclusion />
     </DemoShell>
   );
 }

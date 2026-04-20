@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import DemoShell from '@/components/demo-sandbox/DemoShell';
+import DemoConclusion from '@/components/demo-sandbox/DemoConclusion';
 import AppStyleCard from '@/components/demo-sandbox/AppStyleCard';
 import ChildSwitcher from '@/components/demo-sandbox/parent/ChildSwitcher';
 import ParentDeadlinesList from '@/components/demo-sandbox/parent/ParentDeadlinesList';
@@ -144,6 +145,8 @@ export default function DemoParent() {
           </AppStyleCard>
         </div>
       </div>
+
+      <DemoConclusion />
     </DemoShell>
   );
 }

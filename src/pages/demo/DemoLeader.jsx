@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import DemoShell from '@/components/demo-sandbox/DemoShell';
+import DemoConclusion from '@/components/demo-sandbox/DemoConclusion';
 import AppStyleCard from '@/components/demo-sandbox/AppStyleCard';
 import LeaderFilters from '@/components/demo-sandbox/leader/LeaderFilters';
 import SubjectPerformanceOverview from '@/components/demo-sandbox/leader/SubjectPerformanceOverview';
@@ -141,6 +142,8 @@ export default function DemoLeader() {
           </AppStyleCard>
         </div>
       </div>
+
+      <DemoConclusion />
     </DemoShell>
   );
 }

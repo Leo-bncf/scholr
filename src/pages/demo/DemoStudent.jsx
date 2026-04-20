@@ -2,6 +2,7 @@ import React from 'react';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import DemoShell from '@/components/demo-sandbox/DemoShell';
+import DemoConclusion from '@/components/demo-sandbox/DemoConclusion';
 import AppStyleCard from '@/components/demo-sandbox/AppStyleCard';
 import UpcomingDeadlinesTimeline from '@/components/demo-sandbox/student/UpcomingDeadlinesTimeline';
 import SubjectProgressList from '@/components/demo-sandbox/student/SubjectProgressList';
@@ -152,6 +153,8 @@ export default function DemoStudent() {
           </AppStyleCard>
         </div>
       </div>
+
+      <DemoConclusion />
     </DemoShell>
   );
 }
