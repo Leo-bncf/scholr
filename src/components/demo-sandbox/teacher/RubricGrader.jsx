@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 
-export default function RubricGrader({ rubric }) {
+export default function RubricGrader({ rubric, onPublish }) {
   const [scores, setScores] = useState(() =>
     Object.fromEntries(rubric.criteria.map((c) => [c.id, null]))
   );
@@ -84,6 +84,7 @@ export default function RubricGrader({ rubric }) {
 
       <button
         disabled={!complete}
+        onClick={() => complete && onPublish?.({ totalScored, totalMax, ibGrade, percent })}
         className={`mt-6 w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition ${
           complete
             ? 'bg-slate-900 text-white hover:bg-slate-800'

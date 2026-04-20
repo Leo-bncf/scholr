@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import DemoShell from '@/components/demo-sandbox/DemoShell';
 import DemoSectionCard from '@/components/demo-sandbox/DemoSectionCard';
 import RubricGrader from '@/components/demo-sandbox/teacher/RubricGrader';
 import InlineFeedbackDraft from '@/components/demo-sandbox/teacher/InlineFeedbackDraft';
+import GradingSuccessState from '@/components/demo-sandbox/teacher/GradingSuccessState';
 import {
   getSubmissionById, getAssignment, getStudent, getClass,
   getRubricFor, getDraftFor, getSubmissionsForAssignment,
@@ -13,6 +14,10 @@ import { ArrowLeft, ArrowRight, Clock, AlertCircle, FileText } from 'lucide-reac
 export default function DemoTeacherReview() {
   const { submissionId } = useParams();
   const sub = getSubmissionById(submissionId);
+  const [publishedResult, setPublishedResult] = useState(null);
+
+  // Reset published state when navigating to a different submission
+  useEffect(() => { setPublishedResult(null); }, [submissionId]);
 
   if (!sub) {
     return (
@@ -32,9 +37,14 @@ export default function DemoTeacherReview() {
   // Progress: where in the class queue is this student
   const classmates = getSubmissionsForAssignment(sub.assignmentId);
   const currentIdx = classmates.findIndex((s) => s.id === sub.id);
-  const nextInQueue = classmates
-    .slice(currentIdx + 1)
-    .find((s) => s.status === 'submitted' || s.status === 'late');
+  const nextInQueue =
+    classmates.slice(currentIdx + 1).find((s) => s.status === 'submitted' || s.status === 'late') ||
+    classmates.find((s) => s.id !== sub.id && (s.status === 'submitted' || s.status === 'late'));
+
+  // Locally-updated grading counts (reflect this publish event)
+  const gradedCount =
+    classmates.filter((s) => s.status === 'graded').length + (publishedResult ? 1 : 0);
+  const classRemaining = Math.max(0, classmates.length - gradedCount);
 
   return (
     <DemoShell roleKey="teacher">
@@ -79,21 +89,22 @@ export default function DemoTeacherReview() {
       <div className="mb-6 bg-white rounded-2xl border border-slate-200 p-4">
         <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wide text-slate-500 mb-2">
           <span>Grading progress for this assignment</span>
-          <span>
-            {classmates.filter((s) => s.status === 'graded').length} of {classmates.length} graded
-          </span>
+          <span>{gradedCount} of {classmates.length} graded</span>
         </div>
         <div className="flex gap-1">
           {classmates.map((s) => {
             const isCurrent = s.id === sub.id;
+            // When the current submission is published locally, show it as graded
+            const effectiveStatus =
+              isCurrent && publishedResult ? 'graded' : s.status;
             const color =
-              s.status === 'graded' ? 'bg-sky-500' :
-              s.status === 'submitted' || s.status === 'late' ? 'bg-amber-400' :
+              effectiveStatus === 'graded' ? 'bg-emerald-500' :
+              effectiveStatus === 'submitted' || effectiveStatus === 'late' ? 'bg-amber-400' :
               'bg-slate-200';
             return (
               <div
                 key={s.id}
-                className={`h-1.5 flex-1 rounded-full ${color} ${isCurrent ? 'ring-2 ring-offset-1 ring-emerald-500' : ''}`}
+                className={`h-1.5 flex-1 rounded-full ${color} transition-colors duration-500 ${isCurrent ? 'ring-2 ring-offset-1 ring-emerald-500' : ''}`}
                 title={getStudent(s.studentId)?.name}
               />
             );
@@ -118,9 +129,18 @@ export default function DemoTeacherReview() {
 
         <div className="lg:col-span-2">
           <div className="sticky top-20">
-            <DemoSectionCard title="Rubric-based grading">
-              {rubric ? (
-                <RubricGrader rubric={rubric} />
+            <DemoSectionCard title={publishedResult ? 'Review complete' : 'Rubric-based grading'}>
+              {publishedResult ? (
+                <GradingSuccessState
+                  result={publishedResult}
+                  studentName={student?.name}
+                  classRemaining={classRemaining}
+                  classTotal={classmates.length}
+                  nextSubmissionId={nextInQueue?.id || null}
+                  onGradeAnother={() => setPublishedResult(null)}
+                />
+              ) : rubric ? (
+                <RubricGrader rubric={rubric} onPublish={setPublishedResult} />
               ) : (
                 <p className="text-sm text-slate-500">No rubric configured for this assignment.</p>
               )}
