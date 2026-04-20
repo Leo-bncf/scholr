@@ -27,6 +27,7 @@ import DemoTeacher from './pages/demo/DemoTeacher';
 import DemoTeacherClass from './pages/demo/DemoTeacherClass';
 import DemoTeacherReview from './pages/demo/DemoTeacherReview';
 import DemoParent from './pages/demo/DemoParent';
+import DemoParentAssignment from './pages/demo/DemoParentAssignment';
 import DemoLeader from './pages/demo/DemoLeader';
 import SchoolAdminSupport from './pages/SchoolAdminSupport';
 import SchoolAdminGradebookGovernance from './pages/SchoolAdminGradebookGovernance';
@@ -86,6 +87,7 @@ const AuthenticatedApp = () => {
       <Route path="/demo/teacher/class/:classId" element={<DemoTeacherClass />} />
       <Route path="/demo/teacher/review/:submissionId" element={<DemoTeacherReview />} />
       <Route path="/demo/parent" element={<DemoParent />} />
+      <Route path="/demo/parent/assignment/:assignmentId" element={<DemoParentAssignment />} />
       <Route path="/demo/leader" element={<DemoLeader />} />
       {Object.entries(Pages).map(([path, Page]) => (
         <Route
