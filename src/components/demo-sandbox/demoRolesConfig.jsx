@@ -30,6 +30,12 @@ export const DEMO_ROLES = {
         body: 'Track attendance, see criterion-level feedback, and never miss an announcement from your coordinator.',
       },
     ],
+    tour: [
+      { selector: '[data-tour="student-next-up"]',   title: "What's next?",            body: "Your most urgent deadline is always pinned here — click to jump straight in." },
+      { selector: '[data-tour="student-deadlines"]', title: 'Upcoming deadlines',      body: 'Every assignment from every class, sorted by urgency. Red means due tomorrow.' },
+      { selector: '[data-tour="student-progress"]',  title: 'Live subject progress',   body: 'Real-time completion per subject and your predicted IB grade — updated as teachers mark work.' },
+      { selector: '[data-tour="student-feedback"]',  title: 'Feedback is centralized', body: 'All teacher comments live here — no more digging through emails or chat apps.' },
+    ],
   },
   teacher: {
     key: 'teacher',
@@ -58,6 +64,11 @@ export const DEMO_ROLES = {
         title: 'One-click attendance',
         body: 'Record attendance per period in seconds. Patterns surface automatically for pastoral follow-up.',
       },
+    ],
+    tour: [
+      { selector: '[data-tour="teacher-queue"]',    title: 'Click here to review submissions', body: 'Everything waiting for your grade — sorted with late work surfaced first.' },
+      { selector: '[data-tour="teacher-classes"]',  title: 'Your classes at a glance',         body: 'Each card shows students, pending grading, and class average. Tap to dive deeper.' },
+      { selector: '[data-tour="teacher-schedule"]', title: "Today's schedule",                 body: 'Your periods for today — synced from the school timetable.' },
     ],
   },
   parent: {
@@ -88,6 +99,11 @@ export const DEMO_ROLES = {
         body: 'Message teachers directly. All conversations respect the school\'s communication policies and quiet hours.',
       },
     ],
+    tour: [
+      { selector: '[data-tour="parent-switcher"]', title: 'All your children, one view', body: 'Switch between children in a click. Everything below updates instantly.' },
+      { selector: '[data-tour="parent-deadlines"]', title: 'This shows real-time progress', body: "Upcoming work with a plain-English status — you'll never wonder what's going on again." },
+      { selector: '[data-tour="parent-feedback"]', title: 'Feedback, not email chains',    body: "Teacher notes arrive here directly — no more chasing emails or fragmented updates." },
+    ],
   },
   leader: {
     key: 'leader',
@@ -116,6 +132,12 @@ export const DEMO_ROLES = {
         title: 'Reports that actually ship',
         body: 'Generate term reports, export data, and audit every critical action with full GDPR-ready logs.',
       },
+    ],
+    tour: [
+      { selector: '[data-tour="leader-hero"]',    title: 'Where are problems emerging?', body: 'A live count of declining subjects and flagged students across your chosen filter.' },
+      { selector: '[data-tour="leader-filters"]', title: 'Slice by year or subject',     body: 'Filter by year group and subject — every panel below reacts instantly.' },
+      { selector: '[data-tour="leader-subjects"]',title: 'Performance overview',         body: 'Subjects sorted lowest-first so the weakest area is always top of the list.' },
+      { selector: '[data-tour="leader-atrisk"]',  title: 'Early warning system',         body: 'Students flagged for grade drops, missing work, attendance or behaviour — with severity indicators.' },
     ],
   },
 };

@@ -66,6 +66,7 @@ export default function DemoStudent() {
       {/* "What's next?" hero banner */}
       {nextUp && (
         <Link
+          data-tour="student-next-up"
           to={`/demo/student/assignment/${nextUp.id}`}
           className="group block mb-6 rounded-md border border-indigo-200 bg-gradient-to-r from-indigo-50 to-white shadow-sm hover:shadow-md transition-shadow"
         >
@@ -99,17 +100,21 @@ export default function DemoStudent() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <AppStyleCard
-            title="Upcoming deadlines"
-            icon={CalendarDays}
-            action={<span className="text-xs font-medium text-slate-500">{pending.length} pending</span>}
-          >
-            <UpcomingDeadlinesTimeline studentId={STUDENT.id} limit={6} />
-          </AppStyleCard>
+          <div data-tour="student-deadlines">
+            <AppStyleCard
+              title="Upcoming deadlines"
+              icon={CalendarDays}
+              action={<span className="text-xs font-medium text-slate-500">{pending.length} pending</span>}
+            >
+              <UpcomingDeadlinesTimeline studentId={STUDENT.id} limit={6} />
+            </AppStyleCard>
+          </div>
 
-          <AppStyleCard title="Recent feedback" icon={MessageSquare}>
-            <RecentFeedbackList studentId={STUDENT.id} limit={3} />
-          </AppStyleCard>
+          <div data-tour="student-feedback">
+            <AppStyleCard title="Recent feedback" icon={MessageSquare}>
+              <RecentFeedbackList studentId={STUDENT.id} limit={3} />
+            </AppStyleCard>
+          </div>
         </div>
 
         <div className="space-y-6">
@@ -129,9 +134,11 @@ export default function DemoStudent() {
             </div>
           </AppStyleCard>
 
-          <AppStyleCard title="Progress by subject" icon={BarChart3}>
-            <SubjectProgressList studentId={STUDENT.id} />
-          </AppStyleCard>
+          <div data-tour="student-progress">
+            <AppStyleCard title="Progress by subject" icon={BarChart3}>
+              <SubjectProgressList studentId={STUDENT.id} />
+            </AppStyleCard>
+          </div>
 
           <AppStyleCard title="Announcements" icon={Megaphone}>
             <div className="divide-y divide-slate-50">

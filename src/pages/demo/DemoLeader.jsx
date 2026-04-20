@@ -59,7 +59,7 @@ export default function DemoLeader() {
       </div>
 
       {/* Diagnostic hero — the core leader question */}
-      <div className="mb-6 rounded-md border border-slate-200 bg-gradient-to-r from-slate-900 to-slate-800 p-4 md:p-5 flex items-center gap-4 shadow-sm">
+      <div data-tour="leader-hero" className="mb-6 rounded-md border border-slate-200 bg-gradient-to-r from-slate-900 to-slate-800 p-4 md:p-5 flex items-center gap-4 shadow-sm">
         <div className="h-11 w-11 rounded-md bg-white/10 text-white flex items-center justify-center flex-shrink-0">
           <Telescope className="w-5 h-5" />
         </div>
@@ -71,11 +71,13 @@ export default function DemoLeader() {
         </div>
       </div>
 
-      <LeaderFilters
-        yearGroup={filters.yearGroup}
-        subjectId={filters.subjectId}
-        onChange={setFilters}
-      />
+      <div data-tour="leader-filters">
+        <LeaderFilters
+          yearGroup={filters.yearGroup}
+          subjectId={filters.subjectId}
+          onChange={setFilters}
+        />
+      </div>
 
       {/* Top KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
@@ -87,13 +89,15 @@ export default function DemoLeader() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <AppStyleCard
-            title="Subject performance overview"
-            icon={BarChart3}
-            action={<span className="text-xs font-medium text-slate-500">Sorted by current average</span>}
-          >
-            <SubjectPerformanceOverview yearGroup={filters.yearGroup} subjectId={filters.subjectId} />
-          </AppStyleCard>
+          <div data-tour="leader-subjects">
+            <AppStyleCard
+              title="Subject performance overview"
+              icon={BarChart3}
+              action={<span className="text-xs font-medium text-slate-500">Sorted by current average</span>}
+            >
+              <SubjectPerformanceOverview yearGroup={filters.yearGroup} subjectId={filters.subjectId} />
+            </AppStyleCard>
+          </div>
 
           <AppStyleCard
             title="Trend changes over time"
@@ -105,13 +109,15 @@ export default function DemoLeader() {
         </div>
 
         <div className="space-y-6">
-          <AppStyleCard
-            title="At-risk students"
-            icon={AlertTriangle}
-            action={<span className="text-xs font-medium text-slate-500">{atRisk.length} flagged</span>}
-          >
-            <AtRiskStudentsList yearGroup={filters.yearGroup} subjectId={filters.subjectId} />
-          </AppStyleCard>
+          <div data-tour="leader-atrisk">
+            <AppStyleCard
+              title="At-risk students"
+              icon={AlertTriangle}
+              action={<span className="text-xs font-medium text-slate-500">{atRisk.length} flagged</span>}
+            >
+              <AtRiskStudentsList yearGroup={filters.yearGroup} subjectId={filters.subjectId} />
+            </AppStyleCard>
+          </div>
 
           <AppStyleCard title="School at a glance" icon={Users}>
             <div className="p-4 md:p-5 grid grid-cols-2 gap-3 text-sm">

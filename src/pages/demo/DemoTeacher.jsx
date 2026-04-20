@@ -44,18 +44,23 @@ export default function DemoTeacher() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <TeacherReviewQueue teacherId={TEACHER.id} />
+          <div data-tour="teacher-queue">
+            <TeacherReviewQueue teacherId={TEACHER.id} />
+          </div>
 
-          <DemoSectionCard title="Class overview" action={<span className="text-xs font-medium text-slate-500">Tap a class to open</span>}>
-            <div className="space-y-3">
-              {TEACHER_CLASSES.map((c) => (
-                <TeacherClassCard key={c.id} classId={c.id} avgGrade={c.avgGrade} />
-              ))}
-            </div>
-          </DemoSectionCard>
+          <div data-tour="teacher-classes">
+            <DemoSectionCard title="Class overview" action={<span className="text-xs font-medium text-slate-500">Tap a class to open</span>}>
+              <div className="space-y-3">
+                {TEACHER_CLASSES.map((c) => (
+                  <TeacherClassCard key={c.id} classId={c.id} avgGrade={c.avgGrade} />
+                ))}
+              </div>
+            </DemoSectionCard>
+          </div>
         </div>
 
         <div className="space-y-6">
+          <div data-tour="teacher-schedule">
           <DemoSectionCard title="Today's schedule">
             <div className="space-y-2">
               {TIMETABLE_TODAY.slice(0, 4).map((p, i) => (
@@ -69,6 +74,7 @@ export default function DemoTeacher() {
               ))}
             </div>
           </DemoSectionCard>
+          </div>
 
           <DemoSectionCard title="Staff notices">
             <div className="space-y-3">

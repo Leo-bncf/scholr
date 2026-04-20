@@ -62,11 +62,13 @@ export default function DemoParent() {
         </p>
       </div>
 
-      <ChildSwitcher
-        children={PARENT.children}
-        selectedId={selectedChild.id}
-        onSelect={setSelectedChild}
-      />
+      <div data-tour="parent-switcher">
+        <ChildSwitcher
+          children={PARENT.children}
+          selectedId={selectedChild.id}
+          onSelect={setSelectedChild}
+        />
+      </div>
 
       {/* Key promise banner — sets the whole tone */}
       <div className="mb-6 rounded-md border border-indigo-200 bg-gradient-to-r from-indigo-50 to-white p-4 md:p-5 flex items-center gap-4">
@@ -91,17 +93,21 @@ export default function DemoParent() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <AppStyleCard
-            title="Upcoming deadlines"
-            icon={CalendarDays}
-            action={<span className="text-xs font-medium text-slate-500">{pending.length} pending</span>}
-          >
-            <ParentDeadlinesList studentId={selectedChild.id} limit={5} />
-          </AppStyleCard>
+          <div data-tour="parent-deadlines">
+            <AppStyleCard
+              title="Upcoming deadlines"
+              icon={CalendarDays}
+              action={<span className="text-xs font-medium text-slate-500">{pending.length} pending</span>}
+            >
+              <ParentDeadlinesList studentId={selectedChild.id} limit={5} />
+            </AppStyleCard>
+          </div>
 
-          <AppStyleCard title="Recent feedback from teachers" icon={MessageSquare}>
-            <ParentFeedbackList studentId={selectedChild.id} limit={3} />
-          </AppStyleCard>
+          <div data-tour="parent-feedback">
+            <AppStyleCard title="Recent feedback from teachers" icon={MessageSquare}>
+              <ParentFeedbackList studentId={selectedChild.id} limit={3} />
+            </AppStyleCard>
+          </div>
         </div>
 
         <div className="space-y-6">

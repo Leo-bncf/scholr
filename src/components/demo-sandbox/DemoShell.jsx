@@ -1,33 +1,44 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Sparkles } from 'lucide-react';
 import DemoRoleSwitcher from './DemoRoleSwitcher';
 import DemoContextBanner from './DemoContextBanner';
-import DemoOnboarding from './DemoOnboarding';
+import DemoTour from './tour/DemoTour';
 import { SCHOOL } from './mockSchoolData';
 import { DEMO_ROLES } from './demoRolesConfig';
 
 export default function DemoShell({ roleKey, children }) {
   const role = DEMO_ROLES[roleKey];
+  const tourRef = useRef(null);
 
   return (
     <div className="min-h-screen bg-slate-50">
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 min-w-0">
             <Link to="/demo" className="flex items-center gap-2 text-slate-600 hover:text-slate-900 text-sm font-medium">
               <ArrowLeft className="w-4 h-4" />
               Exit demo
             </Link>
-            <div className="h-6 w-px bg-slate-200" />
-            <div className="text-sm">
+            <div className="hidden md:block h-6 w-px bg-slate-200" />
+            <div className="hidden md:block text-sm truncate">
               <span className="font-semibold text-slate-900">{SCHOOL.name}</span>
               <span className="text-slate-400 mx-2">·</span>
               <span className="text-slate-500">{SCHOOL.academicYear} · {SCHOOL.termName}</span>
             </div>
           </div>
           <div className="flex items-center gap-3">
+            {role?.tour?.length > 0 && (
+              <button
+                onClick={() => tourRef.current?.replay()}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                title="Replay the guided tour"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+                <span className="hidden sm:inline">Replay tour</span>
+              </button>
+            )}
             <div className="hidden sm:flex flex-col items-end">
               <span className="text-xs text-slate-500">{role.name}</span>
               <span className="text-sm font-semibold text-slate-900">{role.userName}</span>
@@ -50,7 +61,10 @@ export default function DemoShell({ roleKey, children }) {
         {children}
       </motion.main>
 
-      <DemoOnboarding role={role} />
+      {role?.tour?.length > 0 && (
+        <DemoTour ref={tourRef} roleKey={roleKey} steps={role.tour} />
+      )}
+
       <DemoRoleSwitcher />
     </div>
   );
