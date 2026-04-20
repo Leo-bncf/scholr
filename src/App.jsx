@@ -20,6 +20,11 @@ import StudentAttendance from './pages/StudentAttendance';
 import StudentCommunication from './pages/StudentCommunication';
 import StudentIBCore from './pages/StudentIBCore';
 import SchoolAdminOnboarding from './pages/SchoolAdminOnboarding';
+import DemoHub from './pages/demo/DemoHub';
+import DemoStudent from './pages/demo/DemoStudent';
+import DemoTeacher from './pages/demo/DemoTeacher';
+import DemoParent from './pages/demo/DemoParent';
+import DemoLeader from './pages/demo/DemoLeader';
 import SchoolAdminSupport from './pages/SchoolAdminSupport';
 import SchoolAdminGradebookGovernance from './pages/SchoolAdminGradebookGovernance';
 import SchoolAdminBehavior from './pages/SchoolAdminBehavior';
@@ -70,6 +75,12 @@ const AuthenticatedApp = () => {
           <MainPage />
         </LayoutWrapper>
       } />
+      {/* Demo sandbox routes — must come before the pagesConfig loop so /demo wins over legacy /Demo */}
+      <Route path="/demo" element={<DemoHub />} />
+      <Route path="/demo/student" element={<DemoStudent />} />
+      <Route path="/demo/teacher" element={<DemoTeacher />} />
+      <Route path="/demo/parent" element={<DemoParent />} />
+      <Route path="/demo/leader" element={<DemoLeader />} />
       {Object.entries(Pages).map(([path, Page]) => (
         <Route
           key={path}
