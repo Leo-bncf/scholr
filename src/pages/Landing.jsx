@@ -145,21 +145,21 @@ function FeaturesGrid() {
       short: 'Complete assignment lifecycle',
       desc: 'From creation to grading — publish assignments with IB criteria alignment, students submit work through Google Docs, files, or links, teachers provide criterion-based feedback, and grades sync automatically. Support for multiple submission formats, late submission handling, and comprehensive submission tracking ensure transparency throughout.',
       icon: ListChecks,
-      color: 'bg-gradient-to-br from-sky-500 to-primary500 text-white shadow-inner'
+      color: 'bg-gradient-to-br from-sky-500 to-blue-500 text-white shadow-inner'
     },
     {
       title: 'Gradebook',
       short: 'Multi-framework grading',
       desc: 'Support for multiple grading scales including 1-7 IB, A*-E, letter grades, and percentages. Predicted grade tracking with historical trends, rubric-based criterion assessment, and comprehensive term reports aligned to your curriculum. Generate assessment reports by criterion and lock grades for compliance.',
       icon: Award,
-      color: 'bg-gradient-to-br from-primary500 to-primary600 text-white shadow-inner'
+      color: 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-inner'
     },
     {
       title: 'Parent Portal',
       short: 'Real-time family engagement',
       desc: 'Parents see grades, attendance records, upcoming assignments, teacher feedback, and behavioral notes — all updated in real-time. Direct messaging with teachers keeps communication secure, organised, and compliant with school policies. Parents can also receive progress alerts and attendance warnings.',
       icon: HeartHandshake,
-      color: 'bg-gradient-to-br from-primary600 to-indigo-500 text-white shadow-inner'
+      color: 'bg-gradient-to-br from-blue-600 to-indigo-500 text-white shadow-inner'
     },
     {
       title: 'Timetable Integration',
