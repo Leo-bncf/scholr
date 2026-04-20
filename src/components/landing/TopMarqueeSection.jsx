@@ -31,7 +31,7 @@ export default function TopMarqueeSection() {
       // available width scales with distance from cursor to nearest horizontal edge.
       // Multiplier < 2 makes shrinking start earlier; low minimum allows it to compress heavily.
       const distToEdge = Math.min(e.clientX, window.innerWidth - e.clientX);
-      setMaxWidth(Math.max(90, distToEdge * 1.3));
+      setMaxWidth(Math.max(200, distToEdge * 0.65));
     };
     window.addEventListener("mousemove", handleMove);
     return () => window.removeEventListener("mousemove", handleMove);
