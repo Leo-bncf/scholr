@@ -183,10 +183,10 @@ export default function PricingTiersSection() {
             <Zap className="h-4 w-4 fill-current" />
             Simple, Transparent Pricing
           </div>
-          <h2 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+          <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
             Invest in Smarter Academic Workflows
           </h2>
-          <p className="mt-4 text-lg text-slate-600">
+          <p className="mt-4 text-lg text-white">
             Scale your investment as your school grows. Pick your plan, create your account if needed, and continue directly to secure checkout.
           </p>
         </div>
@@ -351,8 +351,8 @@ export default function PricingTiersSection() {
 
         <div className="mt-20">
           <div className="mb-10 text-center">
-            <h3 className="text-3xl font-bold text-slate-900">How the tier system works in practice</h3>
-            <p className="mx-auto mt-3 max-w-2xl text-slate-600">
+            <h3 className="text-3xl font-bold text-white">How the tier system works in practice</h3>
+            <p className="mx-auto mt-3 max-w-2xl text-white">
               The same core learning management platform is available across tiers, but each school is governed by the rules of its plan.
             </p>
           </div>
