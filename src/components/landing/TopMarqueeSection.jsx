@@ -33,11 +33,11 @@ export default function TopMarqueeSection() {
       const distToEdge = Math.min(e.clientX, window.innerWidth - e.clientX);
       const tooltipWidth = tooltipRef.current?.offsetWidth ?? 0;
       const halfWidth = tooltipWidth / 2;
-      const threshold = halfWidth + 60;
+      const threshold = halfWidth + 120;
       if (distToEdge >= threshold) {
         setMaxWidth(9999);
       } else {
-        setMaxWidth(Math.max(200, (distToEdge - 60) * 2));
+        setMaxWidth(Math.max(200, (distToEdge - 120) * 2));
       }
     };
     window.addEventListener("mousemove", handleMove);
