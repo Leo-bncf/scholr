@@ -22,6 +22,7 @@ import StudentIBCore from './pages/StudentIBCore';
 import SchoolAdminOnboarding from './pages/SchoolAdminOnboarding';
 import DemoHub from './pages/demo/DemoHub';
 import DemoStudent from './pages/demo/DemoStudent';
+import DemoStudentAssignment from './pages/demo/DemoStudentAssignment';
 import DemoTeacher from './pages/demo/DemoTeacher';
 import DemoTeacherClass from './pages/demo/DemoTeacherClass';
 import DemoTeacherReview from './pages/demo/DemoTeacherReview';
@@ -80,6 +81,7 @@ const AuthenticatedApp = () => {
       {/* Demo sandbox routes — must come before the pagesConfig loop so /demo wins over legacy /Demo */}
       <Route path="/demo" element={<DemoHub />} />
       <Route path="/demo/student" element={<DemoStudent />} />
+      <Route path="/demo/student/assignment/:assignmentId" element={<DemoStudentAssignment />} />
       <Route path="/demo/teacher" element={<DemoTeacher />} />
       <Route path="/demo/teacher/class/:classId" element={<DemoTeacherClass />} />
       <Route path="/demo/teacher/review/:submissionId" element={<DemoTeacherReview />} />
