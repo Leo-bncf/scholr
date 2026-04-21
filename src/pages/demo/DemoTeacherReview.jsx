@@ -9,15 +9,32 @@ import {
   getSubmissionById, getAssignment, getStudent, getClass,
   getRubricFor, getDraftFor, getSubmissionsForAssignment,
 } from '@/components/demo-sandbox/mockSchoolData';
+import {
+  useDemoStore, publishDemoGrade, saveDemoFeedback, getEffectiveSubmissionStatus,
+} from '@/components/demo-sandbox/useDemoStore';
 import { ArrowLeft, ArrowRight, Clock, AlertCircle, FileText } from 'lucide-react';
 
 export default function DemoTeacherReview() {
   const { submissionId } = useParams();
   const sub = getSubmissionById(submissionId);
-  const [publishedResult, setPublishedResult] = useState(null);
+  const store = useDemoStore();
+  const override = sub ? store.submissions[sub.id] : null;
+  const [publishedResult, setPublishedResult] = useState(override?.result || null);
 
-  // Reset published state when navigating to a different submission
-  useEffect(() => { setPublishedResult(null); }, [submissionId]);
+  // When navigating between submissions, re-hydrate from the store.
+  useEffect(() => {
+    setPublishedResult(override?.result || null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [submissionId]);
+
+  const handlePublish = (result) => {
+    setPublishedResult(result);
+    publishDemoGrade(submissionId, result);
+  };
+
+  const handleFeedbackChange = (commentsByParagraph) => {
+    saveDemoFeedback(submissionId, commentsByParagraph);
+  };
 
   if (!sub) {
     return (
@@ -34,16 +51,22 @@ export default function DemoTeacherReview() {
   const rubric = getRubricFor(sub.assignmentId);
   const draft = getDraftFor(sub.id);
 
-  // Progress: where in the class queue is this student
+  // Progress: where in the class queue is this student — use effective status
+  // so already-graded submissions (via the demo store) are excluded from "next".
   const classmates = getSubmissionsForAssignment(sub.assignmentId);
   const currentIdx = classmates.findIndex((s) => s.id === sub.id);
+  const isPending = (s) => {
+    const status = getEffectiveSubmissionStatus(s);
+    return status === 'submitted' || status === 'late';
+  };
   const nextInQueue =
-    classmates.slice(currentIdx + 1).find((s) => s.status === 'submitted' || s.status === 'late') ||
-    classmates.find((s) => s.id !== sub.id && (s.status === 'submitted' || s.status === 'late'));
+    classmates.slice(currentIdx + 1).find((s) => s.id !== sub.id && isPending(s)) ||
+    classmates.find((s) => s.id !== sub.id && isPending(s));
 
-  // Locally-updated grading counts (reflect this publish event)
-  const gradedCount =
-    classmates.filter((s) => s.status === 'graded').length + (publishedResult ? 1 : 0);
+  // Count graded using both the mock baseline and any local overrides.
+  const gradedCount = classmates.filter(
+    (s) => getEffectiveSubmissionStatus(s) === 'graded'
+  ).length;
   const classRemaining = Math.max(0, classmates.length - gradedCount);
 
   return (
@@ -94,9 +117,7 @@ export default function DemoTeacherReview() {
         <div className="flex gap-1">
           {classmates.map((s) => {
             const isCurrent = s.id === sub.id;
-            // When the current submission is published locally, show it as graded
-            const effectiveStatus =
-              isCurrent && publishedResult ? 'graded' : s.status;
+            const effectiveStatus = getEffectiveSubmissionStatus(s);
             const color =
               effectiveStatus === 'graded' ? 'bg-emerald-500' :
               effectiveStatus === 'submitted' || effectiveStatus === 'late' ? 'bg-amber-400' :
@@ -120,7 +141,12 @@ export default function DemoTeacherReview() {
             </span>
           }>
             {draft.length > 0 ? (
-              <InlineFeedbackDraft paragraphs={draft} />
+              <InlineFeedbackDraft
+                key={sub.id}
+                paragraphs={draft}
+                initialComments={override?.feedback}
+                onChange={handleFeedbackChange}
+              />
             ) : (
               <p className="text-sm text-slate-500">Student has not attached a draft.</p>
             )}
@@ -140,7 +166,7 @@ export default function DemoTeacherReview() {
                   onGradeAnother={() => setPublishedResult(null)}
                 />
               ) : rubric ? (
-                <RubricGrader rubric={rubric} onPublish={setPublishedResult} />
+                <RubricGrader rubric={rubric} onPublish={handlePublish} />
               ) : (
                 <p className="text-sm text-slate-500">No rubric configured for this assignment.</p>
               )}

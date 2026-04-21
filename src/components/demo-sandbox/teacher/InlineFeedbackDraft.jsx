@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MessageSquarePlus, X, Check } from 'lucide-react';
 
-export default function InlineFeedbackDraft({ paragraphs }) {
-  const [comments, setComments] = useState({}); // { paragraphId: [text, ...] }
+export default function InlineFeedbackDraft({ paragraphs, initialComments, onChange }) {
+  const [comments, setComments] = useState(() => initialComments || {}); // { paragraphId: [text, ...] }
   const [activeId, setActiveId] = useState(null);
   const [draft, setDraft] = useState('');
+
+  // Propagate changes up so the review page can persist them to the demo store.
+  useEffect(() => {
+    onChange?.(comments);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [comments]);
 
   const addComment = (paragraphId) => {
     const text = draft.trim();

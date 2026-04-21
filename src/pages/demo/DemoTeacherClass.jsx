@@ -6,6 +6,7 @@ import {
   getClass, getSubject, getTeacher, getStudent,
   getAssignmentsForClass, getSubmission,
 } from '@/components/demo-sandbox/mockSchoolData';
+import { useDemoStore, getEffectiveSubmissionStatus } from '@/components/demo-sandbox/useDemoStore';
 import { ArrowLeft, ArrowRight, CheckCircle2, Clock, AlertCircle, CircleDashed } from 'lucide-react';
 
 const statusVisual = {
@@ -18,6 +19,7 @@ const statusVisual = {
 
 export default function DemoTeacherClass() {
   const { classId } = useParams();
+  useDemoStore(); // re-render when local grade overrides change
   const cls = getClass(classId);
 
   if (!cls) {
@@ -79,7 +81,7 @@ export default function DemoTeacherClass() {
                   </td>
                   {assignments.map((a) => {
                     const sub = getSubmission(stu.id, a.id);
-                    const status = sub?.status || 'not_started';
+                    const status = sub ? getEffectiveSubmissionStatus(sub) : 'not_started';
                     const v = statusVisual[status];
                     const canReview = sub && (status === 'submitted' || status === 'late' || status === 'graded');
                     const cell = (

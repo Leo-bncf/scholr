@@ -4,16 +4,21 @@ import { ArrowRight, Users, FileText } from 'lucide-react';
 import {
   getClass, getSubmissionsForClass, getAssignmentsForClass,
 } from '@/components/demo-sandbox/mockSchoolData';
+import { useDemoStore, getEffectiveSubmissionStatus } from '@/components/demo-sandbox/useDemoStore';
 
 export default function TeacherClassCard({ classId, avgGrade }) {
+  useDemoStore(); // re-render when local grades change
   const cls = getClass(classId);
   if (!cls) return null;
 
   const subs = getSubmissionsForClass(classId);
   const assignments = getAssignmentsForClass(classId);
   const totalExpected = cls.studentIds.length * assignments.length;
-  const submittedOrGraded = subs.filter((s) => s.status === 'submitted' || s.status === 'graded' || s.status === 'late').length;
-  const pending = subs.filter((s) => s.status === 'submitted' || s.status === 'late').length;
+  const effectiveStatuses = subs.map((s) => getEffectiveSubmissionStatus(s));
+  const submittedOrGraded = effectiveStatuses.filter(
+    (st) => st === 'submitted' || st === 'graded' || st === 'late'
+  ).length;
+  const pending = effectiveStatuses.filter((st) => st === 'submitted' || st === 'late').length;
   const progress = totalExpected > 0 ? Math.round((submittedOrGraded / totalExpected) * 100) : 0;
 
   return (

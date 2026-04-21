@@ -5,14 +5,21 @@ import DemoSectionCard from '@/components/demo-sandbox/DemoSectionCard';
 import {
   getPendingGradingForTeacher, getAssignment, getStudent, getClass,
 } from '@/components/demo-sandbox/mockSchoolData';
+import { useDemoStore, getEffectiveSubmissionStatus } from '@/components/demo-sandbox/useDemoStore';
 
 export default function TeacherReviewQueue({ teacherId }) {
-  const queue = getPendingGradingForTeacher(teacherId).map((s) => {
-    const a = getAssignment(s.assignmentId);
-    const stu = getStudent(s.studentId);
-    const cls = a?.classId ? getClass(a.classId) : null;
-    return { sub: s, assignment: a, student: stu, cls };
-  });
+  useDemoStore(); // re-render when the local demo store changes
+  const queue = getPendingGradingForTeacher(teacherId)
+    .filter((s) => {
+      const status = getEffectiveSubmissionStatus(s);
+      return status === 'submitted' || status === 'late';
+    })
+    .map((s) => {
+      const a = getAssignment(s.assignmentId);
+      const stu = getStudent(s.studentId);
+      const cls = a?.classId ? getClass(a.classId) : null;
+      return { sub: s, assignment: a, student: stu, cls };
+    });
 
   return (
     <DemoSectionCard

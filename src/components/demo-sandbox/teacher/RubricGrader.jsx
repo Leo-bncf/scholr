@@ -1,9 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 
-export default function RubricGrader({ rubric, onPublish }) {
+export default function RubricGrader({ rubric, onPublish, initialScores }) {
   const [scores, setScores] = useState(() =>
-    Object.fromEntries(rubric.criteria.map((c) => [c.id, null]))
+    Object.fromEntries(
+      rubric.criteria.map((c) => [c.id, initialScores?.[c.id] ?? null])
+    )
   );
 
   const totalMax = useMemo(() => rubric.criteria.reduce((s, c) => s + c.max, 0), [rubric]);

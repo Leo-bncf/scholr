@@ -8,6 +8,9 @@ import {
   getSubmission, getFeedbackForSubmission, getRubricFor, getDraftFor,
 } from '@/components/demo-sandbox/mockSchoolData';
 import {
+  useDemoStore, getEffectiveSubmissionStatus, getDemoSubmissionOverride,
+} from '@/components/demo-sandbox/useDemoStore';
+import {
   ArrowLeft, Calendar, FileText, CheckCircle2, Clock, AlertCircle,
   CircleDashed, Target, MessageSquare, ListChecks, Paperclip,
 } from 'lucide-react';
@@ -30,6 +33,7 @@ const typeColors = {
 
 export default function DemoStudentAssignment() {
   const { assignmentId } = useParams();
+  useDemoStore(); // re-render when local overrides change
   const assignment = getAssignment(assignmentId);
 
   if (!assignment) {
@@ -47,7 +51,8 @@ export default function DemoStudentAssignment() {
   const subject = cls ? getSubject(cls.subjectId) : null;
   const teacher = cls ? getTeacher(cls.teacherId) : null;
   const submission = getSubmission(STUDENT.id, assignment.id);
-  const status = submission?.status || 'not_started';
+  const status = submission ? getEffectiveSubmissionStatus(submission) : 'not_started';
+  const override = submission ? getDemoSubmissionOverride(submission.id) : null;
   const sv = statusVisual[status];
   const feedback = submission ? getFeedbackForSubmission(submission.id) : [];
   const rubric = getRubricFor(assignment.id);
@@ -187,6 +192,24 @@ export default function DemoStudentAssignment() {
                   Submitted {submission.submittedAt}
                   {submission.late && <span className="text-red-600 font-semibold ml-2">· Late</span>}
                 </p>
+              )}
+
+              {override?.result && (
+                <div className="mt-4 p-3 rounded-md bg-violet-50 border border-violet-100">
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-violet-700">
+                    Your grade
+                  </p>
+                  <div className="flex items-end justify-between mt-1">
+                    <p className="text-2xl font-bold text-slate-900">
+                      {override.result.totalScored}
+                      <span className="text-sm text-slate-400">/{override.result.totalMax}</span>
+                    </p>
+                    <p className="text-2xl font-bold text-violet-600">
+                      {override.result.ibGrade}
+                      <span className="text-[10px] font-semibold text-violet-500 ml-1">IB</span>
+                    </p>
+                  </div>
+                </div>
               )}
 
               <div className="mt-5 pt-5 border-t border-slate-100">

@@ -8,10 +8,15 @@ import {
   TEACHER, TEACHER_CLASSES, TIMETABLE_TODAY, ANNOUNCEMENTS,
   getPendingGradingForTeacher,
 } from '@/components/demo-sandbox/mockSchoolData';
+import { useDemoStore, getEffectiveSubmissionStatus } from '@/components/demo-sandbox/useDemoStore';
 import { Users, FileText, TrendingUp } from 'lucide-react';
 
 export default function DemoTeacher() {
-  const totalPending = getPendingGradingForTeacher(TEACHER.id).length;
+  useDemoStore(); // reflect local grading changes in the counters
+  const totalPending = getPendingGradingForTeacher(TEACHER.id).filter((s) => {
+    const st = getEffectiveSubmissionStatus(s);
+    return st === 'submitted' || st === 'late';
+  }).length;
   const totalStudents = TEACHER_CLASSES.reduce((s, c) => s + c.students, 0);
   const avgValues = TEACHER_CLASSES.map((c) => c.avgGrade).filter((v) => typeof v === 'number');
   const avgClass = avgValues.length
