@@ -3,13 +3,15 @@ import { Link } from 'react-router-dom';
 import { AlertCircle, ArrowRight, Zap } from 'lucide-react';
 import DemoSectionCard from '@/components/demo-sandbox/DemoSectionCard';
 import {
-  getPendingGradingForTeacher, getAssignment, getStudent, getClass,
+  getSubmissionsForTeacher, getAssignment, getStudent, getClass,
 } from '@/components/demo-sandbox/mockSchoolData';
 import { useDemoStore, getEffectiveSubmissionStatus } from '@/components/demo-sandbox/useDemoStore';
 
 export default function TeacherReviewQueue({ teacherId }) {
   useDemoStore(); // re-render when the local demo store changes
-  const queue = getPendingGradingForTeacher(teacherId)
+  // Include ALL submissions for this teacher, not just baseline-pending — a
+  // student may have submitted during the demo, flipping in_progress → submitted.
+  const queue = getSubmissionsForTeacher(teacherId)
     .filter((s) => {
       const status = getEffectiveSubmissionStatus(s);
       return status === 'submitted' || status === 'late';

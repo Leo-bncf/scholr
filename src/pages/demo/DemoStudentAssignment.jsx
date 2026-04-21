@@ -9,7 +9,9 @@ import {
 } from '@/components/demo-sandbox/mockSchoolData';
 import {
   useDemoStore, getEffectiveSubmissionStatus, getDemoSubmissionOverride,
+  submitDemoAssignment,
 } from '@/components/demo-sandbox/useDemoStore';
+import { Send } from 'lucide-react';
 import {
   ArrowLeft, Calendar, FileText, CheckCircle2, Clock, AlertCircle,
   CircleDashed, Target, MessageSquare, ListChecks, Paperclip,
@@ -192,6 +194,16 @@ export default function DemoStudentAssignment() {
                   Submitted {submission.submittedAt}
                   {submission.late && <span className="text-red-600 font-semibold ml-2">· Late</span>}
                 </p>
+              )}
+
+              {submission && (status === 'in_progress' || status === 'not_started') && (
+                <button
+                  onClick={() => submitDemoAssignment(submission.id)}
+                  className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-md bg-indigo-600 text-white px-4 py-2.5 text-sm font-semibold hover:bg-indigo-700 transition"
+                >
+                  <Send className="w-4 h-4" />
+                  Submit work to teacher
+                </button>
               )}
 
               {override?.result && (

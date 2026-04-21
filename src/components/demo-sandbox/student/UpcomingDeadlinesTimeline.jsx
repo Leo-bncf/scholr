@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   getAssignmentsForStudent, getSubmission, getClass, getSubject,
 } from '@/components/demo-sandbox/mockSchoolData';
+import { useDemoStore, getEffectiveSubmissionStatus } from '@/components/demo-sandbox/useDemoStore';
 
 const typeColors = {
   homework:           'bg-blue-50 text-blue-700',
@@ -27,12 +28,13 @@ const urgencyColor = (dueIn = '') => {
 };
 
 export default function UpcomingDeadlinesTimeline({ studentId, limit }) {
+  useDemoStore();
   const assignments = getAssignmentsForStudent(studentId)
     .map((a) => {
       const sub = getSubmission(studentId, a.id);
-      return { ...a, submission: sub };
+      return { ...a, submission: sub, effectiveStatus: getEffectiveSubmissionStatus(sub) };
     })
-    .filter((a) => a.submission?.status !== 'submitted' && a.submission?.status !== 'graded');
+    .filter((a) => a.effectiveStatus !== 'submitted' && a.effectiveStatus !== 'graded' && a.effectiveStatus !== 'late');
 
   const items = typeof limit === 'number' ? assignments.slice(0, limit) : assignments;
 

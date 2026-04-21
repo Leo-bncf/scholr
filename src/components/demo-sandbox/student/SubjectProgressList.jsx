@@ -3,6 +3,9 @@ import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import {
   getGradesForStudent, getClassesForStudent, getAssignmentsForClass, getSubmission,
 } from '@/components/demo-sandbox/mockSchoolData';
+import {
+  useDemoStore, getEffectiveSubmissionStatus, getEffectiveGradesForStudent,
+} from '@/components/demo-sandbox/useDemoStore';
 
 const trendIcon = (trend) => {
   if (trend === 'up')   return <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />;
@@ -16,13 +19,15 @@ const computeCompletion = (studentId, classId) => {
   if (assignments.length === 0) return 100;
   const done = assignments.filter((a) => {
     const s = getSubmission(studentId, a.id);
-    return s && (s.status === 'submitted' || s.status === 'graded' || s.status === 'late');
+    const status = getEffectiveSubmissionStatus(s);
+    return status === 'submitted' || status === 'graded' || status === 'late';
   }).length;
   return Math.round((done / assignments.length) * 100);
 };
 
 export default function SubjectProgressList({ studentId }) {
-  const grades = getGradesForStudent(studentId);
+  useDemoStore();
+  const grades = getEffectiveGradesForStudent(studentId, getGradesForStudent(studentId));
   const classes = getClassesForStudent(studentId);
 
   const rows = grades.map((g) => {
@@ -40,6 +45,11 @@ export default function SubjectProgressList({ studentId }) {
             <div className="flex items-center gap-3 flex-shrink-0 text-xs">
               <span className="inline-flex items-center gap-1 text-slate-500">
                 Current <b className="text-slate-900">{r.current}</b>
+                {r._adjusted && (
+                  <span className="ml-1 inline-flex items-center text-[9px] font-bold uppercase tracking-wide text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded">
+                    Updated
+                  </span>
+                )}
               </span>
               <span className="inline-flex items-center gap-1 text-slate-500">
                 Predicted <b className="text-slate-900">{r.predicted}</b>

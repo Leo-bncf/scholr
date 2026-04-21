@@ -6,14 +6,14 @@ import TeacherReviewQueue from '@/components/demo-sandbox/teacher/TeacherReviewQ
 import TeacherClassCard from '@/components/demo-sandbox/teacher/TeacherClassCard';
 import {
   TEACHER, TEACHER_CLASSES, TIMETABLE_TODAY, ANNOUNCEMENTS,
-  getPendingGradingForTeacher,
+  getSubmissionsForTeacher,
 } from '@/components/demo-sandbox/mockSchoolData';
 import { useDemoStore, getEffectiveSubmissionStatus } from '@/components/demo-sandbox/useDemoStore';
 import { Users, FileText, TrendingUp } from 'lucide-react';
 
 export default function DemoTeacher() {
-  useDemoStore(); // reflect local grading changes in the counters
-  const totalPending = getPendingGradingForTeacher(TEACHER.id).filter((s) => {
+  useDemoStore(); // reflect local grading/submission changes in the counters
+  const totalPending = getSubmissionsForTeacher(TEACHER.id).filter((s) => {
     const st = getEffectiveSubmissionStatus(s);
     return st === 'submitted' || st === 'late';
   }).length;

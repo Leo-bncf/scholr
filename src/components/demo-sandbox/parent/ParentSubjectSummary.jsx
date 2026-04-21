@@ -1,6 +1,7 @@
 import React from 'react';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { getGradesForStudent } from '@/components/demo-sandbox/mockSchoolData';
+import { useDemoStore, getEffectiveGradesForStudent } from '@/components/demo-sandbox/useDemoStore';
 
 const trendMeta = (t) => {
   if (t === 'up')   return { Icon: TrendingUp,   color: 'text-emerald-600 bg-emerald-50', label: 'Improving' };
@@ -9,7 +10,8 @@ const trendMeta = (t) => {
 };
 
 export default function ParentSubjectSummary({ studentId }) {
-  const grades = getGradesForStudent(studentId);
+  useDemoStore();
+  const grades = getEffectiveGradesForStudent(studentId, getGradesForStudent(studentId));
 
   if (grades.length === 0) {
     return <div className="p-10 text-center text-sm text-slate-400">No grades this term yet.</div>;
@@ -30,7 +32,9 @@ export default function ParentSubjectSummary({ studentId }) {
             </div>
             <div className="text-right flex-shrink-0">
               <p className="text-[10px] uppercase tracking-wide text-slate-500 font-semibold">Current</p>
-              <p className="text-xl font-bold text-slate-900 leading-none">{g.current}</p>
+              <p className={`text-xl font-bold leading-none ${g._adjusted ? 'text-emerald-600' : 'text-slate-900'}`}>
+                {g.current}
+              </p>
             </div>
             <div className="text-right flex-shrink-0 ml-2">
               <p className="text-[10px] uppercase tracking-wide text-indigo-500 font-semibold">Predicted</p>

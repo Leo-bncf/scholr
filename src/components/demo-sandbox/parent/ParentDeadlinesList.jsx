@@ -4,6 +4,7 @@ import { Clock, ArrowRight, CheckCircle2, AlertTriangle } from 'lucide-react';
 import {
   getAssignmentsForStudent, getSubmission, getClass, getSubject,
 } from '@/components/demo-sandbox/mockSchoolData';
+import { useDemoStore, getEffectiveSubmissionStatus } from '@/components/demo-sandbox/useDemoStore';
 
 // Plain-English one-liner so parents don't need to decode the system
 const parentStatusLine = (status) => {
@@ -15,13 +16,14 @@ const parentStatusLine = (status) => {
 };
 
 export default function ParentDeadlinesList({ studentId, limit = 5 }) {
+  useDemoStore();
   const items = getAssignmentsForStudent(studentId)
     .map((a) => {
       const sub = getSubmission(studentId, a.id);
       const cls = a.classId ? getClass(a.classId) : null;
       return {
         ...a,
-        status: sub?.status || 'not_started',
+        status: sub ? getEffectiveSubmissionStatus(sub) : 'not_started',
         subjectName: cls ? getSubject(cls.subjectId)?.name : 'Core',
       };
     })

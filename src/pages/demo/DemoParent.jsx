@@ -13,6 +13,9 @@ import {
   getFeedbackForStudent,
 } from '@/components/demo-sandbox/mockSchoolData';
 import {
+  useDemoStore, getEffectiveSubmissionStatus, getEffectiveGradesForStudent,
+} from '@/components/demo-sandbox/useDemoStore';
+import {
   Heart, CalendarDays, MessageSquare, BarChart3, Megaphone,
   CheckCircle2, BookOpen, Star, Sparkles,
 } from 'lucide-react';
@@ -42,10 +45,12 @@ function StatCard({ label, value, icon: Icon, color }) {
 export default function DemoParent() {
   const [selectedChild, setSelectedChild] = useState(PARENT.children[0]);
 
-  const grades = getGradesForStudent(selectedChild.id);
+  useDemoStore();
+  const grades = getEffectiveGradesForStudent(selectedChild.id, getGradesForStudent(selectedChild.id));
   const pending = getAssignmentsForStudent(selectedChild.id).filter((a) => {
     const s = getSubmission(selectedChild.id, a.id);
-    return !s || (s.status !== 'submitted' && s.status !== 'graded');
+    const status = getEffectiveSubmissionStatus(s);
+    return status !== 'submitted' && status !== 'graded';
   });
   const feedbackCount = getFeedbackForStudent(selectedChild.id).length;
   const avg = grades.length
