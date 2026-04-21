@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 import DemoRoleSwitcher from './DemoRoleSwitcher';
-import DemoContextBanner from './DemoContextBanner';
 import DemoTour from './tour/DemoTour';
 import { SCHOOL } from './mockSchoolData';
 import { DEMO_ROLES } from './demoRolesConfig';
@@ -57,7 +56,6 @@ export default function DemoShell({ roleKey, children }) {
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
       >
-        <DemoContextBanner role={role} />
         {children}
       </motion.main>
 
