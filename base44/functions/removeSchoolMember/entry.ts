@@ -18,6 +18,7 @@ Deno.serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const { membershipId } = body;
+    console.log('removeSchoolMember called by', user.email, 'user.role=', user.role, 'membershipId=', membershipId);
     if (!membershipId) {
       return Response.json({ error: 'membershipId is required' }, { status: 400 });
     }
@@ -44,6 +45,8 @@ Deno.serve(async (req) => {
         (m) => m.role === 'school_admin' || m.role === 'ib_coordinator'
       );
     }
+
+    console.log('auth check:', { isPlatformAdmin, isSchoolAdmin, targetSchoolId: target.school_id });
 
     if (!isPlatformAdmin && !isSchoolAdmin) {
       return Response.json(
