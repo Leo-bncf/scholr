@@ -179,7 +179,7 @@ export default function PricingTiersSection() {
     <section id="pricing" className="relative overflow-hidden bg-transparent py-24">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/70 backdrop-blur-sm px-4 py-2 text-sm font-semibold text-blue-700 shadow-sm">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/70 backdrop-blur-sm px-4 py-2 text-sm font-semibold text-emerald-700 shadow-sm">
             <Zap className="h-4 w-4 fill-current" />
             Simple, Transparent Pricing
           </div>
@@ -227,7 +227,7 @@ export default function PricingTiersSection() {
                     transition={{ duration: 0.28, delay: 0.1 + index * 0.05 }}
                     className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4"
                   >
-                    <item.icon className="mb-3 h-5 w-5 text-blue-700" />
+                    <item.icon className="mb-3 h-5 w-5 text-emerald-700" />
                     <div className="text-xl font-bold text-slate-900">{item.value}</div>
                     <div className="text-sm text-slate-500">{item.label}</div>
                   </motion.div>
@@ -260,13 +260,13 @@ export default function PricingTiersSection() {
               animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
               exit={{ opacity: 0, y: -18, scale: 0.985, filter: 'blur(8px)' }}
               transition={{ ...panelTransition, delay: 0.03 }}
-              className="flex h-full flex-col rounded-[2rem] border border-blue-800/40 bg-gradient-to-br from-slate-900 via-blue-950 to-blue-900 p-6 text-white shadow-2xl sm:p-8"
+              className="flex h-full flex-col rounded-[2rem] border border-emerald-800/40 bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-900 p-6 text-white shadow-2xl sm:p-8"
             >
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.24, delay: 0.08 }}
-                className="text-sm uppercase tracking-[0.2em] text-sky-200"
+                className="text-sm uppercase tracking-[0.2em] text-emerald-200"
               >
                 What this controls
               </motion.p>
@@ -278,7 +278,7 @@ export default function PricingTiersSection() {
               >
                 {selectedTier.name} rules applied across your school
               </motion.h3>
-              <div className="mt-6 space-y-3 text-sm text-blue-100/90">
+              <div className="mt-6 space-y-3 text-sm text-emerald-100/90">
                 {summaryLines.map((line, index) => (
                   <motion.p
                     key={line}
@@ -295,9 +295,9 @@ export default function PricingTiersSection() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.28, delay: 0.34 }}
-                className="mt-8 rounded-2xl border border-blue-300/20 bg-white/5 p-4 backdrop-blur-sm"
+                className="mt-8 rounded-2xl border border-emerald-300/20 bg-white/5 p-4 backdrop-blur-sm"
               >
-                <p className="text-sm text-sky-100">Already have an account? You’ll go straight to payment. New user? You’ll create your account first.</p>
+                <p className="text-sm text-emerald-100">Already have an account? You’ll go straight to payment. New user? You’ll create your account first.</p>
               </motion.div>
 
               <motion.div
@@ -306,13 +306,13 @@ export default function PricingTiersSection() {
                 transition={{ duration: 0.32, delay: 0.4 }}
                 className="mt-auto pt-8"
               >
-                <div className="mb-4 rounded-3xl border border-sky-300/20 bg-gradient-to-br from-white/10 to-sky-300/5 p-5 backdrop-blur-sm">
-                  <div className="text-xs uppercase tracking-[0.22em] text-sky-200">Per Student / Month</div>
+                <div className="mb-4 rounded-3xl border border-emerald-300/20 bg-gradient-to-br from-white/10 to-emerald-300/5 p-5 backdrop-blur-sm">
+                  <div className="text-xs uppercase tracking-[0.22em] text-emerald-200">Per Student / Month</div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <div className="text-4xl font-bold text-sky-50">{selectedTier.price}</div>
+                    <div className="text-4xl font-bold text-emerald-50">{selectedTier.price}</div>
                   </div>
                   <div className="mt-4">
-                    <div className="text-sm text-sky-100 mb-3">
+                    <div className="text-sm text-emerald-100 mb-3">
                       Includes web version access. Billed monthly. No setup fees.
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -326,7 +326,7 @@ export default function PricingTiersSection() {
 
                 <Button
                   type="button"
-                  className="h-14 text-base w-full rounded-full bg-white text-blue-950 font-semibold hover:bg-slate-100 shadow-lg transition-all"
+                  className="h-14 text-base w-full rounded-full bg-white text-emerald-950 font-semibold hover:bg-emerald-50 shadow-lg transition-all"
                   onClick={async () => {
                     await handleCheckout(selectedTier.priceId, expandedTier);
                   }}
@@ -367,7 +367,7 @@ export default function PricingTiersSection() {
                 transition={{ duration: 0.4, delay: i * 0.1 }}
                 className="rounded-2xl border border-slate-200 bg-white/70 backdrop-blur-sm p-6 shadow-sm hover:shadow-md transition-shadow"
               >
-                <rule.icon className="mb-4 h-6 w-6 text-blue-600" />
+                <rule.icon className="mb-4 h-6 w-6 text-emerald-600" />
                 <h4 className="mb-2 text-lg font-semibold text-slate-900">{rule.title}</h4>
                 <p className="text-sm leading-relaxed text-slate-600">{rule.description}</p>
               </motion.div>
