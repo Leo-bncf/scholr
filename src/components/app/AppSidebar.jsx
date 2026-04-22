@@ -27,7 +27,7 @@ export default function AppSidebar({ links, role, schoolName, userName, userId, 
               alt="Scholr"
               className="w-7 md:w-8 h-7 md:h-8 rounded-md shadow-sm object-cover flex-shrink-0"
             />
-            <span className="text-base md:text-lg font-bold truncate text-sm md:text-base tracking-tight text-slate-900">Scho<span className="text-emerald-700 font-normal">lr</span></span>
+            <span className="text-xl font-semibold truncate tracking-tight text-slate-900">Scholr</span>
           </Link>
           {userId && schoolId && (
             <div className="hidden md:block">
