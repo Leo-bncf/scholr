@@ -20,7 +20,7 @@ export default function PricingTierSwitch({ options, value, onChange, className 
             {active && (
               <motion.span
                 layoutId="pricing-tier-switch"
-                className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg"
+                className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 shadow-lg"
                 transition={{ type: 'spring', stiffness: 500, damping: 35 }}
               />
             )}
