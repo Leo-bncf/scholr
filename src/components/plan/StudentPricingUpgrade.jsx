@@ -90,7 +90,6 @@ export default function StudentPricingUpgrade({ schoolId, currentPlan, currentSt
                   <Badge className="bg-indigo-100 text-indigo-700 border-0 text-xs">{badge}</Badge>
                 </div>
               )}
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">{PLAN_NAMES[key]}</p>
               <div className="flex items-baseline gap-1 mb-1">
                 <span className="text-3xl font-black text-slate-900">€{l.price_per_student}</span>
                 <span className="text-slate-400 text-sm">/student/yr</span>
