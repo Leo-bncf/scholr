@@ -15,7 +15,8 @@ Deno.serve(async (req) => {
     }
 
     // Authorize: caller must be platform admin OR have an active school_admin / ib_coordinator
-    // membership for this school. (user.role is the built-in role — school roles live on SchoolMembership.)
+    // membership for this school, OR have the school_admin/ib_coordinator role on their user record
+    // for this school (legacy path — SchoolMembership records may not exist yet).
     const isPlatformAdmin = user.role === 'admin';
 
     if (!isPlatformAdmin) {
@@ -24,7 +25,21 @@ Deno.serve(async (req) => {
         school_id: schoolId,
         status: 'active',
       });
-      const allowed = memberships.some(m => ['school_admin', 'ib_coordinator'].includes(m.role));
+      let allowed = memberships.some(m => ['school_admin', 'ib_coordinator'].includes(m.role));
+
+      // Fallback: check the user's own data fields for school role (legacy / pre-membership setup)
+      if (!allowed) {
+        const userData = user.data || {};
+        const userSchoolId = userData.active_school_id || userData.school_id;
+        const userRole = userData.role || userData.intended_role;
+        if (
+          userSchoolId === schoolId &&
+          ['school_admin', 'ib_coordinator'].includes(userRole)
+        ) {
+          allowed = true;
+        }
+      }
+
       if (!allowed) {
         return Response.json({ error: 'Forbidden: you do not have permission to invite users to this school' }, { status: 403 });
       }
