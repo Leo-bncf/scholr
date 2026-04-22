@@ -29,10 +29,10 @@ Deno.serve(async (req) => {
       if (!allowed) {
         const userData = user.data || {};
         const nestedUserData = userData.data || {};
-        const userSchoolId = userData.active_school_id || userData.school_id || nestedUserData.active_school_id || nestedUserData.school_id;
-        const userRole = userData.role || userData.intended_role || nestedUserData.role || nestedUserData.intended_role;
+        const userSchoolId = user.active_school_id || user.school_id || userData.active_school_id || userData.school_id || nestedUserData.active_school_id || nestedUserData.school_id;
+        const userRole = user.role || userData.role || userData.intended_role || nestedUserData.role || nestedUserData.intended_role;
 
-        if (userSchoolId === schoolId && ['school_admin', 'ib_coordinator'].includes(userRole)) {
+        if (userSchoolId === schoolId && ['school_admin', 'ib_coordinator', 'admin', 'super_admin'].includes(userRole)) {
           allowed = true;
         }
       }
