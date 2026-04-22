@@ -30,31 +30,27 @@ export default function FirstLogin() {
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
+  // Only refresh an EXISTING membership's display fields — never create one here.
+  // Creating memberships is the responsibility of the invitation flow (acceptInvitation function).
+  // Creating on first-login was causing blank "ghost" user rows to appear in the
+  // school admin directory when a user landed here without a valid invitation.
   const ensureSchoolMembership = async (currentUser, state) => {
     if (!state?.school_id || !state?.role) return;
+    if (!currentUser?.full_name || !currentUser?.email) return; // guard against blank rows
 
     const memberships = await base44.entities.SchoolMembership.filter({
       user_id: currentUser.id,
       school_id: state.school_id,
     });
 
-    if (memberships.length > 0) {
-      await base44.entities.SchoolMembership.update(memberships[0].id, {
-        user_email: currentUser.email,
-        user_name: currentUser.full_name,
-        role: state.role,
-        status: 'active',
-      });
-    } else {
-      await base44.entities.SchoolMembership.create({
-        user_id: currentUser.id,
-        user_email: currentUser.email,
-        user_name: currentUser.full_name,
-        school_id: state.school_id,
-        role: state.role,
-        status: 'active',
-      });
-    }
+    if (memberships.length === 0) return; // no membership = user was not properly invited; do nothing
+
+    await base44.entities.SchoolMembership.update(memberships[0].id, {
+      user_email: currentUser.email,
+      user_name: currentUser.full_name,
+      role: state.role,
+      status: 'active',
+    });
 
     if (currentUser.active_school_id !== state.school_id) {
       await base44.auth.updateMe({ active_school_id: state.school_id });
