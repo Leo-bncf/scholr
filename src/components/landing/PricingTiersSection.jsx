@@ -31,7 +31,8 @@ const SHARED_FEATURES = [
 
 const TIERS = {
   tier1: {
-    name: 'Up to 200 Students',
+    name: 'Tier 1',
+    capacityLabel: 'Up to 200 Students',
     tierLabel: 'Tier 1',
     price: '€20.99',
     priceId: 'price_starter',
@@ -43,7 +44,8 @@ const TIERS = {
     featured: false,
   },
   tier2: {
-    name: 'Up to 600 Students',
+    name: 'Tier 2',
+    capacityLabel: 'Up to 600 Students',
     tierLabel: 'Tier 2',
     price: '€16.99',
     priceId: 'price_growth',
@@ -55,7 +57,8 @@ const TIERS = {
     featured: true,
   },
   tier3: {
-    name: 'Unlimited Students',
+    name: 'Tier 3',
+    capacityLabel: 'Unlimited Students',
     tierLabel: 'Tier 3',
     price: '€13.99',
     priceId: 'price_enterprise',
@@ -118,9 +121,9 @@ export default function PricingTiersSection() {
   const selectedTier = TIERS[expandedTier];
   const summaryLines = [
     'Every feature of scholr.pro is included — same platform on every tier.',
-    selectedTier.name === 'Unlimited Students'
+    selectedTier.capacityLabel === 'Unlimited Students'
       ? 'No cap on student enrollment.'
-      : `Student capacity is capped at ${selectedTier.name.replace('Up to ', '')}.`,
+      : `Student capacity is capped at ${selectedTier.capacityLabel.replace('Up to ', '')}.`,
     'IB Core (CAS, EE, TOK), gradebooks, reports and parent portal are always on.',
     'Unlimited admin accounts and priority support on all tiers.',
     'Billed yearly. The per‑student rate decreases as your tier grows.',
