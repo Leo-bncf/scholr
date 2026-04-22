@@ -15,7 +15,6 @@ const PLANS = [
     key: 'growth',
     color: 'border-indigo-300',
     highlight: true,
-    badge: 'Most Popular',
   },
   {
     key: 'enterprise',

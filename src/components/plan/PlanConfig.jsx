@@ -69,7 +69,7 @@ export const PLAN_NAMES = {
 
 export const PLAN_DESCRIPTIONS = {
   starter: 'Up to 200 students',
-  growth: '201–600 students — most popular',
+  growth: '201–600 students',
   enterprise: '600+ students / multi-campus',
 };
 
