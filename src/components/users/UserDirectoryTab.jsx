@@ -176,9 +176,13 @@ export default function UserDirectoryTab({ schoolId }) {
       if (errMsg) throw new Error(errMsg);
       return res?.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] });
-      toast({ title: 'User removed from school' });
+      toast({
+        title: data?.note === 'already gone'
+          ? 'Stale record cleared'
+          : 'User removed from school',
+      });
     },
     onError: (err) => {
       toast({

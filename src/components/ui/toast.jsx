@@ -3,9 +3,7 @@ import { cva } from "class-variance-authority";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const ToastProvider = React.forwardRef(({ children, ...props }, ref) => (
-  <React.Fragment>{children}</React.Fragment>
-));
+const ToastProvider = ({ children }) => <>{children}</>;
 ToastProvider.displayName = "ToastProvider";
 
 const ToastViewport = React.forwardRef(({ ...props }, ref) => (

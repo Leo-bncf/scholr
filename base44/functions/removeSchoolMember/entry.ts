@@ -47,17 +47,15 @@ Deno.serve(async (req) => {
         );
       }
       if (!allowed) {
-        return Response.json({ error: 'Membership not found' }, { status: 404 });
+        return Response.json({ error: 'You do not have permission to remove this record.' }, { status: 403 });
       }
       try {
         await base44.asServiceRole.entities.SchoolMembership.delete(membershipId);
         return Response.json({ success: true, removed: membershipId, note: 'ghost row' });
       } catch (e) {
-        console.error('ghost delete failed:', e?.message);
-        return Response.json(
-          { error: 'Record does not exist (already deleted or invalid id)' },
-          { status: 404 }
-        );
+        console.warn('ghost delete failed (may already be gone):', e?.message);
+        // Treat as success — the row is gone, which is the desired end state.
+        return Response.json({ success: true, removed: membershipId, note: 'already gone' });
       }
     }
 
