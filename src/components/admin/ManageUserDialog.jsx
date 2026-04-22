@@ -64,16 +64,28 @@ export default function ManageUserDialog({ open, onOpenChange, user, onUserUpdat
         return;
       }
 
-      await base44.functions.invoke('adminUpdateUser', payload);
+      const response = await base44.functions.invoke('adminUpdateUser', payload);
+      console.log('adminUpdateUser response:', response);
 
-      setSuccess('User updated successfully');
+      // Surface backend-reported errors that the SDK didn't throw on
+      const errMsg = response?.data?.error || response?.error;
+      if (errMsg) {
+        throw new Error(errMsg);
+      }
+
+      const schoolName = newSchoolId ? (schools.find(s => s.id === newSchoolId)?.name || 'selected school') : null;
+      setSuccess(
+        payload.schoolId !== undefined
+          ? (newSchoolId ? `Assigned to ${schoolName}.` : 'Removed from school.')
+          : 'User updated successfully.'
+      );
       setTimeout(() => {
         onOpenChange(false);
         if (onUserUpdated) onUserUpdated();
       }, 1200);
     } catch (err) {
       console.error('Error updating user:', err);
-      setError(err.message || 'Failed to update user');
+      setError(err?.response?.data?.error || err?.message || 'Failed to update user');
     } finally {
       setLoading(false);
     }

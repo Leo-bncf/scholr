@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Search, Users } from 'lucide-react';
 import ManageUserDialog from '@/components/admin/ManageUserDialog';
@@ -26,6 +27,7 @@ const ROLES = ['all', 'super_admin', 'school_admin', 'ib_coordinator', 'teacher'
 
 export default function SuperAdminUsers() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { currentUser, isChecking } = useSuperAdminAccess(navigate);
   const { data, isLoading, error, refetch } = useSuperAdminUsersQuery({ enabled: !!currentUser });
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,6 +62,9 @@ export default function SuperAdminUsers() {
 
   const handleUserUpdated = async () => {
     setManageDialogOpen(false);
+    // Bust all super-admin caches so the row reflects the new school assignment
+    await queryClient.invalidateQueries({ queryKey: ['super-admin', 'users'] });
+    await queryClient.invalidateQueries({ queryKey: ['super-admin', 'school-overview'] });
     await refetch();
   };
 
