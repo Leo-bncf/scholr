@@ -49,7 +49,7 @@ export default function AppSidebar({ links, role, schoolName, userName, userId, 
               to={createPageUrl(link.page)}
               className={`flex items-center gap-2 md:gap-3 px-2.5 md:px-3.5 py-2 md:py-2.5 rounded-md text-xs md:text-sm font-medium transition-all duration-200 ${
                 isActive 
-                  ? 'bg-emerald-50 text-emerald-800 shadow-sm' 
+                  ? 'bg-emerald-100 text-emerald-950 shadow-sm' 
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
