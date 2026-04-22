@@ -77,16 +77,11 @@ export default function SuperAdminUsers() {
     if (!userToDelete) return;
     setIsDeleting(true);
     try {
-      // Clean up any school memberships first
-      try {
-        const memberships = await base44.entities.SchoolMembership.filter({ user_id: userToDelete.id });
-        for (const m of memberships) {
-          await base44.entities.SchoolMembership.delete(m.id);
-        }
-      } catch (e) {
-        console.warn('Could not clean memberships:', e);
-      }
-      await base44.entities.User.delete(userToDelete.id);
+      const res = await base44.functions.invoke('superAdminDeleteUser', { userId: userToDelete.id });
+      const errMsg = res?.data?.error || res?.error;
+      const failures = res?.data?.failures || [];
+      if (errMsg) throw new Error(errMsg);
+      if (failures.length > 0) throw new Error(failures[0].error || 'Delete failed');
       toast({ title: 'User deleted', description: userToDelete.email || userToDelete.id });
       setUserToDelete(null);
       await queryClient.invalidateQueries({ queryKey: ['super-admin', 'users'] });
@@ -106,16 +101,17 @@ export default function SuperAdminUsers() {
     const blanks = users.filter(isBlankUser);
     if (blanks.length === 0) return;
     setIsDeleting(true);
-    let deleted = 0;
-    for (const u of blanks) {
-      try {
-        await base44.entities.User.delete(u.id);
-        deleted++;
-      } catch (e) {
-        console.warn('Skipped:', u.id, e);
-      }
+    try {
+      const res = await base44.functions.invoke('superAdminDeleteUser', { userIds: blanks.map((u) => u.id) });
+      const deleted = res?.data?.deleted || 0;
+      toast({ title: `Deleted ${deleted} blank account${deleted === 1 ? '' : 's'}` });
+    } catch (err) {
+      toast({
+        title: 'Bulk delete failed',
+        description: err?.message || 'Try again',
+        variant: 'destructive',
+      });
     }
-    toast({ title: `Deleted ${deleted} blank account${deleted === 1 ? '' : 's'}` });
     setBulkDeleteOpen(false);
     setIsDeleting(false);
     await queryClient.invalidateQueries({ queryKey: ['super-admin', 'users'] });
