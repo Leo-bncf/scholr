@@ -22,10 +22,10 @@ export default function AppSidebar({ links, role, schoolName, userName, userId, 
       <div className="p-3 md:p-5 border-b border-slate-200">
         <div className="flex items-center justify-between gap-2">
           <Link to={createPageUrl('Landing')} className="flex items-center gap-2 md:gap-2.5 flex-1 min-w-0 hover:opacity-90 transition-opacity cursor-pointer">
-            <div className="w-7 md:w-8 h-7 md:h-8 bg-blue-50 rounded-md flex items-center justify-center flex-shrink-0">
-              <GraduationCap className="w-3.5 md:w-4.5 h-3.5 md:h-4.5 text-blue-600" />
+            <div className="w-7 md:w-8 h-7 md:h-8 bg-emerald-50 rounded-md flex items-center justify-center flex-shrink-0">
+              <GraduationCap className="w-3.5 md:w-4.5 h-3.5 md:h-4.5 text-emerald-700" />
             </div>
-            <span className="text-base md:text-lg font-bold truncate text-sm md:text-base tracking-tight text-slate-900">Scho<span className="text-blue-600 font-normal">lr</span></span>
+            <span className="text-base md:text-lg font-bold truncate text-sm md:text-base tracking-tight text-slate-900">Scho<span className="text-emerald-700 font-normal">lr</span></span>
           </Link>
           {userId && schoolId && (
             <div className="hidden md:block">
@@ -47,7 +47,7 @@ export default function AppSidebar({ links, role, schoolName, userName, userId, 
               to={createPageUrl(link.page)}
               className={`flex items-center gap-2 md:gap-3 px-2.5 md:px-3.5 py-2 md:py-2.5 rounded-md text-xs md:text-sm font-medium transition-all duration-200 ${
                 isActive 
-                  ? 'bg-blue-50 text-blue-700 shadow-sm' 
+                  ? 'bg-emerald-50 text-emerald-800 shadow-sm' 
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
