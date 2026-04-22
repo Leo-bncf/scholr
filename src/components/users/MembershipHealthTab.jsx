@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -8,9 +8,14 @@ import {
   ShieldAlert, CheckCircle, Loader2, UserX, RefreshCw, Trash2, Info
 } from 'lucide-react';
 import { ROLE_CONFIG } from './userConstants';
+import { useToast } from '@/components/ui/use-toast';
+import ConfirmDialog from '@/components/common/ConfirmDialog';
 
 export default function MembershipHealthTab({ schoolId }) {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
+  // { id, title, description, confirmLabel } — null when closed
+  const [pendingDelete, setPendingDelete] = useState(null);
 
   const { data: memberships = [], isLoading: loadingMemberships } = useQuery({
     queryKey: ['school-memberships', schoolId],
@@ -62,12 +67,19 @@ export default function MembershipHealthTab({ schoolId }) {
       if (errMsg) throw new Error(errMsg);
       return res?.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] });
       queryClient.invalidateQueries({ queryKey: ['all-school-memberships'] });
+      toast({
+        title: data?.note === 'already gone' ? 'Stale record cleared' : 'Membership removed',
+      });
     },
     onError: (err) => {
-      alert(`Could not remove: ${err?.message || 'unknown error'}`);
+      toast({
+        title: 'Could not remove membership',
+        description: err?.message || 'Unknown error — please try again.',
+        variant: 'destructive',
+      });
     },
   });
 
@@ -164,7 +176,12 @@ export default function MembershipHealthTab({ schoolId }) {
               variant="ghost"
               size="sm"
               className="h-7 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 gap-1"
-              onClick={() => { if (window.confirm('Delete this orphan membership?')) deleteMutation.mutate(m.id); }}
+              onClick={() => setPendingDelete({
+                id: m.id,
+                title: 'Delete orphan membership?',
+                description: `This membership has no school assigned and cannot function. Deleting it permanently removes the record (the user account itself is not affected). This cannot be undone.`,
+                confirmLabel: 'Delete orphan',
+              })}
             >
               <Trash2 className="w-3 h-3" /> Delete
             </Button>
@@ -187,7 +204,12 @@ export default function MembershipHealthTab({ schoolId }) {
               variant="ghost"
               size="sm"
               className="h-7 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 gap-1"
-              onClick={() => { if (window.confirm(`Remove duplicate membership for ${m.user_email}?`)) deleteMutation.mutate(m.id); }}
+              onClick={() => setPendingDelete({
+                id: m.id,
+                title: 'Remove duplicate membership?',
+                description: `${m.user_email} has more than one membership in this school. Removing this entry (id …${m.id?.slice(-8)}) will not affect the user's other membership(s) or their account. This cannot be undone.`,
+                confirmLabel: 'Remove duplicate',
+              })}
             >
               <Trash2 className="w-3 h-3" /> Remove
             </Button>
@@ -210,7 +232,12 @@ export default function MembershipHealthTab({ schoolId }) {
               variant="ghost"
               size="sm"
               className="h-7 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 gap-1"
-              onClick={() => { if (window.confirm('Delete this incomplete membership?')) deleteMutation.mutate(m.id); }}
+              onClick={() => setPendingDelete({
+                id: m.id,
+                title: 'Delete incomplete membership?',
+                description: `This membership has no email address, so it cannot receive invitations or be linked to a real user. Deleting it permanently removes the record. This cannot be undone.`,
+                confirmLabel: 'Delete record',
+              })}
             >
               <Trash2 className="w-3 h-3" /> Delete
             </Button>
@@ -268,13 +295,34 @@ export default function MembershipHealthTab({ schoolId }) {
                 variant="ghost"
                 size="sm"
                 className="h-7 text-xs text-red-500 hover:text-red-600 hover:bg-red-50 gap-1"
-                onClick={() => { if (window.confirm(`Remove ${m.user_email}?`)) deleteMutation.mutate(m.id); }}
+                onClick={() => setPendingDelete({
+                  id: m.id,
+                  title: 'Remove long-pending invitation?',
+                  description: `${m.user_email || m.user_name || 'This user'} has been pending since ${new Date(m.created_date).toLocaleDateString()}. Removing them clears the membership; they would need a fresh invitation to rejoin. This cannot be undone.`,
+                  confirmLabel: 'Remove member',
+                })}
               >
                 <Trash2 className="w-3 h-3" /> Remove
               </Button>
             </div>
           </div>
         )}
+      />
+
+      <ConfirmDialog
+        open={!!pendingDelete}
+        title={pendingDelete?.title || 'Delete membership?'}
+        description={pendingDelete?.description || ''}
+        confirmLabel={deleteMutation.isPending ? 'Removing…' : (pendingDelete?.confirmLabel || 'Delete')}
+        cancelLabel="Cancel"
+        isDestructive
+        onConfirm={() => {
+          if (!pendingDelete) return;
+          deleteMutation.mutate(pendingDelete.id, {
+            onSettled: () => setPendingDelete(null),
+          });
+        }}
+        onCancel={() => !deleteMutation.isPending && setPendingDelete(null)}
       />
     </div>
   );
