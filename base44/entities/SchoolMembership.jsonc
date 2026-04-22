@@ -1,0 +1,118 @@
+{
+  "name": "SchoolMembership",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Reference to the User entity"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "user_name": {
+      "type": "string"
+    },
+    "school_id": {
+      "type": "string",
+      "description": "Reference to the School entity"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "super_admin",
+        "school_admin",
+        "ib_coordinator",
+        "teacher",
+        "student",
+        "parent"
+      ],
+      "description": "Role within this school"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "pending"
+      ],
+      "default": "active"
+    },
+    "grade_level": {
+      "type": "string",
+      "description": "For students: DP1, DP2, MYP1-5, etc."
+    },
+    "department": {
+      "type": "string",
+      "description": "For teachers: department name"
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "attendance_admin",
+          "behavior_admin",
+          "reports_admin",
+          "billing_viewer"
+        ]
+      },
+      "description": "Optional sub-admin permission overrides for school_admin role",
+      "default": []
+    }
+  },
+  "required": [
+    "user_id",
+    "school_id",
+    "role"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.school_id": "{{user.data.school_id}}",
+          "user_condition": {
+            "data.role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.school_id": "{{user.data.school_id}}",
+          "user_condition": {
+            "data.role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

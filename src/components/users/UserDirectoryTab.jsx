@@ -16,6 +16,7 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/components/ui/use-toast';
+import ConfirmDialog from '@/components/common/ConfirmDialog';
 import { ROLE_CONFIG } from './userConstants';
 
 const STATUS_CONFIG = {
@@ -152,6 +153,8 @@ export default function UserDirectoryTab({ schoolId }) {
   const [statusFilter, setStatusFilter] = useState('all');
   const [cohortFilter, setCohortFilter] = useState('all');
   const [editingMember, setEditingMember] = useState(null);
+  const [memberToRemove, setMemberToRemove] = useState(null);
+  const [memberToSuspend, setMemberToSuspend] = useState(null);
 
   const { data: memberships = [], isLoading } = useQuery({
     queryKey: ['school-memberships', schoolId],
@@ -403,7 +406,7 @@ export default function UserDirectoryTab({ schoolId }) {
                             </DropdownMenuItem>
                             {m.status === 'active' ? (
                               <DropdownMenuItem
-                                onClick={() => suspendMutation.mutate(m.id)}
+                                onClick={() => setMemberToSuspend(m)}
                                 className="text-xs gap-2 text-amber-600 focus:text-amber-700"
                               >
                                 <UserX className="w-3.5 h-3.5" /> Suspend Account
@@ -418,11 +421,7 @@ export default function UserDirectoryTab({ schoolId }) {
                             )}
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
-                              onClick={() => {
-                                if (window.confirm(`Remove ${m.user_name || m.user_email} from school? This cannot be undone.`)) {
-                                  deleteMutation.mutate(m.id);
-                                }
-                              }}
+                              onClick={() => setMemberToRemove(m)}
                               className="text-xs gap-2 text-red-600 focus:text-red-700"
                             >
                               <Trash2 className="w-3.5 h-3.5" /> Remove from School
@@ -451,6 +450,45 @@ export default function UserDirectoryTab({ schoolId }) {
           schoolId={schoolId}
         />
       )}
+
+      <ConfirmDialog
+        open={!!memberToRemove}
+        title="Remove from school?"
+        description={
+          memberToRemove
+            ? `This will remove ${memberToRemove.user_name || memberToRemove.user_email || 'this user'} from the school. Their user account stays intact but they will lose all access here. This cannot be undone.`
+            : ''
+        }
+        confirmLabel={deleteMutation.isPending ? 'Removing…' : 'Remove user'}
+        cancelLabel="Cancel"
+        isDestructive
+        onConfirm={() => {
+          if (!memberToRemove) return;
+          deleteMutation.mutate(memberToRemove.id, {
+            onSettled: () => setMemberToRemove(null),
+          });
+        }}
+        onCancel={() => !deleteMutation.isPending && setMemberToRemove(null)}
+      />
+
+      <ConfirmDialog
+        open={!!memberToSuspend}
+        title="Suspend this user?"
+        description={
+          memberToSuspend
+            ? `${memberToSuspend.user_name || memberToSuspend.user_email} will be marked inactive and unable to sign in until reactivated.`
+            : ''
+        }
+        confirmLabel={suspendMutation.isPending ? 'Suspending…' : 'Suspend'}
+        cancelLabel="Cancel"
+        onConfirm={() => {
+          if (!memberToSuspend) return;
+          suspendMutation.mutate(memberToSuspend.id, {
+            onSettled: () => setMemberToSuspend(null),
+          });
+        }}
+        onCancel={() => !suspendMutation.isPending && setMemberToSuspend(null)}
+      />
     </div>
   );
 }

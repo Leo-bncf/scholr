@@ -1,15 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Search, Users } from 'lucide-react';
+import { Search, Users, Trash2, UserX } from 'lucide-react';
 import ManageUserDialog from '@/components/admin/ManageUserDialog';
+import ConfirmDialog from '@/components/common/ConfirmDialog';
 import SuperAdminLoadingState from '@/components/admin/super-admin/SuperAdminLoadingState';
 import SuperAdminPageHeader from '@/components/admin/super-admin/SuperAdminPageHeader';
 import SuperAdminPagination from '@/components/admin/super-admin/SuperAdminPagination';
 import SuperAdminShell from '@/components/admin/super-admin/SuperAdminShell';
 import { useSuperAdminAccess } from '@/components/hooks/useSuperAdminAccess';
 import { usePaginatedItems, useSuperAdminUsersQuery } from '@/components/hooks/useSuperAdminData';
+import { useToast } from '@/components/ui/use-toast';
 
 const PAGE_SIZE = 25;
 
@@ -28,20 +31,32 @@ const ROLES = ['all', 'super_admin', 'school_admin', 'ib_coordinator', 'teacher'
 export default function SuperAdminUsers() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const { currentUser, isChecking } = useSuperAdminAccess(navigate);
   const { data, isLoading, error, refetch } = useSuperAdminUsersQuery({ enabled: !!currentUser });
   const [searchQuery, setSearchQuery] = useState('');
   const [filterRole, setFilterRole] = useState('all');
   const [filterSchool, setFilterSchool] = useState('all');
+  const [showBlankOnly, setShowBlankOnly] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [manageDialogOpen, setManageDialogOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [page, setPage] = useState(1);
 
   const schools = data?.schools || [];
   const users = data?.users || [];
 
+  const isBlankUser = (u) => !u.full_name && !u.email;
+
+  const blankUserCount = useMemo(() => users.filter(isBlankUser).length, [users]);
+
   const filteredUsers = useMemo(() => {
     let filtered = users;
+    if (showBlankOnly) {
+      filtered = filtered.filter(isBlankUser);
+    }
     if (searchQuery) {
       filtered = filtered.filter(
         (user) =>
@@ -52,11 +67,60 @@ export default function SuperAdminUsers() {
     if (filterRole !== 'all') filtered = filtered.filter((user) => user.role === filterRole);
     if (filterSchool !== 'all') filtered = filtered.filter((user) => user.active_school_id === filterSchool);
     return filtered;
-  }, [filterRole, filterSchool, searchQuery, users]);
+  }, [filterRole, filterSchool, searchQuery, users, showBlankOnly]);
 
   useEffect(() => {
     setPage(1);
-  }, [searchQuery, filterRole, filterSchool]);
+  }, [searchQuery, filterRole, filterSchool, showBlankOnly]);
+
+  const handleDeleteUser = async () => {
+    if (!userToDelete) return;
+    setIsDeleting(true);
+    try {
+      // Clean up any school memberships first
+      try {
+        const memberships = await base44.entities.SchoolMembership.filter({ user_id: userToDelete.id });
+        for (const m of memberships) {
+          await base44.entities.SchoolMembership.delete(m.id);
+        }
+      } catch (e) {
+        console.warn('Could not clean memberships:', e);
+      }
+      await base44.entities.User.delete(userToDelete.id);
+      toast({ title: 'User deleted', description: userToDelete.email || userToDelete.id });
+      setUserToDelete(null);
+      await queryClient.invalidateQueries({ queryKey: ['super-admin', 'users'] });
+      await refetch();
+    } catch (err) {
+      toast({
+        title: 'Could not delete user',
+        description: err?.response?.data?.error || err?.message || 'Try again',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleBulkDeleteBlank = async () => {
+    const blanks = users.filter(isBlankUser);
+    if (blanks.length === 0) return;
+    setIsDeleting(true);
+    let deleted = 0;
+    for (const u of blanks) {
+      try {
+        await base44.entities.User.delete(u.id);
+        deleted++;
+      } catch (e) {
+        console.warn('Skipped:', u.id, e);
+      }
+    }
+    toast({ title: `Deleted ${deleted} blank account${deleted === 1 ? '' : 's'}` });
+    setBulkDeleteOpen(false);
+    setIsDeleting(false);
+    await queryClient.invalidateQueries({ queryKey: ['super-admin', 'users'] });
+    await refetch();
+  };
 
   const { paginatedItems, totalItems, totalPages, page: safePage } = usePaginatedItems(filteredUsers, PAGE_SIZE, page);
 
@@ -82,6 +146,19 @@ export default function SuperAdminUsers() {
         <SuperAdminPageHeader
           title="User Management"
           subtitle={`${users.length} total users across all schools`}
+          rightContent={
+            blankUserCount > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setBulkDeleteOpen(true)}
+                className="text-xs gap-1.5 border-amber-200 text-amber-700 hover:bg-amber-50"
+              >
+                <UserX className="w-3.5 h-3.5" />
+                Clean up {blankUserCount} blank account{blankUserCount === 1 ? '' : 's'}
+              </Button>
+            )
+          }
         />
 
         {error && (
@@ -135,6 +212,22 @@ export default function SuperAdminUsers() {
                 ))}
               </select>
             </div>
+
+            {blankUserCount > 0 && (
+              <div>
+                <p className="text-xs text-slate-500 mb-1 font-medium">Flagged</p>
+                <button
+                  onClick={() => setShowBlankOnly(!showBlankOnly)}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
+                    showBlankOnly
+                      ? 'bg-amber-600 text-white'
+                      : 'bg-white border border-amber-200 text-amber-700 hover:bg-amber-50'
+                  }`}
+                >
+                  Blank accounts only ({blankUserCount})
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -193,17 +286,28 @@ export default function SuperAdminUsers() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <Button
-                        onClick={() => {
-                          setSelectedUser(user);
-                          setManageDialogOpen(true);
-                        }}
-                        variant="outline"
-                        size="sm"
-                        className="text-xs bg-white border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-50"
-                      >
-                        Manage
-                      </Button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Button
+                          onClick={() => {
+                            setSelectedUser(user);
+                            setManageDialogOpen(true);
+                          }}
+                          variant="outline"
+                          size="sm"
+                          className="text-xs bg-white border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-50"
+                        >
+                          Manage
+                        </Button>
+                        <Button
+                          onClick={() => setUserToDelete(user)}
+                          variant="outline"
+                          size="sm"
+                          className="text-xs bg-white border-red-200 text-red-600 hover:text-red-700 hover:bg-red-50 h-8 w-8 p-0"
+                          title="Delete user"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -229,6 +333,32 @@ export default function SuperAdminUsers() {
           onUserUpdated={handleUserUpdated}
         />
       )}
+
+      <ConfirmDialog
+        open={!!userToDelete}
+        title="Delete this user?"
+        description={
+          userToDelete
+            ? `This will permanently delete ${userToDelete.full_name || userToDelete.email || userToDelete.id} and remove all their school memberships. This cannot be undone.`
+            : ''
+        }
+        confirmLabel={isDeleting ? 'Deleting…' : 'Delete user'}
+        cancelLabel="Cancel"
+        isDestructive
+        onConfirm={handleDeleteUser}
+        onCancel={() => !isDeleting && setUserToDelete(null)}
+      />
+
+      <ConfirmDialog
+        open={bulkDeleteOpen}
+        title={`Delete ${blankUserCount} blank account${blankUserCount === 1 ? '' : 's'}?`}
+        description="These are user records with no name and no email — usually created when unauthorised visitors hit the app. They will be permanently removed."
+        confirmLabel={isDeleting ? 'Deleting…' : `Delete ${blankUserCount} account${blankUserCount === 1 ? '' : 's'}`}
+        cancelLabel="Cancel"
+        isDestructive
+        onConfirm={handleBulkDeleteBlank}
+        onCancel={() => !isDeleting && setBulkDeleteOpen(false)}
+      />
     </>
   );
 }
