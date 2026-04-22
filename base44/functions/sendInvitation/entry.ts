@@ -14,10 +14,9 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Authorize: caller must be platform admin OR have an active school_admin / ib_coordinator
-    // membership for this school, OR have the school_admin/ib_coordinator role on their user record
-    // for this school (legacy path — SchoolMembership records may not exist yet).
-    const isPlatformAdmin = user.role === 'admin';
+    // Authorize: platform admins can invite into any school. Everyone else must be an active
+    // school_admin / ib_coordinator for this school, with a legacy fallback to role fields on the user record.
+    const isPlatformAdmin = ['admin', 'super_admin'].includes(user.role);
 
     if (!isPlatformAdmin) {
       const memberships = await base44.asServiceRole.entities.SchoolMembership.filter({
@@ -27,16 +26,13 @@ Deno.serve(async (req) => {
       });
       let allowed = memberships.some(m => ['school_admin', 'ib_coordinator'].includes(m.role));
 
-      // Fallback: check the user's own data fields for school role (legacy / pre-membership setup)
       if (!allowed) {
         const userData = user.data || {};
         const nestedUserData = userData.data || {};
         const userSchoolId = userData.active_school_id || userData.school_id || nestedUserData.active_school_id || nestedUserData.school_id;
-        const userRole = userData.role || userData.intended_role || nestedUserData.role || nestedUserData.intended_role || user.role;
-        if (
-          userSchoolId === schoolId &&
-          ['school_admin', 'ib_coordinator', 'admin', 'super_admin'].includes(userRole)
-        ) {
+        const userRole = userData.role || userData.intended_role || nestedUserData.role || nestedUserData.intended_role;
+
+        if (userSchoolId === schoolId && ['school_admin', 'ib_coordinator'].includes(userRole)) {
           allowed = true;
         }
       }
