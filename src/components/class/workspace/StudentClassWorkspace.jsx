@@ -36,7 +36,7 @@ export default function StudentClassWorkspace({ classData, user, initialTab }) {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <ClassHeader classData={classData} backTo="StudentDashboard" backLabel="My classes" />
+      <ClassHeader classData={classData} />
       <ClassTabBar groups={groups} activeTab={activeTab} onTabChange={setActiveTab} />
 
       <div className="min-h-[calc(100vh-180px)]">

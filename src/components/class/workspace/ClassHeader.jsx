@@ -3,12 +3,29 @@ import { ArrowLeft, Users, MapPin, Clock, Archive } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { createPageUrl } from '@/utils';
+import { useUser } from '@/components/auth/UserContext';
+
+// Back destination per role — keeps each user type on a route they can actually see.
+const BACK_BY_ROLE = {
+  super_admin: { to: 'SuperAdminDashboard', label: 'Dashboard' },
+  school_admin: { to: 'SchoolAdminDashboard', label: 'Dashboard' },
+  ib_coordinator: { to: 'CoordinatorDashboard', label: 'Dashboard' },
+  teacher: { to: 'TeacherDashboard', label: 'My classes' },
+  student: { to: 'StudentDashboard', label: 'My classes' },
+  parent: { to: 'ParentDashboard', label: 'Dashboard' },
+};
 
 /**
  * Shared class workspace header.
  * Shows breadcrumb-style back link, class name, key metadata, and role-scoped context chip.
+ * Back destination is derived from the viewer's role so each user returns to
+ * a page they have access to.
  */
 export default function ClassHeader({ classData, backTo, backLabel, contextChip }) {
+  const { membership } = useUser();
+  const fallback = BACK_BY_ROLE[membership?.role] || { to: 'AppHome', label: 'Back' };
+  const resolvedBackTo = backTo || fallback.to;
+  const resolvedBackLabel = backLabel || fallback.label;
   const studentCount = classData.student_ids?.length || 0;
   const isArchived = classData.status === 'archived';
 
@@ -16,10 +33,10 @@ export default function ClassHeader({ classData, backTo, backLabel, contextChip 
     <div className="bg-white border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
         <div className="flex items-center justify-between gap-4 mb-2">
-          <a href={createPageUrl(backTo)}>
+          <a href={createPageUrl(resolvedBackTo)}>
             <Button variant="ghost" size="sm" className="h-7 text-xs text-slate-500 hover:text-slate-900 -ml-2">
               <ArrowLeft className="w-3.5 h-3.5 mr-1.5" />
-              {backLabel}
+              {resolvedBackLabel}
             </Button>
           </a>
           {contextChip}

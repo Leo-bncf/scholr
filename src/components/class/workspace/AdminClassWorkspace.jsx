@@ -59,12 +59,7 @@ export default function AdminClassWorkspace({ classData, user, initialTab }) {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <ClassHeader
-        classData={classData}
-        backTo="SchoolAdminClasses"
-        backLabel="All classes"
-        contextChip={adminChip}
-      />
+      <ClassHeader classData={classData} contextChip={adminChip} />
       <ClassTabBar groups={groups} activeTab={activeTab} onTabChange={setActiveTab} />
 
       <div className="min-h-[calc(100vh-180px)]">
