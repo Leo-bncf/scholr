@@ -17,9 +17,11 @@ export default function DetachedNavbar() {
     <nav className="w-full max-w-6xl rounded-full border border-white/40 bg-white/55 backdrop-blur-xl shadow-[0_10px_40px_rgba(15,40,35,0.18)] px-4 sm:px-6 py-3">
       <div className="flex items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-3 shrink-0">
-          <div className="h-9 w-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center text-lg font-bold shadow-sm">
-            S
-          </div>
+          <img
+            src="https://media.base44.com/images/public/69a0347d243a60c91ce938c9/3799d407a_image.png"
+            alt="Scholr"
+            className="h-9 w-9 rounded-xl shadow-sm object-cover"
+          />
           <span className="text-2xl font-semibold text-slate-900 tracking-tight">Scholr</span>
         </Link>
 
