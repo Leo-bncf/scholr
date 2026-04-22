@@ -73,6 +73,20 @@ export default function ManageUserDialog({ open, onOpenChange, user, onUserUpdat
         throw new Error(errMsg);
       }
 
+      // The backend function only writes to SchoolMembership. The rest of the app
+      // (and listAllUsers fallback) reads `active_school_id` / `school_id` from the
+      // User entity itself, so mirror the change directly on the User record.
+      if (payload.schoolId !== undefined) {
+        try {
+          await base44.entities.User.update(user.id, {
+            active_school_id: newSchoolId || null,
+            school_id: newSchoolId || null,
+          });
+        } catch (syncErr) {
+          console.warn('Could not sync active_school_id onto User record:', syncErr);
+        }
+      }
+
       const schoolName = newSchoolId ? (schools.find(s => s.id === newSchoolId)?.name || 'selected school') : null;
       setSuccess(
         payload.schoolId !== undefined
