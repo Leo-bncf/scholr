@@ -8,9 +8,11 @@ export default function PublicFooter() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
           <div className="md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">S</span>
-              </div>
+              <img
+                src="https://media.base44.com/images/public/69a0347d243a60c91ce938c9/3799d407a_image.png"
+                alt="Scholr"
+                className="w-8 h-8 rounded-lg object-cover"
+              />
               <span className="text-xl font-bold text-white">Scholr</span>
             </Link>
             <p className="text-emerald-200 text-sm leading-relaxed">
