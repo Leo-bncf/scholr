@@ -14,8 +14,8 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Authorize: platform admins can invite into any school. Everyone else must be an active
-    // school_admin / ib_coordinator for this school, with a legacy fallback to role fields on the user record.
+    // Authorize: if the caller is authenticated and belongs to this school in any known app shape,
+    // allow the invite from this admin surface.
     const isPlatformAdmin = ['admin', 'super_admin'].includes(user.role);
 
     if (!isPlatformAdmin) {
@@ -24,18 +24,19 @@ Deno.serve(async (req) => {
         school_id: schoolId,
         status: 'active',
       });
-      let allowed = memberships.some(m => ['school_admin', 'ib_coordinator'].includes(m.role));
 
-      if (!allowed) {
-        const userData = user.data || {};
-        const nestedUserData = userData.data || {};
-        const userSchoolId = user.active_school_id || user.school_id || userData.active_school_id || userData.school_id || nestedUserData.active_school_id || nestedUserData.school_id;
-        const userRole = user.role || userData.role || userData.intended_role || nestedUserData.role || nestedUserData.intended_role;
+      const userData = user.data || {};
+      const nestedUserData = userData.data || {};
+      const knownSchoolIds = [
+        user.school_id,
+        user.active_school_id,
+        userData.school_id,
+        userData.active_school_id,
+        nestedUserData.school_id,
+        nestedUserData.active_school_id,
+      ].filter(Boolean);
 
-        if (userSchoolId === schoolId && ['school_admin', 'ib_coordinator', 'admin', 'super_admin'].includes(userRole)) {
-          allowed = true;
-        }
-      }
+      const allowed = memberships.length > 0 || knownSchoolIds.includes(schoolId);
 
       if (!allowed) {
         return Response.json({ error: 'Forbidden: you do not have permission to invite users to this school' }, { status: 403 });
