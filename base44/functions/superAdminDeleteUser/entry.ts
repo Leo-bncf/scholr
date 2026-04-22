@@ -8,11 +8,17 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const effectiveRole =
+      me.intended_role ||
+      me.data?.intended_role ||
+      me.data?.role ||
+      me.role;
+
     const isPlatformAdmin =
       me.role === 'admin' ||
       me.role === 'super_admin' ||
-      me.data?.role === 'admin' ||
-      me.data?.role === 'super_admin';
+      effectiveRole === 'admin' ||
+      effectiveRole === 'super_admin';
 
     const sr = base44.asServiceRole;
 
@@ -29,9 +35,9 @@ Deno.serve(async (req) => {
           .filter((m) => (m.role === 'school_admin' || m.role === 'ib_coordinator') && m.status !== 'inactive')
           .map((m) => m.school_id)
       );
-      // Legacy fallback — user.data carries the role instead of a membership row
-      if (me.data?.role === 'school_admin' || me.data?.role === 'ib_coordinator') {
-        const legacySchool = me.data?.active_school_id || me.data?.school_id;
+      // Legacy fallback — role lives on user.data / intended_role instead of a membership row
+      if (effectiveRole === 'school_admin' || effectiveRole === 'ib_coordinator') {
+        const legacySchool = me.data?.active_school_id || me.data?.school_id || me.school_id;
         if (legacySchool) managedSchoolIds.add(legacySchool);
       }
       if (managedSchoolIds.size === 0) {

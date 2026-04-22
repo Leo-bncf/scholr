@@ -31,17 +31,26 @@ Deno.serve(async (req) => {
       console.warn('get() failed:', e?.message);
     }
 
-    const isPlatformAdmin =
-      user.role === 'super_admin' ||
-      user.role === 'admin' ||
-      user.data?.role === 'super_admin' ||
-      user.data?.role === 'admin';
+    // adminUpdateUser stores the real role on `intended_role` (since Base44
+    // only supports admin/user natively). Trust it alongside user.role/user.data.role.
+    const effectiveRole =
+      user.intended_role ||
+      user.data?.intended_role ||
+      user.data?.role ||
+      user.role;
 
-    // Legacy fallback: some users carry their role on user.data rather than in
-    // a SchoolMembership row. Treat them as a school admin for their user.data.school_id.
+    const isPlatformAdmin =
+      user.role === 'admin' ||
+      user.role === 'super_admin' ||
+      effectiveRole === 'admin' ||
+      effectiveRole === 'super_admin';
+
+    // Legacy fallback: some users carry their role on user.data / intended_role
+    // rather than in a SchoolMembership row. Treat them as a school admin for
+    // their user.data.school_id.
     const legacyAdminSchoolId =
-      (user.data?.role === 'school_admin' || user.data?.role === 'ib_coordinator')
-        ? (user.data?.active_school_id || user.data?.school_id)
+      (effectiveRole === 'school_admin' || effectiveRole === 'ib_coordinator')
+        ? (user.data?.active_school_id || user.data?.school_id || user.school_id)
         : null;
 
     // Ghost/orphan row: record can't be loaded but delete may still work.
