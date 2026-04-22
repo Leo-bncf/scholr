@@ -24,11 +24,19 @@ Deno.serve(async (req) => {
     }
 
     // Load the target membership via service role so RLS doesn't block the read.
-    const memberships = await base44.asServiceRole.entities.SchoolMembership.filter({ id: membershipId });
-    if (memberships.length === 0) {
+    let target = null;
+    try {
+      target = await base44.asServiceRole.entities.SchoolMembership.get(membershipId);
+    } catch (e) {
+      console.warn('get() failed, falling back to filter:', e?.message);
+    }
+    if (!target) {
+      const memberships = await base44.asServiceRole.entities.SchoolMembership.filter({ id: membershipId });
+      target = memberships[0];
+    }
+    if (!target) {
       return Response.json({ error: 'Membership not found' }, { status: 404 });
     }
-    const target = memberships[0];
 
     // Authorisation: platform super_admin OR the caller is a school_admin /
     // ib_coordinator of the same school as the target membership.

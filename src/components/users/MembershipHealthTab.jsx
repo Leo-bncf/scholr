@@ -56,10 +56,18 @@ export default function MembershipHealthTab({ schoolId }) {
   const totalIssues = orphans.length + duplicates.length + missingEmail.length + invalidRoles.length;
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.SchoolMembership.delete(id),
+    mutationFn: async (id) => {
+      const res = await base44.functions.invoke('removeSchoolMember', { membershipId: id });
+      const errMsg = res?.data?.error || res?.error;
+      if (errMsg) throw new Error(errMsg);
+      return res?.data;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] });
       queryClient.invalidateQueries({ queryKey: ['all-school-memberships'] });
+    },
+    onError: (err) => {
+      alert(`Could not remove: ${err?.message || 'unknown error'}`);
     },
   });
 
