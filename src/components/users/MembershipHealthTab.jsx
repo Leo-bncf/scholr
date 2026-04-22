@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import {
-  ShieldAlert, CheckCircle, Loader2, UserX, RefreshCw, Trash2, Info
+  ShieldAlert, CheckCircle, Loader2, UserX, RefreshCw, Trash2, Info, Wand2
 } from 'lucide-react';
 import { ROLE_CONFIG } from './userConstants';
 import { useToast } from '@/components/ui/use-toast';
@@ -16,6 +16,8 @@ export default function MembershipHealthTab({ schoolId }) {
   const { toast } = useToast();
   // { id, title, description, confirmLabel } — null when closed
   const [pendingDelete, setPendingDelete] = useState(null);
+  const [fixAllOpen, setFixAllOpen] = useState(false);
+  const [fixingAll, setFixingAll] = useState(false);
 
   const { data: memberships = [], isLoading: loadingMemberships } = useQuery({
     queryKey: ['school-memberships', schoolId],
@@ -36,14 +38,23 @@ export default function MembershipHealthTab({ schoolId }) {
   // 1. Orphan memberships: school_id missing or blank
   const orphans = allSchoolMemberships.filter(m => !m.school_id);
 
-  // 2. Duplicate memberships: same user_email in same school
-  const emailCount = {};
+  // 2. Duplicate memberships: same user_email in same school.
+  // Keep the most-recently-created record and flag the others as removable extras.
+  // So 3 copies of the same account = 2 duplicates (not 3).
+  const emailGroups = {};
   memberships.forEach(m => {
     const key = m.user_email?.toLowerCase();
     if (!key) return;
-    emailCount[key] = (emailCount[key] || []).concat(m);
+    emailGroups[key] = (emailGroups[key] || []).concat(m);
   });
-  const duplicates = Object.values(emailCount).filter(arr => arr.length > 1).flat();
+  const duplicates = Object.values(emailGroups)
+    .filter(arr => arr.length > 1)
+    .flatMap(arr => {
+      const sorted = [...arr].sort(
+        (a, b) => new Date(b.created_date) - new Date(a.created_date)
+      );
+      return sorted.slice(1); // drop the newest, flag the rest
+    });
 
   // 3. Missing email
   const missingEmail = memberships.filter(m => !m.user_email);
@@ -87,6 +98,51 @@ export default function MembershipHealthTab({ schoolId }) {
     mutationFn: ({ id, status }) => base44.entities.SchoolMembership.update(id, { status }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] }),
   });
+
+  // Fix everything: delete orphans, duplicates, missing-email rows; suspend invalid-role rows.
+  // Stale-pending rows are intentionally NOT touched (they require a human call on activate vs remove).
+  const runFixEverything = async () => {
+    setFixingAll(true);
+    const toDelete = [...orphans, ...duplicates, ...missingEmail];
+    const toSuspend = invalidRoles;
+    let fixed = 0;
+    const failures = [];
+
+    for (const m of toDelete) {
+      try {
+        const res = await base44.functions.invoke('removeSchoolMember', { membershipId: m.id });
+        const errMsg = res?.data?.error || res?.error;
+        if (errMsg) throw new Error(errMsg);
+        fixed++;
+      } catch (e) {
+        failures.push({ id: m.id, error: e?.message || 'delete failed' });
+      }
+    }
+
+    for (const m of toSuspend) {
+      try {
+        await base44.entities.SchoolMembership.update(m.id, { status: 'inactive' });
+        fixed++;
+      } catch (e) {
+        failures.push({ id: m.id, error: e?.message || 'update failed' });
+      }
+    }
+
+    queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] });
+    queryClient.invalidateQueries({ queryKey: ['all-school-memberships'] });
+    setFixingAll(false);
+    setFixAllOpen(false);
+
+    if (failures.length === 0) {
+      toast({ title: `Fixed ${fixed} issue${fixed !== 1 ? 's' : ''}` });
+    } else {
+      toast({
+        title: `Fixed ${fixed}, failed ${failures.length}`,
+        description: failures.slice(0, 3).map(f => f.error).join(' · ') + (failures.length > 3 ? '…' : ''),
+        variant: 'destructive',
+      });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -154,10 +210,23 @@ export default function MembershipHealthTab({ schoolId }) {
 
       {totalIssues > 0 && (
         <Alert className="border-red-200 bg-red-50">
-          <ShieldAlert className="w-4 h-4 text-red-600" />
-          <AlertDescription className="text-xs text-red-700">
-            Found <strong>{totalIssues} issue{totalIssues !== 1 ? 's' : ''}</strong> across your school memberships that require attention.
-          </AlertDescription>
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start gap-2">
+              <ShieldAlert className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
+              <AlertDescription className="text-xs text-red-700">
+                Found <strong>{totalIssues} issue{totalIssues !== 1 ? 's' : ''}</strong> across your school memberships that require attention.
+              </AlertDescription>
+            </div>
+            <Button
+              size="sm"
+              className="h-7 text-xs bg-red-600 hover:bg-red-700 text-white gap-1 flex-shrink-0"
+              onClick={() => setFixAllOpen(true)}
+              disabled={fixingAll}
+            >
+              {fixingAll ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
+              Fix everything
+            </Button>
+          </div>
         </Alert>
       )}
 
@@ -323,6 +392,24 @@ export default function MembershipHealthTab({ schoolId }) {
           });
         }}
         onCancel={() => !deleteMutation.isPending && setPendingDelete(null)}
+      />
+
+      <ConfirmDialog
+        open={fixAllOpen}
+        title="Fix everything?"
+        description={
+          `This will automatically resolve ${totalIssues} issue${totalIssues !== 1 ? 's' : ''}:\n` +
+          `• Delete ${orphans.length} orphan membership${orphans.length !== 1 ? 's' : ''}\n` +
+          `• Remove ${duplicates.length} duplicate${duplicates.length !== 1 ? 's' : ''} (keeps the most recent copy per user)\n` +
+          `• Delete ${missingEmail.length} record${missingEmail.length !== 1 ? 's' : ''} missing an email\n` +
+          `• Suspend ${invalidRoles.length} user${invalidRoles.length !== 1 ? 's' : ''} with invalid roles\n\n` +
+          `Long-pending invitations are left alone — review them manually. This cannot be undone.`
+        }
+        confirmLabel={fixingAll ? 'Fixing…' : 'Fix everything'}
+        cancelLabel="Cancel"
+        isDestructive
+        onConfirm={runFixEverything}
+        onCancel={() => !fixingAll && setFixAllOpen(false)}
       />
     </div>
   );
