@@ -45,7 +45,7 @@ export default function SchoolAdminBehavior() {
             tabs={TABS}
             activeTab={tab}
             onTabChange={setTab}
-            colorScheme="amber"
+            colorScheme="emerald"
             title="Behavior & Pastoral Notes"
             subtitle={`${school?.name} · Governed pastoral operations`}
             rightContent={

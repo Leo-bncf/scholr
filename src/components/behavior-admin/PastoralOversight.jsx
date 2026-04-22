@@ -70,11 +70,11 @@ export default function PastoralOversight({ schoolId }) {
   return (
     <div className="space-y-5">
       {/* Header alert */}
-      <div className="bg-violet-50 border border-violet-200 rounded-xl p-4 flex items-start gap-3">
-        <ShieldCheck className="w-5 h-5 text-violet-600 flex-shrink-0 mt-0.5" />
+      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-start gap-3">
+        <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-bold text-violet-900">Pastoral Oversight — Authorized Staff View</p>
-          <p className="text-xs text-violet-700 mt-0.5">This view includes all records including staff-only and safeguarding entries. Visible only to school admins and IB coordinators.</p>
+          <p className="text-sm font-bold text-emerald-900">Pastoral Oversight — Authorized Staff View</p>
+          <p className="text-xs text-emerald-700 mt-0.5">This view includes all records including staff-only and safeguarding entries. Visible only to school admins and IB coordinators.</p>
         </div>
       </div>
 
