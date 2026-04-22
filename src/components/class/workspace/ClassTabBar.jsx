@@ -12,7 +12,7 @@ export default function ClassTabBar({ groups, activeTab, onTabChange }) {
   return (
     <div className="border-b border-slate-200 bg-white sticky top-0 z-10">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <div className="flex items-stretch gap-1 flex-wrap -mb-px">
+        <div className="flex items-stretch gap-1 -mb-px">
           {groups.map((group, gi) => (
             <React.Fragment key={group.label}>
               {gi > 0 && <div key={`sep-${gi}`} className="w-px bg-slate-200 my-2 mx-1 flex-shrink-0" />}
