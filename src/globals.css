@@ -3,18 +3,18 @@
 :root {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   
-  /* Professional Dark Blue Theme Overrides */
-  --primary: 173 46% 22%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 214 100% 97%;
-  --secondary-foreground: 222 84% 11%;
-  --muted: 214 100% 97%;
-  --muted-foreground: 173 46% 22%;
-  --accent: 214 100% 97%;
-  --accent-foreground: 222 84% 11%;
-  --border: 214 60% 90%;
-  --input: 214 60% 90%;
-  --ring: 173 46% 22%;
+  /* Dark Green Theme Overrides */
+  --primary: 160 84% 18%;
+  --primary-foreground: 152 76% 96%;
+  --secondary: 152 76% 96%;
+  --secondary-foreground: 158 64% 10%;
+  --muted: 152 76% 96%;
+  --muted-foreground: 160 40% 28%;
+  --accent: 152 76% 96%;
+  --accent-foreground: 158 64% 10%;
+  --border: 152 35% 88%;
+  --input: 152 35% 88%;
+  --ring: 160 84% 22%;
   --radius: 0.3rem;
 }
 
@@ -38,10 +38,10 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #bfdbfe;
+  background: #a7f3d0;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #60a5fa;
+  background: #10b981;
 }
