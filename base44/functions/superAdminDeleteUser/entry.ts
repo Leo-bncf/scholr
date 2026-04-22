@@ -8,9 +8,27 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Only platform super-admins may delete users outright
-    if (me.role !== 'admin' && me.role !== 'super_admin') {
-      return Response.json({ error: 'Forbidden: super admin only' }, { status: 403 });
+    const isPlatformAdmin = me.role === 'admin' || me.role === 'super_admin';
+
+    const sr = base44.asServiceRole;
+
+    // If not a platform admin, the caller must be a school_admin / ib_coordinator
+    // somewhere. Collect the schools they manage; they may only delete users
+    // whose memberships are entirely within those schools.
+    let managedSchoolIds = new Set();
+    if (!isPlatformAdmin) {
+      const myMemberships = await sr.entities.SchoolMembership.filter({
+        user_id: me.id,
+        status: 'active',
+      });
+      managedSchoolIds = new Set(
+        myMemberships
+          .filter((m) => m.role === 'school_admin' || m.role === 'ib_coordinator')
+          .map((m) => m.school_id)
+      );
+      if (managedSchoolIds.size === 0) {
+        return Response.json({ error: 'Forbidden' }, { status: 403 });
+      }
     }
 
     const body = await req.json().catch(() => ({}));
@@ -20,7 +38,6 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'userId or userIds is required' }, { status: 400 });
     }
 
-    const sr = base44.asServiceRole;
     let deleted = 0;
     const failures = [];
 
@@ -30,8 +47,19 @@ Deno.serve(async (req) => {
         continue;
       }
       try {
-        // Clean up memberships first
         const memberships = await sr.entities.SchoolMembership.filter({ user_id: id });
+
+        // For non-platform admins, require that EVERY membership of the target
+        // is in a school the caller manages. Otherwise refuse.
+        if (!isPlatformAdmin) {
+          const outside = memberships.find((m) => !managedSchoolIds.has(m.school_id));
+          if (outside || memberships.length === 0) {
+            failures.push({ id, error: 'Not permitted for this user' });
+            continue;
+          }
+        }
+
+        // Clean up memberships first
         for (const m of memberships) {
           try { await sr.entities.SchoolMembership.delete(m.id); } catch (e) { console.warn('membership delete failed', m.id, e?.message); }
         }
