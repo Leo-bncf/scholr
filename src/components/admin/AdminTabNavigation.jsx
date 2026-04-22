@@ -12,7 +12,7 @@ export default function AdminTabNavigation({
   const colorMap = {
     indigo: { bg: 'bg-indigo-50', text: 'text-indigo-700', badge: 'bg-indigo-600' },
     blue: { bg: 'bg-blue-50', text: 'text-blue-700', badge: 'bg-blue-600' },
-    emerald: { bg: 'bg-emerald-50', text: 'text-emerald-700', badge: 'bg-emerald-600' },
+    emerald: { bg: 'bg-emerald-100', text: 'text-emerald-800', badge: 'bg-emerald-700' },
     amber: { bg: 'bg-amber-50', text: 'text-amber-700', badge: 'bg-amber-600' },
     purple: { bg: 'bg-purple-50', text: 'text-purple-700', badge: 'bg-purple-600' },
     rose: { bg: 'bg-rose-50', text: 'text-rose-700', badge: 'bg-rose-600' },
