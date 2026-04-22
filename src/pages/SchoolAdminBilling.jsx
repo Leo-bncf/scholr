@@ -107,7 +107,6 @@ export default function SchoolAdminBilling() {
             tabs={[
               { id: 'status', label: 'Subscription', icon: CreditCard },
               { id: 'students', label: 'Student Slots', icon: GraduationCap, badge: hasStudentWarning ? '!' : null },
-              { id: 'modules', label: 'Plan Features', icon: Shield },
               ...(upgradePlans.length > 0 ? [{ id: 'upgrade', label: 'Upgrade / Change Plan', icon: ArrowUpCircle }] : []),
             ]}
             activeTab={billingTab}
@@ -300,13 +299,6 @@ export default function SchoolAdminBilling() {
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
-
-            {/* ── PLAN FEATURES ── */}
-            {billingTab === 'modules' && (
-              <div className="mt-2">
-                <ModuleStatusGrid currentPlan={currentPlan} />
               </div>
             )}
 
