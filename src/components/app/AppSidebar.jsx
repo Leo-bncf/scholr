@@ -22,9 +22,11 @@ export default function AppSidebar({ links, role, schoolName, userName, userId, 
       <div className="p-3 md:p-5 border-b border-slate-200">
         <div className="flex items-center justify-between gap-2">
           <Link to={createPageUrl('Landing')} className="flex items-center gap-2 md:gap-2.5 flex-1 min-w-0 hover:opacity-90 transition-opacity cursor-pointer">
-            <div className="w-7 md:w-8 h-7 md:h-8 bg-emerald-50 rounded-md flex items-center justify-center flex-shrink-0">
-              <GraduationCap className="w-3.5 md:w-4.5 h-3.5 md:h-4.5 text-emerald-700" />
-            </div>
+            <img
+              src="https://media.base44.com/images/public/69a0347d243a60c91ce938c9/3799d407a_image.png"
+              alt="Scholr"
+              className="w-7 md:w-8 h-7 md:h-8 rounded-md shadow-sm object-cover flex-shrink-0"
+            />
             <span className="text-base md:text-lg font-bold truncate text-sm md:text-base tracking-tight text-slate-900">Scho<span className="text-emerald-700 font-normal">lr</span></span>
           </Link>
           {userId && schoolId && (
