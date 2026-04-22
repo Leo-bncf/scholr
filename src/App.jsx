@@ -7,6 +7,7 @@ import PageNotFound from './lib/PageNotFound';
 import SuperAdminAnalytics from './pages/SuperAdminAnalytics';
 import SuperAdminAutomation from './pages/SuperAdminAutomation';
 import SuperAdminSupport from './pages/SuperAdminSupport';
+import SuperAdminTimetables from './pages/SuperAdminTimetables';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import SecurityAndCompliance from './pages/SecurityAndCompliance';
@@ -137,6 +138,14 @@ const AuthenticatedApp = () => {
         element={
           <LayoutWrapper currentPageName="SuperAdminSupport">
             <SuperAdminSupport />
+          </LayoutWrapper>
+        }
+      />
+      <Route
+        path="/SuperAdminTimetables"
+        element={
+          <LayoutWrapper currentPageName="SuperAdminTimetables">
+            <SuperAdminTimetables />
           </LayoutWrapper>
         }
       />
