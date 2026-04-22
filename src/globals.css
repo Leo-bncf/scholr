@@ -4,17 +4,17 @@
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   
   /* Dark Green Theme Overrides */
-  --primary: 160 84% 18%;
+  --primary: 170 72% 13%;
   --primary-foreground: 152 76% 96%;
-  --secondary: 152 76% 96%;
-  --secondary-foreground: 158 64% 10%;
-  --muted: 152 76% 96%;
-  --muted-foreground: 160 40% 28%;
-  --accent: 152 76% 96%;
-  --accent-foreground: 158 64% 10%;
-  --border: 152 35% 88%;
-  --input: 152 35% 88%;
-  --ring: 160 84% 22%;
+  --secondary: 168 40% 94%;
+  --secondary-foreground: 170 72% 10%;
+  --muted: 168 40% 94%;
+  --muted-foreground: 170 30% 24%;
+  --accent: 168 40% 94%;
+  --accent-foreground: 170 72% 10%;
+  --border: 168 28% 86%;
+  --input: 168 28% 86%;
+  --ring: 170 72% 18%;
   --radius: 0.3rem;
 }
 
