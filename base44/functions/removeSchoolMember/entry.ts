@@ -18,7 +18,7 @@ Deno.serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const { membershipId } = body;
-    console.log('removeSchoolMember called by', user.email, 'user.role=', user.role, 'membershipId=', membershipId);
+    console.log('removeSchoolMember called by', user.email, 'user.role=', user.role, 'user.data=', JSON.stringify(user.data || {}), 'membershipId=', membershipId);
     if (!membershipId) {
       return Response.json({ error: 'membershipId is required' }, { status: 400 });
     }
