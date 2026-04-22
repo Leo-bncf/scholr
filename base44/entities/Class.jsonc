@@ -1,0 +1,149 @@
+{
+  "name": "Class",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "subject_id": {
+      "type": "string",
+      "description": "Primary subject (legacy, kept for backward compatibility)"
+    },
+    "academic_year_id": {
+      "type": "string"
+    },
+    "cohort_id": {
+      "type": "string",
+      "description": "Optional cohort this class belongs to"
+    },
+    "name": {
+      "type": "string",
+      "description": "e.g. Math HL - Section A"
+    },
+    "section": {
+      "type": "string",
+      "description": "Section code e.g. A, B, 1"
+    },
+    "capacity": {
+      "type": "number",
+      "description": "Maximum number of students allowed"
+    },
+    "roster_locked": {
+      "type": "boolean",
+      "default": false,
+      "description": "When true, prevents manual student enrollment edits (timetable sync is source of truth)"
+    },
+    "teacher_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "All assigned teacher/staff user IDs"
+    },
+    "primary_teacher_id": {
+      "type": "string",
+      "description": "The primary (owning) teacher user ID"
+    },
+    "co_teacher_permissions": {
+      "type": "object",
+      "description": "Map of co-teacher user_id -> array of permission strings (grades, feedback, manage)"
+    },
+    "student_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "User IDs of enrolled students"
+    },
+    "subject_teacher_assignments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique assignment ID"
+          },
+          "subject_id": {
+            "type": "string"
+          },
+          "teacher_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "subject_id"
+        ]
+      },
+      "description": "Subject + teacher assignments for this class"
+    },
+    "schedule_info": {
+      "type": "string",
+      "description": "Brief schedule description"
+    },
+    "room": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "archived"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "school_id",
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.active_school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    },
+    "read": {
+      "data.school_id": "{{user.data.active_school_id}}"
+    },
+    "update": {
+      "data.school_id": "{{user.data.active_school_id}}",
+      "$or": [
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        },
+        {
+          "data.primary_teacher_id": "{{user.id}}"
+        }
+      ]
+    },
+    "delete": {
+      "data.school_id": "{{user.data.active_school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    }
+  }
+}

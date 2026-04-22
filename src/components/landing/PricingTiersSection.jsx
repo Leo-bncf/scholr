@@ -224,7 +224,6 @@ export default function PricingTiersSection() {
               >
                 <div className="flex items-center gap-3">
                   <h3 className="text-3xl font-bold text-slate-900">{selectedTier.name}</h3>
-                  {selectedTier.featured ? <Badge className="bg-yellow-400 text-slate-900 border-none shadow-sm">Most Popular</Badge> : null}
                 </div>
                 <p className="mt-3 max-w-2xl text-slate-600">{selectedTier.subtitle}</p>
               </motion.div>
