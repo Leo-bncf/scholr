@@ -16,7 +16,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import AdminTabNavigation from '@/components/admin/AdminTabNavigation';
 import TrialBanner from '@/components/plan/TrialBanner';
 import BillingStatusBanner from '@/components/plan/BillingStatusBanner';
-import ModuleStatusGrid from '@/components/plan/ModuleStatusGrid';
 import StudentPricingUpgrade from '@/components/plan/StudentPricingUpgrade';
 import { PLAN_LIMITS, PLAN_NAMES, PLAN_DESCRIPTIONS, calcAnnualCost, getUpgradePlans } from '@/components/plan/PlanConfig';
 import { format } from 'date-fns';
