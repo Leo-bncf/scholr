@@ -15,6 +15,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { useToast } from '@/components/ui/use-toast';
 import { ROLE_CONFIG } from './userConstants';
 
 const STATUS_CONFIG = {
@@ -145,6 +146,7 @@ function EditMemberDialog({ member, onClose, schoolId }) {
 
 export default function UserDirectoryTab({ schoolId }) {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [search, setSearch]           = useState('');
   const [roleFilter, setRoleFilter]   = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -166,17 +168,47 @@ export default function UserDirectoryTab({ schoolId }) {
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.SchoolMembership.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] });
+      toast({ title: 'User removed from school' });
+    },
+    onError: (err) => {
+      toast({
+        title: 'Could not remove user',
+        description: err?.message || 'You may not have permission to remove this member.',
+        variant: 'destructive',
+      });
+    },
   });
 
   const suspendMutation = useMutation({
     mutationFn: (id) => base44.entities.SchoolMembership.update(id, { status: 'inactive' }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] });
+      toast({ title: 'User suspended' });
+    },
+    onError: (err) => {
+      toast({
+        title: 'Could not suspend user',
+        description: err?.message || 'Please try again.',
+        variant: 'destructive',
+      });
+    },
   });
 
   const reactivateMutation = useMutation({
     mutationFn: (id) => base44.entities.SchoolMembership.update(id, { status: 'active' }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] });
+      toast({ title: 'User reactivated' });
+    },
+    onError: (err) => {
+      toast({
+        title: 'Could not reactivate user',
+        description: err?.message || 'Please try again.',
+        variant: 'destructive',
+      });
+    },
   });
 
   // Map cohort -> student_ids for filter
