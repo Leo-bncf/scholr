@@ -40,10 +40,10 @@ Deno.serve(async (req) => {
       if (!allowed) {
         const callerMemberships = await base44.asServiceRole.entities.SchoolMembership.filter({
           user_id: user.id,
-          status: 'active',
         });
+        console.log('ghost-branch caller memberships:', callerMemberships.map(m => ({ id: m.id, role: m.role, status: m.status, school_id: m.school_id })));
         allowed = callerMemberships.some(
-          (m) => m.role === 'school_admin' || m.role === 'ib_coordinator'
+          (m) => (m.role === 'school_admin' || m.role === 'ib_coordinator') && m.status !== 'inactive'
         );
       }
       if (!allowed) {
@@ -66,10 +66,10 @@ Deno.serve(async (req) => {
       const callerMemberships = await base44.asServiceRole.entities.SchoolMembership.filter({
         user_id: user.id,
         school_id: target.school_id,
-        status: 'active',
       });
+      console.log('normal-branch caller memberships:', callerMemberships.map(m => ({ id: m.id, role: m.role, status: m.status })));
       isSchoolAdmin = callerMemberships.some(
-        (m) => m.role === 'school_admin' || m.role === 'ib_coordinator'
+        (m) => (m.role === 'school_admin' || m.role === 'ib_coordinator') && m.status !== 'inactive'
       );
     }
 
