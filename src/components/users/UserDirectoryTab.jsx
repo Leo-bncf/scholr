@@ -170,7 +170,12 @@ export default function UserDirectoryTab({ schoolId }) {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.SchoolMembership.delete(id),
+    mutationFn: async (id) => {
+      const res = await base44.functions.invoke('removeSchoolMember', { membershipId: id });
+      const errMsg = res?.data?.error || res?.error;
+      if (errMsg) throw new Error(errMsg);
+      return res?.data;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] });
       toast({ title: 'User removed from school' });
@@ -178,7 +183,10 @@ export default function UserDirectoryTab({ schoolId }) {
     onError: (err) => {
       toast({
         title: 'Could not remove user',
-        description: err?.message || 'You may not have permission to remove this member.',
+        description:
+          err?.response?.data?.error ||
+          err?.message ||
+          'You may not have permission to remove this member.',
         variant: 'destructive',
       });
     },
