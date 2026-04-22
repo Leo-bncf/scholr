@@ -7,11 +7,14 @@ import AppSidebar from '@/components/app/AppSidebar';
 import SetupWizard from '@/components/onboarding/SetupWizard';
 import OnboardingChecklist from '@/components/onboarding/OnboardingChecklist';
 import DemoDataControls from '@/components/onboarding/DemoDataControls';
+import InvitationsManager from '@/components/onboarding/InvitationsManager';
+import ParentLinkingPanel from '@/components/onboarding/ParentLinkingPanel';
+import SchoolReadiness from '@/components/onboarding/SchoolReadiness';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   LayoutDashboard, Users, BookOpen, Calendar, CreditCard,
   FileText, Settings, Sparkles, CheckSquare, FlaskConical,
-  ArrowLeft, Shield, MessageSquare, GraduationCap, Clock
+  ArrowLeft, Shield, MessageSquare, GraduationCap, Clock, Link2, Mail
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -78,28 +81,36 @@ export default function SchoolAdminOnboarding() {
             </div>
           </div>
 
-          <div className="p-6 max-w-5xl">
+          <div className="p-6 max-w-6xl">
             {!wizardComplete ? (
               <div className="space-y-6">
                 <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-2xl p-6 text-white">
                   <h2 className="text-xl font-black mb-1">Welcome to {school?.name || 'your school'}!</h2>
                   <p className="text-indigo-100 text-sm max-w-xl">
-                    Let's get your school configured step by step. This wizard will guide you through setting up your academic structure, classes, and inviting your team.
+                    Let's get your school configured and your team activated. Follow the wizard, then invite users and link parents to their children.
                   </p>
                   <div className="flex gap-4 mt-4 text-xs text-indigo-200">
-                    <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Takes ~5 minutes</span>
+                    <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Takes ~5 minutes to configure</span>
                     <span className="flex items-center gap-1.5"><CheckSquare className="w-3.5 h-3.5" /> Save progress at any step</span>
                     <span className="flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5" /> IB-ready presets included</span>
                   </div>
                 </div>
 
+                <SchoolReadiness schoolId={schoolId} />
+
                 <Tabs defaultValue="wizard">
-                  <TabsList className="bg-white border border-slate-200">
+                  <TabsList className="bg-white border border-slate-200 flex-wrap h-auto">
                     <TabsTrigger value="wizard" className="gap-1.5 text-xs data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
                       <Sparkles className="w-3.5 h-3.5" /> Setup Wizard
                     </TabsTrigger>
+                    <TabsTrigger value="invites" className="gap-1.5 text-xs data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
+                      <Mail className="w-3.5 h-3.5" /> Users & Invites
+                    </TabsTrigger>
+                    <TabsTrigger value="parents" className="gap-1.5 text-xs data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
+                      <Link2 className="w-3.5 h-3.5" /> Parent Links
+                    </TabsTrigger>
                     <TabsTrigger value="checklist" className="gap-1.5 text-xs data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
-                      <CheckSquare className="w-3.5 h-3.5" /> Checklist View
+                      <CheckSquare className="w-3.5 h-3.5" /> Checklist
                     </TabsTrigger>
                     <TabsTrigger value="demo" className="gap-1.5 text-xs data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
                       <FlaskConical className="w-3.5 h-3.5" /> Demo Data
@@ -108,6 +119,14 @@ export default function SchoolAdminOnboarding() {
 
                   <TabsContent value="wizard" className="mt-5">
                     <SetupWizard onComplete={handleWizardComplete} />
+                  </TabsContent>
+
+                  <TabsContent value="invites" className="mt-5">
+                    <InvitationsManager schoolId={schoolId} schoolName={school?.name} />
+                  </TabsContent>
+
+                  <TabsContent value="parents" className="mt-5">
+                    <ParentLinkingPanel schoolId={schoolId} />
                   </TabsContent>
 
                   <TabsContent value="checklist" className="mt-5">

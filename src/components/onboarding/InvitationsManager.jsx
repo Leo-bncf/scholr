@@ -3,13 +3,15 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Mail, Clock, CheckCircle, XCircle, UserPlus, RefreshCw, Copy } from 'lucide-react';
+import { Mail, Clock, CheckCircle, XCircle, UserPlus, RefreshCw, Copy, Users } from 'lucide-react';
 import { format } from 'date-fns';
 import InviteUserDialog from './InviteUserDialog';
+import BulkInviteDialog from './BulkInviteDialog';
 
 export default function InvitationsManager({ schoolId, schoolName }) {
   const queryClient = useQueryClient();
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+  const [bulkDialogOpen, setBulkDialogOpen] = useState(false);
 
   const { data: invitations = [], isLoading } = useQuery({
     queryKey: ['user-invitations', schoolId],
@@ -19,7 +21,7 @@ export default function InvitationsManager({ schoolId, schoolName }) {
 
   const resendMutation = useMutation({
     mutationFn: async (invitation) => {
-      const inviteUrl = `${window.location.origin}?page=AcceptInvitation&token=${invitation.invitation_token}`;
+      const inviteUrl = `${window.location.origin}/AcceptInvitation?token=${invitation.invitation_token}`;
       
       await base44.integrations.Core.SendEmail({
         to: invitation.email,
@@ -48,7 +50,7 @@ export default function InvitationsManager({ schoolId, schoolName }) {
   });
 
   const copyInviteLink = (token) => {
-    const inviteUrl = `${window.location.origin}?page=AcceptInvitation&token=${token}`;
+    const inviteUrl = `${window.location.origin}/AcceptInvitation?token=${token}`;
     navigator.clipboard.writeText(inviteUrl);
     alert('Invitation link copied to clipboard!');
   };
@@ -83,13 +85,22 @@ export default function InvitationsManager({ schoolId, schoolName }) {
             {pendingInvitations.length} pending invitation{pendingInvitations.length !== 1 ? 's' : ''}
           </p>
         </div>
-        <Button 
-          onClick={() => setInviteDialogOpen(true)}
-          className="bg-indigo-600 hover:bg-indigo-700"
-        >
-          <UserPlus className="w-4 h-4 mr-2" />
-          Invite User
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setBulkDialogOpen(true)}
+          >
+            <Users className="w-4 h-4 mr-2" />
+            Bulk invite
+          </Button>
+          <Button
+            onClick={() => setInviteDialogOpen(true)}
+            className="bg-indigo-600 hover:bg-indigo-700"
+          >
+            <UserPlus className="w-4 h-4 mr-2" />
+            Invite User
+          </Button>
+        </div>
       </div>
 
       {invitations.length === 0 ? (
@@ -183,6 +194,13 @@ export default function InvitationsManager({ schoolId, schoolName }) {
       <InviteUserDialog
         open={inviteDialogOpen}
         onClose={() => setInviteDialogOpen(false)}
+        schoolId={schoolId}
+        schoolName={schoolName}
+      />
+
+      <BulkInviteDialog
+        open={bulkDialogOpen}
+        onClose={() => setBulkDialogOpen(false)}
         schoolId={schoolId}
         schoolName={schoolName}
       />
