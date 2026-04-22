@@ -12,6 +12,8 @@ import {
   Archive, RotateCcw, Copy, Scissors, Merge, CheckCircle,
   Loader2, BookOpen, AlertTriangle, Info, ChevronRight, Users
 } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
+import ConfirmDialog from '@/components/common/ConfirmDialog';
 
 function DuplicateDialog({ classObj, onClose, schoolId, academicYears }) {
   const queryClient = useQueryClient();
@@ -215,30 +217,58 @@ function SplitDialog({ classObj, onClose, schoolId, memberships }) {
 
 export default function ClassLifecycleTab({ schoolId, classes, memberships, academicYears }) {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [duplicatingClass, setDuplicatingClass] = useState(null);
   const [splittingClass, setSplittingClass] = useState(null);
+  // { classObj, status } — null when closed
+  const [pendingStatus, setPendingStatus] = useState(null);
+  const [bulkArchiveOpen, setBulkArchiveOpen] = useState(false);
 
   const archiveMutation = useMutation({
-    mutationFn: ({ id, status }) => base44.entities.Class.update(id, { status }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['school-classes', schoolId] }),
+    mutationFn: async ({ id, status }) => {
+      const res = await base44.functions.invoke('updateClassStatus', { classId: id, status });
+      const errMsg = res?.data?.error || res?.error;
+      if (errMsg) throw new Error(errMsg);
+      const failure = res?.data?.failures?.[0];
+      if (failure) throw new Error(failure.error || 'Update failed');
+      return res?.data;
+    },
+    onSuccess: (_data, vars) => {
+      queryClient.invalidateQueries({ queryKey: ['school-classes', schoolId] });
+      toast({ title: vars.status === 'archived' ? 'Class archived' : 'Class restored' });
+    },
+    onError: (err) => {
+      toast({
+        title: 'Could not update class',
+        description: err?.message || 'Unknown error — please try again.',
+        variant: 'destructive',
+      });
+    },
   });
 
   const bulkArchiveMutation = useMutation({
     mutationFn: async (ids) => {
-      for (const id of ids) {
-        await base44.entities.Class.update(id, { status: 'archived' });
-      }
+      const res = await base44.functions.invoke('updateClassStatus', { classIds: ids, status: 'archived' });
+      const errMsg = res?.data?.error || res?.error;
+      if (errMsg) throw new Error(errMsg);
+      return res?.data;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['school-classes', schoolId] }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['school-classes', schoolId] });
+      const failed = data?.failures?.length || 0;
+      toast({
+        title: `Archived ${data?.updated || 0} class${(data?.updated || 0) !== 1 ? 'es' : ''}`,
+        description: failed ? `${failed} failed` : undefined,
+        variant: failed ? 'destructive' : 'default',
+      });
+    },
+    onError: (err) => {
+      toast({ title: 'Bulk archive failed', description: err?.message, variant: 'destructive' });
+    },
   });
 
   const activeClasses   = classes.filter(c => c.status === 'active');
   const archivedClasses = classes.filter(c => c.status === 'archived');
-
-  const handleBulkArchive = () => {
-    if (!window.confirm(`Archive all ${activeClasses.length} active classes? They can be restored later.`)) return;
-    bulkArchiveMutation.mutate(activeClasses.map(c => c.id));
-  };
 
   const ActionCard = ({ icon: Icon, title, description, color, children }) => (
     <div className={`bg-white border border-slate-200 rounded-xl p-5 shadow-sm`}>
@@ -286,7 +316,7 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
               size="sm"
               className="text-xs text-amber-700 border-amber-300 hover:bg-amber-50 gap-1.5"
               disabled={bulkArchiveMutation.isPending}
-              onClick={handleBulkArchive}
+              onClick={() => setBulkArchiveOpen(true)}
             >
               {bulkArchiveMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Archive className="w-3.5 h-3.5" />}
               Archive All Active
@@ -316,7 +346,10 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
                   size="sm"
                   className={`h-7 text-xs flex-shrink-0 gap-1 ${c.status === 'active' ? 'text-amber-600 hover:text-amber-700 hover:bg-amber-50' : 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50'}`}
                   disabled={archiveMutation.isPending}
-                  onClick={() => archiveMutation.mutate({ id: c.id, status: c.status === 'active' ? 'archived' : 'active' })}
+                  onClick={() => setPendingStatus({
+                    classObj: c,
+                    status: c.status === 'active' ? 'archived' : 'active',
+                  })}
                 >
                   {c.status === 'active' ? <><Archive className="w-3 h-3" />Archive</> : <><RotateCcw className="w-3 h-3" />Restore</>}
                 </Button>
@@ -405,6 +438,47 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
           memberships={memberships}
         />
       )}
+
+      <ConfirmDialog
+        open={!!pendingStatus}
+        title={pendingStatus?.status === 'archived' ? 'Archive this class?' : 'Restore this class?'}
+        description={
+          pendingStatus?.status === 'archived'
+            ? `"${pendingStatus?.classObj?.name}" will be moved to the archive. Teachers and students will no longer see it in their active lists, but all data (grades, attendance, submissions) is preserved and the class can be restored at any time.`
+            : `"${pendingStatus?.classObj?.name}" will be restored to active status and reappear for teachers and students.`
+        }
+        confirmLabel={
+          archiveMutation.isPending
+            ? 'Working…'
+            : pendingStatus?.status === 'archived' ? 'Archive' : 'Restore'
+        }
+        cancelLabel="Cancel"
+        isDestructive={pendingStatus?.status === 'archived'}
+        onConfirm={() => {
+          if (!pendingStatus) return;
+          archiveMutation.mutate(
+            { id: pendingStatus.classObj.id, status: pendingStatus.status },
+            { onSettled: () => setPendingStatus(null) }
+          );
+        }}
+        onCancel={() => !archiveMutation.isPending && setPendingStatus(null)}
+      />
+
+      <ConfirmDialog
+        open={bulkArchiveOpen}
+        title={`Archive all ${activeClasses.length} active class${activeClasses.length !== 1 ? 'es' : ''}?`}
+        description="Every active class in this school will be moved to the archive. All data is preserved and classes can be restored individually at any time. This is typically done at the end of an academic year."
+        confirmLabel={bulkArchiveMutation.isPending ? 'Archiving…' : 'Archive all'}
+        cancelLabel="Cancel"
+        isDestructive
+        onConfirm={() => {
+          bulkArchiveMutation.mutate(
+            activeClasses.map(c => c.id),
+            { onSettled: () => setBulkArchiveOpen(false) }
+          );
+        }}
+        onCancel={() => !bulkArchiveMutation.isPending && setBulkArchiveOpen(false)}
+      />
     </div>
   );
 }
