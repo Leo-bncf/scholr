@@ -30,11 +30,12 @@ Deno.serve(async (req) => {
       // Fallback: check the user's own data fields for school role (legacy / pre-membership setup)
       if (!allowed) {
         const userData = user.data || {};
-        const userSchoolId = userData.active_school_id || userData.school_id;
-        const userRole = userData.role || userData.intended_role;
+        const nestedUserData = userData.data || {};
+        const userSchoolId = userData.active_school_id || userData.school_id || nestedUserData.active_school_id || nestedUserData.school_id;
+        const userRole = userData.role || userData.intended_role || nestedUserData.role || nestedUserData.intended_role || user.role;
         if (
           userSchoolId === schoolId &&
-          ['school_admin', 'ib_coordinator'].includes(userRole)
+          ['school_admin', 'ib_coordinator', 'admin', 'super_admin'].includes(userRole)
         ) {
           allowed = true;
         }
