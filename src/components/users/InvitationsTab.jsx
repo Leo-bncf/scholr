@@ -28,45 +28,21 @@ function InviteDialog({ open, onClose, schoolId, schoolName }) {
 
   const inviteMutation = useMutation({
     mutationFn: async (data) => {
-      const invitationToken = `inv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + 7);
-      const user = await base44.auth.me();
-
-      await base44.entities.UserInvitation.create({
-        school_id: schoolId,
+      // Route through backend function so school admins (whose platform role is just "user")
+      // can create invitations via service-role with proper SchoolMembership authorization.
+      const res = await base44.functions.invoke('sendInvitation', {
+        schoolId,
+        schoolName,
         email: data.email,
         role: data.role,
-        invited_by: user.id,
-        invited_by_name: user.full_name || user.email,
-        status: 'pending',
-        invitation_token: invitationToken,
-        expires_at: expiresAt.toISOString(),
-        metadata: {
-          first_name: data.first_name,
-          last_name: data.last_name,
-          grade_level: data.grade_level,
-          department: data.department,
-          custom_message: data.custom_message,
-        },
+        firstName: data.first_name,
+        lastName: data.last_name,
+        gradeLevel: data.grade_level,
+        department: data.department,
+        customMessage: data.custom_message,
       });
-
-      const inviteUrl = `${window.location.origin}/AcceptInvitation?token=${invitationToken}`;
-      await base44.integrations.Core.SendEmail({
-        to: data.email,
-        from_name: schoolName,
-        subject: `You're invited to join ${schoolName}`,
-        body: `
-          <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
-            <h2 style="color:#1e293b">Welcome to ${schoolName}!</h2>
-            <p>You've been invited to join <strong>${schoolName}</strong> as a <strong>${data.role.replace(/_/g, ' ')}</strong>.</p>
-            ${data.custom_message ? `<blockquote style="color:#475569;border-left:3px solid #e2e8f0;padding-left:12px;margin:16px 0;">"${data.custom_message}"</blockquote>` : ''}
-            <p>Click below to accept your invitation and set up your account:</p>
-            <a href="${inviteUrl}" style="display:inline-block;padding:12px 28px;background:#4F46E5;color:white;text-decoration:none;border-radius:8px;font-weight:600;margin:8px 0;">Accept Invitation</a>
-            <p style="color:#94a3b8;font-size:13px;margin-top:24px;">This invitation expires in 7 days. If you didn't expect this email, you can safely ignore it.</p>
-          </div>
-        `,
-      });
+      if (res?.data?.error) throw new Error(res.data.error);
+      return res?.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-invitations', schoolId] });
