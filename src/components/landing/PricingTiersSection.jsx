@@ -22,6 +22,7 @@ import PricingTierSwitch from './PricingTierSwitch';
 const TIERS = {
   tier1: {
     name: 'Up to 200 Students',
+    tierLabel: 'Tier 1',
     price: '€20.99',
     priceId: 'price_starter',
     subtitle: 'Best for smaller schools starting with a unified LMS platform',
@@ -42,6 +43,7 @@ const TIERS = {
   },
   tier2: {
     name: 'Up to 600 Students',
+    tierLabel: 'Tier 2',
     price: '€16.99',
     priceId: 'price_growth',
     subtitle: 'Best for growing schools that need advanced IB tracking, multiple admins, and extended tools',
@@ -62,6 +64,7 @@ const TIERS = {
   },
   tier3: {
     name: 'Unlimited Students',
+    tierLabel: 'Tier 3',
     price: '€13.99',
     priceId: 'price_enterprise',
     subtitle: 'Best for large schools that need scale, comprehensive reporting, and dedicated support',
@@ -187,12 +190,37 @@ export default function PricingTiersSection() {
             Invest in Smarter Academic Workflows
           </h2>
           <p className="mt-4 text-lg text-white">
-            Scale your investment as your school grows. Pick your plan, create your account if needed, and continue directly to secure checkout.
+            Tiered per‑student pricing, billed yearly. The more students you have, the lower the per‑student rate — automatically.
           </p>
         </div>
 
         <div className="mx-auto mt-10 max-w-3xl">
           <PricingTierSwitch options={tierOptions} value={expandedTier} onChange={setExpandedTier} />
+        </div>
+
+        {/* Tier ladder — makes the decreasing per-student price obvious at a glance */}
+        <div className="mx-auto mt-6 max-w-3xl grid grid-cols-3 gap-3 text-center">
+          {Object.entries(TIERS).map(([key, tier]) => {
+            const active = key === expandedTier;
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setExpandedTier(key)}
+                className={`rounded-2xl border px-3 py-3 transition-all ${
+                  active
+                    ? 'border-emerald-300 bg-white/15 shadow-lg'
+                    : 'border-white/15 bg-white/5 hover:bg-white/10'
+                }`}
+              >
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-200">
+                  {tier.tierLabel}
+                </div>
+                <div className="mt-1 text-xl font-bold text-white">{tier.price}</div>
+                <div className="text-[11px] text-emerald-100/80">/ student / year</div>
+              </button>
+            );
+          })}
         </div>
 
         <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-stretch">
@@ -307,13 +335,21 @@ export default function PricingTiersSection() {
                 className="mt-auto pt-8"
               >
                 <div className="mb-4 rounded-3xl border border-emerald-300/20 bg-gradient-to-br from-white/10 to-emerald-300/5 p-5 backdrop-blur-sm">
-                  <div className="text-xs uppercase tracking-[0.22em] text-emerald-200">Per Student / Month</div>
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs uppercase tracking-[0.22em] text-emerald-200">
+                      {selectedTier.tierLabel} · Per Student / Year
+                    </div>
+                    <Badge className="bg-emerald-400/20 text-emerald-100 border border-emerald-300/30 text-[10px]">
+                      Tiered pricing
+                    </Badge>
+                  </div>
                   <div className="mt-2 flex items-baseline gap-2">
                     <div className="text-4xl font-bold text-emerald-50">{selectedTier.price}</div>
+                    <div className="text-sm text-emerald-200">per student, per year</div>
                   </div>
                   <div className="mt-4">
                     <div className="text-sm text-emerald-100 mb-3">
-                      Includes web version access. Billed monthly. No setup fees.
+                      Billed yearly. The per‑student rate drops automatically at each higher tier — you pay less per student as your school grows.
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-2 text-sm font-medium text-white">
