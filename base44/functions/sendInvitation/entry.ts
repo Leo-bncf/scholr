@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 Deno.serve(async (req) => {
   try {
@@ -14,10 +14,33 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Use Base44's native inviteUser — handles account creation + email automatically
-    await base44.auth.inviteUser(email, 'user');
+    // Authorize: caller must be platform admin OR have an active school_admin / ib_coordinator
+    // membership for this school. (user.role is the built-in role — school roles live on SchoolMembership.)
+    const isPlatformAdmin = user.role === 'admin';
 
-    // Also store the school invitation record for role assignment on first login
+    if (!isPlatformAdmin) {
+      const memberships = await base44.asServiceRole.entities.SchoolMembership.filter({
+        user_id: user.id,
+        school_id: schoolId,
+        status: 'active',
+      });
+      const allowed = memberships.some(m => ['school_admin', 'ib_coordinator'].includes(m.role));
+      if (!allowed) {
+        return Response.json({ error: 'Forbidden: you do not have permission to invite users to this school' }, { status: 403 });
+      }
+    }
+
+    // Use service role to invite the user — school admins don't have platform-admin rights,
+    // but we've already authorized them via their school membership above.
+    try {
+      await base44.asServiceRole.users.inviteUser(email, 'user');
+    } catch (inviteErr) {
+      // If the user already exists in Base44, Base44 returns an error — that's fine, we still want to
+      // create the school invitation so their role gets assigned on next login.
+      console.log('inviteUser info:', inviteErr?.message);
+    }
+
+    // Store the school invitation record for role assignment on first login
     const invitationToken = `inv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 30);
