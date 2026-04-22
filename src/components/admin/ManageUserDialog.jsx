@@ -85,6 +85,41 @@ export default function ManageUserDialog({ open, onOpenChange, user, onUserUpdat
         } catch (syncErr) {
           console.warn('Could not sync active_school_id onto User record:', syncErr);
         }
+
+        // Also sync the SchoolMembership from the client so other pages
+        // (Enrollments, rosters) immediately see this user in the school with
+        // a proper name/email. Super_admins have create/update/delete rights.
+        try {
+          const existing = await base44.entities.SchoolMembership.filter({ user_id: user.id });
+          const effectiveRole = newRole && newRole !== 'super_admin' ? newRole : 'teacher';
+
+          if (newSchoolId) {
+            const membershipData = {
+              user_id: user.id,
+              user_email: user.email,
+              user_name: user.full_name || user.email,
+              school_id: newSchoolId,
+              role: effectiveRole,
+              status: 'active',
+            };
+            if (existing.length > 0) {
+              // Update the first, delete any duplicates so the enrollment list stays clean
+              await base44.entities.SchoolMembership.update(existing[0].id, membershipData);
+              for (let i = 1; i < existing.length; i++) {
+                await base44.entities.SchoolMembership.delete(existing[i].id);
+              }
+            } else {
+              await base44.entities.SchoolMembership.create(membershipData);
+            }
+          } else {
+            // Removing from school — clear all memberships
+            for (const m of existing) {
+              await base44.entities.SchoolMembership.delete(m.id);
+            }
+          }
+        } catch (memErr) {
+          console.warn('Could not sync SchoolMembership:', memErr);
+        }
       }
 
       const schoolName = newSchoolId ? (schools.find(s => s.id === newSchoolId)?.name || 'selected school') : null;

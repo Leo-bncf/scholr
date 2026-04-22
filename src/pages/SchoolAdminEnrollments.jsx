@@ -50,8 +50,26 @@ export default function SchoolAdminEnrollments() {
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['enroll-classes'] }); setAssignDialog(null); },
   });
 
-  const teachers = memberships.filter(m => ['teacher', 'ib_coordinator', 'school_admin'].includes(m.role));
-  const students = memberships.filter(m => m.role === 'student');
+  // Dedupe memberships by user_id (a user can accidentally have multiple membership rows),
+  // and ensure every row has a readable display name so the UI never renders blank checkboxes.
+  const dedupeByUser = (rows) => {
+    const seen = new Map();
+    for (const m of rows) {
+      if (!m.user_id) continue; // skip ghost rows with no linked user
+      if (!seen.has(m.user_id)) {
+        seen.set(m.user_id, {
+          ...m,
+          user_name: m.user_name || m.user_email || 'Unnamed user',
+        });
+      }
+    }
+    return Array.from(seen.values());
+  };
+
+  const teachers = dedupeByUser(
+    memberships.filter(m => ['teacher', 'ib_coordinator', 'school_admin'].includes(m.role))
+  );
+  const students = dedupeByUser(memberships.filter(m => m.role === 'student'));
 
   const filteredClasses = classes.filter(c => c.name?.toLowerCase().includes(search.toLowerCase()));
 
