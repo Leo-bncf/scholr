@@ -31,12 +31,24 @@ Deno.serve(async (req) => {
       console.warn('get() failed:', e?.message);
     }
 
-    const isPlatformAdmin = user.role === 'super_admin' || user.role === 'admin';
+    const isPlatformAdmin =
+      user.role === 'super_admin' ||
+      user.role === 'admin' ||
+      user.data?.role === 'super_admin' ||
+      user.data?.role === 'admin';
+
+    // Legacy fallback: some users carry their role on user.data rather than in
+    // a SchoolMembership row. Treat them as a school admin for their user.data.school_id.
+    const legacyAdminSchoolId =
+      (user.data?.role === 'school_admin' || user.data?.role === 'ib_coordinator')
+        ? (user.data?.active_school_id || user.data?.school_id)
+        : null;
 
     // Ghost/orphan row: record can't be loaded but delete may still work.
-    // Allow if caller is platform admin OR an active school_admin / ib_coordinator anywhere.
+    // Allow if caller is platform admin OR an active school_admin / ib_coordinator anywhere
+    // (either via a SchoolMembership row or via legacy user.data.role).
     if (!target) {
-      let allowed = isPlatformAdmin;
+      let allowed = isPlatformAdmin || !!legacyAdminSchoolId;
       if (!allowed) {
         const callerMemberships = await base44.asServiceRole.entities.SchoolMembership.filter({
           user_id: user.id,
@@ -60,17 +72,22 @@ Deno.serve(async (req) => {
     }
 
     // Authorisation: platform super_admin OR the caller is a school_admin /
-    // ib_coordinator of the same school as the target membership.
+    // ib_coordinator of the same school as the target membership (either via
+    // SchoolMembership row or via legacy user.data.role).
     let isSchoolAdmin = false;
     if (!isPlatformAdmin) {
-      const callerMemberships = await base44.asServiceRole.entities.SchoolMembership.filter({
-        user_id: user.id,
-        school_id: target.school_id,
-      });
-      console.log('normal-branch caller memberships:', callerMemberships.map(m => ({ id: m.id, role: m.role, status: m.status })));
-      isSchoolAdmin = callerMemberships.some(
-        (m) => (m.role === 'school_admin' || m.role === 'ib_coordinator') && m.status !== 'inactive'
-      );
+      if (legacyAdminSchoolId && legacyAdminSchoolId === target.school_id) {
+        isSchoolAdmin = true;
+      } else {
+        const callerMemberships = await base44.asServiceRole.entities.SchoolMembership.filter({
+          user_id: user.id,
+          school_id: target.school_id,
+        });
+        console.log('normal-branch caller memberships:', callerMemberships.map(m => ({ id: m.id, role: m.role, status: m.status })));
+        isSchoolAdmin = callerMemberships.some(
+          (m) => (m.role === 'school_admin' || m.role === 'ib_coordinator') && m.status !== 'inactive'
+        );
+      }
     }
 
     console.log('auth check:', { isPlatformAdmin, isSchoolAdmin, targetSchoolId: target.school_id });

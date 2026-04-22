@@ -8,7 +8,11 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const isPlatformAdmin = me.role === 'admin' || me.role === 'super_admin';
+    const isPlatformAdmin =
+      me.role === 'admin' ||
+      me.role === 'super_admin' ||
+      me.data?.role === 'admin' ||
+      me.data?.role === 'super_admin';
 
     const sr = base44.asServiceRole;
 
@@ -19,13 +23,17 @@ Deno.serve(async (req) => {
     if (!isPlatformAdmin) {
       const myMemberships = await sr.entities.SchoolMembership.filter({
         user_id: me.id,
-        status: 'active',
       });
       managedSchoolIds = new Set(
         myMemberships
-          .filter((m) => m.role === 'school_admin' || m.role === 'ib_coordinator')
+          .filter((m) => (m.role === 'school_admin' || m.role === 'ib_coordinator') && m.status !== 'inactive')
           .map((m) => m.school_id)
       );
+      // Legacy fallback — user.data carries the role instead of a membership row
+      if (me.data?.role === 'school_admin' || me.data?.role === 'ib_coordinator') {
+        const legacySchool = me.data?.active_school_id || me.data?.school_id;
+        if (legacySchool) managedSchoolIds.add(legacySchool);
+      }
       if (managedSchoolIds.size === 0) {
         return Response.json({ error: 'Forbidden' }, { status: 403 });
       }
