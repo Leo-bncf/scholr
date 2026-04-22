@@ -28,20 +28,41 @@ Deno.serve(async (req) => {
     try {
       target = await base44.asServiceRole.entities.SchoolMembership.get(membershipId);
     } catch (e) {
-      console.warn('get() failed, falling back to filter:', e?.message);
+      console.warn('get() failed:', e?.message);
     }
+
+    const isPlatformAdmin = user.role === 'super_admin' || user.role === 'admin';
+
+    // Ghost/orphan row: record can't be loaded but delete may still work.
+    // Allow if caller is platform admin OR an active school_admin / ib_coordinator anywhere.
     if (!target) {
-      const memberships = await base44.asServiceRole.entities.SchoolMembership.filter({ id: membershipId });
-      target = memberships[0];
-    }
-    if (!target) {
-      return Response.json({ error: 'Membership not found' }, { status: 404 });
+      let allowed = isPlatformAdmin;
+      if (!allowed) {
+        const callerMemberships = await base44.asServiceRole.entities.SchoolMembership.filter({
+          user_id: user.id,
+          status: 'active',
+        });
+        allowed = callerMemberships.some(
+          (m) => m.role === 'school_admin' || m.role === 'ib_coordinator'
+        );
+      }
+      if (!allowed) {
+        return Response.json({ error: 'Membership not found' }, { status: 404 });
+      }
+      try {
+        await base44.asServiceRole.entities.SchoolMembership.delete(membershipId);
+        return Response.json({ success: true, removed: membershipId, note: 'ghost row' });
+      } catch (e) {
+        console.error('ghost delete failed:', e?.message);
+        return Response.json(
+          { error: 'Record does not exist (already deleted or invalid id)' },
+          { status: 404 }
+        );
+      }
     }
 
     // Authorisation: platform super_admin OR the caller is a school_admin /
     // ib_coordinator of the same school as the target membership.
-    const isPlatformAdmin = user.role === 'super_admin' || user.role === 'admin';
-
     let isSchoolAdmin = false;
     if (!isPlatformAdmin) {
       const callerMemberships = await base44.asServiceRole.entities.SchoolMembership.filter({
