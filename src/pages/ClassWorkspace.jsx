@@ -80,7 +80,10 @@ export default function ClassWorkspace() {
   }
 
   const getBackLink = () => {
-    if (isTeacher) return 'TeacherClasses';
+    const role = membership?.role;
+    if (role === 'school_admin' || role === 'ib_coordinator') return 'SchoolAdminDashboard';
+    if (role === 'super_admin') return 'SuperAdminDashboard';
+    if (classData.teacher_ids?.includes(user.id)) return 'TeacherClasses';
     if (isStudent) return 'StudentDashboard';
     return 'AppHome';
   };
