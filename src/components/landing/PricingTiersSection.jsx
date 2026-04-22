@@ -19,25 +19,26 @@ import {
 } from 'lucide-react';
 import PricingTierSwitch from './PricingTierSwitch';
 
+const SHARED_FEATURES = [
+  'Full platform access — every feature included',
+  'Complete IB Core suite (CAS, EE, TOK)',
+  'Advanced multi-curricular gradebooks',
+  'Parent & student portals',
+  'Unlimited admin accounts',
+  'PDF & Excel export',
+  'Priority support',
+];
+
 const TIERS = {
   tier1: {
     name: 'Up to 200 Students',
     tierLabel: 'Tier 1',
     price: '€20.99',
     priceId: 'price_starter',
-    subtitle: 'Best for smaller schools starting with a unified LMS platform',
-    rules: [
-      'Up to 200 students',
-      'Core academic workflows',
-      'Basic gradebook functionality',
-      'PDF & Excel export',
-      '1 admin account',
-      'Standard email support',
-    ],
+    subtitle: 'For smaller schools — full platform, capped at 200 students.',
+    rules: SHARED_FEATURES,
     highlights: [
       { icon: School, label: 'Student limit', value: '200' },
-      { icon: Calendar, label: 'Workflows', value: 'Core' },
-      { icon: Users, label: 'Admin accounts', value: '1' },
     ],
     featured: false,
   },
@@ -46,19 +47,10 @@ const TIERS = {
     tierLabel: 'Tier 2',
     price: '€16.99',
     priceId: 'price_growth',
-    subtitle: 'Best for growing schools that need advanced IB tracking, multiple admins, and extended tools',
-    rules: [
-      'Up to 600 students',
-      'Full IB Core (CAS, EE, TOK)',
-      'Advanced multi-curricular gradebooks',
-      'Parent portal access',
-      '3 admin accounts',
-      'Priority support',
-    ],
+    subtitle: 'For growing schools — full platform, capped at 600 students.',
+    rules: SHARED_FEATURES,
     highlights: [
       { icon: School, label: 'Student limit', value: '600' },
-      { icon: Globe, label: 'IB Core tools', value: 'Included' },
-      { icon: Users, label: 'Admin accounts', value: '3' },
     ],
     featured: true,
   },
@@ -67,20 +59,10 @@ const TIERS = {
     tierLabel: 'Tier 3',
     price: '€13.99',
     priceId: 'price_enterprise',
-    subtitle: 'Best for large schools that need scale, comprehensive reporting, and dedicated support',
-    rules: [
-      'Unlimited students',
-      'Full platform access',
-      'Custom API integrations',
-      'White-label reporting',
-      'Unlimited admin accounts',
-      '24/7 dedicated support',
-      'Onboarding call included',
-    ],
+    subtitle: 'For large schools — full platform, no student cap.',
+    rules: SHARED_FEATURES,
     highlights: [
       { icon: School, label: 'Student limit', value: 'Unlimited' },
-      { icon: Wrench, label: 'Integrations', value: 'Custom' },
-      { icon: Users, label: 'Admin accounts', value: 'Unlimited' },
     ],
     featured: false,
   },
@@ -88,34 +70,34 @@ const TIERS = {
 
 const SYSTEM_RULES = [
   {
+    icon: CheckCircle2,
+    title: 'Same features on every tier',
+    description: 'All schools get the full platform — no feature is gated behind a higher tier.',
+  },
+  {
     icon: School,
-    title: 'Student cap by tier',
-    description: 'Each school is limited by the number of students allowed in its tier.',
+    title: 'Tiers = student capacity',
+    description: 'The only thing that changes between tiers is how many students your school can host.',
+  },
+  {
+    icon: Zap,
+    title: 'Lower rate as you grow',
+    description: 'The per‑student yearly price automatically drops at each higher tier.',
   },
   {
     icon: Globe,
-    title: 'Curriculum tools',
-    description: 'Advanced curriculum features like IB Core tracking depend on the tier.',
+    title: 'Full IB Core included',
+    description: 'CAS, EE and TOK tracking ship with every plan, from Tier 1 to Tier 3.',
   },
   {
     icon: Users,
-    title: 'Admin access rules',
-    description: 'Admin account limits are enforced per school based on its tier.',
-  },
-  {
-    icon: Wrench,
-    title: 'Same core academic tools',
-    description: 'All tiers include assignment lifecycles, grading, and basic reporting.',
-  },
-  {
-    icon: FileSpreadsheet,
-    title: 'Exports included',
-    description: 'Schools can export gradebooks and reports in PDF and Excel across all tiers.',
+    title: 'Unlimited admins, always',
+    description: 'Add as many school admin accounts as you need on any tier.',
   },
   {
     icon: LifeBuoy,
-    title: 'Support by tier',
-    description: 'Response time and onboarding level improve with higher tiers.',
+    title: 'Priority support included',
+    description: 'Every school gets priority support — no paywalled help desk.',
   },
 ];
 
@@ -135,12 +117,13 @@ export default function PricingTiersSection() {
 
   const selectedTier = TIERS[expandedTier];
   const summaryLines = [
-    'The school can only operate within the limits of this tier.',
-    'Student capacity is capped by the selected plan.',
-    selectedTier.name === 'Unlimited Students' ? 'Platform capabilities are fully unlocked on this plan.' : 'Advanced features follow the plan allowance.',
-    'Access is available on web from any desktop or mobile device.',
-    selectedTier.name === 'Unlimited Students' ? 'Admin accounts are unlimited on this plan.' : 'Admin accounts are limited by the plan.',
-    'Support response level follows the selected plan.',
+    'Every feature of scholr.pro is included — same platform on every tier.',
+    selectedTier.name === 'Unlimited Students'
+      ? 'No cap on student enrollment.'
+      : `Student capacity is capped at ${selectedTier.name.replace('Up to ', '')}.`,
+    'IB Core (CAS, EE, TOK), gradebooks, reports and parent portal are always on.',
+    'Unlimited admin accounts and priority support on all tiers.',
+    'Billed yearly. The per‑student rate decreases as your tier grows.',
   ];
 
   const handleCheckout = async (priceId, tierId) => {
@@ -187,10 +170,10 @@ export default function PricingTiersSection() {
             Simple, Transparent Pricing
           </div>
           <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            Invest in Smarter Academic Workflows
+            One Platform. Every Feature. Simple Tiers.
           </h2>
           <p className="mt-4 text-lg text-white">
-            Tiered per‑student pricing, billed yearly. The more students you have, the lower the per‑student rate — automatically.
+            All tiers include the full platform — same features, same support. The only difference is student capacity and the per‑student yearly price, which drops as your school grows.
           </p>
         </div>
 
@@ -389,7 +372,7 @@ export default function PricingTiersSection() {
           <div className="mb-10 text-center">
             <h3 className="text-3xl font-bold text-white">How the tier system works in practice</h3>
             <p className="mx-auto mt-3 max-w-2xl text-white">
-              The same core learning management platform is available across tiers, but each school is governed by the rules of its plan.
+              Every school gets the same full platform. Tiers only change how many students you can host and your per‑student yearly rate.
             </p>
           </div>
 
