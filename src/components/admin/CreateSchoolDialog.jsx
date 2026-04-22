@@ -12,7 +12,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Loader2, AlertCircle, Mail } from 'lucide-react';
 import {
   DEFAULT_BILLING_STATUS,
   DEFAULT_SCHOOL_PLAN,
@@ -34,6 +35,8 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
     country: '',
     plan: DEFAULT_SCHOOL_PLAN,
   });
+  const [sendInvite, setSendInvite] = useState(true);
+  const [inviteWarning, setInviteWarning] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,6 +49,7 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setInviteWarning('');
     setLoading(true);
 
     try {
@@ -59,6 +63,7 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
       const newSchool = await base44.entities.School.create({
         name: formData.name,
         email: formData.email,
+        billing_email: formData.email,
         phone: formData.phone || undefined,
         address: formData.address || undefined,
         city: formData.city || undefined,
@@ -68,6 +73,22 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
         billing_status: DEFAULT_BILLING_STATUS,
         trial_end_date: new Date(Date.now() + SCHOOL_TRIAL_DURATION_DAYS * 24 * 60 * 60 * 1000).toISOString(),
       });
+
+      // Send school admin invitation email so they can set up their account
+      let warning = '';
+      if (sendInvite) {
+        try {
+          await base44.functions.invoke('sendInvitation', {
+            schoolId: newSchool.id,
+            schoolName: newSchool.name,
+            email: formData.email,
+            role: 'school_admin',
+          });
+        } catch (inviteErr) {
+          console.error('Error sending school admin invitation:', inviteErr);
+          warning = `School created, but the invitation email could not be sent: ${inviteErr?.message || 'Unknown error'}. You can resend it from the school's detail page.`;
+        }
+      }
 
       // Reset form
       setFormData({
@@ -79,8 +100,13 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
         country: '',
         plan: DEFAULT_SCHOOL_PLAN,
       });
+      setSendInvite(true);
 
-      onOpenChange(false);
+      if (warning) {
+        setInviteWarning(warning);
+      } else {
+        onOpenChange(false);
+      }
       if (onSchoolCreated) {
         onSchoolCreated(newSchool);
       }
@@ -112,6 +138,15 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
             </Alert>
           )}
 
+          {inviteWarning && (
+            <Alert className="bg-amber-50 border-amber-200">
+              <AlertCircle className="w-4 h-4 text-amber-600" />
+              <AlertDescription className="text-amber-800 ml-3 text-sm">
+                {inviteWarning}
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div>
             <Label className="text-sm font-semibold mb-1 block">School Name *</Label>
             <Input
@@ -126,7 +161,7 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
           </div>
 
           <div>
-            <Label className="text-sm font-semibold mb-1 block">Email *</Label>
+            <Label className="text-sm font-semibold mb-1 block">School Admin Email *</Label>
             <Input
               type="email"
               name="email"
@@ -136,6 +171,9 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
               disabled={loading}
               required
             />
+            <p className="text-xs text-slate-500 mt-1">
+              This person will receive an invitation to set up their school admin account.
+            </p>
           </div>
 
           <div>
@@ -189,7 +227,25 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
             </select>
           </div>
 
-          <div className="flex gap-2 pt-4">
+          <div className="flex items-start gap-2 p-3 bg-indigo-50 border border-indigo-100 rounded-lg">
+            <Checkbox
+              id="send-invite"
+              checked={sendInvite}
+              onCheckedChange={(v) => setSendInvite(!!v)}
+              disabled={loading}
+              className="mt-0.5"
+            />
+            <label htmlFor="send-invite" className="text-sm text-slate-700 cursor-pointer flex-1">
+              <span className="font-medium flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5 text-indigo-600" /> Send setup invitation email
+              </span>
+              <span className="text-xs text-slate-500 block mt-0.5">
+                The school admin will get an email with a link to create their account.
+              </span>
+            </label>
+          </div>
+
+          <div className="flex gap-2 pt-2">
             <Button
               type="button"
               variant="outline"
@@ -197,7 +253,7 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
               disabled={loading}
               className="flex-1"
             >
-              Cancel
+              {inviteWarning ? 'Close' : 'Cancel'}
             </Button>
             <Button
               type="submit"
@@ -205,7 +261,7 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
               className="flex-1 bg-indigo-600 hover:bg-indigo-700"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
-              {loading ? 'Creating...' : 'Create School'}
+              {loading ? 'Creating...' : sendInvite ? 'Create & Send Invite' : 'Create School'}
             </Button>
           </div>
         </form>
