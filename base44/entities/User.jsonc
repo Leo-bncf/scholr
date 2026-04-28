@@ -1,0 +1,50 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "super_admin",
+        "school_admin",
+        "ib_coordinator",
+        "teacher",
+        "student",
+        "parent",
+        "user"
+      ],
+      "default": "user"
+    },
+    "active_school_id": {
+      "type": "string",
+      "description": "Currently active school context"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "avatar_url": {
+      "type": "string"
+    },
+    "display_name": {
+      "type": "string"
+    },
+    "email_preferences": {
+      "type": "object",
+      "properties": {
+        "assignments": {
+          "type": "boolean",
+          "default": true
+        },
+        "messages": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    }
+  },
+  "required": [
+    "active_school_id",
+    "phone",
+    "avatar_url"
+  ]
+}

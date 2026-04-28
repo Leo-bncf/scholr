@@ -10,6 +10,7 @@ export function getAppSidebarLinks(role) {
         { label: 'Dashboard', page: 'TeacherDashboard', icon: LayoutDashboard },
         { label: 'My Classes', page: 'TeacherClasses', icon: BookOpen },
         { label: 'Messages', page: 'Messages', icon: MessageSquare },
+        { label: 'Settings', page: 'PersonalSettings', icon: Settings },
       ];
     case 'student':
       return [

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { UserProvider, useUser } from '@/components/auth/UserContext';
 import { PlanProvider } from '@/components/plan/PlanProvider';
 import NotificationBell from '@/components/notifications/NotificationBell';
@@ -25,6 +25,11 @@ function NotificationWrapper({ children }) {
 export default function Layout({ children, currentPageName }) {
   const isPublic = publicPages.includes(currentPageName);
   const isFullScreen = fullScreenPages.includes(currentPageName);
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
 
   if (isPublic) {
     return <>{children}</>;

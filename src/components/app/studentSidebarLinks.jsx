@@ -1,4 +1,4 @@
-import { LayoutDashboard, BarChart3, CalendarDays, ClipboardList, Star, MessageSquare } from 'lucide-react';
+import { LayoutDashboard, BarChart3, CalendarDays, ClipboardList, Star, MessageSquare, Settings } from 'lucide-react';
 import { getCurriculumConfig } from '@/lib/curriculumConfig';
 
 /**
@@ -26,6 +26,7 @@ export function getStudentSidebarLinks(curriculum = 'ib_dp') {
   }
 
   links.push({ label: 'Messages', page: 'StudentCommunication', icon: MessageSquare });
+  links.push({ label: 'Settings', page: 'PersonalSettings', icon: Settings });
 
   return links;
 }

@@ -14,6 +14,7 @@ import SecurityAndCompliance from './pages/SecurityAndCompliance';
 import SuperAdminSchoolDetail from './pages/SuperAdminSchoolDetail';
 import SuperAdminSettings from './pages/SuperAdminSettings';
 import SchoolAdminAcademicSetup from './pages/SchoolAdminAcademicSetup';
+import PersonalSettings from './pages/PersonalSettings';
 import SchoolAnalytics from './pages/SchoolAnalytics';
 import StudentAcademicDashboard from './pages/StudentAcademicDashboard';
 import StudentTimetable from './pages/StudentTimetable';
@@ -274,6 +275,14 @@ const AuthenticatedApp = () => {
         element={
           <LayoutWrapper currentPageName="SchoolAdminAcademicSetup">
             <SchoolAdminAcademicSetup />
+          </LayoutWrapper>
+        }
+      />
+      <Route
+        path="/PersonalSettings"
+        element={
+          <LayoutWrapper currentPageName="PersonalSettings">
+            <PersonalSettings />
           </LayoutWrapper>
         }
       />
