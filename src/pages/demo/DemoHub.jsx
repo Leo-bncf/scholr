@@ -13,8 +13,8 @@ export default function DemoHub() {
   const handleSelect = (key) => {
     if (selectedKey) return;
     setSelectedKey(key);
-    // Short animation window, then navigate to the role dashboard
-    setTimeout(() => navigate(DEMO_ROLES[key].path), 700);
+    // Keep this short so the demo feels immediate
+    setTimeout(() => navigate(DEMO_ROLES[key].path), 220);
   };
 
   const selected = selectedKey ? DEMO_ROLES[selectedKey] : null;
@@ -52,8 +52,8 @@ export default function DemoHub() {
                   scale: isSelected ? 1.03 : 1,
                   y: isSelected ? -4 : 0,
                 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={!selectedKey ? { y: -4, transition: { duration: 0.2 } } : {}}
+                transition={{ duration: 0.18, ease: 'easeOut' }}
+                whileHover={!selectedKey ? { y: -2, transition: { duration: 0.12 } } : {}}
                 className={`group relative text-left rounded-2xl bg-white border p-7 shadow-sm overflow-hidden transition-shadow disabled:cursor-default ${
                   isSelected ? 'border-slate-900 shadow-2xl' : 'border-slate-200 hover:shadow-xl'
                 }`}
@@ -72,7 +72,7 @@ export default function DemoHub() {
                   {isSelected ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      Loading your dashboard…
+Opening demo…
                     </>
                   ) : (
                     <>
@@ -100,13 +100,13 @@ export default function DemoHub() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.35 }}
+            transition={{ duration: 0.14 }}
             className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center"
           >
             <motion.div
-              initial={{ scale: 0, opacity: 0.8 }}
-              animate={{ scale: 30, opacity: 0 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ scale: 0.2, opacity: 0.22 }}
+              animate={{ scale: 8, opacity: 0 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
               className={`h-24 w-24 rounded-full bg-gradient-to-br ${selected.gradient}`}
             />
           </motion.div>

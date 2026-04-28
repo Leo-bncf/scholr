@@ -52,7 +52,7 @@ export default function TourOverlay({ active, step, stepIndex, total, rect, onNe
       />
       {/* Highlight ring */}
       <motion.div
-        className="fixed rounded-md ring-2 ring-indigo-400 shadow-[0_0_0_4px_rgba(99,102,241,0.25)] pointer-events-none"
+        className="fixed rounded-md ring-2 ring-emerald-400 shadow-[0_0_0_3px_rgba(16,185,129,0.18)] pointer-events-none"
         initial={false}
         animate={{
           top: rect.top - PADDING,
@@ -60,7 +60,7 @@ export default function TourOverlay({ active, step, stepIndex, total, rect, onNe
           width: rect.width + PADDING * 2,
           height: rect.height + PADDING * 2,
         }}
-        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.16, ease: 'easeOut' }}
       />
     </>
   ) : (
@@ -75,7 +75,7 @@ export default function TourOverlay({ active, step, stepIndex, total, rect, onNe
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.12 }}
       >
         {/* Backdrop click skips the tour */}
         <div className="fixed inset-0" onClick={onDismiss} />
@@ -84,16 +84,16 @@ export default function TourOverlay({ active, step, stepIndex, total, rect, onNe
         {/* Tooltip card */}
         <motion.div
           key={stepIndex}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -4 }}
-          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0, y: 4, scale: 0.985 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -2, scale: 0.99 }}
+          transition={{ duration: 0.16, ease: 'easeOut' }}
           className="fixed w-[320px] bg-white rounded-md shadow-xl border border-slate-200 overflow-hidden"
           style={{ top: pos.top, left: pos.left }}
           onClick={(e) => e.stopPropagation()}
         >
           <div className="px-4 py-3 flex items-center justify-between border-b border-slate-100 bg-slate-50">
-            <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-indigo-600">
+            <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-emerald-700">
               <Sparkles className="w-3 h-3" />
               Tour · {stepIndex + 1} of {total}
             </div>
@@ -114,7 +114,7 @@ export default function TourOverlay({ active, step, stepIndex, total, rect, onNe
               {Array.from({ length: total }).map((_, i) => (
                 <span
                   key={i}
-                  className={`h-1 rounded-full transition-all ${i === stepIndex ? 'w-5 bg-indigo-600' : 'w-1.5 bg-slate-200'}`}
+                  className={`h-1 rounded-full transition-all duration-150 ${i === stepIndex ? 'w-5 bg-emerald-700' : 'w-1.5 bg-slate-200'}`}
                 />
               ))}
             </div>
@@ -129,7 +129,7 @@ export default function TourOverlay({ active, step, stepIndex, total, rect, onNe
               )}
               <button
                 onClick={isLast ? onDismiss : onNext}
-                className="inline-flex items-center gap-1.5 rounded-md bg-indigo-600 text-white px-3 py-1.5 text-xs font-semibold hover:bg-indigo-700 transition"
+                className="inline-flex items-center gap-1.5 rounded-md bg-emerald-700 text-white px-3 py-1.5 text-xs font-semibold hover:bg-emerald-800 transition-colors duration-150"
               >
                 {isLast ? 'Finish' : 'Next'}
                 {!isLast && <ArrowRight className="w-3 h-3" />}

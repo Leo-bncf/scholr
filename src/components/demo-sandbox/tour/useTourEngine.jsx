@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * Lightweight walkthrough engine.
@@ -12,6 +12,8 @@ export default function useTourEngine({ steps, storageKey, autoStart = true }) {
   const [active, setActive] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [rect, setRect] = useState(null);
+  const rafRef = useRef(null);
+  const lastSelectorRef = useRef(null);
 
   // Auto-start once per tour id
   useEffect(() => {
@@ -34,31 +36,43 @@ export default function useTourEngine({ steps, storageKey, autoStart = true }) {
     if (!step) return;
 
     const measure = () => {
-      if (!step.selector) { setRect(null); return; }
+      if (!step.selector) {
+        setRect(null);
+        return;
+      }
       const el = document.querySelector(step.selector);
-      if (!el) { setRect(null); return; }
-      // Scroll the target into view (centred) once per step
-      el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
-      // Read after a beat so scrollIntoView finishes
-      requestAnimationFrame(() => {
-        const r = el.getBoundingClientRect();
-        setRect({ top: r.top, left: r.left, width: r.width, height: r.height });
-      });
+      if (!el) {
+        setRect(null);
+        return;
+      }
+
+      if (lastSelectorRef.current !== step.selector) {
+        el.scrollIntoView({ behavior: 'auto', block: 'center', inline: 'nearest' });
+        lastSelectorRef.current = step.selector;
+      }
+
+      const r = el.getBoundingClientRect();
+      setRect({ top: r.top, left: r.left, width: r.width, height: r.height });
     };
 
-    measure();
-    const onResize = () => measure();
-    window.addEventListener('resize', onResize);
-    window.addEventListener('scroll', onResize, true);
-    const interval = setInterval(measure, 400); // re-measure in case of async layout shifts
+    const scheduleMeasure = () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(measure);
+    };
+
+    scheduleMeasure();
+    window.addEventListener('resize', scheduleMeasure, { passive: true });
+    window.addEventListener('scroll', scheduleMeasure, true);
+
     return () => {
-      window.removeEventListener('resize', onResize);
-      window.removeEventListener('scroll', onResize, true);
-      clearInterval(interval);
+      window.removeEventListener('resize', scheduleMeasure, true);
+      window.removeEventListener('scroll', scheduleMeasure, true);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [active, stepIndex, steps]);
 
   const start = useCallback(() => {
+    lastSelectorRef.current = null;
     setStepIndex(0);
     setActive(true);
   }, []);
