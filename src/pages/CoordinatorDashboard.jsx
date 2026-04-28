@@ -12,6 +12,7 @@ import {
 import { format } from 'date-fns';
 import { getCoordinatorSidebarLinks } from '@/components/app/coordinatorSidebarLinks';
 import { useCurriculum } from '@/hooks/useCurriculum';
+import AssignmentCompletionChart from '@/components/coordinator/AssignmentCompletionChart';
 
 export default function CoordinatorDashboard() {
   const { user, school, schoolId } = useUser();
@@ -36,8 +37,37 @@ export default function CoordinatorDashboard() {
     enabled: !!schoolId,
   });
 
+  const { data: assignments = [] } = useQuery({
+    queryKey: ['school-assignments-coord', schoolId],
+    queryFn: () => base44.entities.Assignment.filter({ school_id: schoolId }),
+    enabled: !!schoolId,
+  });
+
+  const { data: submissions = [] } = useQuery({
+    queryKey: ['school-submissions-coord', schoolId],
+    queryFn: () => base44.entities.Submission.filter({ school_id: schoolId }),
+    enabled: !!schoolId,
+  });
+
   const students = memberships.filter(m => m.role === 'student');
   const teachers = memberships.filter(m => m.role === 'teacher');
+
+  const assignmentCompletionData = classes
+    .map((currentClass) => {
+      const classAssignments = assignments.filter((assignment) => assignment.class_id === currentClass.id);
+      const classStudents = currentClass.student_ids || [];
+      const expectedSubmissions = classAssignments.length * classStudents.length;
+      const submittedCount = submissions.filter(
+        (submission) => submission.class_id === currentClass.id && ['submitted', 'graded', 'returned', 'resubmitted', 'late'].includes(submission.status)
+      ).length;
+
+      return {
+        name: currentClass.name.length > 18 ? `${currentClass.name.slice(0, 18)}…` : currentClass.name,
+        completionRate: expectedSubmissions > 0 ? Math.round((submittedCount / expectedSubmissions) * 100) : 0,
+      };
+    })
+    .filter((item) => item.completionRate > 0)
+    .slice(0, 6);
 
   return (
     <RoleGuard allowedRoles={['ib_coordinator', 'school_admin', 'super_admin', 'admin']}>
@@ -61,7 +91,9 @@ export default function CoordinatorDashboard() {
                   <StatCard label="Subjects" value={subjects.length} icon={TrendingUp} color="violet" />
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                  <AssignmentCompletionChart data={assignmentCompletionData} />
+
                   <div className="bg-white rounded-md border border-slate-200 shadow-sm">
                     <div className="px-4 md:px-6 py-3 md:py-4 border-b border-slate-200 bg-slate-50 rounded-t-md">
                       <h2 className="font-bold text-sm md:text-base text-slate-900 uppercase tracking-wide">Student Cohorts</h2>
@@ -83,7 +115,9 @@ export default function CoordinatorDashboard() {
                       </div>
                     )}
                   </div>
+                </div>
 
+                <div className="grid grid-cols-1 gap-6">
                   <div className="bg-white rounded-md border border-slate-200 shadow-sm">
                     <div className="px-4 md:px-6 py-3 md:py-4 border-b border-slate-200 bg-slate-50 rounded-t-md">
                       <h2 className="font-bold text-sm md:text-base text-slate-900 uppercase tracking-wide">Subjects Overview</h2>
