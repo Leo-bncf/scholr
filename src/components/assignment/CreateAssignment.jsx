@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Loader2, Plus, Upload, X, FileText } from 'lucide-react';
 import SubmissionFormatSelector from './SubmissionFormatSelector';
+import AssessmentBuilderDialog from '@/components/assessment/AssessmentBuilderDialog';
 import { useSubmissionPolicy } from '@/hooks/useSubmissionPolicy';
 
 export default function CreateAssignment({ classData, userId, onClose, trigger }) {
@@ -30,6 +31,7 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
   });
   const [attachments, setAttachments] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [assessmentOpen, setAssessmentOpen] = useState(false);
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Assignment.create(data),
@@ -86,13 +88,18 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
 
   return (
     <>
-      {trigger ? (
-        <div onClick={() => setOpen(true)}>{trigger}</div>
-      ) : (
-        <Button onClick={() => setOpen(true)} className="bg-indigo-600 hover:bg-indigo-700">
-          <Plus className="w-4 h-4 mr-2" /> Create Assignment
+      <div className="flex gap-3">
+        {trigger ? (
+          <div onClick={() => setOpen(true)}>{trigger}</div>
+        ) : (
+          <Button onClick={() => setOpen(true)} className="bg-indigo-600 hover:bg-indigo-700">
+            <Plus className="w-4 h-4 mr-2" /> Create Assignment
+          </Button>
+        )}
+        <Button variant="outline" onClick={() => setAssessmentOpen(true)}>
+          <Plus className="w-4 h-4 mr-2" /> Create Assessment
         </Button>
-      )}
+      </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -256,6 +263,7 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
           </div>
         </DialogContent>
       </Dialog>
+      <AssessmentBuilderDialog open={assessmentOpen} onOpenChange={setAssessmentOpen} classData={classData} userId={userId} />
     </>
   );
 }

@@ -1,0 +1,151 @@
+{
+  "name": "AssessmentSubmission",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "assignment_id": {
+      "type": "string"
+    },
+    "class_id": {
+      "type": "string"
+    },
+    "student_id": {
+      "type": "string"
+    },
+    "student_name": {
+      "type": "string"
+    },
+    "answers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string"
+          },
+          "answer": {
+            "type": "string"
+          },
+          "is_correct": {
+            "type": "boolean"
+          },
+          "auto_score": {
+            "type": "number"
+          },
+          "teacher_score": {
+            "type": "number"
+          },
+          "teacher_feedback": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_id"
+        ]
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "in_progress",
+        "submitted",
+        "auto_graded",
+        "reviewed"
+      ],
+      "default": "in_progress"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "submitted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "time_remaining_seconds": {
+      "type": "number"
+    },
+    "total_score": {
+      "type": "number"
+    },
+    "max_score": {
+      "type": "number"
+    },
+    "needs_teacher_review": {
+      "type": "boolean",
+      "default": false
+    },
+    "locked": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "school_id",
+    "assessment_id",
+    "class_id",
+    "student_id"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "data.student_id": "{{user.id}}"
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.student_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "teacher",
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.student_id": "{{user.id}}",
+          "data.locked": false
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "teacher",
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "teacher",
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    }
+  }
+}

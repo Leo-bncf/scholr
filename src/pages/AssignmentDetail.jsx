@@ -10,6 +10,8 @@ import { createPageUrl } from '@/utils';
 import StudentSubmission from '@/components/assignment/StudentSubmission';
 import TeacherSubmissions from '@/components/assignment/TeacherSubmissions';
 import AssignmentComments from '@/components/assignment/AssignmentComments';
+import AssessmentStudentPanel from '@/components/assessment/AssessmentStudentPanel';
+import AssessmentTeacherReview from '@/components/assessment/AssessmentTeacherReview';
 
 export default function AssignmentDetail() {
   const { user, schoolId, membership } = useUser();
@@ -164,20 +166,30 @@ export default function AssignmentDetail() {
 
             {isStudent && (
               <div className="bg-white rounded-xl border border-slate-200 p-6">
-                <h2 className="font-semibold text-slate-900 mb-4">Your Submission</h2>
-                <StudentSubmission
-                  assignment={assignment}
-                  studentId={user.id}
-                  studentName={user.full_name}
-                  existingSubmission={studentSubmission}
-                />
+                {assignment.type === 'quiz' || assignment.type === 'exam' ? (
+                  <AssessmentStudentPanel assignment={assignment} studentId={user.id} studentName={user.full_name} />
+                ) : (
+                  <>
+                    <h2 className="font-semibold text-slate-900 mb-4">Your Submission</h2>
+                    <StudentSubmission
+                      assignment={assignment}
+                      studentId={user.id}
+                      studentName={user.full_name}
+                      existingSubmission={studentSubmission}
+                    />
+                  </>
+                )}
               </div>
             )}
 
             {isTeacher && (
               <div className="bg-white rounded-xl border border-slate-200 p-6">
                 <h2 className="font-semibold text-slate-900 mb-4">Student Submissions</h2>
-                <TeacherSubmissions assignment={assignment} classData={classData} />
+                {assignment.type === 'quiz' || assignment.type === 'exam' ? (
+                  <AssessmentTeacherReview assignment={assignment} />
+                ) : (
+                  <TeacherSubmissions assignment={assignment} classData={classData} />
+                )}
               </div>
             )}
 

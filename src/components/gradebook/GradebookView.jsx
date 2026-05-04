@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useGradebookPolicy } from '@/hooks/useGradebookPolicy';
 import { base44 } from '@/api/base44Client';
-import { Loader2, Edit, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Edit, Eye, EyeOff, ClipboardCheck } from 'lucide-react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -127,6 +127,10 @@ export default function GradebookView({ classData, assignments = [] }) {
           </div>
           <CreateGradeItem classData={classData} assignments={assignments} />
           <CreateRubricGradeItem classData={classData} />
+          <div className="flex items-center gap-2 text-xs text-slate-500 border border-slate-200 rounded-lg px-3 py-2">
+            <ClipboardCheck className="w-4 h-4" />
+            Assessment results flow into the gradebook automatically
+          </div>
         </div>
       </div>
 
