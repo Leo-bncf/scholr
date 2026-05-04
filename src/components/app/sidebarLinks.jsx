@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, BookOpen, ClipboardCheck, BarChart3,
-  MessageSquare, Users, GraduationCap, Settings
+  MessageSquare, Users, GraduationCap, Settings, CalendarDays
 } from 'lucide-react';
 
 export function getAppSidebarLinks(role) {
@@ -8,6 +8,7 @@ export function getAppSidebarLinks(role) {
     case 'teacher':
       return [
         { label: 'Workspace', page: 'TeacherWorkspace', icon: ClipboardCheck },
+        { label: 'Calendar', page: 'UnifiedCalendar', icon: CalendarDays },
         { label: 'Dashboard', page: 'TeacherDashboard', icon: LayoutDashboard },
         { label: 'My Classes', page: 'TeacherClasses', icon: BookOpen },
         { label: 'Messages', page: 'Messages', icon: MessageSquare },
@@ -16,11 +17,13 @@ export function getAppSidebarLinks(role) {
     case 'student':
       return [
         { label: 'Dashboard', page: 'StudentDashboard', icon: LayoutDashboard },
+        { label: 'Calendar', page: 'UnifiedCalendar', icon: CalendarDays },
         { label: 'Messages', page: 'Messages', icon: MessageSquare },
       ];
     case 'parent':
       return [
         { label: 'Insights', page: 'ParentInsightsDashboard', icon: BarChart3 },
+        { label: 'Calendar', page: 'UnifiedCalendar', icon: CalendarDays },
         { label: 'Dashboard', page: 'ParentDashboard', icon: LayoutDashboard },
         { label: 'Messages', page: 'Messages', icon: MessageSquare },
       ];
