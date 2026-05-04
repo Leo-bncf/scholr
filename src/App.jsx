@@ -16,6 +16,7 @@ import SuperAdminSettings from './pages/SuperAdminSettings';
 import SchoolAdminAcademicSetup from './pages/SchoolAdminAcademicSetup';
 import PersonalSettings from './pages/PersonalSettings';
 import TeacherWorkspace from './pages/TeacherWorkspace';
+import ParentInsightsDashboard from './pages/ParentInsightsDashboard';
 import SchoolAnalytics from './pages/SchoolAnalytics';
 import StudentAcademicDashboard from './pages/StudentAcademicDashboard';
 import StudentTimetable from './pages/StudentTimetable';
@@ -292,6 +293,14 @@ const AuthenticatedApp = () => {
         element={
           <LayoutWrapper currentPageName="TeacherWorkspace">
             <TeacherWorkspace />
+          </LayoutWrapper>
+        }
+      />
+      <Route
+        path="/ParentInsightsDashboard"
+        element={
+          <LayoutWrapper currentPageName="ParentInsightsDashboard">
+            <ParentInsightsDashboard />
           </LayoutWrapper>
         }
       />

@@ -20,6 +20,7 @@ export function getAppSidebarLinks(role) {
       ];
     case 'parent':
       return [
+        { label: 'Insights', page: 'ParentInsightsDashboard', icon: BarChart3 },
         { label: 'Dashboard', page: 'ParentDashboard', icon: LayoutDashboard },
         { label: 'Messages', page: 'Messages', icon: MessageSquare },
       ];
