@@ -15,6 +15,7 @@ export const SCHOOL_ADMIN_SIDEBAR_LINKS = [
   { label: 'Timetable',      page: 'SchoolAdminTimetable',      icon: Clock },
   { label: 'Calendar',       page: 'UnifiedCalendar',           icon: Calendar },
   { label: 'Analytics',      page: 'SchoolAnalytics',           icon: BarChart3 },
+  { label: 'Reporting',      page: 'ReportingEngine',           icon: FileText },
   { label: 'Reports',        page: 'SchoolAdminReports',        icon: FileText },
   { label: 'Billing',        page: 'SchoolAdminBilling',        icon: CreditCard },
   { label: 'Settings',       page: 'SchoolAdminSettings',       icon: Settings },
