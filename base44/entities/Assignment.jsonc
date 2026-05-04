@@ -1,0 +1,133 @@
+{
+  "name": "Assignment",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "class_id": {
+      "type": "string"
+    },
+    "teacher_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "homework",
+        "essay",
+        "lab_report",
+        "presentation",
+        "exam",
+        "project",
+        "quiz",
+        "other"
+      ],
+      "default": "homework"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "publish_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "max_score": {
+      "type": "number"
+    },
+    "ib_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IB assessment criteria e.g. Criterion A, B, C, D"
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "File URLs"
+    },
+    "curriculum_topic_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Linked curriculum topics and subtopics"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published",
+        "closed",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "allow_late": {
+      "type": "boolean",
+      "default": true
+    },
+    "primary_submission_format": {
+      "type": "string",
+      "enum": [
+        "google_doc",
+        "google_slides",
+        "google_sheet",
+        "file_upload",
+        "link"
+      ],
+      "description": "Primary expected submission format"
+    },
+    "allow_alternative_formats": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether students can use formats other than the primary format"
+    },
+    "alternative_formats": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "google_doc",
+          "google_slides",
+          "google_sheet",
+          "file_upload",
+          "link"
+        ]
+      },
+      "description": "Additional allowed formats when allow_alternative_formats is true"
+    }
+  },
+  "required": [
+    "school_id",
+    "class_id",
+    "title"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "data.teacher_id": "{{user.id}}"
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}"
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "data.teacher_id": "{{user.id}}"
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "data.teacher_id": "{{user.id}}"
+    }
+  }
+}

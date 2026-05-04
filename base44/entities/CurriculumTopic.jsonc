@@ -1,0 +1,94 @@
+{
+  "name": "CurriculumTopic",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "subject_id": {
+      "type": "string"
+    },
+    "parent_topic_id": {
+      "type": "string",
+      "description": "Null for top-level topics, set for subtopics"
+    },
+    "level": {
+      "type": "string",
+      "enum": [
+        "topic",
+        "subtopic"
+      ],
+      "default": "topic"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string"
+    },
+    "sequence": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "archived"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "school_id",
+    "subject_id",
+    "title",
+    "level"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "teacher",
+            "school_admin",
+            "ib_coordinator",
+            "admin"
+          ]
+        }
+      }
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}"
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "teacher",
+            "school_admin",
+            "ib_coordinator",
+            "admin"
+          ]
+        }
+      }
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator",
+            "admin"
+          ]
+        }
+      }
+    }
+  }
+}

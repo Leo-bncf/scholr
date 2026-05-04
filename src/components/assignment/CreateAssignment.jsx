@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Loader2, Plus, Upload, X, FileText } from 'lucide-react';
 import SubmissionFormatSelector from './SubmissionFormatSelector';
 import AssessmentBuilderDialog from '@/components/assessment/AssessmentBuilderDialog';
@@ -28,10 +29,17 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
     primary_submission_format: policy.default_primary_format || null,
     allow_alternative_formats: false,
     alternative_formats: [],
+    curriculum_topic_ids: [],
   });
   const [attachments, setAttachments] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [assessmentOpen, setAssessmentOpen] = useState(false);
+
+  const { data: curriculumTopics = [] } = useQuery({
+    queryKey: ['assignment-curriculum-topics', classData.school_id],
+    queryFn: () => base44.entities.CurriculumTopic.filter({ school_id: classData.school_id, status: 'active' }),
+    enabled: !!classData?.school_id,
+  });
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Assignment.create(data),
@@ -51,6 +59,7 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
         primary_submission_format: null,
         allow_alternative_formats: false,
         alternative_formats: [],
+        curriculum_topic_ids: [],
       });
       setAttachments([]);
     },
@@ -179,6 +188,30 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
                 onChange={e => setForm({ ...form, max_score: Number(e.target.value) })}
                 className="mt-1.5 w-32"
               />
+            </div>
+
+            <div>
+              <Label className="text-sm font-semibold mb-2 block">Curriculum Topics</Label>
+              <div className="max-h-48 overflow-y-auto border rounded-lg p-3 space-y-3 bg-slate-50">
+                {curriculumTopics.length === 0 ? (
+                  <p className="text-sm text-slate-500">No curriculum topics yet.</p>
+                ) : (
+                  curriculumTopics.map((topic) => (
+                    <label key={topic.id} className="flex items-center gap-3 text-sm text-slate-700">
+                      <Checkbox
+                        checked={form.curriculum_topic_ids.includes(topic.id)}
+                        onCheckedChange={(checked) => setForm({
+                          ...form,
+                          curriculum_topic_ids: checked
+                            ? [...form.curriculum_topic_ids, topic.id]
+                            : form.curriculum_topic_ids.filter((id) => id !== topic.id)
+                        })}
+                      />
+                      <span>{topic.title}</span>
+                    </label>
+                  ))
+                )}
+              </div>
             </div>
 
             <div className="pt-4 border-t">

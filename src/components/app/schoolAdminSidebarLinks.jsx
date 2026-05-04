@@ -4,6 +4,7 @@ import {
 } from 'lucide-react';
 
 export const SCHOOL_ADMIN_SIDEBAR_LINKS = [
+  { label: 'Curriculum', page: 'CurriculumMapping', icon: BookOpen },
   { label: 'Dashboard',      page: 'SchoolAdminDashboard',     icon: LayoutDashboard },
   { label: 'Users',          page: 'SchoolAdminUsers',          icon: Users },
   { label: 'Classes',        page: 'SchoolAdminClasses',        icon: BookOpen },

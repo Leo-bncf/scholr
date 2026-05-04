@@ -19,6 +19,7 @@ import TeacherWorkspace from './pages/TeacherWorkspace';
 import ParentInsightsDashboard from './pages/ParentInsightsDashboard';
 import UnifiedCalendar from './pages/UnifiedCalendar';
 import SchoolAnalytics from './pages/SchoolAnalytics';
+import CurriculumMapping from './pages/CurriculumMapping';
 import StudentAcademicDashboard from './pages/StudentAcademicDashboard';
 import StudentTimetable from './pages/StudentTimetable';
 import StudentAttendance from './pages/StudentAttendance';
@@ -310,6 +311,14 @@ const AuthenticatedApp = () => {
         element={
           <LayoutWrapper currentPageName="UnifiedCalendar">
             <UnifiedCalendar />
+          </LayoutWrapper>
+        }
+      />
+      <Route
+        path="/CurriculumMapping"
+        element={
+          <LayoutWrapper currentPageName="CurriculumMapping">
+            <CurriculumMapping />
           </LayoutWrapper>
         }
       />
