@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Bell } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -9,78 +9,49 @@ import NotificationList from './NotificationList';
 
 export default function NotificationBell({ userId, schoolId }) {
   const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: notifications = [] } = useQuery({
     queryKey: ['user-notifications', userId, schoolId],
-    queryFn: async () => {
-      // Get unread messages
-      const messages = await base44.entities.Message.filter({
-        school_id: schoolId,
-      });
-      const unreadMessages = messages.filter(m => 
-        m.recipient_ids?.includes(userId) && 
-        !m.read_by?.includes(userId)
-      );
-
-      // Get recent assignments in user's classes
-      const classes = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
-      const userClasses = classes.filter(c => c.student_ids?.includes(userId));
-      
-      const assignments = [];
-      for (const cls of userClasses) {
-        const classAssignments = await base44.entities.Assignment.filter({
-          school_id: schoolId,
-          class_id: cls.id,
-          status: 'published'
-        });
-        assignments.push(...classAssignments.slice(0, 3));
-      }
-
-      // Get recent visible grades
-      const grades = await base44.entities.GradeItem.filter({
-        school_id: schoolId,
-        student_id: userId,
-        visible_to_student: true
-      });
-      const recentGrades = grades.slice(0, 5);
-
-      // Combine notifications
-      const allNotifications = [
-        ...unreadMessages.map(m => ({
-          id: `msg_${m.id}`,
-          type: 'message',
-          title: 'New Message',
-          description: m.subject,
-          time: m.created_date,
-          unread: true,
-        })),
-        ...assignments.slice(0, 3).map(a => ({
-          id: `assign_${a.id}`,
-          type: 'assignment',
-          title: 'New Assignment',
-          description: a.title,
-          time: a.created_date,
-          unread: false,
-        })),
-        ...recentGrades.slice(0, 3).map(g => ({
-          id: `grade_${g.id}`,
-          type: 'grade',
-          title: 'Grade Posted',
-          description: g.title,
-          time: g.created_date,
-          unread: false,
-        }))
-      ];
-
-      return allNotifications.sort((a, b) => 
-        new Date(b.time) - new Date(a.time)
-      ).slice(0, 10);
-    },
+    queryFn: () => base44.entities.Notification.filter({ user_id: userId, school_id: schoolId }, '-timestamp', 30),
     enabled: !!userId && !!schoolId,
-    refetchInterval: 30000, // Refresh every 30 seconds
+    initialData: [],
   });
 
-  const unreadCount = notifications.filter(n => n.unread).length;
+  useEffect(() => {
+    if (!userId || !schoolId) return;
+    const unsubscribe = base44.entities.Notification.subscribe((event) => {
+      if (event.data?.user_id === userId && event.data?.school_id === schoolId) {
+        queryClient.invalidateQueries({ queryKey: ['user-notifications', userId, schoolId] });
+      }
+    });
+    return unsubscribe;
+  }, [userId, schoolId, queryClient]);
+
+  const toggleMutation = useMutation({
+    mutationFn: (notification) => base44.entities.Notification.update(notification.id, { read_status: !notification.read_status }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['user-notifications', userId, schoolId] }),
+  });
+
+  const groupedNotifications = useMemo(() => {
+    const groups = new Map();
+    notifications.forEach((item) => {
+      const key = item.group_key || item.id;
+      if (!groups.has(key)) {
+        groups.set(key, { ...item, items: [item] });
+      } else {
+        const current = groups.get(key);
+        current.items.push(item);
+        current.group_count = current.items.length;
+        current.read_status = current.items.every((entry) => entry.read_status);
+        current.message = current.items.length > 1 ? item.message : current.message;
+        if (new Date(item.timestamp) > new Date(current.timestamp)) current.timestamp = item.timestamp;
+      }
+    });
+    return Array.from(groups.values()).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  }, [notifications]);
+
+  const unreadCount = notifications.filter((item) => !item.read_status).length;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -98,7 +69,7 @@ export default function NotificationBell({ userId, schoolId }) {
         <div className="p-4 border-b border-slate-200">
           <h3 className="font-semibold text-slate-900">Notifications</h3>
         </div>
-        <NotificationList notifications={notifications} onClose={() => setOpen(false)} />
+        <NotificationList notifications={groupedNotifications} onToggleRead={(notification) => toggleMutation.mutate(notification)} onClose={() => setOpen(false)} />
       </PopoverContent>
     </Popover>
   );

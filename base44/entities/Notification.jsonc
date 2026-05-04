@@ -1,0 +1,105 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "user_id": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "assignment_created",
+        "assignment_due_soon",
+        "assignment_missing",
+        "grade_published",
+        "attendance_issue"
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "read_status": {
+      "type": "boolean",
+      "default": false
+    },
+    "related_entity_id": {
+      "type": "string"
+    },
+    "related_entity_type": {
+      "type": "string",
+      "enum": [
+        "Assignment",
+        "GradeItem",
+        "AttendanceRecord",
+        "Submission",
+        "Class",
+        "Message",
+        "Other"
+      ]
+    },
+    "group_key": {
+      "type": "string"
+    },
+    "group_count": {
+      "type": "number",
+      "default": 1
+    },
+    "email_sent": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "school_id",
+    "user_id",
+    "message",
+    "type",
+    "timestamp"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
