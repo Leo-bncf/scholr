@@ -55,7 +55,7 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 2xl:grid-cols-2 gap-5">
+      <div className="space-y-5">
         {/* Seed card */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
           <div className="flex items-start gap-3 mb-4">
@@ -73,7 +73,7 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
             </div>
           </div>
           <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 mb-5">
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600">
+            <ul className="grid grid-cols-1 lg:grid-cols-2 gap-3 text-sm text-slate-600">
               <li className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-indigo-500 shrink-0" /> 1 academic year + 2 terms</li>
               <li className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-indigo-500 shrink-0" /> 6 IB subjects</li>
               <li className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-indigo-500 shrink-0" /> 3 classes with teachers</li>

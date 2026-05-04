@@ -214,7 +214,7 @@ export default function SchoolOnboardingFlow() {
           {error && <Alert className="border-red-200 bg-red-50"><AlertDescription className="text-red-700">{error}</AlertDescription></Alert>}
           {success && <Alert className="border-emerald-200 bg-emerald-50"><AlertDescription className="text-emerald-700">{success}</AlertDescription></Alert>}
 
-          <div className="grid grid-cols-1 xl:grid-cols-[320px_minmax(0,1fr)] gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-[280px_minmax(0,1fr)] 2xl:grid-cols-[320px_minmax(0,1fr)] gap-6">
             <div className="space-y-4">
               <SchoolOnboardingProgress steps={steps} currentStep={currentStep} />
               <div className="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm">
