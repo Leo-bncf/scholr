@@ -42,7 +42,7 @@ export default function SchoolOnboardingFlow() {
   const [teacherDraft, setTeacherDraft] = useState({ name: '', email: '', department: '' });
   const [subjectAssignment, setSubjectAssignment] = useState({ classId: '', subjectId: '' });
 
-  const { data, isLoading } = useQuery({
+  const { data = { school: null, classes: [], memberships: [], subjects: [], academicYears: [] }, isLoading } = useQuery({
     queryKey: ['school-onboarding-flow', schoolId],
     queryFn: async () => {
       const [schools, classes, memberships, subjects, academicYears] = await Promise.all([
@@ -64,31 +64,34 @@ export default function SchoolOnboardingFlow() {
   });
 
   useEffect(() => {
-    if (data?.school || user?.onboarding_school_profile) {
+    if (safeData.school || user?.onboarding_school_profile) {
       setSchoolProfile({
-        name: user?.onboarding_school_profile?.name || data?.school?.name || '',
-        country: user?.onboarding_school_profile?.country || data?.school?.country || '',
-        city: user?.onboarding_school_profile?.city || data?.school?.city || '',
-        address: user?.onboarding_school_profile?.address || data?.school?.address || '',
-        email: user?.onboarding_school_profile?.email || data?.school?.email || '',
-        phone: user?.onboarding_school_profile?.phone || data?.school?.phone || '',
+        name: user?.onboarding_school_profile?.name || safeData.school?.name || '',
+        country: user?.onboarding_school_profile?.country || safeData.school?.country || '',
+        city: user?.onboarding_school_profile?.city || safeData.school?.city || '',
+        address: user?.onboarding_school_profile?.address || safeData.school?.address || '',
+        email: user?.onboarding_school_profile?.email || safeData.school?.email || '',
+        phone: user?.onboarding_school_profile?.phone || safeData.school?.phone || '',
       });
-      setClassDraft((prev) => ({ ...prev, academic_year_id: prev.academic_year_id || data?.academicYears?.find((item) => item.is_current)?.id || data?.academicYears?.[0]?.id || '' }));
+      setClassDraft((prev) => ({
+        ...prev,
+        academic_year_id: prev.academic_year_id || safeData.academicYears.find((item) => item.is_current)?.id || safeData.academicYears[0]?.id || '',
+      }));
     }
-  }, [data, user]);
+  }, [safeData, user]);
 
-  const safeData = data || { school: null, classes: [], memberships: [], subjects: [], academicYears: [] };
+  const safeData = data;
   const teachers = safeData.memberships.filter((item) => item.role === 'teacher');
   const students = safeData.memberships.filter((item) => item.role === 'student');
 
   const reviewSummary = useMemo(() => ([
     { label: 'School profile', value: schoolProfile.name ? 'Ready' : 'Missing' },
-    { label: 'Classes', value: data?.classes?.length || 0 },
+    { label: 'Classes', value: safeData.classes.length },
     { label: 'Teachers', value: teachers.length },
     { label: 'Students', value: students.length },
-    { label: 'Subjects', value: data?.subjects?.length || 0 },
-    { label: 'Assignments', value: data?.classes?.filter((item) => item.subject_id).length || 0 },
-  ]), [schoolProfile.name, data, teachers.length, students.length]);
+    { label: 'Subjects', value: safeData.subjects.length },
+    { label: 'Assignments', value: safeData.classes.filter((item) => item.subject_id).length },
+  ]), [schoolProfile.name, safeData, teachers.length, students.length]);
 
   const saveProgress = async () => {
     setSaving(true);
@@ -109,7 +112,7 @@ export default function SchoolOnboardingFlow() {
 
   const validateStep = () => {
     if (currentStep === 0 && !schoolProfile.name.trim()) return 'School name is required.';
-    if (currentStep === 1 && (!data?.classes?.length && !classDraft.name.trim())) return 'Add at least one class.';
+    if (currentStep === 1 && (!safeData.classes.length && !classDraft.name.trim())) return 'Add at least one class.';
     if (currentStep === 2 && (!teachers.length && (!teacherDraft.name.trim() || !teacherDraft.email.trim()))) return 'Add at least one teacher.';
     if (currentStep === 3 && students.length === 0) return 'Import at least one student with CSV.';
     if (currentStep === 4 && (!safeData.subjects.length || !safeData.classes.some((item) => item.subject_id))) return 'Add subjects and assign one to a class.';
@@ -191,7 +194,7 @@ export default function SchoolOnboardingFlow() {
     loadSavedStep();
   }, [user]);
 
-  if (isLoading) {
+  if (isLoading || !safeData) {
     return <div className="min-h-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-700" /></div>;
   }
 
