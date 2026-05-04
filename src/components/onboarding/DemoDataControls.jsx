@@ -44,64 +44,73 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-        <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-        <div className="text-sm text-amber-800">
-          <p className="font-semibold mb-1">Demo data is isolated and safe</p>
-          <p>All seeded records are tagged with <code className="bg-amber-100 px-1 rounded text-xs">is_demo: true</code> and can be removed cleanly without affecting any real school data you have configured.</p>
+    <div className="space-y-6">
+      <div className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 to-white p-5">
+        <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
+          <AlertTriangle className="w-5 h-5 text-amber-600" />
+        </div>
+        <div className="space-y-1.5">
+          <p className="text-sm font-semibold text-amber-900">Demo data is isolated and safe</p>
+          <p className="text-sm leading-6 text-amber-800">All seeded records are tagged with <code className="bg-amber-100 px-1.5 py-0.5 rounded text-xs">is_demo: true</code> and can be removed cleanly without affecting any real school data you have configured.</p>
         </div>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 2xl:grid-cols-2 gap-5">
         {/* Seed card */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-              <FlaskConical className="w-4 h-4 text-indigo-600" />
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+          <div className="flex items-start gap-3 mb-4">
+            <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center shrink-0">
+              <FlaskConical className="w-5 h-5 text-indigo-600" />
             </div>
-            <div>
-              <p className="text-sm font-bold text-slate-900">Generate Demo Data</p>
-              <Badge className="bg-indigo-50 text-indigo-600 border-0 text-xs mt-0.5">Safe to run</Badge>
+            <div className="space-y-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-base font-bold text-slate-900">Generate Demo Data</p>
+                <Badge className="bg-indigo-50 text-indigo-600 border-0 text-xs">Safe to run</Badge>
+              </div>
+              <p className="text-sm leading-6 text-slate-600">
+                Creates a realistic set of sample academic years, terms, subjects, classes, memberships, and assignments for training or demonstration purposes.
+              </p>
             </div>
           </div>
-          <p className="text-xs text-slate-500 mb-4">
-            Creates a realistic set of sample academic years, terms, subjects, classes, memberships, and assignments for training or demonstration purposes.
-          </p>
-          <ul className="text-xs text-slate-500 space-y-1 mb-4">
-            <li className="flex items-center gap-1.5"><Sparkles className="w-3 h-3 text-indigo-400" /> 1 academic year + 2 terms</li>
-            <li className="flex items-center gap-1.5"><Sparkles className="w-3 h-3 text-indigo-400" /> 6 IB subjects</li>
-            <li className="flex items-center gap-1.5"><Sparkles className="w-3 h-3 text-indigo-400" /> 3 classes with teachers</li>
-            <li className="flex items-center gap-1.5"><Sparkles className="w-3 h-3 text-indigo-400" /> Sample assignments & grades</li>
-          </ul>
+          <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 mb-5">
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600">
+              <li className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-indigo-500 shrink-0" /> 1 academic year + 2 terms</li>
+              <li className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-indigo-500 shrink-0" /> 6 IB subjects</li>
+              <li className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-indigo-500 shrink-0" /> 3 classes with teachers</li>
+              <li className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-indigo-500 shrink-0" /> Sample assignments & grades</li>
+            </ul>
+          </div>
           <Button
             onClick={handleSeed}
             disabled={seeding || clearing}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 gap-1.5"
-            size="sm"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 gap-2 h-11"
           >
-            {seeding ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+            {seeding ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             {seeding ? 'Seeding…' : 'Seed Demo Data'}
           </Button>
         </div>
 
         {/* Clear card */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-              <Trash2 className="w-4 h-4 text-red-600" />
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+          <div className="flex items-start gap-3 mb-4">
+            <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center shrink-0">
+              <Trash2 className="w-5 h-5 text-red-600" />
             </div>
-            <div>
-              <p className="text-sm font-bold text-slate-900">Remove Demo Data</p>
-              <Badge className="bg-red-50 text-red-600 border-0 text-xs mt-0.5">Irreversible</Badge>
+            <div className="space-y-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-base font-bold text-slate-900">Remove Demo Data</p>
+                <Badge className="bg-red-50 text-red-600 border-0 text-xs">Irreversible</Badge>
+              </div>
+              <p className="text-sm leading-6 text-slate-600">
+                Permanently removes all records tagged as demo data from this school. Only demo-tagged records are deleted — your real data is untouched.
+              </p>
             </div>
           </div>
-          <p className="text-xs text-slate-500 mb-4">
-            Permanently removes all records tagged as demo data from this school. Only demo-tagged records are deleted — your real data is untouched.
-          </p>
-          <div className="flex items-start gap-1.5 text-xs text-slate-400 mb-4">
-            <Info className="w-3 h-3 mt-0.5 shrink-0" />
-            <span>This removes: academic years, terms, subjects, classes, memberships, assignments, grades, and attendance records marked as demo.</span>
+          <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 mb-5">
+            <div className="flex items-start gap-2 text-sm text-slate-600 leading-6">
+              <Info className="w-4 h-4 mt-1 shrink-0 text-slate-400" />
+              <span>This removes: academic years, terms, subjects, classes, memberships, assignments, grades, and attendance records marked as demo.</span>
+            </div>
           </div>
 
           {!confirmClear ? (
@@ -109,30 +118,27 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
               variant="outline"
               onClick={() => setConfirmClear(true)}
               disabled={seeding || clearing}
-              className="w-full border-red-200 text-red-600 hover:bg-red-50 gap-1.5"
-              size="sm"
+              className="w-full border-red-200 text-red-600 hover:bg-red-50 gap-2 h-11"
             >
-              <Trash2 className="w-3.5 h-3.5" /> Remove Demo Data
+              <Trash2 className="w-4 h-4" /> Remove Demo Data
             </Button>
           ) : (
-            <div className="space-y-2">
-              <p className="text-xs text-red-700 font-semibold text-center">Are you sure?</p>
-              <div className="flex gap-2">
+            <div className="rounded-xl border border-red-200 bg-red-50 p-4 space-y-3">
+              <p className="text-sm text-red-700 font-semibold">Are you sure you want to remove all demo records?</p>
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Button
                   variant="outline"
-                  size="sm"
-                  className="flex-1 text-xs"
+                  className="flex-1"
                   onClick={() => setConfirmClear(false)}
                 >
                   Cancel
                 </Button>
                 <Button
-                  size="sm"
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-xs gap-1"
+                  className="flex-1 bg-red-600 hover:bg-red-700 gap-2"
                   onClick={handleClear}
                   disabled={clearing}
                 >
-                  {clearing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
+                  {clearing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                   {clearing ? 'Clearing…' : 'Yes, Remove'}
                 </Button>
               </div>
