@@ -77,8 +77,9 @@ export default function SchoolOnboardingFlow() {
     }
   }, [data, user]);
 
-  const teachers = data?.memberships?.filter((item) => item.role === 'teacher') || [];
-  const students = data?.memberships?.filter((item) => item.role === 'student') || [];
+  const safeData = data || { school: null, classes: [], memberships: [], subjects: [], academicYears: [] };
+  const teachers = safeData.memberships.filter((item) => item.role === 'teacher');
+  const students = safeData.memberships.filter((item) => item.role === 'student');
 
   const reviewSummary = useMemo(() => ([
     { label: 'School profile', value: schoolProfile.name ? 'Ready' : 'Missing' },
@@ -111,7 +112,7 @@ export default function SchoolOnboardingFlow() {
     if (currentStep === 1 && (!data?.classes?.length && !classDraft.name.trim())) return 'Add at least one class.';
     if (currentStep === 2 && (!teachers.length && (!teacherDraft.name.trim() || !teacherDraft.email.trim()))) return 'Add at least one teacher.';
     if (currentStep === 3 && students.length === 0) return 'Import at least one student with CSV.';
-    if (currentStep === 4 && (!data?.subjects?.length || !data?.classes?.some((item) => item.subject_id))) return 'Add subjects and assign one to a class.';
+    if (currentStep === 4 && (!safeData.subjects.length || !safeData.classes.some((item) => item.subject_id))) return 'Add subjects and assign one to a class.';
     return '';
   };
 
@@ -151,7 +152,7 @@ export default function SchoolOnboardingFlow() {
       }
 
       if (currentStep === 4 && subjectAssignment.classId && subjectAssignment.subjectId) {
-        const selectedClass = data.classes.find((item) => item.id === subjectAssignment.classId);
+        const selectedClass = safeData.classes.find((item) => item.id === subjectAssignment.classId);
         if (selectedClass) {
           await base44.entities.Class.update(selectedClass.id, { subject_id: subjectAssignment.subjectId });
         }
@@ -266,14 +267,14 @@ export default function SchoolOnboardingFlow() {
                         <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="none">No year</SelectItem>
-                          {data.academicYears.map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
+                          {safeData.academicYears.map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm font-semibold text-slate-700">Existing classes</p>
-                    {(data.classes || []).length === 0 ? <p className="text-sm text-slate-400">No classes yet.</p> : data.classes.map((item) => <div key={item.id} className="px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-700">{item.name}</div>)}
+                    {safeData.classes.length === 0 ? <p className="text-sm text-slate-400">No classes yet.</p> : safeData.classes.map((item) => <div key={item.id} className="px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-700">{item.name}</div>)}
                   </div>
                 </div>
               )}
@@ -308,7 +309,7 @@ export default function SchoolOnboardingFlow() {
                         <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="none">Select class</SelectItem>
-                          {data.classes.map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
+                          {safeData.classes.map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
                         </SelectContent>
                       </Select>
                     </div>
@@ -318,14 +319,14 @@ export default function SchoolOnboardingFlow() {
                         <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="none">Select subject</SelectItem>
-                          {data.subjects.map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
+                          {safeData.subjects.map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm font-semibold text-slate-700">Current class subject assignments</p>
-                    {data.classes.length === 0 ? <p className="text-sm text-slate-400">No classes available.</p> : data.classes.map((item) => <div key={item.id} className="px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-700">{item.name} — {data.subjects.find((subject) => subject.id === item.subject_id)?.name || 'No subject assigned'}</div>)}
+                    {safeData.classes.length === 0 ? <p className="text-sm text-slate-400">No classes available.</p> : safeData.classes.map((item) => <div key={item.id} className="px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-700">{item.name} — {safeData.subjects.find((subject) => subject.id === item.subject_id)?.name || 'No subject assigned'}</div>)}
                   </div>
                 </div>
               )}
