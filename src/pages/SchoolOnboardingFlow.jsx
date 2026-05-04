@@ -64,18 +64,18 @@ export default function SchoolOnboardingFlow() {
   });
 
   useEffect(() => {
-    if (data?.school) {
+    if (data?.school || user?.onboarding_school_profile) {
       setSchoolProfile({
-        name: data.school.name || '',
-        country: data.school.country || '',
-        city: data.school.city || '',
-        address: data.school.address || '',
-        email: data.school.email || '',
-        phone: data.school.phone || '',
+        name: user?.onboarding_school_profile?.name || data?.school?.name || '',
+        country: user?.onboarding_school_profile?.country || data?.school?.country || '',
+        city: user?.onboarding_school_profile?.city || data?.school?.city || '',
+        address: user?.onboarding_school_profile?.address || data?.school?.address || '',
+        email: user?.onboarding_school_profile?.email || data?.school?.email || '',
+        phone: user?.onboarding_school_profile?.phone || data?.school?.phone || '',
       });
-      setClassDraft((prev) => ({ ...prev, academic_year_id: prev.academic_year_id || data.academicYears.find((item) => item.is_current)?.id || data.academicYears[0]?.id || '' }));
+      setClassDraft((prev) => ({ ...prev, academic_year_id: prev.academic_year_id || data?.academicYears?.find((item) => item.is_current)?.id || data?.academicYears?.[0]?.id || '' }));
     }
-  }, [data]);
+  }, [data, user]);
 
   const teachers = data?.memberships?.filter((item) => item.role === 'teacher') || [];
   const students = data?.memberships?.filter((item) => item.role === 'student') || [];
@@ -93,7 +93,11 @@ export default function SchoolOnboardingFlow() {
     setSaving(true);
     setError('');
     setSuccess('');
-    await base44.auth.updateMe({ onboarding_flow_step: currentStep, onboarding_flow_saved_at: new Date().toISOString() });
+    await base44.auth.updateMe({
+      onboarding_flow_step: currentStep,
+      onboarding_flow_saved_at: new Date().toISOString(),
+      onboarding_school_profile: schoolProfile,
+    });
     setSaving(false);
     setSuccess('Progress saved');
   };
@@ -118,10 +122,6 @@ export default function SchoolOnboardingFlow() {
     if (validationError || isSubmitting) return;
 
     setIsSubmitting(true);
-
-    if (currentStep === 0) {
-      await base44.entities.School.update(schoolId, schoolProfile);
-    }
 
     if (currentStep === 1 && classDraft.name.trim()) {
       await base44.entities.Class.create({
@@ -156,7 +156,11 @@ export default function SchoolOnboardingFlow() {
       }
     }
 
-    await base44.auth.updateMe({ onboarding_flow_step: Math.min(currentStep + 1, steps.length - 1), onboarding_flow_saved_at: new Date().toISOString() });
+    await base44.auth.updateMe({
+      onboarding_flow_step: Math.min(currentStep + 1, steps.length - 1),
+      onboarding_flow_saved_at: new Date().toISOString(),
+      onboarding_school_profile: schoolProfile,
+    });
     await refreshFlowData();
 
     if (currentStep === steps.length - 1) {
