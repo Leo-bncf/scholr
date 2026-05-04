@@ -63,6 +63,8 @@ export default function SchoolOnboardingFlow() {
     enabled: !!schoolId,
   });
 
+  const safeData = data;
+
   useEffect(() => {
     if (safeData.school || user?.onboarding_school_profile) {
       setSchoolProfile({
@@ -79,8 +81,6 @@ export default function SchoolOnboardingFlow() {
       }));
     }
   }, [safeData, user]);
-
-  const safeData = data;
   const teachers = safeData.memberships.filter((item) => item.role === 'teacher');
   const students = safeData.memberships.filter((item) => item.role === 'student');
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Loader2 } from 'lucide-react';
-import { createPageUrl } from '@/utils';
+
 import { useNavigate } from 'react-router-dom';
 
 export default function AppHome() {
@@ -15,7 +15,7 @@ export default function AppHome() {
   const resolveAndRedirect = async () => {
     const isAuthed = await base44.auth.isAuthenticated();
     if (!isAuthed) {
-      base44.auth.redirectToLogin(createPageUrl('AppHome'));
+      base44.auth.redirectToLogin('/');
       return;
     }
 
@@ -23,7 +23,7 @@ export default function AppHome() {
 
     // Super admin goes directly to platform dashboard
     if (user.role === 'super_admin' || user.role === 'admin') {
-      navigate(createPageUrl('SuperAdminDashboard'));
+      navigate('/SuperAdminDashboard');
       return;
     }
 
@@ -31,7 +31,7 @@ export default function AppHome() {
     const memberships = await base44.entities.SchoolMembership.filter({ user_id: user.id, status: 'active' });
     
     if (memberships.length === 0) {
-      navigate(createPageUrl('NoSchool'));
+      navigate('/NoSchool');
       return;
     }
 
@@ -53,7 +53,7 @@ export default function AppHome() {
     };
 
     const target = routes[role] || 'StudentDashboard';
-    navigate(createPageUrl(target));
+    navigate(`/${target}`);
   };
 
   return (
