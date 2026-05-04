@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import DetachedNavbar from '@/components/public/DetachedNavbar';
-import TopInfoRibbon from '@/components/public/TopInfoRibbon';
 import { ExpandableCard } from '@/components/ui/expandable-card';
 import PublicFooter from '@/components/public/PublicFooter';
 import ConsentModal from '@/components/public/ConsentModal';
@@ -478,12 +477,6 @@ function CTASection() {
 
 export default function Landing() {
   const [showConsent, setShowConsent] = useState(true);
-  const [showTopRibbon, setShowTopRibbon] = useState(true);
-  const { scrollY } = useScroll();
-
-  useMotionValueEvent(scrollY, 'change', (latest) => {
-    setShowTopRibbon(latest < 80);
-  });
 
   useEffect(() => {
     const checkConsent = async () => {
@@ -507,21 +500,8 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-transparent font-landing">
       <LandingAnimatedBackground />
-      <AnimatePresence mode="wait">
-        {showTopRibbon && (
-          <motion.div
-            initial={{ opacity: 0, y: -10, filter: 'blur(6px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: -14, filter: 'blur(4px)' }}
-            transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-            className="[&>*]:bg-transparent"
-          >
-            <TopInfoRibbon />
-          </motion.div>
-        )}
-      </AnimatePresence>
       <div
-        className="fixed top-20 left-0 right-0 z-50 px-4 flex justify-center sm:top-24"
+        className="fixed top-6 left-0 right-0 z-50 px-4 flex justify-center sm:top-8"
       >
         <DetachedNavbar />
       </div>
