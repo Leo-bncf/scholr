@@ -64,6 +64,7 @@ export default function SchoolOnboardingFlow() {
   });
 
   const safeData = data;
+  const teachers = safeData.memberships.filter((item) => item.role === 'teacher');
 
   useEffect(() => {
     if (safeData.school || user?.onboarding_school_profile) {
@@ -80,8 +81,7 @@ export default function SchoolOnboardingFlow() {
         academic_year_id: prev.academic_year_id || safeData.academicYears.find((item) => item.is_current)?.id || safeData.academicYears[0]?.id || '',
       }));
     }
-  }, [safeData, user]);
-  const teachers = safeData.memberships.filter((item) => item.role === 'teacher');
+  }, [user, safeData.school, safeData.academicYears]);
   const students = safeData.memberships.filter((item) => item.role === 'student');
 
   const reviewSummary = useMemo(() => ([
@@ -91,7 +91,7 @@ export default function SchoolOnboardingFlow() {
     { label: 'Students', value: students.length },
     { label: 'Subjects', value: safeData.subjects.length },
     { label: 'Assignments', value: safeData.classes.filter((item) => item.subject_id).length },
-  ]), [schoolProfile.name, safeData, teachers.length, students.length]);
+  ]), [schoolProfile.name, safeData.classes, safeData.subjects, teachers.length, students.length]);
 
   const saveProgress = async () => {
     setSaving(true);
