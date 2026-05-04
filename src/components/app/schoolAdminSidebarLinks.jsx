@@ -6,6 +6,7 @@ import {
 export const SCHOOL_ADMIN_SIDEBAR_LINKS = [
   { label: 'Curriculum', page: 'CurriculumMapping', icon: BookOpen },
   { label: 'Dashboard',      page: 'SchoolAdminDashboard',     icon: LayoutDashboard },
+  { label: 'Onboarding',     page: 'SchoolOnboardingFlow',     icon: GraduationCap },
   { label: 'Users',          page: 'SchoolAdminUsers',          icon: Users },
   { label: 'Classes',        page: 'SchoolAdminClasses',        icon: BookOpen },
   { label: 'Enrollments',    page: 'SchoolAdminEnrollments',    icon: Users },

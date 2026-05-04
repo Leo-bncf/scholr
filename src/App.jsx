@@ -20,6 +20,7 @@ import ParentInsightsDashboard from './pages/ParentInsightsDashboard';
 import UnifiedCalendar from './pages/UnifiedCalendar';
 import SchoolAnalytics from './pages/SchoolAnalytics';
 import ReportingEngine from './pages/ReportingEngine';
+import SchoolOnboardingFlow from './pages/SchoolOnboardingFlow';
 import CurriculumMapping from './pages/CurriculumMapping';
 import StudentAcademicDashboard from './pages/StudentAcademicDashboard';
 import StudentTimetable from './pages/StudentTimetable';
@@ -256,6 +257,14 @@ const AuthenticatedApp = () => {
         element={
           <LayoutWrapper currentPageName="ReportingEngine">
             <ReportingEngine />
+          </LayoutWrapper>
+        }
+      />
+      <Route
+        path="/SchoolOnboardingFlow"
+        element={
+          <LayoutWrapper currentPageName="SchoolOnboardingFlow">
+            <SchoolOnboardingFlow />
           </LayoutWrapper>
         }
       />
