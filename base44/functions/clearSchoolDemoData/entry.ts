@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
       school_id: schoolId,
       user_id: user.id,
     });
-    const isAdmin = memberships.some(m => ['school_admin'].includes(m.role)) || user.role === 'admin';
+    const isAdmin = memberships.some(m => ['school_admin', 'ib_coordinator'].includes(m.role)) || ['admin', 'super_admin'].includes(user.role);
     if (!isAdmin) return Response.json({ error: 'Forbidden' }, { status: 403 });
 
     let deleted = 0;
