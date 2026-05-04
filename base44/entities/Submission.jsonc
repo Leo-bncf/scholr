@@ -1,0 +1,229 @@
+{
+  "name": "Submission",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "assignment_id": {
+      "type": "string"
+    },
+    "class_id": {
+      "type": "string"
+    },
+    "student_id": {
+      "type": "string"
+    },
+    "student_name": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string",
+      "description": "Text content or notes"
+    },
+    "file_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Legacy simple file URLs"
+    },
+    "link_url": {
+      "type": "string",
+      "description": "Legacy single link URL"
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "google_doc",
+              "google_sheet",
+              "google_slide",
+              "google_drive_file",
+              "uploaded_file",
+              "external_link"
+            ]
+          },
+          "url": {
+            "type": "string"
+          },
+          "thumbnail_url": {
+            "type": "string"
+          },
+          "mime_type": {
+            "type": "string"
+          },
+          "size_bytes": {
+            "type": "number"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "file_type": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "version_number": {
+      "type": "number",
+      "default": 1
+    },
+    "submission_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "file_type": {
+      "type": "string"
+    },
+    "previous_submission_id": {
+      "type": "string"
+    },
+    "is_current_version": {
+      "type": "boolean",
+      "default": true
+    },
+    "annotations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "document_id": {
+            "type": "string"
+          },
+          "document_name": {
+            "type": "string"
+          },
+          "selection_text": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "comment",
+          "created_at"
+        ]
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "submitted",
+        "late",
+        "graded",
+        "returned",
+        "resubmitted"
+      ],
+      "default": "draft"
+    },
+    "submitted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "score": {
+      "type": "number"
+    },
+    "feedback": {
+      "type": "string"
+    },
+    "graded_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "school_id",
+    "assignment_id",
+    "student_id"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "data.student_id": "{{user.id}}"
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.student_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "teacher",
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.student_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "teacher",
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.student_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

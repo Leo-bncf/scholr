@@ -21,6 +21,7 @@ export default function DocumentPicker({ open, onClose, onAddDocuments, trigger 
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       
+      const fileType = file.name.split('.').pop()?.toLowerCase() || file.type;
       const document = {
         id: `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         name: file.name,
@@ -29,6 +30,7 @@ export default function DocumentPicker({ open, onClose, onAddDocuments, trigger 
         mime_type: file.type,
         size_bytes: file.size,
         created_at: new Date().toISOString(),
+        file_type: fileType,
       };
       
       onAddDocuments([document]);
@@ -110,6 +112,7 @@ export default function DocumentPicker({ open, onClose, onAddDocuments, trigger 
                   </Button>
                   <input 
                     type="file" 
+                    accept=".pdf,.docx,image/*"
                     className="hidden" 
                     onChange={handleFileUpload} 
                     disabled={uploading}

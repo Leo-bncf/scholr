@@ -120,8 +120,8 @@ export default function DocumentCard({ document, onRemove, onOpen, compact = fal
           <Icon className={`w-5 h-5 ${config.iconColor} flex-shrink-0`} />
         </div>
         
-        {document.size_bytes && (
-          <p className="text-xs opacity-70 mb-3">{formatFileSize(document.size_bytes)}</p>
+        {(document.size_bytes || document.file_type) && (
+          <p className="text-xs opacity-70 mb-3">{[formatFileSize(document.size_bytes), document.file_type?.toUpperCase()].filter(Boolean).join(' • ')}</p>
         )}
 
         <div className="flex items-center gap-2">

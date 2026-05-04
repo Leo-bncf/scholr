@@ -1,5 +1,6 @@
 import React from 'react';
 import { FileText, Presentation, Table, FileIcon, Link as LinkIcon, ExternalLink, Trash2, AlertCircle } from 'lucide-react';
+import FileInlinePreview from './FileInlinePreview';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import DocumentAccessValidator from '@/components/google/DocumentAccessValidator';
@@ -46,6 +47,12 @@ export default function SubmissionDocumentsView({ documents, onRemove = null, on
                     Owner: {doc.metadata.owner_email}
                   </p>
                 )}
+                {doc.file_type && (
+                  <p className="text-xs opacity-75 mt-0.5 uppercase">{doc.file_type}</p>
+                )}
+                <div className="mt-3">
+                  <FileInlinePreview document={doc} />
+                </div>
               </div>
             </div>
 

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,11 +15,13 @@ import DocumentPicker from './DocumentPicker';
 import GoogleDocCreator from './GoogleDocCreator';
 import GoogleDrivePicker from './GoogleDrivePicker';
 import SubmissionDocumentsView from './SubmissionDocumentsView';
+import SubmissionHistory from './SubmissionHistory';
 import GoogleConnectionStatus from '@/components/google/GoogleConnectionStatus';
 import { useSubmissionPolicy, validateFileForPolicy, getLateSubmissionStatus } from '@/hooks/useSubmissionPolicy';
 
 export default function StudentSubmission({ assignment, studentId, studentName, existingSubmission }) {
   const queryClient = useQueryClient();
+  const [selectedSubmission, setSelectedSubmission] = useState(existingSubmission || null);
   const { school } = useUser();
   const { policy } = useSubmissionPolicy(assignment?.school_id);
   const [content, setContent] = useState(existingSubmission?.content || '');
@@ -31,16 +33,29 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
   const [acknowledged, setAcknowledged] = useState(false);
   const [policyError, setPolicyError] = useState(null);
 
+  const { data: submissionHistory = [] } = useQuery({
+    queryKey: ['submission-history', assignment?.id, studentId],
+    queryFn: () => base44.entities.Submission.filter({ assignment_id: assignment.id, student_id: studentId }),
+    enabled: !!assignment?.id && !!studentId,
+  });
+
+  const activeSubmission = selectedSubmission || existingSubmission;
+  const latestVersionNumber = useMemo(() => submissionHistory.length ? Math.max(...submissionHistory.map((item) => item.version_number || 1)) : 0, [submissionHistory]);
+
   const submitMutation = useMutation({
-    mutationFn: (data) => {
-      if (existingSubmission) {
-        return base44.entities.Submission.update(existingSubmission.id, data);
+    mutationFn: async (data) => {
+      if (data.status === 'draft' && activeSubmission && activeSubmission.status === 'draft') {
+        return base44.entities.Submission.update(activeSubmission.id, data);
+      }
+      if (activeSubmission && data.status !== 'draft') {
+        await base44.entities.Submission.update(activeSubmission.id, { is_current_version: false });
       }
       return base44.entities.Submission.create(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assignment-detail'] });
       queryClient.invalidateQueries({ queryKey: ['student-submission'] });
+      queryClient.invalidateQueries({ queryKey: ['submission-history'] });
     },
   });
 
@@ -57,6 +72,13 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
         const ext = '.' + doc.name.split('.').pop().toLowerCase();
         if (!policy.allowed_file_extensions.map(e => e.toLowerCase()).includes(ext)) {
           errors.push(`File type "${ext}" is not allowed by school policy.`);
+        }
+      }
+      if (doc.type === 'uploaded_file') {
+        const allowedV2 = ['pdf', 'docx', 'png', 'jpg', 'jpeg', 'gif', 'webp'];
+        const currentExt = doc.name?.split('.').pop()?.toLowerCase();
+        if (currentExt && !allowedV2.includes(currentExt)) {
+          errors.push(`Only PDF, DOCX, and image files are supported.`);
         }
       }
     }
@@ -194,8 +216,8 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
       return;
     }
     // Resubmission limit check
-    if (status === 'submitted' && existingSubmission?.status === 'returned' && policy.resubmission_limit > 0) {
-      const resubCount = existingSubmission?.resubmission_count || 0;
+    if (status === 'submitted' && activeSubmission?.status === 'returned' && policy.resubmission_limit > 0) {
+      const resubCount = Math.max(0, submissionHistory.length - 1);
       if (resubCount >= policy.resubmission_limit) {
         setPolicyError(`Resubmission limit reached (${policy.resubmission_limit}). Contact your teacher.`);
         return;
@@ -208,6 +230,7 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
       return;
     }
     const isLate = new Date() > new Date(assignment.due_date);
+    const submissionTime = status === 'submitted' ? new Date().toISOString() : activeSubmission?.submission_time || null;
     submitMutation.mutate({
       school_id: assignment.school_id,
       assignment_id: assignment.id,
@@ -216,14 +239,19 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
       student_name: studentName,
       content,
       documents,
+      version_number: latestVersionNumber + (status === 'draft' && activeSubmission?.status === 'draft' ? 0 : 1),
+      submission_time: submissionTime,
+      file_type: documents[0]?.file_type || documents[0]?.mime_type || null,
+      previous_submission_id: activeSubmission?.id || null,
+      is_current_version: true,
       status: isLate && status === 'submitted' ? 'late' : status,
-      submitted_at: status === 'submitted' ? new Date().toISOString() : existingSubmission?.submitted_at,
+      submitted_at: status === 'submitted' ? new Date().toISOString() : activeSubmission?.submitted_at,
     });
   };
 
   const canSubmit = content.trim() || documents.length > 0;
-  const isSubmitted = existingSubmission?.status === 'submitted' || existingSubmission?.status === 'late';
-  const isReturned = existingSubmission?.status === 'returned';
+  const isSubmitted = activeSubmission?.status === 'submitted' || activeSubmission?.status === 'late';
+  const isReturned = activeSubmission?.status === 'returned';
   const isEditable = !isSubmitted || isReturned;
   const hasGoogleFormats = assignment.primary_submission_format?.includes('google') || assignment.alternative_formats?.some(f => f.includes('google'));
 
@@ -258,28 +286,31 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
           compact={true}
         />
       )}
-      {existingSubmission && (
+      <SubmissionHistory submissions={[...submissionHistory].sort((a, b) => (b.version_number || 0) - (a.version_number || 0))} currentId={activeSubmission?.id} onSelect={setSelectedSubmission} />
+
+      {activeSubmission && (
         <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-semibold text-slate-700">Submission Status</span>
             <Badge className={`${
-              existingSubmission.status === 'submitted' ? 'bg-emerald-50 text-emerald-700' :
-              existingSubmission.status === 'late' ? 'bg-amber-50 text-amber-700' :
-              existingSubmission.status === 'returned' ? 'bg-blue-50 text-blue-700' :
+              activeSubmission.status === 'submitted' ? 'bg-emerald-50 text-emerald-700' :
+              activeSubmission.status === 'late' ? 'bg-amber-50 text-amber-700' :
+              activeSubmission.status === 'returned' ? 'bg-blue-50 text-blue-700' :
               'bg-slate-100 text-slate-600'
             } border-0`}>
-              {existingSubmission.status}
+              {activeSubmission.status}
             </Badge>
           </div>
-          {existingSubmission.submitted_at && (
+          <p className="text-xs text-slate-500">Version {activeSubmission.version_number || 1}</p>
+          {activeSubmission.submitted_at && (
             <p className="text-xs text-slate-500">
-              Submitted {format(new Date(existingSubmission.submitted_at), 'MMM d, yyyy h:mm a')}
+              Submitted {format(new Date(activeSubmission.submitted_at), 'MMM d, yyyy h:mm a')}
             </p>
           )}
-          {existingSubmission.feedback && (
+          {activeSubmission.feedback && (
             <div className="mt-3 pt-3 border-t border-slate-200">
               <p className="text-sm font-semibold text-slate-700 mb-1">Teacher Feedback</p>
-              <p className="text-sm text-slate-600">{existingSubmission.feedback}</p>
+              <p className="text-sm text-slate-600">{activeSubmission.feedback}</p>
             </div>
           )}
         </div>

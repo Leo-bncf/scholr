@@ -9,6 +9,9 @@ import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { createPageUrl } from '@/utils';
 import DocumentCard from '@/components/assignment/DocumentCard';
+import SubmissionHistory from '@/components/assignment/SubmissionHistory';
+import TeacherAnnotationsPanel from '@/components/assignment/TeacherAnnotationsPanel';
+import FileInlinePreview from '@/components/assignment/FileInlinePreview';
 
 export default function SubmissionReview() {
   const { user, schoolId } = useUser();
@@ -24,6 +27,12 @@ export default function SubmissionReview() {
       return results[0];
     },
     enabled: !!submissionId && !!schoolId,
+  });
+
+  const { data: submissionHistory = [] } = useQuery({
+    queryKey: ['submission-review-history', submission?.assignment_id, submission?.student_id],
+    queryFn: () => base44.entities.Submission.filter({ assignment_id: submission.assignment_id, student_id: submission.student_id }),
+    enabled: !!submission?.assignment_id && !!submission?.student_id,
   });
 
   const { data: assignment } = useQuery({
@@ -73,6 +82,21 @@ export default function SubmissionReview() {
     });
   };
 
+  const handleAddAnnotation = (annotation) => {
+    updateMutation.mutate({
+      ...submission,
+      annotations: [
+        ...(submission.annotations || []),
+        {
+          id: crypto.randomUUID(),
+          ...annotation,
+          created_by: user?.full_name || user?.email,
+          created_at: new Date().toISOString(),
+        }
+      ]
+    });
+  };
+
   const statusColors = {
     submitted: 'bg-emerald-50 text-emerald-700',
     late: 'bg-amber-50 text-amber-700',
@@ -106,6 +130,8 @@ export default function SubmissionReview() {
       <div className="max-w-5xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
+            <SubmissionHistory submissions={[...submissionHistory].sort((a, b) => (b.version_number || 0) - (a.version_number || 0))} currentId={submission.id} />
+
             <div className="bg-white rounded-xl border border-slate-200 p-6">
               <h2 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
                 <FileText className="w-5 h-5" />
@@ -126,12 +152,14 @@ export default function SubmissionReview() {
                   <p className="text-sm font-medium text-slate-700 mb-3">Documents & Attachments</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {submission.documents.map(doc => (
-                      <DocumentCard
-                        key={doc.id}
-                        document={doc}
-                        onOpen={(doc) => window.open(doc.url, '_blank')}
-                        compact={false}
-                      />
+                      <div key={doc.id} className="space-y-3">
+                        <DocumentCard
+                          document={doc}
+                          onOpen={(doc) => window.open(doc.url, '_blank')}
+                          compact={false}
+                        />
+                        <FileInlinePreview document={doc} />
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -180,6 +208,8 @@ export default function SubmissionReview() {
               )}
             </div>
 
+            <TeacherAnnotationsPanel annotations={submission.annotations || []} onAddAnnotation={handleAddAnnotation} />
+
             <div className="bg-white rounded-xl border border-slate-200 p-6">
               <h2 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
                 <MessageSquare className="w-5 h-5" />
@@ -220,6 +250,14 @@ export default function SubmissionReview() {
                   </p>
                 </div>
                 <div>
+                  <p className="text-slate-500">Version</p>
+                  <p className="font-medium text-slate-900">{submission.version_number || 1}</p>
+                </div>
+                <div>
+                  <p className="text-slate-500">File Type</p>
+                  <p className="font-medium text-slate-900">{submission.file_type || '—'}</p>
+                </div>
+                <div>
                   <p className="text-slate-500">Status</p>
                   <Badge className={`${statusColors[submission.status]} border-0 mt-1`}>
                     {submission.status}
@@ -239,6 +277,10 @@ export default function SubmissionReview() {
                     <p className="font-medium text-slate-900">{submission.score} points</p>
                   </div>
                 )}
+                <div>
+                  <p className="text-slate-500">Annotations</p>
+                  <p className="font-medium text-slate-900">{submission.annotations?.length || 0}</p>
+                </div>
               </div>
             </div>
           </div>
