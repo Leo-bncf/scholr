@@ -51,6 +51,7 @@ export default function SchoolAdminBilling() {
     queryKey: ['school-billing', schoolId],
     queryFn: async () => {
       const schools = await base44.entities.School.filter({ id: schoolId });
+      if (!schools || schools.length === 0) throw new Error('School not found');
       return schools[0];
     },
     enabled: !!schoolId,
@@ -79,7 +80,9 @@ export default function SchoolAdminBilling() {
     setLoading(true);
     try {
       const response = await base44.functions.invoke('createCustomerPortalSession', { schoolId });
-      window.location.href = response.data.url;
+      const url = response?.data?.url;
+      if (!url) throw new Error('No portal URL returned');
+      window.location.href = url;
     } catch {
       setMessage({ type: 'error', text: 'Failed to open billing portal. Please try again.' });
       setLoading(false);

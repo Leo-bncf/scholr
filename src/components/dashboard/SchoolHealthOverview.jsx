@@ -138,7 +138,7 @@ function ClassCoverageCard({ classes }) {
           <div className="h-2 bg-slate-100 rounded-full">
             <div
               className={`h-2 rounded-full transition-all ${classesWithTeacher === totalClasses ? 'bg-emerald-500' : classesWithTeacher / totalClasses >= 0.8 ? 'bg-amber-400' : 'bg-red-400'}`}
-              style={{ width: `${totalClasses > 0 ? (classesWithTeacher / totalClasses) * 100 : 0}%` }}
+              style={{ width: `${totalClasses > 0 ? Math.min(100, (classesWithTeacher / totalClasses) * 100) : 0}%` }}
             />
           </div>
           <div className="flex items-center justify-between text-sm mt-3">
@@ -148,7 +148,7 @@ function ClassCoverageCard({ classes }) {
           <div className="h-2 bg-slate-100 rounded-full">
             <div
               className={`h-2 rounded-full transition-all ${classesWithStudents === totalClasses ? 'bg-emerald-500' : 'bg-amber-400'}`}
-              style={{ width: `${totalClasses > 0 ? (classesWithStudents / totalClasses) * 100 : 0}%` }}
+              style={{ width: `${totalClasses > 0 ? Math.min(100, (classesWithStudents / totalClasses) * 100) : 0}%` }}
             />
           </div>
         </div>
@@ -168,8 +168,8 @@ function ClassCoverageCard({ classes }) {
 
 // ─── Activity Signals Card ────────────────────────────────────────────────────
 function ActivitySignalsCard({ attendanceRate, missingWorkRate, messagingVolume }) {
-  const attendanceColor = attendanceRate >= 90 ? 'bg-emerald-500' : attendanceRate >= 75 ? 'bg-amber-400' : 'bg-red-400';
-  const missingColor = missingWorkRate <= 10 ? 'bg-emerald-500' : missingWorkRate <= 30 ? 'bg-amber-400' : 'bg-red-400';
+  const attendanceColor = attendanceRate == null ? 'bg-slate-300' : attendanceRate >= 90 ? 'bg-emerald-500' : attendanceRate >= 75 ? 'bg-amber-400' : 'bg-red-400';
+  const missingColor = missingWorkRate == null ? 'bg-slate-300' : missingWorkRate <= 10 ? 'bg-emerald-500' : missingWorkRate <= 30 ? 'bg-amber-400' : 'bg-red-400';
 
   return (
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">

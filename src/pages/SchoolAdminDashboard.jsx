@@ -49,7 +49,7 @@ export default function SchoolAdminDashboard() {
   const navigate = useNavigate();
   const { user, schoolId, loading: userLoading } = useUser();
   const { shortLabel } = useCurriculum();
-  const { data, isLoading } = useSchoolOperationsData(schoolId);
+  const { data, isLoading, isError } = useSchoolOperationsData(schoolId);
 
   useEffect(() => {
     if (!userLoading && !user) {
@@ -65,18 +65,27 @@ export default function SchoolAdminDashboard() {
     return <LoadingStateBase />;
   }
 
+  if (isError || !data) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center space-y-2">
+          <p className="text-slate-700 font-semibold">Failed to load dashboard data.</p>
+          <p className="text-sm text-slate-400">Check your connection and refresh the page.</p>
+        </div>
+      </div>
+    );
+  }
+
   const school = data?.school;
   const today = format(new Date(), 'EEEE, d MMMM yyyy');
   const statusKey = school?.status || 'onboarding';
   const sm = statusMeta[statusKey] || statusMeta.onboarding;
 
-  const alertCount = data ? (
+  const alertCount =
     (data.classesWithoutTeachers.length > 0 ? 1 : 0) +
     (data.studentsWithoutClasses.length > 0 ? 1 : 0) +
     ((data.failedSyncs?.length ?? 0) > 0 ? 1 : 0) +
-    (['past_due', 'unpaid', 'incomplete'].includes(school?.billing_status) ? 1 : 0) +
-    0
-  ) : 0;
+    (['past_due', 'unpaid', 'incomplete'].includes(school?.billing_status) ? 1 : 0);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -116,7 +125,7 @@ export default function SchoolAdminDashboard() {
         <div className="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full space-y-8">
 
           {/* Setup Checklist — only visible until complete */}
-          {data && data.setupDone < data.setupTotal && (
+          {data.setupDone < data.setupTotal && (
             <section>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-md flex items-center justify-center flex-shrink-0">
@@ -160,7 +169,7 @@ export default function SchoolAdminDashboard() {
                 )}
               </div>
             </div>
-            {data && <OperationalAlerts data={data} />}
+            <OperationalAlerts data={data} />
           </section>
 
           {/* School Health Overview */}
@@ -171,7 +180,7 @@ export default function SchoolAdminDashboard() {
               subtitle="Key metrics, activity signals, and reporting windows — scoped to your school"
               accent="slate"
             />
-            {data && <SchoolHealthOverview data={data} />}
+            <SchoolHealthOverview data={data} />
           </section>
 
         </div>
