@@ -7,6 +7,7 @@ export function getAppSidebarLinks(role) {
   switch (role) {
     case 'teacher':
       return [
+        { label: 'Workspace', page: 'TeacherWorkspace', icon: ClipboardCheck },
         { label: 'Dashboard', page: 'TeacherDashboard', icon: LayoutDashboard },
         { label: 'My Classes', page: 'TeacherClasses', icon: BookOpen },
         { label: 'Messages', page: 'Messages', icon: MessageSquare },
