@@ -123,54 +123,56 @@ export default function SchoolOnboardingFlow() {
 
     setIsSubmitting(true);
 
-    if (currentStep === 1 && classDraft.name.trim()) {
-      await base44.entities.Class.create({
-        school_id: schoolId,
-        name: classDraft.name.trim(),
-        section: classDraft.section.trim(),
-        academic_year_id: classDraft.academic_year_id || undefined,
-        status: 'active',
-        teacher_ids: [],
-        student_ids: [],
-        subject_teacher_assignments: [],
-      });
-      setClassDraft({ name: '', section: '', academic_year_id: classDraft.academic_year_id });
-    }
-
-    if (currentStep === 2 && teacherDraft.name.trim() && teacherDraft.email.trim()) {
-      await base44.entities.SchoolMembership.create({
-        school_id: schoolId,
-        user_name: teacherDraft.name.trim(),
-        user_email: teacherDraft.email.trim(),
-        role: 'teacher',
-        department: teacherDraft.department.trim(),
-        status: 'pending',
-      });
-      setTeacherDraft({ name: '', email: '', department: '' });
-    }
-
-    if (currentStep === 4 && subjectAssignment.classId && subjectAssignment.subjectId) {
-      const selectedClass = data.classes.find((item) => item.id === subjectAssignment.classId);
-      if (selectedClass) {
-        await base44.entities.Class.update(selectedClass.id, { subject_id: subjectAssignment.subjectId });
+    try {
+      if (currentStep === 1 && classDraft.name.trim()) {
+        await base44.entities.Class.create({
+          school_id: schoolId,
+          name: classDraft.name.trim(),
+          section: classDraft.section.trim(),
+          academic_year_id: classDraft.academic_year_id || undefined,
+          status: 'active',
+          teacher_ids: [],
+          student_ids: [],
+          subject_teacher_assignments: [],
+        });
+        setClassDraft({ name: '', section: '', academic_year_id: classDraft.academic_year_id });
       }
-    }
 
-    await base44.auth.updateMe({
-      onboarding_flow_step: Math.min(currentStep + 1, steps.length - 1),
-      onboarding_flow_saved_at: new Date().toISOString(),
-      onboarding_school_profile: schoolProfile,
-    });
-    await refreshFlowData();
+      if (currentStep === 2 && teacherDraft.name.trim() && teacherDraft.email.trim()) {
+        await base44.entities.SchoolMembership.create({
+          school_id: schoolId,
+          user_name: teacherDraft.name.trim(),
+          user_email: teacherDraft.email.trim(),
+          role: 'teacher',
+          department: teacherDraft.department.trim(),
+          status: 'pending',
+        });
+        setTeacherDraft({ name: '', email: '', department: '' });
+      }
 
-    if (currentStep === steps.length - 1) {
+      if (currentStep === 4 && subjectAssignment.classId && subjectAssignment.subjectId) {
+        const selectedClass = data.classes.find((item) => item.id === subjectAssignment.classId);
+        if (selectedClass) {
+          await base44.entities.Class.update(selectedClass.id, { subject_id: subjectAssignment.subjectId });
+        }
+      }
+
+      await base44.auth.updateMe({
+        onboarding_flow_step: Math.min(currentStep + 1, steps.length - 1),
+        onboarding_flow_saved_at: new Date().toISOString(),
+        onboarding_school_profile: schoolProfile,
+      });
+      await refreshFlowData();
+
+      if (currentStep === steps.length - 1) {
+        navigate('/SchoolAdminDashboard');
+        return;
+      }
+
+      setCurrentStep((prev) => prev + 1);
+    } finally {
       setIsSubmitting(false);
-      navigate('/SchoolAdminDashboard');
-      return;
     }
-
-    setCurrentStep((prev) => prev + 1);
-    setIsSubmitting(false);
   };
 
   const handleBack = () => {
@@ -214,7 +216,7 @@ export default function SchoolOnboardingFlow() {
           {error && <Alert className="border-red-200 bg-red-50"><AlertDescription className="text-red-700">{error}</AlertDescription></Alert>}
           {success && <Alert className="border-emerald-200 bg-emerald-50"><AlertDescription className="text-emerald-700">{success}</AlertDescription></Alert>}
 
-          <div className="grid grid-cols-1 xl:grid-cols-[280px_minmax(0,1fr)] 2xl:grid-cols-[320px_minmax(0,1fr)] gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-[340px_minmax(0,1fr)] 2xl:grid-cols-[420px_minmax(0,1fr)] gap-6">
             <div className="space-y-4">
               <SchoolOnboardingProgress steps={steps} currentStep={currentStep} />
               <div className="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm">
