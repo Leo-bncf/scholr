@@ -1,0 +1,238 @@
+{
+  "name": "MessagingPolicy",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string",
+      "description": "One record per school"
+    },
+    "permission_rules": {
+      "type": "object",
+      "properties": {
+        "student_to_teacher": {
+          "type": "boolean",
+          "default": true
+        },
+        "teacher_to_student": {
+          "type": "boolean",
+          "default": true
+        },
+        "parent_to_teacher": {
+          "type": "boolean",
+          "default": true
+        },
+        "teacher_to_parent": {
+          "type": "boolean",
+          "default": true
+        },
+        "student_to_student": {
+          "type": "boolean",
+          "default": false
+        },
+        "parent_to_admin": {
+          "type": "boolean",
+          "default": true
+        },
+        "admin_to_all": {
+          "type": "boolean",
+          "default": true
+        },
+        "teacher_to_teacher": {
+          "type": "boolean",
+          "default": true
+        },
+        "coordinator_to_all": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "broadcast_rules": {
+      "type": "object",
+      "properties": {
+        "roles_allowed_school_wide": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        },
+        "roles_allowed_class_announcements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "school_admin",
+            "ib_coordinator",
+            "teacher"
+          ]
+        },
+        "require_admin_approval_for_broadcast": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_broadcast_recipients_teacher": {
+          "type": "number",
+          "default": 0
+        }
+      }
+    },
+    "announcement_governance": {
+      "type": "object",
+      "properties": {
+        "show_in_student_dashboard": {
+          "type": "boolean",
+          "default": true
+        },
+        "show_in_parent_dashboard": {
+          "type": "boolean",
+          "default": true
+        },
+        "show_in_teacher_dashboard": {
+          "type": "boolean",
+          "default": true
+        },
+        "announcement_retention_days": {
+          "type": "number",
+          "default": 90
+        },
+        "pin_duration_days": {
+          "type": "number",
+          "default": 7
+        },
+        "allow_teacher_school_wide_announcements": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "quiet_hours": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "start_time": {
+          "type": "string",
+          "default": "18:00"
+        },
+        "end_time": {
+          "type": "string",
+          "default": "08:00"
+        },
+        "applies_to_roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "student",
+            "parent"
+          ]
+        },
+        "block_send_during_quiet": {
+          "type": "boolean",
+          "default": false
+        },
+        "weekend_quiet_hours_enabled": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "notification_defaults": {
+      "type": "object",
+      "properties": {
+        "default_message_notifications": {
+          "type": "string",
+          "enum": [
+            "immediate",
+            "digest_daily",
+            "digest_weekly",
+            "off"
+          ],
+          "default": "immediate"
+        },
+        "default_announcement_notifications": {
+          "type": "string",
+          "enum": [
+            "immediate",
+            "digest_daily",
+            "off"
+          ],
+          "default": "immediate"
+        },
+        "allow_user_notification_override": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "compliance": {
+      "type": "object",
+      "properties": {
+        "retain_message_metadata_days": {
+          "type": "number",
+          "default": 365
+        },
+        "log_broadcast_events": {
+          "type": "boolean",
+          "default": true
+        },
+        "log_message_events": {
+          "type": "boolean",
+          "default": false
+        },
+        "flag_student_to_student": {
+          "type": "boolean",
+          "default": false
+        },
+        "safeguarding_keywords_enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "safeguarding_keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "compliance_contact_email": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "school_id"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": "school_admin"
+      }
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}"
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": "school_admin"
+      }
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": "school_admin"
+      }
+    }
+  }
+}

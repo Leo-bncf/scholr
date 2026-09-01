@@ -1,0 +1,79 @@
+{
+  "name": "GoogleConnection",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "user_id": {
+      "type": "string"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "connected",
+        "disconnected",
+        "expired",
+        "revoked",
+        "permission_denied"
+      ],
+      "default": "disconnected",
+      "description": "Current connection status"
+    },
+    "google_email": {
+      "type": "string",
+      "description": "Connected Google account email"
+    },
+    "token_expiry": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the access token expires"
+    },
+    "scopes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Granted OAuth scopes"
+    },
+    "last_verified_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time we verified the connection was valid"
+    },
+    "last_error": {
+      "type": "string",
+      "description": "Most recent error message if connection failed"
+    },
+    "error_code": {
+      "type": "string",
+      "enum": [
+        "token_expired",
+        "invalid_grant",
+        "access_denied",
+        "network_error",
+        "scope_mismatch",
+        "revoked",
+        "unknown"
+      ],
+      "description": "Categorized error code for routing recovery flows"
+    },
+    "reconnection_required": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether user must reconnect before proceeding"
+    },
+    "failed_action": {
+      "type": "string",
+      "description": "Last action that failed (create_doc, create_slides, create_sheet, picker, etc.)"
+    }
+  },
+  "required": [
+    "school_id",
+    "user_id",
+    "status"
+  ]
+}

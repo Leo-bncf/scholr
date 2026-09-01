@@ -1,0 +1,140 @@
+{
+  "name": "PlatformConfig",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Configuration record name"
+    },
+    "default_trial_days": {
+      "type": "number",
+      "default": 30,
+      "description": "Default school trial period in days"
+    },
+    "default_notification_email": {
+      "type": "string",
+      "description": "Default notification recipient email"
+    },
+    "allow_school_brand_overrides": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether schools can override platform branding"
+    },
+    "theme_mode": {
+      "type": "string",
+      "enum": [
+        "light",
+        "dark",
+        "system"
+      ],
+      "default": "light"
+    },
+    "default_primary_color": {
+      "type": "string",
+      "default": "#4f46e5"
+    },
+    "default_accent_color": {
+      "type": "string",
+      "default": "#0f172a"
+    },
+    "default_logo_url": {
+      "type": "string",
+      "description": "Global logo URL"
+    },
+    "notifications": {
+      "type": "object",
+      "properties": {
+        "billing_alerts": {
+          "type": "boolean",
+          "default": true
+        },
+        "onboarding_alerts": {
+          "type": "boolean",
+          "default": true
+        },
+        "security_alerts": {
+          "type": "boolean",
+          "default": true
+        },
+        "weekly_digest": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "integration_settings": {
+      "type": "object",
+      "properties": {
+        "google_drive_enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "stripe_billing_enabled": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "global_feature_flags": {
+      "type": "object",
+      "properties": {
+        "advanced_analytics": {
+          "type": "boolean",
+          "default": true
+        },
+        "messaging": {
+          "type": "boolean",
+          "default": true
+        },
+        "attendance": {
+          "type": "boolean",
+          "default": true
+        },
+        "behavior_tracking": {
+          "type": "boolean",
+          "default": true
+        },
+        "report_builder": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "school_feature_overrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "school_id": {
+            "type": "string"
+          },
+          "school_name": {
+            "type": "string"
+          },
+          "advanced_analytics": {
+            "type": "boolean"
+          },
+          "messaging": {
+            "type": "boolean"
+          },
+          "attendance": {
+            "type": "boolean"
+          },
+          "behavior_tracking": {
+            "type": "boolean"
+          },
+          "report_builder": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "school_id",
+          "school_name"
+        ]
+      }
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

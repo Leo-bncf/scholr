@@ -1,0 +1,162 @@
+{
+  "name": "UserInvitation",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string",
+      "description": "School this invitation belongs to"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email address of the invited user"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "school_admin",
+        "ib_coordinator",
+        "teacher",
+        "student",
+        "parent"
+      ],
+      "description": "Role to assign upon acceptance"
+    },
+    "invited_by": {
+      "type": "string",
+      "description": "User ID who sent the invitation"
+    },
+    "invited_by_name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted",
+        "expired",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "invitation_token": {
+      "type": "string",
+      "description": "Unique token for invitation acceptance"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the invitation expires"
+    },
+    "accepted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "User ID once invitation is accepted"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "first_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "grade_level": {
+          "type": "string"
+        },
+        "department": {
+          "type": "string"
+        },
+        "custom_message": {
+          "type": "string"
+        }
+      },
+      "description": "Additional invitation context"
+    }
+  },
+  "required": [
+    "school_id",
+    "email",
+    "role",
+    "invitation_token"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.school_id": "{{user.data.school_id}}",
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.school_id": "{{user.data.school_id}}",
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.school_id": "{{user.data.school_id}}",
+          "user_condition": {
+            "role": "school_admin"
+          }
+        }
+      ]
+    }
+  }
+}

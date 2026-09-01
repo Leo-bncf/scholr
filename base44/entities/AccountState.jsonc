@@ -1,0 +1,188 @@
+{
+  "name": "AccountState",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "User this state belongs to"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "account_status": {
+      "type": "string",
+      "enum": [
+        "invited",
+        "pending_activation",
+        "active",
+        "suspended",
+        "deactivated",
+        "incomplete_profile"
+      ],
+      "default": "invited",
+      "description": "Current account status"
+    },
+    "school_id": {
+      "type": "string",
+      "description": "School this account is linked to"
+    },
+    "school_name": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "school_admin",
+        "ib_coordinator",
+        "teacher",
+        "student",
+        "parent"
+      ],
+      "description": "Role within school"
+    },
+    "invitation_token": {
+      "type": "string",
+      "description": "Token for invitation acceptance"
+    },
+    "invitation_accepted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "first_login_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_login_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "profile_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether user completed their profile"
+    },
+    "profile_completion_required_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Fields that must be completed"
+    },
+    "password_reset_token": {
+      "type": "string",
+      "description": "Active password reset token"
+    },
+    "password_reset_expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "password_set_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "suspended_reason": {
+      "type": "string",
+      "description": "Reason for suspension if applicable"
+    },
+    "suspended_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "suspended_by": {
+      "type": "string"
+    },
+    "email_verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "email_verified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "login_attempts": {
+      "type": "number",
+      "default": 0,
+      "description": "Failed login attempts"
+    },
+    "locked_until": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Account locked until this time due to failed attempts"
+    },
+    "onboarding_step": {
+      "type": "string",
+      "enum": [
+        "accept_invitation",
+        "set_password",
+        "complete_profile",
+        "verify_email",
+        "complete"
+      ],
+      "description": "Current onboarding step"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata for account state"
+    }
+  },
+  "required": [
+    "user_id",
+    "user_email",
+    "account_status"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.active_school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "data.school_id": "{{user.active_school_id}}",
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "data.school_id": "{{user.active_school_id}}",
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "data.school_id": "{{user.active_school_id}}",
+      "user_condition": {
+        "role": "school_admin"
+      }
+    }
+  }
+}

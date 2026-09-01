@@ -1,0 +1,170 @@
+{
+  "name": "School",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Official name of the school"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL-friendly identifier"
+    },
+    "country": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "curriculum": {
+      "type": "string",
+      "enum": [
+        "ib_dp",
+        "ib_myp",
+        "ib_pyp",
+        "igcse",
+        "a_levels",
+        "us_common_core",
+        "custom"
+      ],
+      "default": "ib_dp",
+      "description": "The curriculum system this school follows"
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "growth",
+        "enterprise"
+      ],
+      "default": "starter"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended",
+        "onboarding",
+        "cancelled"
+      ],
+      "default": "onboarding"
+    },
+    "max_students": {
+      "type": "number",
+      "description": "Number of student slots purchased (drives billing amount)"
+    },
+    "max_users": {
+      "type": "number",
+      "default": 100,
+      "description": "Legacy field \u2014 use max_students instead"
+    },
+    "modules_enabled": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of enabled modules: attendance, behavior, cas, ee, tok, timetable, messaging"
+    },
+    "academic_year_start_month": {
+      "type": "number",
+      "default": 9
+    },
+    "timezone": {
+      "type": "string",
+      "default": "UTC"
+    },
+    "stripe_customer_id": {
+      "type": "string",
+      "description": "Stripe customer ID for billing"
+    },
+    "stripe_subscription_id": {
+      "type": "string",
+      "description": "Current active Stripe subscription ID"
+    },
+    "billing_status": {
+      "type": "string",
+      "enum": [
+        "trial",
+        "active",
+        "past_due",
+        "canceled",
+        "unpaid",
+        "incomplete"
+      ],
+      "description": "Current billing/subscription status"
+    },
+    "trial_end_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When trial period ends"
+    },
+    "subscription_current_period_end": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Current billing period end date"
+    },
+    "subscription_cancel_at_period_end": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether subscription will cancel at period end"
+    },
+    "billing_email": {
+      "type": "string",
+      "description": "Primary billing contact email"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "data.school_id": "{{user.data.school_id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.school_id": "{{user.data.school_id}}",
+          "user_condition": {
+            "role": "school_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

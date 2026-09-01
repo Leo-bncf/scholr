@@ -1,0 +1,145 @@
+{
+  "name": "RubricTemplate",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "subject_group": {
+      "type": "string",
+      "enum": [
+        "group1_language_literature",
+        "group2_language_acquisition",
+        "group3_individuals_societies",
+        "group4_sciences",
+        "group5_mathematics",
+        "group6_arts",
+        "core_tok",
+        "core_ee",
+        "core_cas",
+        "general"
+      ],
+      "default": "general"
+    },
+    "level": {
+      "type": "string",
+      "enum": [
+        "HL",
+        "SL",
+        "MYP",
+        "core",
+        "general"
+      ],
+      "default": "general"
+    },
+    "criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "max_score": {
+            "type": "number"
+          },
+          "strand_descriptors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "score": {
+                  "type": "number"
+                },
+                "descriptor": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "max_score"
+        ]
+      }
+    },
+    "total_max_score": {
+      "type": "number"
+    },
+    "is_protected": {
+      "type": "boolean",
+      "default": false
+    },
+    "protected_reason": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "archived"
+      ],
+      "default": "active"
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "school_id",
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}"
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    }
+  }
+}

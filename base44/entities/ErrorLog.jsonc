@@ -1,0 +1,54 @@
+{
+  "name": "ErrorLog",
+  "type": "object",
+  "properties": {
+    "message": {
+      "type": "string",
+      "description": "Error message"
+    },
+    "code": {
+      "type": "string",
+      "description": "Error code for categorization"
+    },
+    "context": {
+      "type": "string",
+      "description": "JSON string of context data"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "info",
+        "warning",
+        "error",
+        "critical"
+      ],
+      "default": "error",
+      "description": "Error severity level"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "ID of user experiencing the error"
+    },
+    "school_id": {
+      "type": "string",
+      "description": "School context for the error"
+    },
+    "stack_trace": {
+      "type": "string",
+      "description": "JavaScript stack trace"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the error occurred"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "Browser user agent string"
+    }
+  },
+  "required": [
+    "message",
+    "code"
+  ]
+}

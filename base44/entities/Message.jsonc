@@ -1,0 +1,98 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "sender_id": {
+      "type": "string"
+    },
+    "sender_name": {
+      "type": "string"
+    },
+    "sender_role": {
+      "type": "string"
+    },
+    "recipient_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "subject": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "class_id": {
+      "type": "string",
+      "description": "Optional class context"
+    },
+    "class_name": {
+      "type": "string"
+    },
+    "thread_id": {
+      "type": "string",
+      "description": "Groups replies under the same conversation thread"
+    },
+    "is_announcement": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_school_wide": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_pinned": {
+      "type": "boolean",
+      "default": false
+    },
+    "read_by": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "school_id",
+    "sender_id",
+    "subject",
+    "body"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}"
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.sender_id": "{{user.id}}"
+        },
+        {
+          "data.recipient_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "data.sender_id": "{{user.id}}"
+    },
+    "delete": {
+      "data.sender_id": "{{user.id}}"
+    }
+  }
+}

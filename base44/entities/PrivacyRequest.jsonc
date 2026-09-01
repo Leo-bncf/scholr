@@ -1,0 +1,100 @@
+{
+  "name": "PrivacyRequest",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "request_type": {
+      "type": "string",
+      "enum": [
+        "data_export",
+        "account_deletion",
+        "anonymization",
+        "data_correction",
+        "access_request"
+      ],
+      "description": "Type of privacy/GDPR request"
+    },
+    "requester_name": {
+      "type": "string"
+    },
+    "requester_email": {
+      "type": "string"
+    },
+    "requester_role": {
+      "type": "string",
+      "enum": [
+        "student",
+        "parent",
+        "teacher",
+        "staff",
+        "external"
+      ]
+    },
+    "subject_user_id": {
+      "type": "string",
+      "description": "User ID of the data subject (may differ from requester for parent/guardian)"
+    },
+    "subject_name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Details of the request"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "acknowledged",
+        "in_progress",
+        "completed",
+        "rejected",
+        "withdrawn"
+      ],
+      "default": "pending"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "normal",
+        "urgent"
+      ],
+      "default": "normal"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Regulatory deadline (e.g. 30 days from receipt)"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Admin user_id handling this request"
+    },
+    "assigned_to_name": {
+      "type": "string"
+    },
+    "resolution_notes": {
+      "type": "string"
+    },
+    "identity_verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "acknowledged_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "school_id",
+    "request_type",
+    "requester_email",
+    "requester_role"
+  ]
+}

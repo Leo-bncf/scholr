@@ -1,0 +1,175 @@
+{
+  "name": "BehaviorRecord",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "student_id": {
+      "type": "string"
+    },
+    "student_name": {
+      "type": "string"
+    },
+    "class_id": {
+      "type": "string",
+      "description": "Optional class context"
+    },
+    "recorded_by": {
+      "type": "string"
+    },
+    "recorded_by_name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "concern",
+        "incident",
+        "note"
+      ],
+      "default": "note",
+      "description": "Base type of behavior record"
+    },
+    "incident_type_id": {
+      "type": "string",
+      "description": "References BehaviorPolicy incident_types id"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "academic",
+        "social",
+        "conduct",
+        "participation",
+        "achievement",
+        "attendance_related",
+        "safety",
+        "other"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "description": "Severity level key"
+    },
+    "visible_to_student": {
+      "type": "boolean",
+      "default": false
+    },
+    "visible_to_parent": {
+      "type": "boolean",
+      "default": false
+    },
+    "staff_only": {
+      "type": "boolean",
+      "default": false,
+      "description": "Locked to staff regardless of other flags"
+    },
+    "action_taken": {
+      "type": "string"
+    },
+    "follow_up_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "follow_up_completed": {
+      "type": "boolean",
+      "default": false
+    },
+    "follow_up_note": {
+      "type": "string"
+    },
+    "pastoral_reviewed": {
+      "type": "boolean",
+      "default": false
+    },
+    "pastoral_reviewed_by": {
+      "type": "string"
+    },
+    "pastoral_reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "school_id",
+    "student_id",
+    "title",
+    "date"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "teacher",
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.student_id": "{{user.id}}",
+          "data.visible_to_student": true
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "teacher",
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": "school_admin"
+      }
+    }
+  }
+}

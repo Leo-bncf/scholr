@@ -1,0 +1,188 @@
+{
+  "name": "GradeItem",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "class_id": {
+      "type": "string"
+    },
+    "student_id": {
+      "type": "string"
+    },
+    "student_name": {
+      "type": "string"
+    },
+    "assignment_id": {
+      "type": "string",
+      "description": "Optional link to assignment"
+    },
+    "title": {
+      "type": "string"
+    },
+    "score": {
+      "type": "number"
+    },
+    "max_score": {
+      "type": "number"
+    },
+    "percentage": {
+      "type": "number"
+    },
+    "ib_grade": {
+      "type": "number",
+      "description": "IB 1-7 scale grade"
+    },
+    "comment": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published",
+        "missing",
+        "late",
+        "excused"
+      ],
+      "default": "draft"
+    },
+    "visible_to_student": {
+      "type": "boolean",
+      "default": false
+    },
+    "visible_to_parent": {
+      "type": "boolean",
+      "default": false
+    },
+    "term_id": {
+      "type": "string"
+    },
+    "grading_type": {
+      "type": "string",
+      "enum": [
+        "simple",
+        "rubric"
+      ],
+      "default": "simple",
+      "description": "Simple: single score, Rubric: criterion-based"
+    },
+    "rubric_criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "max_score": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Rubric criteria definitions (only for template grade items)"
+    },
+    "criterion_scores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "criterion_id": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "feedback": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Criterion-level scores and feedback for rubric grading"
+    },
+    "is_template": {
+      "type": "boolean",
+      "default": false,
+      "description": "True if this is a grade item template (no student_id)"
+    }
+  },
+  "required": [
+    "school_id",
+    "class_id",
+    "title"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.student_id": "{{user.id}}",
+          "data.visible_to_student": true
+        },
+        {
+          "data.visible_to_parent": true
+        },
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}
