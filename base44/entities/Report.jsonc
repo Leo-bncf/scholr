@@ -1,0 +1,218 @@
+{
+  "name": "Report",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "report_type": {
+      "type": "string",
+      "enum": [
+        "progress_report",
+        "academic_summary",
+        "term_report",
+        "semester_summary",
+        "ib_progress",
+        "custom"
+      ]
+    },
+    "template_name": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "academic_year_id": {
+      "type": "string"
+    },
+    "term_id": {
+      "type": "string"
+    },
+    "generated_by": {
+      "type": "string"
+    },
+    "generated_by_name": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "report_period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "report_period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "student_id": {
+      "type": "string"
+    },
+    "student_name": {
+      "type": "string"
+    },
+    "class_id": {
+      "type": "string"
+    },
+    "class_name": {
+      "type": "string"
+    },
+    "subject_id": {
+      "type": "string"
+    },
+    "subject_name": {
+      "type": "string"
+    },
+    "report_data": {
+      "type": "object",
+      "properties": {
+        "student_info": {
+          "type": "object"
+        },
+        "overall_summary": {
+          "type": "object"
+        },
+        "subject_reports": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "attendance_data": {
+          "type": "object"
+        },
+        "behavior_summary": {
+          "type": "object"
+        },
+        "ib_progress": {
+          "type": "object"
+        },
+        "coordinator_notes": {
+          "type": "string"
+        },
+        "headmaster_notes": {
+          "type": "string"
+        }
+      }
+    },
+    "visibility": {
+      "type": "object",
+      "properties": {
+        "visible_to_student": {
+          "type": "boolean",
+          "default": false
+        },
+        "visible_to_parent": {
+          "type": "boolean",
+          "default": false
+        },
+        "visibility_date": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "ready_for_review",
+        "approved",
+        "published",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "export_formats": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "distribution_list": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "required": [
+    "school_id",
+    "report_type",
+    "title"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "data.generated_by": "{{user.id}}"
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.student_id": "{{user.id}}",
+          "data.visible_to_student": true
+        },
+        {
+          "data.visible_to_parent": true
+        },
+        {
+          "data.generated_by": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.generated_by": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.generated_by": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

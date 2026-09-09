@@ -1,0 +1,42 @@
+{
+  "name": "SupportTicket",
+  "type": "object",
+  "properties": {
+    "ticket_id": {
+      "type": "string",
+      "description": "Human-readable ticket ID e.g. TKT-001"
+    },
+    "school": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "medium"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "resolved"
+      ],
+      "default": "open"
+    },
+    "assignee": {
+      "type": "string",
+      "default": "Unassigned"
+    }
+  },
+  "required": [
+    "school",
+    "subject"
+  ]
+}

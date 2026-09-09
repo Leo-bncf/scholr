@@ -1,0 +1,145 @@
+{
+  "name": "BehaviorPolicy",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string",
+      "description": "One record per school"
+    },
+    "incident_types": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "default_visible_to_student": {
+            "type": "boolean",
+            "default": false
+          },
+          "default_visible_to_parent": {
+            "type": "boolean",
+            "default": false
+          },
+          "staff_only": {
+            "type": "boolean",
+            "default": false
+          },
+          "requires_action": {
+            "type": "boolean",
+            "default": false
+          },
+          "active": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "label"
+        ]
+      },
+      "default": []
+    },
+    "severity_levels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "requires_pastoral_review": {
+            "type": "boolean",
+            "default": false
+          },
+          "notify_admin": {
+            "type": "boolean",
+            "default": false
+          },
+          "active": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "label"
+        ]
+      },
+      "default": []
+    },
+    "allow_teacher_visibility_override": {
+      "type": "boolean",
+      "default": true
+    },
+    "pastoral_roles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "school_admin",
+        "ib_coordinator"
+      ]
+    },
+    "require_action_for_severity": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "follow_up_tracking_enabled": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "school_id"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": "school_admin"
+      }
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}"
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": "school_admin"
+      }
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": "school_admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "name": "ScheduleEntry",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "class_id": {
+      "type": "string"
+    },
+    "class_name": {
+      "type": "string"
+    },
+    "teacher_id": {
+      "type": "string"
+    },
+    "teacher_name": {
+      "type": "string"
+    },
+    "room_id": {
+      "type": "string"
+    },
+    "room_name": {
+      "type": "string"
+    },
+    "period_id": {
+      "type": "string"
+    },
+    "day_of_week": {
+      "type": "number"
+    },
+    "start_time": {
+      "type": "string"
+    },
+    "end_time": {
+      "type": "string"
+    },
+    "academic_year_id": {
+      "type": "string"
+    },
+    "term_id": {
+      "type": "string"
+    },
+    "effective_from": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_until": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "cancelled",
+        "rescheduled"
+      ],
+      "default": "active"
+    },
+    "external_sync_id": {
+      "type": "string"
+    },
+    "last_synced_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "school_id",
+    "class_id",
+    "day_of_week",
+    "start_time",
+    "end_time"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}"
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    }
+  }
+}

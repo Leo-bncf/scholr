@@ -1,0 +1,90 @@
+{
+  "name": "Subject",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string",
+      "description": "Short code e.g. MATH_HL"
+    },
+    "ib_group": {
+      "type": "string",
+      "enum": [
+        "group1_language_literature",
+        "group2_language_acquisition",
+        "group3_individuals_societies",
+        "group4_sciences",
+        "group5_mathematics",
+        "group6_arts",
+        "core_tok",
+        "core_ee",
+        "core_cas"
+      ]
+    },
+    "level": {
+      "type": "string",
+      "enum": [
+        "HL",
+        "SL",
+        "core",
+        "na"
+      ],
+      "default": "na"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "archived"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "school_id",
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}"
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    }
+  }
+}

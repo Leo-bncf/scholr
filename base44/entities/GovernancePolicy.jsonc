@@ -1,0 +1,168 @@
+{
+  "name": "GovernancePolicy",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string",
+      "description": "One record per school"
+    },
+    "reason_enforcement": {
+      "type": "object",
+      "properties": {
+        "grade_edit_after_lock": {
+          "type": "boolean",
+          "default": true
+        },
+        "attendance_correction": {
+          "type": "boolean",
+          "default": true
+        },
+        "behavior_record_delete": {
+          "type": "boolean",
+          "default": true
+        },
+        "role_change": {
+          "type": "boolean",
+          "default": true
+        },
+        "class_structure_change": {
+          "type": "boolean",
+          "default": false
+        },
+        "parent_student_link_change": {
+          "type": "boolean",
+          "default": true
+        },
+        "grade_visibility_override": {
+          "type": "boolean",
+          "default": false
+        },
+        "predicted_grade_edit": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "retention": {
+      "type": "object",
+      "properties": {
+        "archived_class_data_days": {
+          "type": "number",
+          "default": 1825
+        },
+        "submission_files_days": {
+          "type": "number",
+          "default": 1825
+        },
+        "audit_log_days": {
+          "type": "number",
+          "default": 730
+        },
+        "behavior_records_days": {
+          "type": "number",
+          "default": 1825
+        },
+        "attendance_records_days": {
+          "type": "number",
+          "default": 2555
+        },
+        "message_metadata_days": {
+          "type": "number",
+          "default": 365
+        },
+        "purge_inactive_accounts_days": {
+          "type": "number",
+          "default": 0
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "properties": {
+        "privacy_requests_enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "dpo_email": {
+          "type": "string"
+        },
+        "gdpr_jurisdiction": {
+          "type": "string",
+          "enum": [
+            "gdpr_eu",
+            "gdpr_uk",
+            "ferpa_us",
+            "pipeda_ca",
+            "pdpa_th",
+            "other",
+            "none"
+          ],
+          "default": "none"
+        },
+        "auto_acknowledge_requests_days": {
+          "type": "number",
+          "default": 3
+        },
+        "require_identity_verification": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "audit": {
+      "type": "object",
+      "properties": {
+        "log_grade_edits": {
+          "type": "boolean",
+          "default": true
+        },
+        "log_attendance_edits": {
+          "type": "boolean",
+          "default": true
+        },
+        "log_behavior_edits": {
+          "type": "boolean",
+          "default": true
+        },
+        "log_role_changes": {
+          "type": "boolean",
+          "default": true
+        },
+        "log_data_exports": {
+          "type": "boolean",
+          "default": true
+        },
+        "log_login_events": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  },
+  "required": [
+    "school_id"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": "school_admin"
+      }
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}"
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": "school_admin"
+      }
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": "school_admin"
+      }
+    }
+  }
+}

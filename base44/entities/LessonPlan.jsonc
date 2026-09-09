@@ -1,0 +1,145 @@
+{
+  "name": "LessonPlan",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "class_id": {
+      "type": "string"
+    },
+    "teacher_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "duration_minutes": {
+      "type": "number",
+      "default": 60
+    },
+    "topics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "objectives": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "file",
+              "link",
+              "slides",
+              "document"
+            ]
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type"
+        ]
+      },
+      "default": []
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "completed"
+      ],
+      "default": "planned"
+    }
+  },
+  "required": [
+    "school_id",
+    "class_id",
+    "title",
+    "date"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "data.teacher_id": "{{user.id}}"
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.teacher_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.teacher_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.teacher_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

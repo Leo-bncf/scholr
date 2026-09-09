@@ -1,0 +1,165 @@
+{
+  "name": "TimetableSync",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string",
+      "description": "School this sync belongs to"
+    },
+    "sync_type": {
+      "type": "string",
+      "enum": [
+        "full_import",
+        "incremental_update",
+        "manual_refresh",
+        "scheduled_sync"
+      ],
+      "description": "Type of sync operation"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "completed",
+        "failed",
+        "partial"
+      ],
+      "default": "pending"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "initiated_by": {
+      "type": "string"
+    },
+    "initiated_by_name": {
+      "type": "string"
+    },
+    "records_processed": {
+      "type": "object",
+      "properties": {
+        "schedule_entries": {
+          "type": "number"
+        },
+        "periods": {
+          "type": "number"
+        },
+        "rooms": {
+          "type": "number"
+        }
+      }
+    },
+    "records_created": {
+      "type": "object",
+      "properties": {
+        "schedule_entries": {
+          "type": "number"
+        },
+        "periods": {
+          "type": "number"
+        },
+        "rooms": {
+          "type": "number"
+        }
+      }
+    },
+    "records_updated": {
+      "type": "object",
+      "properties": {
+        "schedule_entries": {
+          "type": "number"
+        },
+        "periods": {
+          "type": "number"
+        },
+        "rooms": {
+          "type": "number"
+        }
+      }
+    },
+    "records_deleted": {
+      "type": "object",
+      "properties": {
+        "schedule_entries": {
+          "type": "number"
+        },
+        "periods": {
+          "type": "number"
+        },
+        "rooms": {
+          "type": "number"
+        }
+      }
+    },
+    "error_message": {
+      "type": "string"
+    },
+    "error_details": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "entity_type": {
+            "type": "string"
+          },
+          "external_id": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "mapping_conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "entity_type": {
+            "type": "string"
+          },
+          "external_id": {
+            "type": "string"
+          },
+          "issue": {
+            "type": "string"
+          },
+          "resolution": {
+            "type": "string"
+          },
+          "resolved": {
+            "type": "boolean",
+            "default": false
+          },
+          "resolved_by": {
+            "type": "string"
+          },
+          "resolved_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "sync_metadata": {
+      "type": "object",
+      "description": "Additional metadata from external system"
+    },
+    "change_summary": {
+      "type": "string",
+      "description": "Human-readable summary of what changed"
+    }
+  },
+  "required": [
+    "school_id",
+    "sync_type",
+    "status"
+  ]
+}

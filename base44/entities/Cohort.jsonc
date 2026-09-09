@@ -1,0 +1,92 @@
+{
+  "name": "Cohort",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "e.g. DP1 2025-26, Advisory Group A"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "dp1",
+        "dp2",
+        "myp",
+        "advisory",
+        "hl_sl_group",
+        "intervention",
+        "custom"
+      ],
+      "default": "custom"
+    },
+    "academic_year_id": {
+      "type": "string"
+    },
+    "student_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "description": {
+      "type": "string"
+    },
+    "color": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "archived"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "school_id",
+    "name",
+    "type"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}"
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "DemoRequest",
+  "type": "object",
+  "properties": {
+    "school_name": {
+      "type": "string"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "school_size": {
+      "type": "string",
+      "enum": [
+        "small_under_200",
+        "medium_200_500",
+        "large_500_1000",
+        "xlarge_over_1000"
+      ]
+    },
+    "message": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "demo_scheduled",
+        "converted",
+        "declined"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "school_name",
+    "contact_name",
+    "email"
+  ]
+}

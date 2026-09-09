@@ -1,0 +1,143 @@
+{
+  "name": "PredictedGrade",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "student_id": {
+      "type": "string"
+    },
+    "student_name": {
+      "type": "string"
+    },
+    "class_id": {
+      "type": "string"
+    },
+    "class_name": {
+      "type": "string"
+    },
+    "subject_id": {
+      "type": "string"
+    },
+    "subject_name": {
+      "type": "string"
+    },
+    "teacher_id": {
+      "type": "string"
+    },
+    "teacher_name": {
+      "type": "string"
+    },
+    "predicted_ib_grade": {
+      "type": "number",
+      "description": "Predicted IB grade (1-7)"
+    },
+    "confidence_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "rationale": {
+      "type": "string"
+    },
+    "academic_year_id": {
+      "type": "string"
+    },
+    "term_id": {
+      "type": "string"
+    },
+    "entry_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "visible_to_student": {
+      "type": "boolean",
+      "default": false
+    },
+    "visible_to_parent": {
+      "type": "boolean",
+      "default": false
+    },
+    "coordinator_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "school_id",
+    "student_id",
+    "class_id",
+    "predicted_ib_grade"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "data.teacher_id": "{{user.id}}"
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.student_id": "{{user.id}}",
+          "data.visible_to_student": true
+        },
+        {
+          "data.visible_to_parent": true
+        },
+        {
+          "data.teacher_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.teacher_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.teacher_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

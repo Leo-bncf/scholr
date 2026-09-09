@@ -1,0 +1,185 @@
+{
+  "name": "TimetableSettings",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string",
+      "description": "One settings record per school"
+    },
+    "external_system_name": {
+      "type": "string"
+    },
+    "external_system_url": {
+      "type": "string"
+    },
+    "external_school_id": {
+      "type": "string"
+    },
+    "sync_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "override_policy": {
+      "type": "string",
+      "enum": [
+        "read_only",
+        "allow_local_edits",
+        "local_override"
+      ],
+      "default": "allow_local_edits"
+    },
+    "sync_frequency": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "hourly",
+        "daily",
+        "weekly"
+      ],
+      "default": "manual"
+    },
+    "field_mapping": {
+      "type": "object",
+      "properties": {
+        "teacher_id_field": {
+          "type": "string",
+          "default": "teacher_code"
+        },
+        "room_id_field": {
+          "type": "string",
+          "default": "room_code"
+        },
+        "class_id_field": {
+          "type": "string",
+          "default": "class_code"
+        },
+        "period_id_field": {
+          "type": "string",
+          "default": "period_code"
+        },
+        "day_field": {
+          "type": "string",
+          "default": "day"
+        },
+        "start_time_field": {
+          "type": "string",
+          "default": "start_time"
+        },
+        "end_time_field": {
+          "type": "string",
+          "default": "end_time"
+        }
+      }
+    },
+    "id_mappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entity_type": {
+            "type": "string",
+            "enum": [
+              "teacher",
+              "student",
+              "class",
+              "room",
+              "period"
+            ]
+          },
+          "external_id": {
+            "type": "string"
+          },
+          "internal_id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "validated": {
+            "type": "boolean",
+            "default": false
+          },
+          "created_by": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "entity_type",
+          "external_id",
+          "internal_id"
+        ]
+      }
+    },
+    "use_rotating_cycle": {
+      "type": "boolean",
+      "default": false
+    },
+    "cycle_days": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "locked_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "show_room_to_students": {
+      "type": "boolean",
+      "default": true
+    },
+    "show_teacher_to_students": {
+      "type": "boolean",
+      "default": true
+    },
+    "link_attendance_to_schedule": {
+      "type": "boolean",
+      "default": true
+    },
+    "last_sync_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_sync_status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failed",
+        "partial",
+        "never"
+      ],
+      "default": "never"
+    }
+  },
+  "required": [
+    "school_id"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": "school_admin"
+      }
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}"
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": "school_admin"
+      }
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": "school_admin"
+      }
+    }
+  }
+}

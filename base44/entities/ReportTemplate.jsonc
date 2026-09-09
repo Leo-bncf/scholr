@@ -1,0 +1,216 @@
+{
+  "name": "ReportTemplate",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "report_type": {
+      "type": "string",
+      "enum": [
+        "progress_report",
+        "academic_summary",
+        "term_report",
+        "semester_summary",
+        "ib_progress",
+        "custom"
+      ]
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "student",
+        "class",
+        "subject",
+        "school"
+      ]
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "section_type": {
+            "type": "string",
+            "enum": [
+              "student_info",
+              "overall_summary",
+              "subject_grades",
+              "attendance",
+              "behavior",
+              "ib_progress",
+              "teacher_comments",
+              "coordinator_notes",
+              "custom_text"
+            ]
+          },
+          "include": {
+            "type": "boolean",
+            "default": true
+          },
+          "display_options": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "include_sections": {
+      "type": "object",
+      "properties": {
+        "student_info": {
+          "type": "boolean",
+          "default": true
+        },
+        "overall_summary": {
+          "type": "boolean",
+          "default": true
+        },
+        "subject_grades": {
+          "type": "boolean",
+          "default": true
+        },
+        "attendance": {
+          "type": "boolean",
+          "default": true
+        },
+        "behavior": {
+          "type": "boolean",
+          "default": false
+        },
+        "ib_progress": {
+          "type": "boolean",
+          "default": false
+        },
+        "teacher_comments": {
+          "type": "boolean",
+          "default": true
+        },
+        "coordinator_notes": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "grading_display": {
+      "type": "object",
+      "properties": {
+        "show_scores": {
+          "type": "boolean",
+          "default": true
+        },
+        "show_percentages": {
+          "type": "boolean",
+          "default": true
+        },
+        "show_ib_grades": {
+          "type": "boolean",
+          "default": false
+        },
+        "show_predicted_grades": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "visibility_rules": {
+      "type": "object",
+      "properties": {
+        "student_visible_by_default": {
+          "type": "boolean",
+          "default": false
+        },
+        "parent_visible_by_default": {
+          "type": "boolean",
+          "default": false
+        },
+        "requires_approval": {
+          "type": "boolean",
+          "default": true
+        },
+        "approval_chain": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "teacher",
+              "school_admin",
+              "ib_coordinator",
+              "headmaster"
+            ]
+          }
+        }
+      }
+    },
+    "is_system_template": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "archived"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "school_id",
+    "name",
+    "report_type",
+    "scope"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}"
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "user_condition": {
+        "role": {
+          "$in": [
+            "school_admin",
+            "ib_coordinator"
+          ]
+        }
+      }
+    }
+  }
+}

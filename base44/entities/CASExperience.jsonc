@@ -1,0 +1,161 @@
+{
+  "name": "CASExperience",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "student_id": {
+      "type": "string"
+    },
+    "student_name": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "cas_strands": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "creativity",
+          "activity",
+          "service"
+        ]
+      },
+      "description": "CAS strands this experience addresses"
+    },
+    "learning_outcomes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IB CAS learning outcomes addressed"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "ongoing",
+        "completed",
+        "approved"
+      ],
+      "default": "planned"
+    },
+    "hours": {
+      "type": "number",
+      "description": "Estimated or actual hours"
+    },
+    "evidence_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Photos, documents, etc."
+    },
+    "reflection": {
+      "type": "string",
+      "description": "Student reflection on the experience"
+    },
+    "supervisor_name": {
+      "type": "string"
+    },
+    "supervisor_email": {
+      "type": "string"
+    },
+    "coordinator_feedback": {
+      "type": "string"
+    },
+    "coordinator_approved_by": {
+      "type": "string"
+    },
+    "coordinator_approved_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "school_id",
+    "student_id",
+    "title",
+    "cas_strands"
+  ],
+  "rls": {
+    "create": {
+      "data.school_id": "{{user.data.school_id}}",
+      "data.student_id": "{{user.id}}"
+    },
+    "read": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.student_id": "{{user.id}}"
+        },
+        {
+          "data.supervisor_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.student_id": "{{user.id}}"
+        },
+        {
+          "data.supervisor_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "data.school_id": "{{user.data.school_id}}",
+      "$or": [
+        {
+          "data.student_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "school_admin",
+                "ib_coordinator"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}
