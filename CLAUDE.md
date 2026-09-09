@@ -1,0 +1,102 @@
+# Scholr — working agreement
+
+Scholr is a school-management SaaS for international schools, live at
+**scholr.pro**. It was migrated off base44 onto self-hosted Supabase in
+August 2026. Leo owns the product and the infrastructure.
+
+Read `docs/ONBOARDING.md` before your first change.
+
+## Hard rules
+
+**Never deploy.** `npm run deploy` and `npm run deploy:functions` publish to the
+live site. Only Leo runs them. If you think something needs deploying, say so
+and stop.
+
+**Always `git pull --rebase` before you start.** In September 2026 a teammate's
+Claude built from an older fork and deployed it; features that existed only in
+the working tree were wiped from production. The repo is the source of truth —
+if your branch doesn't contain something you expect, pull, don't rebuild it.
+
+**Never run a command with `--delete`** against a server. That is the exact
+mechanism that wiped production edge functions on the sibling project.
+
+**Don't touch Schedual.** It is a different product, a different database and a
+real school's live data. If a task seems to require it, stop and ask.
+
+**base44 is gone. Don't bring it back.** base44 still has write access to this
+GitHub repo and periodically commits package bumps that re-add `@base44/sdk`
+and `@base44/vite-plugin`. If you see them in `package.json`, that is the bug —
+remove them; don't `npm install` to "fix" the missing module.
+
+## Before you push
+
+```bash
+npm run verify
+```
+
+Lint, build, a schema audit against the live database, RLS isolation tests and
+edge-function tests. All run against the real stack. If it fails, fix it rather
+than working around it.
+
+## How this codebase works
+
+**Components never talk to Supabase directly.** Every query lives in
+`src/data/`. If a screen needs a new shape of data, add a *named* function to
+the relevant module — `listForTeacher`, `getCurrentAcademicYear` — rather than
+building a query inside a component.
+
+Some modules expose a generic `where({ ... })`. It exists only because the
+migration had to convert several hundred call sites at once. It is not the
+pattern to follow; replacing a `where()` call with a named query is always a
+welcome change.
+
+**Row-level security is the security boundary, not the UI.** Postgres decides
+what a user can read and write, using the policies in
+`supabase/migrations/0003_rls.sql`. Never add `if (user.role === ...)` to
+control *what data comes back* — that check belongs in the database and is
+already there. Role checks in components are for presentation only, like hiding
+a button.
+
+Concretely: a teacher and a student running the identical query against
+`grade_items` get different rows, because `visible_to_student` is enforced in
+the policy.
+
+**Column names are `created_at` / `updated_at`.** base44 used
+`created_date` / `updated_date`; those columns do not exist. Referencing them
+fails silently as `undefined` rather than erroring.
+
+## Things that are broken on purpose
+
+Ten server functions are not yet ported from base44: Google Drive and Docs,
+report generation and PDF export, demo seeding, `deploymentReady`. They throw
+`FunctionNotPortedError` with a clear message.
+
+**This is intentional.** Do not catch the error, stub the function, or fake the
+response. If a feature you need depends on one, say so — porting it is Leo's
+lane.
+
+Similarly: email does not send (SMTP unset) and billing returns 503 (Stripe keys
+unset). Both are configuration, not code.
+
+## Layout
+
+```
+src/data/               every database call
+src/pages/              one file per route
+src/components/         UI, grouped by feature
+supabase/migrations/    schema — files that say GENERATED are regenerated,
+                        so edit the generator, never the SQL
+supabase/functions/     edge functions (Deno)
+scripts/                deploy and verification
+docs/ONBOARDING.md      start here
+```
+
+## Working style
+
+Small branches, one concern each. Say what you verified and how — "build passes"
+is weaker than "verify:rls 10/10 after the policy change". If you find a second
+bug while fixing the first, mention it rather than silently widening the change.
+
+If something looks wrong in the database or in production, **investigate and
+report before changing anything**. Several problems here have looked like
+application bugs and turned out to be configuration, and vice versa.

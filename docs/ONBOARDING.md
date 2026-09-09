@@ -142,6 +142,20 @@ the first time someone opens that screen.
   bug. Its old column names were `created_date` / `updated_date`; ours are
   `created_at` / `updated_at`.
 
+## Who does what
+
+| | Lane |
+| --- | --- |
+| Leo | Infrastructure, database, server functions, integrations, releases |
+| Erik | Public site, marketing, i18n |
+| Alec | Application features — the product surface |
+| Conor | Application features — the product surface |
+
+Alec and Conor are both in application code, so **split by feature area, not by
+layer**, or you'll spend your time in merge conflicts. Agree who owns
+gradebook, attendance, reporting, timetable and so on before starting, and keep
+branches short.
+
 ## Deploying
 
 `main` is not auto-deployed. `npm run deploy` publishes the frontend;
