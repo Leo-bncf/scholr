@@ -33,3 +33,6 @@ base44/.app.jsonc
 # Cached base44 app definition pulled by scripts/base44-pull.mjs.
 # Full app config including auth settings — never commit.
 scripts/.cache/
+
+# Graphify knowledge graph — generated, rebuild with `graphify update .`
+graphify-out/

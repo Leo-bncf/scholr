@@ -78,6 +78,27 @@ lane.
 Similarly: email does not send (SMTP unset) and billing returns 503 (Stripe keys
 unset). Both are configuration, not code.
 
+## Find things with the graph, not with grep
+
+This repo has a Graphify knowledge graph — an AST-derived map of what imports
+and calls what. It answers "where does this data come from" far faster than
+grepping 535 files.
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+graphify update .                                    # build/refresh (no API key, no cost)
+graphify explain "src_data_query_rows" --graph graphify-out/graph.json
+graphify path "TeacherDashboard.jsx" "_query.js" --graph graphify-out/graph.json
+```
+
+`graphify-out/` is gitignored — build it once locally. `explain` takes a node id
+when a label is ambiguous; the error message tells you the ids.
+
+The graph confirms the intended shape: `rows()`, `one()` and `maybeOne()` in
+`src/data/_query.js` are among the most-connected nodes in the project, because
+every domain module goes through them. If you find yourself adding a Supabase
+call that doesn't, that's the smell.
+
 ## Layout
 
 ```

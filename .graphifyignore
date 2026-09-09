@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.git/
+scripts/.cache/
+base44/
+public/
