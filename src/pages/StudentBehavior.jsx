@@ -1,11 +1,11 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import BehaviorRecordsList from '@/components/behavior/BehaviorRecordsList';
 import { LayoutDashboard, BarChart3, MessageSquare, Star, Loader2 } from 'lucide-react';
+import * as behaviorRecordsData from '@/data/behaviorRecords';
 
 const sidebarLinks = [
   { label: 'Dashboard', page: 'StudentDashboard', icon: LayoutDashboard },
@@ -19,11 +19,11 @@ export default function StudentBehavior() {
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: ['student-behavior', schoolId, user?.id],
-    queryFn: () => base44.entities.BehaviorRecord.filter({
+    queryFn: () => behaviorRecordsData.where({
       school_id: schoolId,
       student_id: user.id,
       visible_to_student: true
-    }, '-date'),
+    }, { order: 'date', ascending: false }),
     enabled: !!schoolId && !!user?.id,
   });
 

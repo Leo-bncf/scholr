@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import * as assessmentsData from '@/data/assessments';
+import * as assessmentSubmissionsData from '@/data/assessmentSubmissions';
+import * as gradebookData from '@/data/gradebook';
 
 export default function AssessmentStudentPanel({ assignment, studentId, studentName }) {
   const queryClient = useQueryClient();
@@ -14,13 +16,13 @@ export default function AssessmentStudentPanel({ assignment, studentId, studentN
 
   const { data: assessment } = useQuery({
     queryKey: ['assessment-by-assignment', assignment.id],
-    queryFn: async () => (await base44.entities.Assessment.filter({ assignment_id: assignment.id }))[0],
+    queryFn: async () => (await assessmentsData.where({ assignment_id: assignment.id }))[0],
     enabled: !!assignment?.id,
   });
 
   const { data: submission } = useQuery({
     queryKey: ['assessment-submission', assessment?.id, studentId],
-    queryFn: async () => (await base44.entities.AssessmentSubmission.filter({ assessment_id: assessment.id, student_id: studentId }))[0],
+    queryFn: async () => (await assessmentSubmissionsData.where({ assessment_id: assessment.id, student_id: studentId }))[0],
     enabled: !!assessment?.id && !!studentId,
   });
 
@@ -84,12 +86,12 @@ export default function AssessmentStudentPanel({ assignment, studentId, studentN
       };
 
       if (submission?.id) {
-        await base44.entities.AssessmentSubmission.update(submission.id, payload);
+        await assessmentSubmissionsData.update(submission.id, payload);
       } else {
-        await base44.entities.AssessmentSubmission.create(payload);
+        await assessmentSubmissionsData.create(payload);
       }
 
-      const existingGrades = await base44.entities.GradeItem.filter({ class_id: assignment.class_id, assignment_id: assignment.id, student_id: studentId });
+      const existingGrades = await gradebookData.whereGradeItems({ class_id: assignment.class_id, assignment_id: assignment.id, student_id: studentId });
       const gradePayload = {
         school_id: assignment.school_id,
         class_id: assignment.class_id,
@@ -106,9 +108,9 @@ export default function AssessmentStudentPanel({ assignment, studentId, studentN
       };
 
       if (existingGrades[0]) {
-        await base44.entities.GradeItem.update(existingGrades[0].id, gradePayload);
+        await gradebookData.update(existingGrades[0].id, gradePayload);
       } else {
-        await base44.entities.GradeItem.create(gradePayload);
+        await gradebookData.create(gradePayload);
       }
     },
     onSuccess: () => {
@@ -129,7 +131,7 @@ export default function AssessmentStudentPanel({ assignment, studentId, studentN
 
   const handleStart = async () => {
     if (submission) return;
-    await base44.entities.AssessmentSubmission.create({
+    await assessmentSubmissionsData.create({
       school_id: assignment.school_id,
       assessment_id: assessment.id,
       assignment_id: assignment.id,

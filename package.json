@@ -1,5 +1,5 @@
 {
-  "name": "base44-app",
+  "name": "scholr",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,11 +9,16 @@
     "lint": "eslint . --quiet",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc -p ./jsconfig.json",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "verify:data": "node scripts/verify-data-layer.mjs",
+    "verify:rls": "ssh -o BatchMode=yes ${SCHOLR_SSH:-leo@scholr-prod} 'sudo bash -s' < scripts/rls-smoke-test.sh",
+    "verify:functions": "ssh -o BatchMode=yes ${SCHOLR_SSH:-leo@scholr-prod} 'sudo bash -s' < scripts/functions-smoke-test.sh",
+    "verify": "npm run lint && npm run build && npm run verify:schema && npm run verify:rls && npm run verify:functions",
+    "deploy": "./scripts/deploy.sh",
+    "deploy:functions": "./scripts/deploy-functions.sh",
+    "verify:schema": "ssh -o BatchMode=yes ${SCHOLR_SSH:-leo@scholr-prod} 'sudo docker exec -i supabase-db psql -U postgres -d postgres -tAf -' < scripts/dump-schema.sql | node scripts/audit-schema.mjs"
   },
   "dependencies": {
-    "@base44/sdk": "^0.8.41",
-    "@base44/vite-plugin": "^1.0.30",
     "@hello-pangea/dnd": "^17.0.0",
     "@hookform/resolvers": "^4.1.2",
     "@paper-design/shaders-react": "^0.0.41",
@@ -46,6 +51,7 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@stripe/react-stripe-js": "^3.0.0",
     "@stripe/stripe-js": "^5.2.0",
+    "@supabase/supabase-js": "^2.112.3",
     "@tanstack/react-query": "^5.84.1",
     "@tsparticles/engine": "^3.9.1",
     "@tsparticles/react": "^3.0.0",

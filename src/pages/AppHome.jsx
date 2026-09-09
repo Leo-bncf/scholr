@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Loader2 } from 'lucide-react';
 
 import { useNavigate } from 'react-router-dom';
+import * as membershipsData from '@/data/memberships';
+import { getCurrentUser, isAuthenticated, redirectToLogin, updateMyProfile } from '@/data/session';
 
 export default function AppHome() {
   const [loading, setLoading] = useState(true);
@@ -13,13 +14,13 @@ export default function AppHome() {
   }, []);
 
   const resolveAndRedirect = async () => {
-    const isAuthed = await base44.auth.isAuthenticated();
+    const isAuthed = await isAuthenticated();
     if (!isAuthed) {
-      base44.auth.redirectToLogin('/');
+      redirectToLogin('/');
       return;
     }
 
-    const user = await base44.auth.me();
+    const user = await getCurrentUser();
 
     // Super admin goes directly to platform dashboard
     if (user.role === 'super_admin' || user.role === 'admin') {
@@ -28,7 +29,7 @@ export default function AppHome() {
     }
 
     // Resolve school membership
-    const memberships = await base44.entities.SchoolMembership.filter({ user_id: user.id, status: 'active' });
+    const memberships = await membershipsData.where({ user_id: user.id, status: 'active' });
     
     if (memberships.length === 0) {
       navigate('/NoSchool');
@@ -39,7 +40,7 @@ export default function AppHome() {
 
     // Save active school
     if (!user.active_school_id || user.active_school_id !== membership.school_id) {
-      await base44.auth.updateMe({ active_school_id: membership.school_id });
+      await updateMyProfile({ active_school_id: membership.school_id });
     }
 
     // Route based on role

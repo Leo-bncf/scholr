@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { usePlan } from './PlanProvider';
 import { useUser } from '@/components/auth/UserContext';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle, XCircle, CreditCard, ExternalLink, Loader2 } from 'lucide-react';
+import * as fns from '@/data/functions';
 
 export default function BillingStatusBanner() {
   const plan = usePlan();
@@ -17,8 +17,8 @@ export default function BillingStatusBanner() {
   const handlePortal = async () => {
     setLoading(true);
     try {
-      const response = await base44.functions.invoke('createCustomerPortalSession', { schoolId });
-      window.location.href = response.data.url;
+      const response = await fns.invoke('createCustomerPortalSession', { schoolId });
+      window.location.href = response.url;
     } catch {
       setLoading(false);
     }

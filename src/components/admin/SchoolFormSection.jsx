@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, AlertCircle, Check, ChevronDown, ChevronUp } from 'lucide-react';
+import * as schoolsData from '@/data/schools';
 
 export default function SchoolFormSection({ onSchoolCreated }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -58,7 +58,7 @@ export default function SchoolFormSection({ onSchoolCreated }) {
         return;
       }
 
-      const newSchool = await base44.entities.School.create({
+      const newSchool = await schoolsData.create({
         name: formData.name,
         email: formData.email,
         phone: formData.phone || undefined,

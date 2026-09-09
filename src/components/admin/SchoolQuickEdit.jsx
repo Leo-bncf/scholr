@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, AlertCircle, Check, X, Edit2 } from 'lucide-react';
+import { Loader2, AlertCircle, Check, X } from 'lucide-react';
+import * as schoolsData from '@/data/schools';
 
 export default function SchoolQuickEdit({ school, onUpdated, onCancel }) {
   const [loading, setLoading] = useState(false);
@@ -46,7 +46,7 @@ export default function SchoolQuickEdit({ school, onUpdated, onCancel }) {
         return;
       }
 
-      await base44.entities.School.update(school.id, {
+      await schoolsData.update(school.id, {
         name: formData.name,
         email: formData.email,
         phone: formData.phone || undefined,

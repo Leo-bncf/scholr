@@ -1,26 +1,25 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import {
-  LayoutDashboard, BarChart3, Star, MessageSquare, CalendarDays,
-  TrendingUp, ClipboardList, BookOpen, Loader2, Clock,
-  AlertCircle, CheckCircle2, ChevronDown, ChevronUp,
-  FileText, Send, LineChart, Download
+import { BarChart3,
+  TrendingUp, ClipboardList, Loader2, Clock, ChevronDown, ChevronUp, Send, Download
 } from 'lucide-react';
 import PerformanceTrends from '@/components/student/PerformanceTrends';
 import TermReportExport from '@/components/student/TermReportExport';
 import { format, isPast } from 'date-fns';
-import { createPageUrl } from '@/utils';
 import StudentSubmission from '@/components/assignment/StudentSubmission';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { getStudentSidebarLinks } from '@/components/app/studentSidebarLinks';
+import * as gradebookData from '@/data/gradebook';
+import * as assignmentsData from '@/data/assignments';
+import * as submissionsData from '@/data/submissions';
+import * as classesData from '@/data/classes';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -58,8 +57,8 @@ function GradeCard({ grade }) {
             {grade.type && <Badge variant="outline" className="text-xs capitalize">{grade.type?.replace('_', ' ')}</Badge>}
             {grade.ib_grade && <Badge className="bg-violet-50 text-violet-700 border-0 text-xs">IB {grade.ib_grade}/7</Badge>}
           </div>
-          {grade.created_date && (
-            <p className="text-xs text-slate-400 mt-1">{format(new Date(grade.created_date), 'MMM d, yyyy')}</p>
+          {grade.created_at && (
+            <p className="text-xs text-slate-400 mt-1">{format(new Date(grade.created_at), 'MMM d, yyyy')}</p>
           )}
         </div>
         <div className="text-right flex-shrink-0">
@@ -119,12 +118,12 @@ function GradesTab({ schoolId, userId, classes }) {
 
   const { data: grades = [], isLoading } = useQuery({
     queryKey: ['student-grades-academic', schoolId, userId],
-    queryFn: () => base44.entities.GradeItem.filter({
+    queryFn: () => gradebookData.whereGradeItems({
       school_id: schoolId,
       student_id: userId,
       visible_to_student: true,
       status: 'published'
-    }, '-created_date'),
+    }, { order: 'created_at', ascending: false }),
     enabled: !!schoolId && !!userId,
   });
 
@@ -181,11 +180,11 @@ function GradesTab({ schoolId, userId, classes }) {
 function PredictedTab({ schoolId, userId }) {
   const { data: predictions = [], isLoading } = useQuery({
     queryKey: ['student-predicted', schoolId, userId],
-    queryFn: () => base44.entities.PredictedGrade.filter({
+    queryFn: () => gradebookData.wherePredictedGrades({
       school_id: schoolId,
       student_id: userId,
       visible_to_student: true
-    }, '-entry_date'),
+    }, { order: 'entry_date', ascending: false }),
     enabled: !!schoolId && !!userId,
   });
 
@@ -257,7 +256,7 @@ function AssignmentsTab({ schoolId, userId, userName, classes }) {
   const { data: assignments = [], isLoading: loadingA } = useQuery({
     queryKey: ['student-all-assignments', schoolId, userId],
     queryFn: async () => {
-      const all = await base44.entities.Assignment.filter({ school_id: schoolId, status: 'published' });
+      const all = await assignmentsData.where({ school_id: schoolId, status: 'published' });
       const classIds = new Set(classes.map(c => c.id));
       return all.filter(a => classIds.has(a.class_id));
     },
@@ -266,7 +265,7 @@ function AssignmentsTab({ schoolId, userId, userName, classes }) {
 
   const { data: submissions = [], isLoading: loadingS } = useQuery({
     queryKey: ['student-all-submissions', schoolId, userId],
-    queryFn: () => base44.entities.Submission.filter({ school_id: schoolId, student_id: userId }),
+    queryFn: () => submissionsData.where({ school_id: schoolId, student_id: userId }),
     enabled: !!schoolId && !!userId,
   });
 
@@ -435,7 +434,7 @@ export default function StudentAcademicDashboard() {
   const { data: classes = [], isLoading } = useQuery({
     queryKey: ['student-classes', schoolId, user?.id],
     queryFn: async () => {
-      const all = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
+      const all = await classesData.where({ school_id: schoolId, status: 'active' });
       return all.filter(c => c.student_ids?.includes(user.id));
     },
     enabled: !!schoolId && !!user?.id,

@@ -60,7 +60,7 @@ export default function ConversationList({ conversations, selectedId, onSelect }
               {conv.subject}
             </p>
             <p className="text-xs text-slate-400 mt-1">
-              {conv.updated_date ? format(new Date(conv.updated_date), 'MMM d, h:mm a') : ''}
+              {conv.updated_at ? format(new Date(conv.updated_at), 'MMM d, h:mm a') : ''}
             </p>
           </button>
         );

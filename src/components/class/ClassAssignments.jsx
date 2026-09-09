@@ -1,27 +1,21 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import React from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Plus, Calendar, FileText } from 'lucide-react';
+import { Loader2, Calendar, FileText } from 'lucide-react';
 import { format } from 'date-fns';
 import CreateAssignment from '@/components/assignment/CreateAssignment';
 import { createPageUrl } from '@/utils';
+import * as assignmentsData from '@/data/assignments';
 
 export default function ClassAssignments({ classData, isTeacher, userId }) {
   const queryClient = useQueryClient();
 
   const { data: assignments = [], isLoading } = useQuery({
     queryKey: ['class-assignments', classData.id],
-    queryFn: () => base44.entities.Assignment.filter({ 
+    queryFn: () => assignmentsData.where({ 
       school_id: classData.school_id, 
       class_id: classData.id 
-    }, '-created_date'),
+    }, { order: 'created_at', ascending: false }),
   });
 
   const typeColors = {

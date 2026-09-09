@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as storage from '@/data/storage';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Loader2, Plus, CalendarDays, Clock, CheckCircle2, Circle, Link2, FileText, X, Upload, ExternalLink } from 'lucide-react';
 import { format } from 'date-fns';
+import * as lessonPlansData from '@/data/lessonPlans';
 
 function LessonFormDialog({ open, onClose, classData, userId, lesson = null }) {
   const queryClient = useQueryClient();
@@ -30,8 +31,8 @@ function LessonFormDialog({ open, onClose, classData, userId, lesson = null }) {
 
   const mutation = useMutation({
     mutationFn: (data) => isEdit
-      ? base44.entities.LessonPlan.update(lesson.id, data)
-      : base44.entities.LessonPlan.create(data),
+      ? lessonPlansData.update(lesson.id, data)
+      : lessonPlansData.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['class-lessons', classData.id] });
       onClose();
@@ -63,7 +64,8 @@ function LessonFormDialog({ open, onClose, classData, userId, lesson = null }) {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const uploaded = await storage.upload(file, { schoolId: classData?.school_id, prefix: 'lessons' });
+      const file_url = uploaded.url;
     setForm({
       ...form,
       resources: [...form.resources, { id: `res-${Date.now()}`, name: file.name, type: 'file', url: file_url }],
@@ -195,18 +197,18 @@ export default function ClassLessons({ classData, isTeacher, userId }) {
 
   const { data: lessons = [], isLoading } = useQuery({
     queryKey: ['class-lessons', classData.id],
-    queryFn: () => base44.entities.LessonPlan.filter({ class_id: classData.id, school_id: classData.school_id }, 'date'),
+    queryFn: () => lessonPlansData.where({ class_id: classData.id, school_id: classData.school_id }, { order: 'date', ascending: true }),
   });
 
   const toggleStatus = useMutation({
-    mutationFn: (lesson) => base44.entities.LessonPlan.update(lesson.id, {
+    mutationFn: (lesson) => lessonPlansData.update(lesson.id, {
       status: lesson.status === 'completed' ? 'planned' : 'completed',
     }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['class-lessons', classData.id] }),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.LessonPlan.delete(id),
+    mutationFn: (id) => lessonPlansData.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['class-lessons', classData.id] }),
   });
 

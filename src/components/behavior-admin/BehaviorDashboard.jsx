@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Loader2, Search, AlertTriangle, Smile, FileText, AlertCircle, Eye, EyeOff, Clock, CheckCircle2 } from 'lucide-react';
-import { format, subDays, parseISO } from 'date-fns';
+import { format, subDays } from 'date-fns';
+import * as behaviorRecordsData from '@/data/behaviorRecords';
+import * as classesData from '@/data/classes';
+import * as behaviorPoliciesData from '@/data/behaviorPolicies';
 
 const TYPE_META = {
   positive: { label: 'Positive', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', icon: Smile },
@@ -51,20 +52,20 @@ export default function BehaviorDashboard({ schoolId, isPastoral = false }) {
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: ['behavior-admin', schoolId],
-    queryFn: () => base44.entities.BehaviorRecord.filter({ school_id: schoolId }),
+    queryFn: () => behaviorRecordsData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: classes = [] } = useQuery({
     queryKey: ['classes-behavior', schoolId],
-    queryFn: () => base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => classesData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
   const { data: policy = {} } = useQuery({
     queryKey: ['behavior-policy', schoolId],
     queryFn: async () => {
-      const p = await base44.entities.BehaviorPolicy.filter({ school_id: schoolId });
+      const p = await behaviorPoliciesData.where({ school_id: schoolId });
       return p[0] || {};
     },
     enabled: !!schoolId,

@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, BookOpen, ClipboardCheck, BarChart3,
-  MessageSquare, Users, GraduationCap, Settings, CalendarDays
+  MessageSquare, Users, Settings, CalendarDays
 } from 'lucide-react';
 
 export function getAppSidebarLinks(role) {

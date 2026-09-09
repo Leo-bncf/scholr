@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { CheckCircle2, Plus, Calendar } from 'lucide-react';
+import { CheckCircle2, Plus } from 'lucide-react';
+import * as academics from '@/data/academics';
 
 export default function WizardStepAcademicYear({ schoolId, onDone, onAcademicYearCreated }) {
   const queryClient = useQueryClient();
@@ -17,12 +17,12 @@ export default function WizardStepAcademicYear({ schoolId, onDone, onAcademicYea
 
   const { data: existingYears = [], refetch } = useQuery({
     queryKey: ['academic-years-wizard', schoolId],
-    queryFn: () => base44.entities.AcademicYear.filter({ school_id: schoolId }),
+    queryFn: () => academics.whereAcademicYears({ school_id: schoolId }),
   });
 
   const handleSave = async () => {
     setSaving(true);
-    const year = await base44.entities.AcademicYear.create({
+    const year = await academics.createAcademicYear({
       ...form,
       school_id: schoolId,
       is_current: true,

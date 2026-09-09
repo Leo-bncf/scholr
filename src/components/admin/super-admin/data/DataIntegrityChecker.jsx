@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { ShieldCheck, Loader2, AlertTriangle, CheckCircle2, ChevronDown, ChevronUp, Wrench } from 'lucide-react';
+import * as classesData from '@/data/classes';
+import * as schoolsData from '@/data/schools';
+import * as membershipsData from '@/data/memberships';
+import * as submissionsData from '@/data/submissions';
+import * as assignmentsData from '@/data/assignments';
+import * as academics from '@/data/academics';
 
 const CHECKS = [
   {
@@ -11,8 +16,8 @@ const CHECKS = [
     severity: 'error',
     run: async () => {
       const [classes, schools] = await Promise.all([
-        base44.entities.Class.list('-created_date', 2000),
-        base44.entities.School.list('-created_date', 500),
+        classesData.where({}, { order: 'created_at', ascending: false, limit: 2000 }),
+        schoolsData.where({}, { order: 'created_at', ascending: false, limit: 500 }),
       ]);
       const schoolIds = new Set(schools.map(s => s.id));
       return classes.filter(c => !schoolIds.has(c.school_id))
@@ -26,8 +31,8 @@ const CHECKS = [
     severity: 'error',
     run: async () => {
       const [memberships, schools] = await Promise.all([
-        base44.entities.SchoolMembership.list('-created_date', 5000),
-        base44.entities.School.list('-created_date', 500),
+        membershipsData.where({}, { order: 'created_at', ascending: false, limit: 5000 }),
+        schoolsData.where({}, { order: 'created_at', ascending: false, limit: 500 }),
       ]);
       const schoolIds = new Set(schools.map(s => s.id));
       return memberships.filter(m => !schoolIds.has(m.school_id))
@@ -40,7 +45,7 @@ const CHECKS = [
     description: 'Active classes with no subject_id and no subject_teacher_assignments',
     severity: 'warning',
     run: async () => {
-      const classes = await base44.entities.Class.filter({ status: 'active' });
+      const classes = await classesData.where({ status: 'active' });
       return classes.filter(c => {
         const hasSubject = !!c.subject_id;
         const hasAssignments = Array.isArray(c.subject_teacher_assignments) && c.subject_teacher_assignments.length > 0;
@@ -55,8 +60,8 @@ const CHECKS = [
     severity: 'warning',
     run: async () => {
       const [submissions, assignments] = await Promise.all([
-        base44.entities.Submission.list('-created_date', 2000),
-        base44.entities.Assignment.list('-created_date', 2000),
+        submissionsData.where({}, { order: 'created_at', ascending: false, limit: 2000 }),
+        assignmentsData.where({}, { order: 'created_at', ascending: false, limit: 2000 }),
       ]);
       const assignmentIds = new Set(assignments.map(a => a.id));
       return submissions.filter(s => !assignmentIds.has(s.assignment_id))
@@ -69,7 +74,7 @@ const CHECKS = [
     description: 'Users with more than one active membership for the same school+role',
     severity: 'warning',
     run: async () => {
-      const memberships = await base44.entities.SchoolMembership.filter({ status: 'active' });
+      const memberships = await membershipsData.where({ status: 'active' });
       const seen = {};
       const dupes = [];
       for (const m of memberships) {
@@ -90,8 +95,8 @@ const CHECKS = [
     severity: 'info',
     run: async () => {
       const [schools, years] = await Promise.all([
-        base44.entities.School.filter({ status: 'active' }),
-        base44.entities.AcademicYear.list('-created_date', 2000),
+        schoolsData.where({ status: 'active' }),
+        academics.whereAcademicYears({}, { order: 'created_at', ascending: false, limit: 2000 }),
       ]);
       const schoolsWithYear = new Set(years.map(y => y.school_id));
       return schools.filter(s => !schoolsWithYear.has(s.id))

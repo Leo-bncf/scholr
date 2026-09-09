@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  LayoutDashboard, Users, BarChart3, FileText, Star, 
-  Loader2, TrendingUp, TrendingDown, Minus, Filter
+import { Users, BarChart3, 
+  Loader2, TrendingUp, TrendingDown, Filter
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { getCoordinatorSidebarLinks } from '@/components/app/coordinatorSidebarLinks';
 import { useCurriculum } from '@/hooks/useCurriculum';
+import * as gradebookData from '@/data/gradebook';
+import * as membershipsData from '@/data/memberships';
+import * as classesData from '@/data/classes';
 
 export default function CoordinatorPredictedGrades() {
   const { user, school, schoolId } = useUser();
@@ -23,14 +24,14 @@ export default function CoordinatorPredictedGrades() {
 
   const { data: predictions = [], isLoading } = useQuery({
     queryKey: ['all-predicted-grades', schoolId],
-    queryFn: () => base44.entities.PredictedGrade.filter({ school_id: schoolId }, '-entry_date'),
+    queryFn: () => gradebookData.wherePredictedGrades({ school_id: schoolId }, { order: 'entry_date', ascending: false }),
     enabled: !!schoolId,
   });
 
   const { data: students = [] } = useQuery({
     queryKey: ['dp-students-pred', schoolId],
     queryFn: async () => {
-      const memberships = await base44.entities.SchoolMembership.filter({ 
+      const memberships = await membershipsData.where({ 
         school_id: schoolId, 
         role: 'student',
         status: 'active'
@@ -42,7 +43,7 @@ export default function CoordinatorPredictedGrades() {
 
   const { data: classes = [] } = useQuery({
     queryKey: ['classes-pred', schoolId],
-    queryFn: () => base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => classesData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { GraduationCap, LogOut } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { LogOut } from 'lucide-react';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import { signOut } from '@/data/session';
 
 export default function AppSidebar({ links, role, schoolName, userName, userId, schoolId }) {
   const location = useLocation();
@@ -23,7 +23,7 @@ export default function AppSidebar({ links, role, schoolName, userName, userId, 
         <div className="flex items-center justify-between gap-2">
           <Link to={createPageUrl('Landing')} className="flex items-center gap-2 md:gap-2.5 flex-1 min-w-0 hover:opacity-90 transition-opacity cursor-pointer">
             <img
-              src="https://media.base44.com/images/public/69a0347d243a60c91ce938c9/3799d407a_image.png"
+              src="/brand/scholr-mark.png"
               alt="Scholr"
               className="w-7 md:w-8 h-7 md:h-8 rounded-md shadow-sm object-cover flex-shrink-0"
             />
@@ -71,7 +71,7 @@ export default function AppSidebar({ links, role, schoolName, userName, userId, 
           </div>
         </div>
         <button 
-          onClick={() => base44.auth.logout()}
+          onClick={() => signOut()}
           className="flex items-center gap-1.5 md:gap-2 w-full px-2.5 md:px-3 py-1.5 md:py-2 rounded-md text-xs text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors border border-transparent hover:border-slate-200"
         >
           <LogOut className="w-3.5 h-3.5 flex-shrink-0" />

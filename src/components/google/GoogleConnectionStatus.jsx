@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { AlertCircle, CheckCircle, LinkIcon, Clock, LogOut } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/components/auth/UserContext';
+import * as fns from '@/data/functions';
 
 export default function GoogleConnectionStatus({ schoolId, userId, onReconnect, compact = false }) {
   const [status, setStatus] = useState(null);
@@ -16,11 +16,11 @@ export default function GoogleConnectionStatus({ schoolId, userId, onReconnect, 
 
   const verifyConnection = async () => {
     try {
-      const response = await base44.functions.invoke('verifyGoogleConnection', {
+      const response = await fns.invoke('verifyGoogleConnection', {
         schoolId,
         userId: userId || user?.id
       });
-      setStatus(response.data);
+      setStatus(response);
     } catch (error) {
       console.error('Failed to verify Google connection:', error);
       setStatus({ status: 'error', message: 'Unable to check connection status' });

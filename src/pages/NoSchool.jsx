@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
 import { Building2, Mail, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import * as userInvitationsData from '@/data/userInvitations';
+import { getCurrentUser, signOut } from '@/data/session';
 
 export default function NoSchool() {
   const [checkingInvitations, setCheckingInvitations] = useState(true);
@@ -15,8 +16,8 @@ export default function NoSchool() {
 
   const checkForInvitations = async () => {
     try {
-      const user = await base44.auth.me();
-      const invitations = await base44.entities.UserInvitation.filter({
+      const user = await getCurrentUser();
+      const invitations = await userInvitationsData.where({
         email: user.email,
         status: 'pending'
       });
@@ -91,7 +92,7 @@ export default function NoSchool() {
             <Button variant="outline" className="w-full">Return to Homepage</Button>
           </Link>
           <Button 
-            onClick={() => base44.auth.logout()}
+            onClick={() => signOut()}
             variant="ghost"
             className="w-full text-slate-500"
           >

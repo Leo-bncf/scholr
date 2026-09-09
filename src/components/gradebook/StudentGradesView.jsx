@@ -1,26 +1,26 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Loader2, Eye, MessageSquare, TrendingUp } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import StudentRubricGradeView from './StudentRubricGradeView';
+import * as gradebookData from '@/data/gradebook';
 
 export default function StudentGradesView({ classData, studentId }) {
   const { data: grades = [], isLoading } = useQuery({
     queryKey: ['student-grades', classData.id, studentId],
-    queryFn: () => base44.entities.GradeItem.filter({
+    queryFn: () => gradebookData.whereGradeItems({
       school_id: classData.school_id,
       class_id: classData.id,
       student_id: studentId,
       visible_to_student: true
-    }, '-created_date'),
+    }, { order: 'created_at', ascending: false }),
   });
 
   const { data: predictedGrade } = useQuery({
     queryKey: ['student-predicted-grade', classData.id, studentId],
     queryFn: async () => {
-      const preds = await base44.entities.PredictedGrade.filter({
+      const preds = await gradebookData.wherePredictedGrades({
         school_id: classData.school_id,
         class_id: classData.id,
         student_id: studentId,
@@ -96,9 +96,9 @@ export default function StudentGradesView({ classData, studentId }) {
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
                   <h3 className="font-semibold text-slate-900 text-lg">{grade.title}</h3>
-                  {grade.created_date && (
+                  {grade.created_at && (
                     <p className="text-xs text-slate-400 mt-0.5">
-                      {format(new Date(grade.created_date), 'MMM d, yyyy')}
+                      {format(new Date(grade.created_at), 'MMM d, yyyy')}
                     </p>
                   )}
                 </div>

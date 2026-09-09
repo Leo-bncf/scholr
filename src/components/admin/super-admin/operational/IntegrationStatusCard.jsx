@@ -1,5 +1,4 @@
 import React from 'react';
-import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
 
 const integrations = [

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as email from '@/data/email';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Mail, Clock, CheckCircle, XCircle, UserPlus, RefreshCw, Copy, Users } from 'lucide-react';
 import { format } from 'date-fns';
 import InviteUserDialog from './InviteUserDialog';
 import BulkInviteDialog from './BulkInviteDialog';
+import * as userInvitationsData from '@/data/userInvitations';
 
 export default function InvitationsManager({ schoolId, schoolName }) {
   const queryClient = useQueryClient();
@@ -15,7 +16,7 @@ export default function InvitationsManager({ schoolId, schoolName }) {
 
   const { data: invitations = [], isLoading } = useQuery({
     queryKey: ['user-invitations', schoolId],
-    queryFn: () => base44.entities.UserInvitation.filter({ school_id: schoolId }, '-created_date', 50),
+    queryFn: () => userInvitationsData.where({ school_id: schoolId }, { order: 'created_at', ascending: false, limit: 50 }),
     enabled: !!schoolId,
   });
 
@@ -23,9 +24,9 @@ export default function InvitationsManager({ schoolId, schoolName }) {
     mutationFn: async (invitation) => {
       const inviteUrl = `${window.location.origin}/AcceptInvitation?token=${invitation.invitation_token}`;
       
-      await base44.integrations.Core.SendEmail({
+      await email.send({
         to: invitation.email,
-        from_name: schoolName,
+        fromName: schoolName,
         subject: `Reminder: You're invited to join ${schoolName} on AtlasIB`,
         body: `
           <h2>Reminder: Join ${schoolName}!</h2>
@@ -43,7 +44,7 @@ export default function InvitationsManager({ schoolId, schoolName }) {
 
   const cancelMutation = useMutation({
     mutationFn: (invitationId) => 
-      base44.entities.UserInvitation.update(invitationId, { status: 'cancelled' }),
+      userInvitationsData.update(invitationId, { status: 'cancelled' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-invitations'] });
     },
@@ -138,7 +139,7 @@ export default function InvitationsManager({ schoolId, schoolName }) {
                     <div className="flex items-center gap-4 text-xs text-slate-500 mb-2">
                       <span className="capitalize">Role: {invitation.role.replace('_', ' ')}</span>
                       <span>•</span>
-                      <span>Invited {format(new Date(invitation.created_date), 'MMM d, yyyy')}</span>
+                      <span>Invited {format(new Date(invitation.created_at), 'MMM d, yyyy')}</span>
                       {invitation.invited_by_name && (
                         <>
                           <span>•</span>

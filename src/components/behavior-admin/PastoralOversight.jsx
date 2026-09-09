@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Loader2, ShieldCheck, AlertTriangle, Clock, CheckCircle2, Eye, User } from 'lucide-react';
+import { Loader2, ShieldCheck, Clock, CheckCircle2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useUser } from '@/components/auth/UserContext';
-import { logAudit, AuditActions, AuditLevels } from '@/components/utils/auditLogger';
+import { logAudit, AuditLevels } from '@/components/utils/auditLogger';
+import * as behaviorRecordsData from '@/data/behaviorRecords';
 
 const SEV_META = {
   high:     { bg: 'bg-red-50',   text: 'text-red-700',   border: 'border-red-200' },
@@ -25,12 +24,12 @@ export default function PastoralOversight({ schoolId }) {
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: ['behavior-pastoral', schoolId],
-    queryFn: () => base44.entities.BehaviorRecord.filter({ school_id: schoolId }),
+    queryFn: () => behaviorRecordsData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const markReviewedMutation = useMutation({
-    mutationFn: ({ id, note }) => base44.entities.BehaviorRecord.update(id, {
+    mutationFn: ({ id, note }) => behaviorRecordsData.update(id, {
       pastoral_reviewed: true,
       pastoral_reviewed_by: user?.full_name || user?.email || 'Staff',
       pastoral_reviewed_at: new Date().toISOString(),
@@ -44,7 +43,7 @@ export default function PastoralOversight({ schoolId }) {
   });
 
   const closeFollowUpMutation = useMutation({
-    mutationFn: ({ id, note }) => base44.entities.BehaviorRecord.update(id, {
+    mutationFn: ({ id, note }) => behaviorRecordsData.update(id, {
       follow_up_completed: true,
       follow_up_note: note,
     }),

@@ -1,0 +1,146 @@
+// Tailnet policy for tail983582 — covers BOTH products.
+//
+// Goal: Conor and Alec work on Scholr and must never be able to reach anything
+// Schedual. Leo and Erik keep full access to both.
+//
+// Tailscale ACLs are DEFAULT DENY: traffic is only permitted by an explicit
+// rule. Isolation between tag:scholr and tag:schedual therefore needs no "deny"
+// rule — it needs the absence of an allow rule, plus the discipline of never
+// writing a broad `"dst": ["*:*"]` for anyone but the owners.
+//
+// Apply at: https://login.tailscale.com/admin/acls
+//
+// ─── BEFORE THIS WORKS ──────────────────────────────────────────────────────
+// Every existing node currently carries the single generic tag:server, which
+// cannot distinguish the two products. Rename + re-tag as below — until then
+// the existing nodes fall outside every rule here.
+//
+//   OLD NAME                NEW NAME        TAG
+//   schedual-proxmox-1      infra-pve-1     tag:infra
+//   schedual-proxmox-2      infra-pve-2     tag:infra     hosts BOTH products
+//   schedual-proxmox-ai     infra-pve-ai    tag:infra
+//   schedual-prod           sched-prod      tag:schedual
+//   schedual-ionos          sched-standby   tag:schedual
+//   schedual-optaplanner    sched-solver    tag:schedual
+//   schedual-vm-ai          sched-ai        tag:schedual
+//   schedual-vm-db          sched-ai-db     tag:schedual
+//   (new) scholr-prod       scholr-prod     tag:scholr
+//
+// Run infra/tailscale-apply.mjs to do all of this via the API.
+// ────────────────────────────────────────────────────────────────────────────
+
+{
+  "groups": {
+    // Full access to both products. These two already have Schedual access.
+    "group:owners": [
+      "REPLACE-leo@example.com",
+      "REPLACE-erik.gerbst@gmail.com",
+    ],
+
+    // Scholr-only collaborators. Deliberately NOT in group:owners.
+    "group:scholr": [
+      "REPLACE-conor@example.com",
+      "REPLACE-alec@example.com",
+    ],
+  },
+
+  "tagOwners": {
+    // Only owners may mint infra or Schedual nodes. If group:scholr could own
+    // tag:schedual they could tag a machine into the Schedual blast radius.
+    "tag:infra":    ["group:owners"],
+    "tag:schedual": ["group:owners"],
+    "tag:scholr":   ["group:owners"],
+
+    // TRANSITIONAL. Every existing node still carries tag:server, and Tailscale
+    // rejects a policy that omits a tag devices are currently using. Delete
+    // this line — and the tag:server entry in the ssh block — once
+    // tailscale-apply.mjs reports every device re-tagged.
+    "tag:server":   ["group:owners"],
+  },
+
+  "acls": [
+    // ── Owners: everything, both products ──────────────────────────────────
+    {
+      "action": "accept",
+      "src":    ["group:owners"],
+      "dst":    ["*:*"],
+    },
+
+    // ── Scholr team: Scholr servers only ───────────────────────────────────
+    // Named ports rather than :* so a future service on a Scholr box isn't
+    // exposed to the whole team by accident.
+    {
+      "action": "accept",
+      "src":    ["group:scholr"],
+      "dst":    ["tag:scholr:22,80,443,5432,8000,54321"],
+    },
+
+    // ── Scholr servers may talk among themselves ───────────────────────────
+    // Scoped to tag:scholr on both sides, so a Scholr box has no route to any
+    // Schedual or infra host. This is the isolation you asked for.
+    {
+      "action": "accept",
+      "src":    ["tag:scholr"],
+      "dst":    ["tag:scholr:*"],
+    },
+
+    // ── Schedual servers may talk among themselves ─────────────────────────
+    {
+      "action": "accept",
+      "src":    ["tag:schedual"],
+      "dst":    ["tag:schedual:*"],
+    },
+
+    // NOTE: there is deliberately no rule granting group:scholr access to
+    // tag:infra. The Proxmox hosts can open a console on, and `qm` into, the
+    // Schedual VM — so Proxmox access is Schedual access. Conor and Alec
+    // cannot have it without defeating the whole separation.
+  ],
+
+  "ssh": [
+    // Owners: SSH to anything, including as root. tag:server is listed so
+    // Tailscale SSH keeps working during the re-tagging window — without it,
+    // a node still on tag:server would be unreachable the moment this policy
+    // lands. Remove it together with the tagOwners entry above.
+    {
+      "action": "accept",
+      "src":    ["group:owners"],
+      "dst":    ["tag:infra", "tag:schedual", "tag:scholr", "tag:server"],
+      "users":  ["autogroup:nonroot", "root"],
+    },
+
+    // Scholr team: SSH to Scholr boxes as a normal user only. No root — an
+    // unprivileged shell keeps `sudo` (and its password) as a second gate.
+    {
+      "action": "accept",
+      "src":    ["group:scholr"],
+      "dst":    ["tag:scholr"],
+      "users":  ["autogroup:nonroot"],
+    },
+  ],
+
+  // Guardrails: these fail the policy at save time if the isolation is ever
+  // broken by a later edit. Cheaper than discovering it in an incident.
+  "tests": [
+    {
+      "src":    "REPLACE-conor@example.com",
+      "accept": ["tag:scholr:22"],
+      "deny":   ["tag:schedual:22", "tag:infra:8006", "tag:schedual:5432"],
+    },
+    {
+      "src":    "REPLACE-alec@example.com",
+      "accept": ["tag:scholr:443"],
+      "deny":   ["tag:schedual:443", "tag:infra:22"],
+    },
+    {
+      "src":    "REPLACE-leo@example.com",
+      "accept": ["tag:scholr:22", "tag:schedual:22", "tag:infra:8006"],
+    },
+    {
+      // A compromised Scholr box must not be a route into Schedual.
+      "src":    "tag:scholr",
+      "accept": ["tag:scholr:5432"],
+      "deny":   ["tag:schedual:5432", "tag:infra:8006"],
+    },
+  ],
+}

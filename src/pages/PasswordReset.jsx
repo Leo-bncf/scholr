@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, CheckCircle, AlertCircle, Lock } from 'lucide-react';
+import { requestPasswordReset } from '@/data/session';
 
 /**
  * Password reset page
@@ -42,16 +42,11 @@ export default function PasswordReset() {
 
     setLoading(true);
     try {
-      const result = await base44.functions.invoke('requestPasswordReset', {
-        email
-      });
-
-      if (result.data.success) {
-        setStep('sent');
-        setError(null);
-      } else {
-        setError(result.data.error || 'Failed to send reset email');
-      }
+      // GoTrue sends the recovery email and owns the token; the link returns
+      // the user here with a recovery session already established.
+      await requestPasswordReset(email, `${window.location.origin}/PasswordReset`);
+      setStep('sent');
+      setError(null);
     } catch (err) {
       console.error('Error requesting reset:', err);
       setError(err.message || 'An error occurred');
@@ -75,17 +70,9 @@ export default function PasswordReset() {
 
     setIsProcessing(true);
     try {
-      const result = await base44.functions.invoke('resetPassword', {
-        token,
-        password
-      });
-
-      if (result.data.success) {
-        setStep('success');
-        setError(null);
-      } else {
-        setError(result.data.error || 'Failed to reset password');
-      }
+      await setPassword(password);
+      setStep('success');
+      setError(null);
     } catch (err) {
       console.error('Error resetting password:', err);
       setError(err.message || 'An error occurred');

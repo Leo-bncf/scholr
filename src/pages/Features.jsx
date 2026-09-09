@@ -5,9 +5,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { 
-  BarChart3, BookOpen, Users, Shield, MessageSquare, 
-  Calendar, ClipboardCheck, Star, UserCheck, Eye,
-  FileText, Bell, ArrowRight, CheckCircle
+  BarChart3, BookOpen, Users, Shield, ClipboardCheck, Star, ArrowRight, CheckCircle
 } from 'lucide-react';
 
 function FeatureBlock({ icon: Icon, title, description, bullets, reversed }) {

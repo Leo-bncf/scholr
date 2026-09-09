@@ -3,7 +3,8 @@
  * Automatically logs errors for debugging and monitoring
  */
 
-import { base44 } from '@/api/base44Client';
+import * as errorLogs from '@/data/errorLogs';
+import { getCurrentUser } from '@/data/session';
 
 const ERROR_LOG_ENTITY = 'ErrorLog';
 
@@ -27,7 +28,7 @@ export async function logError(errorData) {
     let finalSchoolId = schoolId;
 
     try {
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       if (user && !finalUserId) {
         finalUserId = user.id;
         finalSchoolId = user.active_school_id || null;
@@ -51,7 +52,7 @@ export async function logError(errorData) {
 
     // Try to insert the error log
     try {
-      await base44.entities[ERROR_LOG_ENTITY]?.create?.(errorRecord);
+      await errorLogs.create(errorRecord);
     } catch (dbError) {
       // If entity doesn't exist or create fails, log to console instead
       console.error('Failed to log error to database:', dbError);

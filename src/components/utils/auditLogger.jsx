@@ -1,4 +1,6 @@
-import { base44 } from '@/api/base44Client';
+import * as admin from '@/data/admin';
+import * as membershipsData from '@/data/memberships';
+import { getCurrentUser } from '@/data/session';
 
 /**
  * Audit Logger Utility
@@ -89,9 +91,9 @@ export async function logAudit({
   schoolId = null 
 }) {
   try {
-    const user = await base44.auth.me();
+    const user = await getCurrentUser();
     
-    await base44.entities.AuditLog.create({
+    await admin.recordAuditLog({
       school_id: schoolId,
       user_id: user?.id || null,
       user_email: user?.email || 'system',
@@ -112,7 +114,7 @@ export async function logAudit({
  */
 export async function logAuditBulk(events) {
   try {
-    const user = await base44.auth.me();
+    const user = await getCurrentUser();
     
     const logs = events.map(event => ({
       school_id: event.schoolId || null,
@@ -125,7 +127,7 @@ export async function logAuditBulk(events) {
       level: event.level || AuditLevels.INFO,
     }));
     
-    await base44.entities.AuditLog.bulkCreate(logs);
+    await Promise.all((logs).map((r) => admin.recordAuditLog(r)));
   } catch (error) {
     console.error('Bulk audit logging failed:', error);
   }
@@ -136,13 +138,13 @@ export async function logAuditBulk(events) {
  */
 export async function checkPermission(requiredRole, schoolId = null) {
   try {
-    const user = await base44.auth.me();
+    const user = await getCurrentUser();
     if (!user) return false;
     
     if (user.role === 'super_admin') return true;
     
     if (schoolId) {
-      const memberships = await base44.entities.SchoolMembership.filter({
+      const memberships = await membershipsData.where({
         user_id: user.id,
         school_id: schoolId,
         status: 'active'

@@ -1,11 +1,11 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import { Loader2, BookOpen } from 'lucide-react';
 import TeacherClassWorkspace from '@/components/class/workspace/TeacherClassWorkspace';
 import AdminClassWorkspace from '@/components/class/workspace/AdminClassWorkspace';
 import StudentClassWorkspace from '@/components/class/workspace/StudentClassWorkspace';
+import * as classesData from '@/data/classes';
 
 /**
  * Thin router. Loads the class, determines the viewer's role in the context
@@ -19,7 +19,7 @@ export default function ClassWorkspace() {
 
   const { data: classData, isLoading: loadingClass } = useQuery({
     queryKey: ['class-details', classId],
-    queryFn: () => base44.entities.Class.filter({ id: classId, school_id: schoolId }).then(res => res[0]),
+    queryFn: () => classesData.where({ id: classId, school_id: schoolId }).then(res => res[0]),
     enabled: !!classId && !!schoolId,
   });
 

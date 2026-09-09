@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,6 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, AlertCircle } from 'lucide-react';
+import * as schoolsData from '@/data/schools';
 
 export default function EditSchoolDialog({ open, onOpenChange, school, onSchoolUpdated }) {
   const [loading, setLoading] = useState(false);
@@ -61,7 +61,7 @@ export default function EditSchoolDialog({ open, onOpenChange, school, onSchoolU
         return;
       }
 
-      await base44.entities.School.update(school.id, {
+      await schoolsData.update(school.id, {
         name: formData.name,
         email: formData.email,
         phone: formData.phone || undefined,

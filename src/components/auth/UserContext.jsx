@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { getCurrentUser, onAuthChange } from '@/data/session';
+import * as memberships from '@/data/memberships';
+import * as schools from '@/data/schools';
 import { hasPermission, hasAllPermissions } from '@/components/auth/PermissionsModule';
 import { useImpersonation } from '@/components/auth/ImpersonationContext';
 
@@ -13,43 +15,54 @@ export function UserProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { impersonation } = useImpersonation() || {};
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
+  const loadUser = useCallback(async () => {
+    setLoading(true);
     try {
-      const authed = await base44.auth.isAuthenticated();
-      setIsAuthenticated(authed);
-      if (!authed) {
-        setLoading(false);
+      const me = await getCurrentUser();
+
+      if (!me) {
+        setUser(null);
+        setMembership(null);
+        setSchool(null);
+        setIsAuthenticated(false);
         return;
       }
-      const me = await base44.auth.me();
+
       setUser(me);
+      setIsAuthenticated(true);
 
-      // Load membership
-      if (me.role !== 'super_admin' && me.role !== 'admin') {
-        const memberships = await base44.entities.SchoolMembership.filter({ user_id: me.id, status: 'active' });
-        if (memberships.length > 0) {
-          const activeMembership = me.active_school_id
-            ? memberships.find(m => m.school_id === me.active_school_id) || memberships[0]
-            : memberships[0];
-          setMembership(activeMembership);
-
-          // Load school
-          const schools = await base44.entities.School.filter({ id: activeMembership.school_id });
-          if (schools.length > 0) {
-            setSchool(schools[0]);
-          }
-        }
+      // Super admins aren't scoped to a school; everyone else acts under a
+      // membership, which is also what every RLS policy resolves through.
+      if (me.role === 'super_admin') {
+        setMembership(null);
+        setSchool(null);
+        return;
       }
-    } catch (e) {
-      console.log('Not authenticated');
+
+      const active = await memberships.resolveActive(me.id, me.active_school_id);
+      setMembership(active);
+      setSchool(active ? await schools.get(active.school_id) : null);
+    } catch (err) {
+      // A failure here means the app can't establish who the user is, which is
+      // worth surfacing — the old code swallowed it as "Not authenticated" and
+      // rendered a logged-out shell over what was really a backend error.
+      console.error('UserProvider: failed to load the current user', err);
+      setUser(null);
+      setMembership(null);
+      setSchool(null);
+      setIsAuthenticated(false);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadUser();
+    // Sign-in and sign-out can happen outside React (OAuth redirect, token
+    // refresh failure, another tab). Without this the UI keeps showing a stale
+    // session until a manual reload.
+    return onAuthChange(() => loadUser());
+  }, [loadUser]);
 
   const getRole = () => {
     if (impersonation) return impersonation.membershipRole;
@@ -72,7 +85,6 @@ export function UserProvider({ children }) {
     return user?.id;
   };
 
-  // Permission checking helpers
   const checkPermission = (resource, action) => {
     const userData = { ...user, role: getRole() };
     return hasPermission(userData, resource, action);

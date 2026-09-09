@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Send } from 'lucide-react';
 import { format } from 'date-fns';
+import * as messagesData from '@/data/messages';
 
 export default function ConversationView({ conversation, userId, userName, userRole }) {
   const queryClient = useQueryClient();
@@ -15,13 +15,13 @@ export default function ConversationView({ conversation, userId, userName, userR
     queryKey: ['thread-messages', conversation?.thread_id || conversation?.id],
     queryFn: async () => {
       const threadId = conversation.thread_id || conversation.id;
-      const all = await base44.entities.Message.filter({
+      const all = await messagesData.where({
         school_id: conversation.school_id,
         thread_id: threadId,
-      }, 'created_date');
+      }, { order: 'created_at', ascending: true });
       // If no thread messages, fall back to showing the original message
       if (all.length === 0) {
-        const orig = await base44.entities.Message.filter({ school_id: conversation.school_id, id: conversation.id });
+        const orig = await messagesData.where({ school_id: conversation.school_id, id: conversation.id });
         return orig;
       }
       return all;
@@ -35,7 +35,7 @@ export default function ConversationView({ conversation, userId, userName, userR
   }, [messages]);
 
   const sendMutation = useMutation({
-    mutationFn: (data) => base44.entities.Message.create(data),
+    mutationFn: (data) => messagesData.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['thread-messages'] });
       queryClient.invalidateQueries({ queryKey: ['user-conversations'] });
@@ -107,7 +107,7 @@ export default function ConversationView({ conversation, userId, userName, userR
                 )}
                 <p className="text-sm whitespace-pre-wrap">{msg.body}</p>
                 <p className={`text-xs mt-2 ${isSender ? 'text-indigo-200' : 'text-slate-400'}`}>
-                  {msg.created_date ? format(new Date(msg.created_date), 'MMM d, h:mm a') : ''}
+                  {msg.created_at ? format(new Date(msg.created_at), 'MMM d, h:mm a') : ''}
                 </p>
               </div>
             </div>

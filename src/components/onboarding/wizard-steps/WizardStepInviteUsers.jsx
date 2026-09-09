@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as fns from '@/data/functions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, Plus, Trash2, Mail, Users } from 'lucide-react';
+import * as membershipsData from '@/data/memberships';
 
 const ROLES = [
   { value: 'teacher', label: 'Teacher' },
@@ -26,7 +26,7 @@ export default function WizardStepInviteUsers({ schoolId, onDone }) {
 
   const { data: memberships = [], refetch } = useQuery({
     queryKey: ['memberships-wizard', schoolId],
-    queryFn: () => base44.entities.SchoolMembership.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => membershipsData.where({ school_id: schoolId, status: 'active' }),
   });
 
   const teachers = memberships.filter(m => ['teacher', 'ib_coordinator'].includes(m.role));
@@ -45,7 +45,7 @@ export default function WizardStepInviteUsers({ schoolId, onDone }) {
     for (const row of valid) {
       try {
         // Create membership record (actual invite is handled by the users page)
-        await base44.entities.SchoolMembership.create({
+        await membershipsData.create({
           school_id: schoolId,
           user_email: row.email.trim(),
           user_name: row.name.trim(),
@@ -53,7 +53,7 @@ export default function WizardStepInviteUsers({ schoolId, onDone }) {
           status: 'pending',
         });
         // Send invite
-        await base44.users.inviteUser(row.email.trim(), row.role === 'school_admin' ? 'admin' : 'user');
+        await fns.invoke('sendInvitation', { email: row.email.trim(), role: row.role });
         newResults.push({ email: row.email, status: 'success' });
       } catch {
         newResults.push({ email: row.email, status: 'error' });

@@ -60,14 +60,14 @@ export function buildDemoMembers(schoolId) {
     id: `mem-${D.admin}`, school_id: schoolId, user_id: D.admin,
     user_email: 'principal@westbridge.edu', user_name: 'Principal Jane Harrington',
     role: 'school_admin', status: 'active', department: 'Administration',
-    created_date: '2025-08-01T09:00:00Z',
+    created_at: '2025-08-01T09:00:00Z',
   });
 
   members.push({
     id: `mem-${D.coord}`, school_id: schoolId, user_id: D.coord,
     user_email: 'ib.coord@westbridge.edu', user_name: 'Dr. Rachel Kim',
     role: 'ib_coordinator', status: 'active', department: 'IB Programme',
-    created_date: '2025-08-01T09:00:00Z',
+    created_at: '2025-08-01T09:00:00Z',
   });
 
   const teacherEmails = [
@@ -83,7 +83,7 @@ export function buildDemoMembers(schoolId) {
       id: `mem-${teacherIds[i]}`, school_id: schoolId, user_id: teacherIds[i],
       user_email: teacherEmails[i], user_name: name,
       role: 'teacher', status: 'active', department: teacherDepts[i],
-      created_date: '2025-08-10T09:00:00Z',
+      created_at: '2025-08-10T09:00:00Z',
     });
   });
 
@@ -95,7 +95,7 @@ export function buildDemoMembers(schoolId) {
       user_name: name,
       role: 'student', status: 'active',
       grade_level: i < 12 ? 'DP1' : 'DP2',
-      created_date: '2025-09-01T09:00:00Z',
+      created_at: '2025-09-01T09:00:00Z',
     });
   });
 
@@ -105,7 +105,7 @@ export function buildDemoMembers(schoolId) {
       user_email: `parent${i + 1}@family.com`,
       user_name: `Parent of ${STUDENT_NAMES[i * 2] || STUDENT_NAMES[i]}`,
       role: 'parent', status: 'active',
-      created_date: '2025-09-03T09:00:00Z',
+      created_at: '2025-09-03T09:00:00Z',
     });
   });
 
@@ -119,7 +119,7 @@ export function buildDemoAcademicYears(schoolId) {
     id: D.ay, school_id: schoolId, name: '2025–2026',
     start_date: '2025-09-01', end_date: '2026-06-19',
     is_current: true, status: 'active',
-    created_date: '2025-08-01T09:00:00Z',
+    created_at: '2025-08-01T09:00:00Z',
   }];
 }
 
@@ -128,17 +128,17 @@ export function buildDemoTerms(schoolId) {
     {
       id: D.t1, school_id: schoolId, academic_year_id: D.ay,
       name: 'Term 1', start_date: '2025-09-01', end_date: '2025-12-19',
-      is_current: false, created_date: '2025-08-01T09:00:00Z',
+      is_current: false, created_at: '2025-08-01T09:00:00Z',
     },
     {
       id: D.t2, school_id: schoolId, academic_year_id: D.ay,
       name: 'Term 2', start_date: '2026-01-12', end_date: '2026-04-10',
-      is_current: true, created_date: '2025-08-01T09:00:00Z',
+      is_current: true, created_at: '2025-08-01T09:00:00Z',
     },
     {
       id: D.t3, school_id: schoolId, academic_year_id: D.ay,
       name: 'Term 3', start_date: '2026-04-27', end_date: '2026-06-19',
-      is_current: false, created_date: '2025-08-01T09:00:00Z',
+      is_current: false, created_at: '2025-08-01T09:00:00Z',
     },
   ];
 }
@@ -166,42 +166,42 @@ export function buildDemoClasses(schoolId) {
       name: 'Math AA HL — DP1', section: 'A', subject_id: D.subMath,
       teacher_ids: [D.t4id], primary_teacher_id: D.t4id,
       student_ids: dp1, status: 'active', capacity: 15,
-      created_date: '2025-09-01T09:00:00Z',
+      created_at: '2025-09-01T09:00:00Z',
     },
     {
       id: D.cls2, school_id: schoolId, academic_year_id: D.ay,
       name: 'Math AA HL — DP2', section: 'B', subject_id: D.subMath,
       teacher_ids: [D.t4id], primary_teacher_id: D.t4id,
       student_ids: dp2, status: 'active', capacity: 15,
-      created_date: '2025-09-01T09:00:00Z',
+      created_at: '2025-09-01T09:00:00Z',
     },
     {
       id: D.cls3, school_id: schoolId, academic_year_id: D.ay,
       name: 'Physics HL', section: 'A', subject_id: D.subPhysics,
       teacher_ids: [D.t1id], primary_teacher_id: D.t1id,
       student_ids: [...dp1.slice(0, 8), ...dp2.slice(0, 6)], status: 'active', capacity: 16,
-      created_date: '2025-09-01T09:00:00Z',
+      created_at: '2025-09-01T09:00:00Z',
     },
     {
       id: D.cls4, school_id: schoolId, academic_year_id: D.ay,
       name: 'History SL', section: 'A', subject_id: D.subHistory,
       teacher_ids: [D.t2id], primary_teacher_id: D.t2id,
       student_ids: [...dp1.slice(4, 12), ...dp2.slice(4, 12)], status: 'active', capacity: 18,
-      created_date: '2025-09-01T09:00:00Z',
+      created_at: '2025-09-01T09:00:00Z',
     },
     {
       id: D.cls5, school_id: schoolId, academic_year_id: D.ay,
       name: 'English A HL', section: 'A', subject_id: D.subEnglish,
       teacher_ids: [D.t3id], primary_teacher_id: D.t3id,
       student_ids: STUDENT_IDS.slice(0, 18), status: 'active', capacity: 20,
-      created_date: '2025-09-01T09:00:00Z',
+      created_at: '2025-09-01T09:00:00Z',
     },
     {
       id: D.cls6, school_id: schoolId, academic_year_id: D.ay,
       name: 'Biology HL', section: 'A', subject_id: D.subBiology,
       teacher_ids: [D.t1id, D.t5id], primary_teacher_id: D.t1id,
       student_ids: [...dp1.slice(0, 6), ...dp2.slice(0, 8)], status: 'active', capacity: 16,
-      created_date: '2025-09-01T09:00:00Z',
+      created_at: '2025-09-01T09:00:00Z',
     },
   ];
 }
@@ -214,13 +214,13 @@ export function buildDemoCohorts(schoolId) {
       id: D.cohortDP1, school_id: schoolId, name: 'DP1 2025–2026',
       academic_year_id: D.ay, grade_level: 'DP1',
       student_ids: STUDENT_IDS.slice(0, 12), status: 'active',
-      created_date: '2025-09-01T09:00:00Z',
+      created_at: '2025-09-01T09:00:00Z',
     },
     {
       id: D.cohortDP2, school_id: schoolId, name: 'DP2 2025–2026',
       academic_year_id: D.ay, grade_level: 'DP2',
       student_ids: STUDENT_IDS.slice(12, 24), status: 'active',
-      created_date: '2025-09-01T09:00:00Z',
+      created_at: '2025-09-01T09:00:00Z',
     },
   ];
 }
@@ -262,7 +262,7 @@ export function buildDemoAttendance(schoolId) {
           date: dateStr,
           status: isAbsent ? 'absent' : isLate ? 'late' : 'present',
           recorded_by: D.coord,
-          created_date: `${dateStr}T09:30:00Z`,
+          created_at: `${dateStr}T09:30:00Z`,
         });
       });
     });
@@ -308,7 +308,7 @@ export function buildDemoGrades(schoolId) {
         status: 'published',
         visible_to_student: true, visible_to_parent: true,
         term_id: D.t2, grading_type: 'simple',
-        created_date: '2026-02-15T10:00:00Z',
+        created_at: '2026-02-15T10:00:00Z',
       });
     });
   });
@@ -326,7 +326,7 @@ export function buildDemoPredictedGrades(schoolId) {
       subject_id: D.subMath, class_id: i < 12 ? D.cls1 : D.cls2,
       predicted_ib_grade: ibGrades[i] || 5,
       status: 'published', term_id: D.t2,
-      created_date: '2026-03-01T10:00:00Z',
+      created_at: '2026-03-01T10:00:00Z',
     });
   });
   return grades;
@@ -371,7 +371,7 @@ export function buildDemoBehavior(schoolId) {
     follow_up_required: r.type === 'incident' || r.type === 'concern',
     follow_up_completed: r.type === 'concern' && i % 2 === 0,
     pastoral_reviewed: r.severity === 'high',
-    created_date: new Date(NOW.getTime() - (i + 1) * 3 * 24 * 60 * 60 * 1000).toISOString(),
+    created_at: new Date(NOW.getTime() - (i + 1) * 3 * 24 * 60 * 60 * 1000).toISOString(),
   }));
 }
 
@@ -403,7 +403,7 @@ export function buildDemoMessages(schoolId) {
       is_announcement: i % 4 === 0,
       is_school_wide: i % 8 === 0,
       read_by: STUDENT_IDS.slice(0, Math.floor(Math.random() * 12)),
-      created_date: date.toISOString(),
+      created_at: date.toISOString(),
     });
   }
   return msgs;
@@ -414,12 +414,12 @@ export function buildDemoMessages(schoolId) {
 export function buildDemoAssignments(schoolId) {
   const dueDate = (daysFromNow) => new Date(NOW.getTime() + daysFromNow * 24 * 60 * 60 * 1000).toISOString();
   return [
-    { id: 'asgn-1', school_id: schoolId, class_id: D.cls1, teacher_id: D.t4id, title: 'Calculus Integration — Problem Set', type: 'homework', status: 'published', due_date: dueDate(5), max_score: 50, created_date: '2026-03-10T09:00:00Z' },
-    { id: 'asgn-2', school_id: schoolId, class_id: D.cls3, teacher_id: D.t1id, title: 'Optics Lab Report', type: 'lab_report', status: 'published', due_date: dueDate(10), max_score: 24, created_date: '2026-03-12T09:00:00Z' },
-    { id: 'asgn-3', school_id: schoolId, class_id: D.cls4, teacher_id: D.t2id, title: 'Cold War Extended Essay Draft', type: 'essay', status: 'published', due_date: dueDate(14), max_score: 30, created_date: '2026-03-08T09:00:00Z' },
-    { id: 'asgn-4', school_id: schoolId, class_id: D.cls5, teacher_id: D.t3id, title: 'Individual Oral Commentary', type: 'presentation', status: 'published', due_date: dueDate(7), max_score: 20, created_date: '2026-03-15T09:00:00Z' },
-    { id: 'asgn-5', school_id: schoolId, class_id: D.cls2, teacher_id: D.t4id, title: 'Statistics Practice Exam', type: 'exam', status: 'published', due_date: dueDate(-2), max_score: 100, created_date: '2026-03-01T09:00:00Z' },
-    { id: 'asgn-6', school_id: schoolId, class_id: D.cls6, teacher_id: D.t1id, title: 'Ecology Field Report', type: 'lab_report', status: 'published', due_date: dueDate(21), max_score: 30, created_date: '2026-03-18T09:00:00Z' },
+    { id: 'asgn-1', school_id: schoolId, class_id: D.cls1, teacher_id: D.t4id, title: 'Calculus Integration — Problem Set', type: 'homework', status: 'published', due_date: dueDate(5), max_score: 50, created_at: '2026-03-10T09:00:00Z' },
+    { id: 'asgn-2', school_id: schoolId, class_id: D.cls3, teacher_id: D.t1id, title: 'Optics Lab Report', type: 'lab_report', status: 'published', due_date: dueDate(10), max_score: 24, created_at: '2026-03-12T09:00:00Z' },
+    { id: 'asgn-3', school_id: schoolId, class_id: D.cls4, teacher_id: D.t2id, title: 'Cold War Extended Essay Draft', type: 'essay', status: 'published', due_date: dueDate(14), max_score: 30, created_at: '2026-03-08T09:00:00Z' },
+    { id: 'asgn-4', school_id: schoolId, class_id: D.cls5, teacher_id: D.t3id, title: 'Individual Oral Commentary', type: 'presentation', status: 'published', due_date: dueDate(7), max_score: 20, created_at: '2026-03-15T09:00:00Z' },
+    { id: 'asgn-5', school_id: schoolId, class_id: D.cls2, teacher_id: D.t4id, title: 'Statistics Practice Exam', type: 'exam', status: 'published', due_date: dueDate(-2), max_score: 100, created_at: '2026-03-01T09:00:00Z' },
+    { id: 'asgn-6', school_id: schoolId, class_id: D.cls6, teacher_id: D.t1id, title: 'Ecology Field Report', type: 'lab_report', status: 'published', due_date: dueDate(21), max_score: 30, created_at: '2026-03-18T09:00:00Z' },
   ];
 }
 
@@ -446,7 +446,7 @@ export function buildDemoSubmissions(schoolId) {
         status: i % 10 === 0 ? 'late' : Math.random() < 0.6 ? 'graded' : 'submitted',
         score: Math.random() < 0.6 ? score : null,
         submitted_at: new Date(NOW.getTime() - Math.random() * 5 * 24 * 60 * 60 * 1000).toISOString(),
-        created_date: new Date(NOW.getTime() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+        created_at: new Date(NOW.getTime() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
       });
     });
   });
@@ -457,7 +457,7 @@ export function buildDemoSubmissions(schoolId) {
 
 export function buildDemoTimetableSyncs(schoolId) {
   return [
-    { id: 'sync-1', school_id: schoolId, status: 'success', last_synced_at: new Date(NOW.getTime() - 2 * 60 * 60 * 1000).toISOString(), records_synced: 48, created_date: '2026-03-22T08:00:00Z' },
+    { id: 'sync-1', school_id: schoolId, status: 'success', last_synced_at: new Date(NOW.getTime() - 2 * 60 * 60 * 1000).toISOString(), records_synced: 48, created_at: '2026-03-22T08:00:00Z' },
   ];
 }
 
@@ -500,7 +500,7 @@ export function buildDemoOperationsData(schoolId, school) {
   });
   const missingWorkRate = expectedSubmissions > 0 ? Math.round((missingCount / expectedSubmissions) * 100) : null;
 
-  const recentMessages = messages.filter(m => new Date(m.created_date) >= thirtyDaysAgo);
+  const recentMessages = messages.filter(m => new Date(m.created_at) >= thirtyDaysAgo);
 
   const now = new Date(NOW);
   const upcomingTerms = terms.filter(t => t.end_date && new Date(t.end_date) >= now)

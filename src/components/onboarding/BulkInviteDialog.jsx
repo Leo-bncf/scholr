@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Upload, Users, CheckCircle2, AlertCircle, Loader2, FileText, Download } from 'lucide-react';
+import * as fns from '@/data/functions';
 
 /**
  * Bulk invite via CSV paste or upload.
@@ -57,7 +57,7 @@ export default function BulkInviteDialog({ open, onClose, schoolId, schoolName }
       const outcomes = [];
       for (const row of valid) {
         try {
-          await base44.functions.invoke('sendInvitation', {
+          await fns.invoke('sendInvitation', {
             schoolId,
             schoolName,
             email: row.email,

@@ -1,7 +1,7 @@
 /**
  * Reusable filter/search component
  */
-import React, { useState } from 'react';
+import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Search, X } from 'lucide-react';
 

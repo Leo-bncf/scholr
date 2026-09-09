@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { BookOpen, Users, BarChart3, Settings, Shield, Zap } from 'lucide-react';
+import { BookOpen, Users, BarChart3, Settings, Shield } from 'lucide-react';
 
 export default function DemoGuide() {
   const guides = [

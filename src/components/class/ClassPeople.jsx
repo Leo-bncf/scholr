@@ -1,6 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import {
   Loader2, Users, GraduationCap, Search, Mail, UserPlus, X
@@ -12,6 +11,9 @@ import { useToast } from '@/components/ui/use-toast';
 import EnrollStudentsDialog from '@/components/enrollments/EnrollStudentsDialog';
 import AssignTeachersDialog from '@/components/enrollments/AssignTeachersDialog';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
+import * as membershipsData from '@/data/memberships';
+import * as academics from '@/data/academics';
+import * as classesData from '@/data/classes';
 
 const statusColors = {
   active: 'bg-emerald-50 text-emerald-700 border-emerald-200',
@@ -41,8 +43,8 @@ export default function ClassPeople({ classData }) {
     queryKey: ['class-people', classData.id, classData.teacher_ids, classData.student_ids],
     queryFn: async () => {
       const [allMembers, cohorts] = await Promise.all([
-        base44.entities.SchoolMembership.filter({ school_id: classData.school_id }),
-        base44.entities.Cohort.filter({ school_id: classData.school_id, status: 'active' }),
+        membershipsData.where({ school_id: classData.school_id }),
+        academics.whereCohorts({ school_id: classData.school_id, status: 'active' }),
       ]);
 
       const cohortMap = {};
@@ -70,7 +72,7 @@ export default function ClassPeople({ classData }) {
   });
 
   const updateClass = useMutation({
-    mutationFn: (patch) => base44.entities.Class.update(classData.id, patch),
+    mutationFn: (patch) => classesData.update(classData.id, patch),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['class-people'] });
       queryClient.invalidateQueries({ queryKey: ['class-details'] });

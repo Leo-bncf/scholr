@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Loader2, ChevronRight, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,6 +9,9 @@ import SchoolProfileStep from '@/components/school/SchoolProfileStep';
 import AcademicYearStep from '@/components/school/AcademicYearStep';
 import TermsStep from '@/components/school/TermsStep';
 import SubjectsStep from '@/components/school/SubjectsStep';
+import * as membershipsData from '@/data/memberships';
+import * as schoolsData from '@/data/schools';
+import { getCurrentUser, isAuthenticated } from '@/data/session';
 
 /**
  * School onboarding wizard
@@ -50,17 +52,17 @@ export default function SchoolOnboarding() {
   useEffect(() => {
     const initializeOnboarding = async () => {
       try {
-        const authed = await base44.auth.isAuthenticated();
+        const authed = await isAuthenticated();
         if (!authed) {
           navigate('/');
           return;
         }
 
-        const currentUser = await base44.auth.me();
+        const currentUser = await getCurrentUser();
         setUser(currentUser);
 
         // Get user's school
-        const memberships = await base44.entities.SchoolMembership.filter({
+        const memberships = await membershipsData.where({
           user_id: currentUser.id,
           role: 'school_admin'
         });
@@ -71,7 +73,7 @@ export default function SchoolOnboarding() {
         }
 
         const schoolId = memberships[0].school_id;
-        const schools = await base44.entities.School.filter({ id: schoolId });
+        const schools = await schoolsData.where({ id: schoolId });
 
         if (schools.length > 0) {
           setSchool(schools[0]);

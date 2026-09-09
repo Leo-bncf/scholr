@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
@@ -13,8 +11,8 @@ import {
   ChevronRight, Hash, Lock
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
 import { CLASS_STATUS_CONFIG } from './classConstants';
+import * as classesData from '@/data/classes';
 
 const EMPTY_FORM = {
   name: '', section: '', room: '', subject_id: '', schedule_info: '',
@@ -51,8 +49,8 @@ function ClassFormDialog({ open, onClose, initialData, schoolId, subjects, acade
       if (!payload.cohort_id) delete payload.cohort_id;
       if (!payload.capacity) delete payload.capacity;
       return isEdit
-        ? base44.entities.Class.update(initialData.id, payload)
-        : base44.entities.Class.create(payload);
+        ? classesData.update(initialData.id, payload)
+        : classesData.create(payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['school-classes', schoolId] });
@@ -159,7 +157,7 @@ export default function ClassSectionTab({ schoolId, classes, subjects, academicY
   const [editingClass, setEditingClass] = useState(null);
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Class.update(id, data),
+    mutationFn: ({ id, data }) => classesData.update(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['school-classes', schoolId] }),
   });
 

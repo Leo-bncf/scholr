@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useUser } from '@/components/auth/UserContext';
+import { redirectToLogin } from '@/data/session';
+import * as fns from '@/data/functions';
 
 const errorMessages = {
   token_expired: {
@@ -63,15 +64,15 @@ export default function GoogleActionGuard({
 
   const checkConnection = async () => {
     try {
-      const response = await base44.functions.invoke('verifyGoogleConnection', {
+      const response = await fns.invoke('verifyGoogleConnection', {
         schoolId,
         userId: user?.id
       });
-      setConnectionStatus(response.data);
+      setConnectionStatus(response);
 
-      if (response.data.requiresReconnection || response.data.requiresConnection) {
+      if (response.requiresReconnection || response.requiresConnection) {
         setShowDialog(true);
-        onConnectionRequired?.(response.data);
+        onConnectionRequired?.(response);
       }
     } catch (error) {
       console.error('Connection check failed:', error);
@@ -84,7 +85,7 @@ export default function GoogleActionGuard({
   const handleReconnect = async () => {
     try {
       setLoading(true);
-      await base44.auth.redirectToLogin();
+      await redirectToLogin();
     } catch (error) {
       console.error('Reconnection failed:', error);
     }

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, CheckCircle, AlertCircle, ArrowRight } from 'lucide-react';
+import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import * as userInvitationsData from '@/data/userInvitations';
+import * as usersData from '@/data/users';
+import * as fns from '@/data/functions';
 
 /**
  * Invitation acceptance page
@@ -40,7 +42,7 @@ export default function AcceptInvitation() {
           return;
         }
 
-        const invitations = await base44.entities.UserInvitation.filter({
+        const invitations = await userInvitationsData.where({
           invitation_token: token
         });
 
@@ -82,18 +84,18 @@ export default function AcceptInvitation() {
     setIsProcessing(true);
     try {
       // Check if user already exists
-      const existingUsers = await base44.entities.User.filter({ email });
+      const existingUsers = await usersData.where({ email });
       
       if (existingUsers.length > 0) {
         // User exists - just accept invitation and update their account state
-        await base44.entities.UserInvitation.update(invitation.id, {
+        await userInvitationsData.update(invitation.id, {
           status: 'accepted',
           accepted_at: new Date().toISOString(),
           user_id: existingUsers[0].id
         });
 
         // Create/update account state
-        await base44.functions.invoke('acceptInvitation', {
+        await fns.invoke('acceptInvitation', {
           invitation_id: invitation.id,
           token
         });
@@ -131,18 +133,20 @@ export default function AcceptInvitation() {
     setIsProcessing(true);
     try {
       // Create account via backend function
-      const result = await base44.functions.invoke('createAccountFromInvitation', {
-        email,
+      // `email` is deliberately not sent: the account is created with the
+      // invitation's address, so a token can only ever create the account it
+      // was issued for.
+      const result = await fns.invoke('createAccountFromInvitation', {
         password,
         first_name: firstName,
         last_name: lastName,
         invitation_token: token
       });
 
-      if (result.data.success) {
+      if (result.success) {
         navigate('/first-login?step=welcome');
       } else {
-        setError(result.data.error || 'Failed to create account');
+        setError(result.error || 'Failed to create account');
       }
     } catch (err) {
       console.error('Error creating account:', err);

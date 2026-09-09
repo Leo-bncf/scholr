@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle, CheckCircle, AlertTriangle } from 'lucide-react';
+import * as academics from '@/data/academics';
 
 /**
  * Displays overall health score for a school
@@ -48,7 +48,7 @@ export default function SchoolHealthScore({ school }) {
 
       // Setup Progress
       try {
-        const academicYears = await base44.entities.AcademicYear.filter({
+        const academicYears = await academics.whereAcademicYears({
           school_id: school.id
         });
 

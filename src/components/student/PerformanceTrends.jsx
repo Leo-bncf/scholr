@@ -1,14 +1,13 @@
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Loader2, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-  ResponsiveContainer, BarChart, Bar, RadarChart, PolarGrid,
-  PolarAngleAxis, Radar
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, BarChart, Bar
 } from 'recharts';
-import { format, parseISO, subMonths } from 'date-fns';
+import { format, parseISO } from 'date-fns';
+import * as gradebookData from '@/data/gradebook';
 
 function TrendBadge({ trend }) {
   if (trend > 0) return <span className="flex items-center gap-1 text-emerald-600 text-xs font-semibold"><TrendingUp className="w-3 h-3" />+{trend.toFixed(1)}%</span>;
@@ -21,9 +20,9 @@ export default function PerformanceTrends({ schoolId, userId, classes }) {
 
   const { data: grades = [], isLoading } = useQuery({
     queryKey: ['student-grades-trends', schoolId, userId],
-    queryFn: () => base44.entities.GradeItem.filter({
+    queryFn: () => gradebookData.whereGradeItems({
       school_id: schoolId, student_id: userId, visible_to_student: true, status: 'published',
-    }, '-created_date'),
+    }, { order: 'created_at', ascending: false }),
     enabled: !!schoolId && !!userId,
   });
 
@@ -38,9 +37,9 @@ export default function PerformanceTrends({ schoolId, userId, classes }) {
   const trendData = useMemo(() => {
     const byMonth = {};
     filtered.forEach(g => {
-      if (g.score == null || !g.max_score || !g.created_date) return;
-      const month = format(parseISO(g.created_date), 'MMM yyyy');
-      if (!byMonth[month]) byMonth[month] = { month, scores: [], date: parseISO(g.created_date) };
+      if (g.score == null || !g.max_score || !g.created_at) return;
+      const month = format(parseISO(g.created_at), 'MMM yyyy');
+      if (!byMonth[month]) byMonth[month] = { month, scores: [], date: parseISO(g.created_at) };
       byMonth[month].scores.push((g.score / g.max_score) * 100);
     });
     return Object.values(byMonth)

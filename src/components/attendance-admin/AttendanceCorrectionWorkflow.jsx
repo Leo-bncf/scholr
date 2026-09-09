@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Loader2, Search, PenLine, History, CheckCircle2, XCircle, Clock, AlertCircle, ChevronDown, ChevronUp, Filter } from 'lucide-react';
+import { Loader2, Search, PenLine, History, CheckCircle2, XCircle, Clock, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { format, subDays } from 'date-fns';
 import { logAudit, AuditActions, AuditLevels } from '@/components/utils/auditLogger';
 import { useUser } from '@/components/auth/UserContext';
+import * as attendancePoliciesData from '@/data/attendancePolicies';
+import * as attendanceData from '@/data/attendance';
+import * as classesData from '@/data/classes';
 
 const STATUS_META = {
   present: { label: 'Present', icon: CheckCircle2, bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
@@ -45,7 +46,7 @@ export default function AttendanceCorrectionWorkflow({ schoolId }) {
   const { data: policy = {} } = useQuery({
     queryKey: ['attendance-policy', schoolId],
     queryFn: async () => {
-      const p = await base44.entities.AttendancePolicy.filter({ school_id: schoolId });
+      const p = await attendancePoliciesData.where({ school_id: schoolId });
       return p[0] || {};
     },
     enabled: !!schoolId,
@@ -53,13 +54,13 @@ export default function AttendanceCorrectionWorkflow({ schoolId }) {
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: ['attendance-corrections', schoolId, dateFrom, dateTo],
-    queryFn: () => base44.entities.AttendanceRecord.filter({ school_id: schoolId }),
+    queryFn: () => attendanceData.whereRecords({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: classes = [] } = useQuery({
     queryKey: ['classes-for-corrections', schoolId],
-    queryFn: () => base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => classesData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
@@ -75,7 +76,7 @@ export default function AttendanceCorrectionWorkflow({ schoolId }) {
         new_status: newStatus,
         reason,
       };
-      await base44.entities.AttendanceRecord.update(record.id, {
+      await attendanceData.update(record.id, {
         status: newStatus,
         correction_history: [...(record.correction_history || []), correctionEntry],
         last_corrected_at: correctionEntry.corrected_at,

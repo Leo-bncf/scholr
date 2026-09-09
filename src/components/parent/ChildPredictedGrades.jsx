@@ -1,18 +1,18 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, TrendingUp } from 'lucide-react';
 import { format } from 'date-fns';
+import * as gradebookData from '@/data/gradebook';
 
 export default function ChildPredictedGrades({ schoolId, studentId }) {
   const { data: predictions = [], isLoading } = useQuery({
     queryKey: ['child-predicted-grades', schoolId, studentId],
-    queryFn: () => base44.entities.PredictedGrade.filter({
+    queryFn: () => gradebookData.wherePredictedGrades({
       school_id: schoolId,
       student_id: studentId,
       visible_to_parent: true
-    }, '-entry_date'),
+    }, { order: 'entry_date', ascending: false }),
     enabled: !!schoolId && !!studentId,
   });
 

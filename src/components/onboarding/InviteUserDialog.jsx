@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Mail, UserPlus, CheckCircle2 } from 'lucide-react';
+import { Loader2, Mail, UserPlus } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import * as fns from '@/data/functions';
 
 export default function InviteUserDialog({ open, onClose, schoolId, schoolName }) {
   const queryClient = useQueryClient();
@@ -24,7 +24,7 @@ export default function InviteUserDialog({ open, onClose, schoolId, schoolName }
 
   const inviteMutation = useMutation({
     mutationFn: async (data) => {
-      const response = await base44.functions.invoke('sendInvitation', {
+      const response = await fns.invoke('sendInvitation', {
         schoolId,
         schoolName,
         email: data.email,
@@ -35,7 +35,7 @@ export default function InviteUserDialog({ open, onClose, schoolId, schoolName }
         department: data.department,
         customMessage: data.custom_message,
       });
-      return response.data;
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-invitations'] });

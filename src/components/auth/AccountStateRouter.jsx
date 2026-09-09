@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { Loader2 } from 'lucide-react';
 import AccountStateAlert from './AccountStateAlert';
+import * as accountStatesData from '@/data/accountStates';
+import { getCurrentUser, isAuthenticated } from '@/data/session';
 
 /**
  * Router component that handles account state and routing
@@ -18,17 +19,17 @@ export default function AccountStateRouter({ children, redirectOnIssue = true })
   useEffect(() => {
     const checkAccountState = async () => {
       try {
-        const authed = await base44.auth.isAuthenticated();
+        const authed = await isAuthenticated();
         if (!authed) {
           setIsLoading(false);
           return;
         }
 
-        const currentUser = await base44.auth.me();
+        const currentUser = await getCurrentUser();
         setUser(currentUser);
 
         // Fetch account state
-        const states = await base44.entities.AccountState.filter({
+        const states = await accountStatesData.where({
           user_id: currentUser.id
         });
 

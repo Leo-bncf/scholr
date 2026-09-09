@@ -1,7 +1,6 @@
 import React from 'react';
 import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
-import { TrendingUp, Lock, Unlock, Eye, Users, AlertTriangle } from 'lucide-react';
+import { TrendingUp, Lock, Unlock, Eye, AlertTriangle } from 'lucide-react';
 
 const ROLE_OPTIONS = [
   { value: 'teacher', label: 'Teachers', desc: 'Class teachers can enter predicted grades' },

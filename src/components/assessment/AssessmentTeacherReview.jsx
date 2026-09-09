@@ -1,27 +1,29 @@
 import React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import * as assessmentsData from '@/data/assessments';
+import * as assessmentSubmissionsData from '@/data/assessmentSubmissions';
+import * as gradebookData from '@/data/gradebook';
 
 export default function AssessmentTeacherReview({ assignment }) {
   const queryClient = useQueryClient();
   const { data: assessment } = useQuery({
     queryKey: ['assessment-by-assignment-teacher', assignment.id],
-    queryFn: async () => (await base44.entities.Assessment.filter({ assignment_id: assignment.id }))[0],
+    queryFn: async () => (await assessmentsData.where({ assignment_id: assignment.id }))[0],
     enabled: !!assignment?.id,
   });
   const { data: submissions = [] } = useQuery({
     queryKey: ['assessment-review-submissions', assignment.id],
-    queryFn: async () => base44.entities.AssessmentSubmission.filter({ assignment_id: assignment.id }),
+    queryFn: async () => assessmentSubmissionsData.where({ assignment_id: assignment.id }),
     enabled: !!assignment?.id,
   });
 
   const reviewMutation = useMutation({
     mutationFn: async ({ submission, answers }) => {
       const total = answers.reduce((sum, item) => sum + Number(item.teacher_score ?? item.auto_score ?? 0), 0);
-      await base44.entities.AssessmentSubmission.update(submission.id, {
+      await assessmentSubmissionsData.update(submission.id, {
         answers,
         total_score: total,
         status: 'reviewed',
@@ -29,9 +31,9 @@ export default function AssessmentTeacherReview({ assignment }) {
         locked: true,
       });
 
-      const grade = (await base44.entities.GradeItem.filter({ assignment_id: assignment.id, student_id: submission.student_id }))[0];
+      const grade = (await gradebookData.whereGradeItems({ assignment_id: assignment.id, student_id: submission.student_id }))[0];
       if (grade) {
-        await base44.entities.GradeItem.update(grade.id, {
+        await gradebookData.update(grade.id, {
           score: total,
           percentage: submission.max_score ? (total / submission.max_score) * 100 : 0,
           status: 'published',

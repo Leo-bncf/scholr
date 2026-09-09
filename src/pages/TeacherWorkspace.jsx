@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import { useUser } from '@/components/auth/UserContext';
@@ -11,6 +10,11 @@ import WorkspacePipeline from '@/components/teacher-workspace/WorkspacePipeline'
 import WorkspaceQuickActions from '@/components/teacher-workspace/WorkspaceQuickActions';
 import WorkspaceGradingPanel from '@/components/teacher-workspace/WorkspaceGradingPanel';
 import { Loader2 } from 'lucide-react';
+import * as classesData from '@/data/classes';
+import * as assignmentsData from '@/data/assignments';
+import * as submissionsData from '@/data/submissions';
+import * as membershipsData from '@/data/memberships';
+import * as gradebookData from '@/data/gradebook';
 
 export default function TeacherWorkspace() {
   const { user, school, schoolId, effectiveUserId } = useUser();
@@ -23,11 +27,11 @@ export default function TeacherWorkspace() {
     queryKey: ['teacher-workspace', schoolId, userId],
     queryFn: async () => {
       const [allClasses, assignments, submissions, memberships, gradeItems] = await Promise.all([
-        base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.Assignment.filter({ school_id: schoolId, teacher_id: userId }),
-        base44.entities.Submission.filter({ school_id: schoolId }),
-        base44.entities.SchoolMembership.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.GradeItem.filter({ school_id: schoolId }),
+        classesData.where({ school_id: schoolId, status: 'active' }),
+        assignmentsData.where({ school_id: schoolId, teacher_id: userId }),
+        submissionsData.where({ school_id: schoolId }),
+        membershipsData.where({ school_id: schoolId, status: 'active' }),
+        gradebookData.whereGradeItems({ school_id: schoolId }),
       ]);
 
       const teacherClasses = allClasses.filter((item) => item.teacher_ids?.includes(userId));
@@ -48,7 +52,7 @@ export default function TeacherWorkspace() {
   });
 
   const reviewedMutation = useMutation({
-    mutationFn: (row) => base44.entities.Submission.update(row.submissionId, {
+    mutationFn: (row) => submissionsData.update(row.submissionId, {
       status: 'graded',
       feedback: row.submission?.feedback || '',
       graded_at: new Date().toISOString(),
@@ -89,12 +93,12 @@ export default function TeacherWorkspace() {
       };
 
       if (existing?.id) {
-        await base44.entities.GradeItem.update(existing.id, gradeData);
+        await gradebookData.update(existing.id, gradeData);
       } else {
-        await base44.entities.GradeItem.create(gradeData);
+        await gradebookData.create(gradeData);
       }
 
-      await base44.entities.Submission.update(row.submissionId, {
+      await submissionsData.update(row.submissionId, {
         feedback: payload.overallFeedback,
         score: payload.totalScore,
         status: publish ? 'graded' : 'returned',

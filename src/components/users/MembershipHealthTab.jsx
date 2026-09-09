@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +9,8 @@ import {
 import { ROLE_CONFIG } from './userConstants';
 import { useToast } from '@/components/ui/use-toast';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
+import * as membershipsData from '@/data/memberships';
+import * as fns from '@/data/functions';
 
 export default function MembershipHealthTab({ schoolId }) {
   const queryClient = useQueryClient();
@@ -21,13 +22,13 @@ export default function MembershipHealthTab({ schoolId }) {
 
   const { data: memberships = [], isLoading: loadingMemberships } = useQuery({
     queryKey: ['school-memberships', schoolId],
-    queryFn: () => base44.entities.SchoolMembership.filter({ school_id: schoolId }),
+    queryFn: () => membershipsData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: allSchoolMemberships = [], isLoading: loadingAll } = useQuery({
     queryKey: ['all-school-memberships'],
-    queryFn: () => base44.entities.SchoolMembership.list(),
+    queryFn: () => membershipsData.where({}),
     enabled: !!schoolId,
   });
 
@@ -51,7 +52,7 @@ export default function MembershipHealthTab({ schoolId }) {
     .filter(arr => arr.length > 1)
     .flatMap(arr => {
       const sorted = [...arr].sort(
-        (a, b) => new Date(b.created_date) - new Date(a.created_date)
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
       );
       return sorted.slice(1); // drop the newest, flag the rest
     });
@@ -66,17 +67,17 @@ export default function MembershipHealthTab({ schoolId }) {
   // 5. Long-pending (pending > 30 days)
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
   const stalePending = memberships.filter(m =>
-    m.status === 'pending' && new Date(m.created_date) < thirtyDaysAgo
+    m.status === 'pending' && new Date(m.created_at) < thirtyDaysAgo
   );
 
   const totalIssues = orphans.length + duplicates.length + missingEmail.length + invalidRoles.length;
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await base44.functions.invoke('removeSchoolMember', { membershipId: id });
-      const errMsg = res?.data?.error || res?.error;
+      const res = await fns.invoke('removeSchoolMember', { membershipId: id });
+      const errMsg = res?.error || res?.error;
       if (errMsg) throw new Error(errMsg);
-      return res?.data;
+      return res;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] });
@@ -95,7 +96,7 @@ export default function MembershipHealthTab({ schoolId }) {
   });
 
   const fixStatusMutation = useMutation({
-    mutationFn: ({ id, status }) => base44.entities.SchoolMembership.update(id, { status }),
+    mutationFn: ({ id, status }) => membershipsData.update(id, { status }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] }),
   });
 
@@ -110,8 +111,8 @@ export default function MembershipHealthTab({ schoolId }) {
 
     for (const m of toDelete) {
       try {
-        const res = await base44.functions.invoke('removeSchoolMember', { membershipId: m.id });
-        const errMsg = res?.data?.error || res?.error;
+        const res = await fns.invoke('removeSchoolMember', { membershipId: m.id });
+        const errMsg = res?.error || res?.error;
         if (errMsg) throw new Error(errMsg);
         fixed++;
       } catch (e) {
@@ -121,7 +122,7 @@ export default function MembershipHealthTab({ schoolId }) {
 
     for (const m of toSuspend) {
       try {
-        await base44.entities.SchoolMembership.update(m.id, { status: 'inactive' });
+        await membershipsData.update(m.id, { status: 'inactive' });
         fixed++;
       } catch (e) {
         failures.push({ id: m.id, error: e?.message || 'update failed' });
@@ -295,7 +296,7 @@ export default function MembershipHealthTab({ schoolId }) {
           <div key={i} className="flex items-center justify-between bg-white/60 rounded-lg px-3 py-2">
             <div>
               <p className="text-xs font-medium text-slate-800">{m.user_name || `ID: ${m.id}`}</p>
-              <p className="text-[11px] text-slate-500">role: {m.role} · created: {new Date(m.created_date).toLocaleDateString()}</p>
+              <p className="text-[11px] text-slate-500">role: {m.role} · created: {new Date(m.created_at).toLocaleDateString()}</p>
             </div>
             <Button
               variant="ghost"
@@ -347,7 +348,7 @@ export default function MembershipHealthTab({ schoolId }) {
             <div>
               <p className="text-xs font-medium text-slate-800">{m.user_email || m.user_name}</p>
               <p className="text-[11px] text-slate-500">
-                pending since {new Date(m.created_date).toLocaleDateString()} ·
+                pending since {new Date(m.created_at).toLocaleDateString()} ·
                 {ROLE_CONFIG[m.role]?.label || m.role}
               </p>
             </div>
@@ -367,7 +368,7 @@ export default function MembershipHealthTab({ schoolId }) {
                 onClick={() => setPendingDelete({
                   id: m.id,
                   title: 'Remove long-pending invitation?',
-                  description: `${m.user_email || m.user_name || 'This user'} has been pending since ${new Date(m.created_date).toLocaleDateString()}. Removing them clears the membership; they would need a fresh invitation to rejoin. This cannot be undone.`,
+                  description: `${m.user_email || m.user_name || 'This user'} has been pending since ${new Date(m.created_at).toLocaleDateString()}. Removing them clears the membership; they would need a fresh invitation to rejoin. This cannot be undone.`,
                   confirmLabel: 'Remove member',
                 })}
               >

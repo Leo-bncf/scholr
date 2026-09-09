@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
-import { Loader2, ArrowLeft, Calendar, FileText, Link2, MessageSquare, Send } from 'lucide-react';
+import { Loader2, ArrowLeft, FileText, Link2, MessageSquare, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +11,8 @@ import DocumentCard from '@/components/assignment/DocumentCard';
 import SubmissionHistory from '@/components/assignment/SubmissionHistory';
 import TeacherAnnotationsPanel from '@/components/assignment/TeacherAnnotationsPanel';
 import FileInlinePreview from '@/components/assignment/FileInlinePreview';
+import * as submissionsData from '@/data/submissions';
+import * as assignmentsData from '@/data/assignments';
 
 export default function SubmissionReview() {
   const { user, schoolId } = useUser();
@@ -23,7 +24,7 @@ export default function SubmissionReview() {
   const { data: submission, isLoading } = useQuery({
     queryKey: ['submission-review', submissionId],
     queryFn: async () => {
-      const results = await base44.entities.Submission.filter({ id: submissionId, school_id: schoolId });
+      const results = await submissionsData.where({ id: submissionId, school_id: schoolId });
       return results[0];
     },
     enabled: !!submissionId && !!schoolId,
@@ -31,21 +32,21 @@ export default function SubmissionReview() {
 
   const { data: submissionHistory = [] } = useQuery({
     queryKey: ['submission-review-history', submission?.assignment_id, submission?.student_id],
-    queryFn: () => base44.entities.Submission.filter({ assignment_id: submission.assignment_id, student_id: submission.student_id }),
+    queryFn: () => submissionsData.where({ assignment_id: submission.assignment_id, student_id: submission.student_id }),
     enabled: !!submission?.assignment_id && !!submission?.student_id,
   });
 
   const { data: assignment } = useQuery({
     queryKey: ['assignment-for-submission', submission?.assignment_id],
     queryFn: async () => {
-      const results = await base44.entities.Assignment.filter({ id: submission.assignment_id, school_id: schoolId });
+      const results = await assignmentsData.where({ id: submission.assignment_id, school_id: schoolId });
       return results[0];
     },
     enabled: !!submission?.assignment_id && !!schoolId,
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data) => base44.entities.Submission.update(submissionId, data),
+    mutationFn: (data) => submissionsData.update(submissionId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['submission-review'] });
       queryClient.invalidateQueries({ queryKey: ['assignment-submissions'] });

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {
@@ -11,6 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, AlertCircle } from 'lucide-react';
+import * as schoolsData from '@/data/schools';
 import {
   BILLING_STATUS_OPTIONS,
   DEFAULT_BILLING_STATUS,
@@ -50,7 +50,7 @@ export default function ManageBillingDialog({ open, onOpenChange, school, onUpda
     setLoading(true);
 
     try {
-      await base44.entities.School.update(school.id, {
+      await schoolsData.update(school.id, {
         plan: billingData.plan,
         billing_status: billingData.billing_status,
       });

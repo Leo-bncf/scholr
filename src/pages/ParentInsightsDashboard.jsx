@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import { useUser } from '@/components/auth/UserContext';
@@ -12,6 +11,11 @@ import InsightsAlertsSection from '@/components/parent-insights/InsightsAlertsSe
 import InsightsActionPanel from '@/components/parent-insights/InsightsActionPanel';
 import { getAppSidebarLinks } from '@/components/app/sidebarLinks';
 import { Loader2, Users } from 'lucide-react';
+import * as classesData from '@/data/classes';
+import * as assignmentsData from '@/data/assignments';
+import * as submissionsData from '@/data/submissions';
+import * as gradebookData from '@/data/gradebook';
+import * as attendanceData from '@/data/attendance';
 
 export default function ParentInsightsDashboard() {
   const { user, school, schoolId } = useUser();
@@ -21,11 +25,11 @@ export default function ParentInsightsDashboard() {
     queryKey: ['parent-insights-dashboard', schoolId, selectedChildId],
     queryFn: async () => {
       const [classes, assignments, submissions, grades, attendance] = await Promise.all([
-        base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.Assignment.filter({ school_id: schoolId, status: 'published' }),
-        base44.entities.Submission.filter({ school_id: schoolId, student_id: selectedChildId }),
-        base44.entities.GradeItem.filter({ school_id: schoolId, student_id: selectedChildId, visible_to_parent: true }),
-        base44.entities.AttendanceRecord.filter({ school_id: schoolId, student_id: selectedChildId }),
+        classesData.where({ school_id: schoolId, status: 'active' }),
+        assignmentsData.where({ school_id: schoolId, status: 'published' }),
+        submissionsData.where({ school_id: schoolId, student_id: selectedChildId }),
+        gradebookData.whereGradeItems({ school_id: schoolId, student_id: selectedChildId, visible_to_parent: true }),
+        attendanceData.whereRecords({ school_id: schoolId, student_id: selectedChildId }),
       ]);
 
       const studentClasses = classes.filter((item) => item.student_ids?.includes(selectedChildId));
@@ -71,7 +75,7 @@ export default function ParentInsightsDashboard() {
     if (averageGrade < 70 || attendanceRate < 90 || missingAssignments >= 2) statusKey = 'at_risk';
 
     const recentGrades = [...data.grades]
-      .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
       .slice(0, 6);
     const olderAverage = recentGrades.slice(3).length ? recentGrades.slice(3).reduce((sum, item) => sum + Number(item.percentage || 0), 0) / recentGrades.slice(3).length : null;
     const newerAverage = recentGrades.slice(0, 3).length ? recentGrades.slice(0, 3).reduce((sum, item) => sum + Number(item.percentage || 0), 0) / recentGrades.slice(0, 3).length : null;

@@ -1,14 +1,13 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import GradebookView from '@/components/gradebook/GradebookView';
 import StudentGradesView from '@/components/gradebook/StudentGradesView';
-import { Loader2 } from 'lucide-react';
+import * as assignmentsData from '@/data/assignments';
 
 export default function ClassGrades({ classData, isTeacher, isStudent, userId }) {
   const { data: assignments = [] } = useQuery({
     queryKey: ['class-assignments-for-grades', classData.id],
-    queryFn: () => base44.entities.Assignment.filter({ 
+    queryFn: () => assignmentsData.where({ 
       school_id: classData.school_id, 
       class_id: classData.id 
     }),

@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import * as periodsData from '@/data/periods';
+import * as roomsData from '@/data/rooms';
 import {
   Plus, Pencil, Trash2, Clock, MapPin, Coffee, Lock, ExternalLink,
-  Calendar, Hash, Building2, Loader2
+  Calendar, Building2, Loader2
 } from 'lucide-react';
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -124,8 +124,8 @@ export default function TimetableStructureTab({ schoolId, periods, rooms, schedu
 
   const periodMutation = useMutation({
     mutationFn: ({ id, data }) => id
-      ? base44.entities.Period.update(id, data)
-      : base44.entities.Period.create({ ...data, school_id: schoolId }),
+      ? periodsData.update(id, data)
+      : periodsData.create({ ...data, school_id: schoolId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['timetable-periods', schoolId] });
       setAddingPeriod(false); setEditingPeriod(null);
@@ -133,14 +133,14 @@ export default function TimetableStructureTab({ schoolId, periods, rooms, schedu
   });
 
   const deletePeriodMutation = useMutation({
-    mutationFn: (id) => base44.entities.Period.delete(id),
+    mutationFn: (id) => periodsData.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['timetable-periods', schoolId] }),
   });
 
   const roomMutation = useMutation({
     mutationFn: ({ id, data }) => id
-      ? base44.entities.Room.update(id, data)
-      : base44.entities.Room.create({ ...data, school_id: schoolId }),
+      ? roomsData.update(id, data)
+      : roomsData.create({ ...data, school_id: schoolId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['timetable-rooms', schoolId] });
       setAddingRoom(false); setEditingRoom(null);
@@ -148,7 +148,7 @@ export default function TimetableStructureTab({ schoolId, periods, rooms, schedu
   });
 
   const deleteRoomMutation = useMutation({
-    mutationFn: (id) => base44.entities.Room.delete(id),
+    mutationFn: (id) => roomsData.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['timetable-rooms', schoolId] }),
   });
 

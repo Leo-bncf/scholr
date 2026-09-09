@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import { useUser } from '@/components/auth/UserContext';
@@ -14,6 +13,8 @@ import UserDirectoryTab    from '@/components/users/UserDirectoryTab';
 import InvitationsTab      from '@/components/users/InvitationsTab';
 import BulkImportTab       from '@/components/users/BulkImportTab';
 import MembershipHealthTab from '@/components/users/MembershipHealthTab';
+import * as membershipsData from '@/data/memberships';
+import * as userInvitationsData from '@/data/userInvitations';
 
 
 
@@ -23,13 +24,13 @@ export default function SchoolAdminUsers() {
 
   const { data: memberships = [] } = useQuery({
     queryKey: ['school-memberships', schoolId],
-    queryFn: () => base44.entities.SchoolMembership.filter({ school_id: schoolId }),
+    queryFn: () => membershipsData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: invitations = [] } = useQuery({
     queryKey: ['user-invitations', schoolId],
-    queryFn: () => base44.entities.UserInvitation.filter({ school_id: schoolId, status: 'pending' }, '-created_date', 50),
+    queryFn: () => userInvitationsData.where({ school_id: schoolId, status: 'pending' }, { order: 'created_at', ascending: false, limit: 50 }),
     enabled: !!schoolId,
   });
 

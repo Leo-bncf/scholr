@@ -1,14 +1,14 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Users } from 'lucide-react';
+import * as parentStudentLinksData from '@/data/parentStudentLinks';
 
 export default function ChildSelector({ parentId, schoolId, selectedChildId, onSelectChild }) {
   const { data: linkedChildren = [], isLoading } = useQuery({
     queryKey: ['parent-children', parentId, schoolId],
     queryFn: async () => {
-      const links = await base44.entities.ParentStudentLink.filter({
+      const links = await parentStudentLinksData.where({
         school_id: schoolId,
         parent_id: parentId
       });

@@ -1,15 +1,17 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, ClipboardList, AlertCircle, CheckCircle2, Clock } from 'lucide-react';
-import { format, isPast, isFuture } from 'date-fns';
+import { Loader2, AlertCircle, CheckCircle2, Clock } from 'lucide-react';
+import { format, isPast } from 'date-fns';
+import * as classesData from '@/data/classes';
+import * as assignmentsData from '@/data/assignments';
+import * as submissionsData from '@/data/submissions';
 
 export default function ChildAssignmentsOverview({ schoolId, studentId }) {
   const { data: classes = [] } = useQuery({
     queryKey: ['parent-child-classes', schoolId, studentId],
     queryFn: async () => {
-      const all = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
+      const all = await classesData.where({ school_id: schoolId, status: 'active' });
       return all.filter(c => c.student_ids?.includes(studentId));
     },
     enabled: !!schoolId && !!studentId,
@@ -20,7 +22,7 @@ export default function ChildAssignmentsOverview({ schoolId, studentId }) {
     queryFn: async () => {
       const allAssignments = [];
       for (const cls of classes) {
-        const classAssignments = await base44.entities.Assignment.filter({
+        const classAssignments = await assignmentsData.where({
           school_id: schoolId,
           class_id: cls.id,
           status: 'published'
@@ -34,7 +36,7 @@ export default function ChildAssignmentsOverview({ schoolId, studentId }) {
 
   const { data: submissions = [] } = useQuery({
     queryKey: ['parent-child-submissions', schoolId, studentId],
-    queryFn: () => base44.entities.Submission.filter({
+    queryFn: () => submissionsData.where({
       school_id: schoolId,
       student_id: studentId
     }),

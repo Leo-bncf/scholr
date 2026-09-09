@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -15,6 +13,7 @@ import {
 } from '@/components/ui/select';
 import { Loader2, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import * as gradebookData from '@/data/gradebook';
 
 /**
  * Workflow for teachers to enter predicted grades
@@ -40,9 +39,9 @@ export default function PredictedGradeWorkflow({
   const mutation = useMutation({
     mutationFn: async (data) => {
       if (existingPredictedGrade) {
-        return base44.entities.PredictedGrade.update(existingPredictedGrade.id, data);
+        return gradebookData.updatePredicted(existingPredictedGrade.id, data);
       }
-      return base44.entities.PredictedGrade.create(data);
+      return gradebookData.createPredicted(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['predicted-grades'] });

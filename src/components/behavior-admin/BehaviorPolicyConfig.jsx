@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Plus, Trash2, Save, Tag, Shield, AlertTriangle } from 'lucide-react';
+import * as behaviorPoliciesData from '@/data/behaviorPolicies';
 
 const COLOR_OPTIONS = [
   { value: 'emerald', bg: 'bg-emerald-100', text: 'text-emerald-800', border: 'border-emerald-300', dot: 'bg-emerald-500' },
@@ -56,7 +56,7 @@ export default function BehaviorPolicyConfig({ schoolId }) {
 
   const { data: policies = [], isLoading } = useQuery({
     queryKey: ['behavior-policy', schoolId],
-    queryFn: () => base44.entities.BehaviorPolicy.filter({ school_id: schoolId }),
+    queryFn: () => behaviorPoliciesData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
   const policy = policies[0] || null;
@@ -75,8 +75,8 @@ export default function BehaviorPolicyConfig({ schoolId }) {
 
   const saveMutation = useMutation({
     mutationFn: (data) => policy
-      ? base44.entities.BehaviorPolicy.update(policy.id, data)
-      : base44.entities.BehaviorPolicy.create({ school_id: schoolId, ...data }),
+      ? behaviorPoliciesData.update(policy.id, data)
+      : behaviorPoliciesData.create({ school_id: schoolId, ...data }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['behavior-policy', schoolId] }),
   });
 

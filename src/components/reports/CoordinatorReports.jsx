@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Printer, TrendingUp, GraduationCap, CheckCircle2, AlertTriangle, Clock, BarChart3 } from 'lucide-react';
+import { Printer, TrendingUp, GraduationCap, AlertTriangle, BarChart3 } from 'lucide-react';
 import { generatePrintableHTML, printHTML, COLUMNS } from './reportUtils';
 
 function GradeDistributionBar({ grades }) {

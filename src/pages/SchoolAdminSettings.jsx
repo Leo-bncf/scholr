@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -13,7 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import AdminTabNavigation from '@/components/admin/AdminTabNavigation';
 import {
   Loader2, CheckCircle2, AlertCircle, Building2, Globe, Bell, Shield, HardDrive,
-  FileText, Settings, BookOpen
+  FileText, BookOpen
 } from 'lucide-react';
 import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
 import { DEFAULT_POLICY } from '@/hooks/useSubmissionPolicy';
@@ -21,6 +20,8 @@ import { CURRICULUM_OPTIONS } from '@/lib/curriculumConfig';
 import SubmissionRulesPanel from '@/components/settings/SubmissionRulesPanel';
 import FileSecurityPanel from '@/components/settings/FileSecurityPanel';
 import AcademicIntegrityPanel from '@/components/settings/AcademicIntegrityPanel';
+import * as schoolsData from '@/data/schools';
+import * as submissionPoliciesData from '@/data/submissionPolicies';
 
 
 
@@ -45,7 +46,7 @@ export default function SchoolAdminSettings() {
   const { data: school, isLoading } = useQuery({
     queryKey: ['school-settings', schoolId],
     queryFn: async () => {
-      const results = await base44.entities.School.filter({ id: schoolId });
+      const results = await schoolsData.where({ id: schoolId });
       return results[0];
     },
     enabled: !!schoolId,
@@ -70,7 +71,7 @@ export default function SchoolAdminSettings() {
   }, [school]);
 
   const updateSchoolMutation = useMutation({
-    mutationFn: (data) => base44.entities.School.update(schoolId, data),
+    mutationFn: (data) => schoolsData.update(schoolId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['school-settings'] });
       queryClient.invalidateQueries({ queryKey: ['school', schoolId] });
@@ -83,7 +84,7 @@ export default function SchoolAdminSettings() {
   const { data: policyRecord, isLoading: policyLoading } = useQuery({
     queryKey: ['submission-policy', schoolId],
     queryFn: async () => {
-      const results = await base44.entities.SubmissionPolicy.filter({ school_id: schoolId });
+      const results = await submissionPoliciesData.where({ school_id: schoolId });
       return results[0] || null;
     },
     enabled: !!schoolId,
@@ -101,8 +102,8 @@ export default function SchoolAdminSettings() {
     mutationFn: (data) => {
       const payload = { ...data, school_id: schoolId };
       return policyRecord
-        ? base44.entities.SubmissionPolicy.update(policyRecord.id, payload)
-        : base44.entities.SubmissionPolicy.create(payload);
+        ? submissionPoliciesData.update(policyRecord.id, payload)
+        : submissionPoliciesData.create(payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['submission-policy', schoolId] });

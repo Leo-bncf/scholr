@@ -89,8 +89,8 @@ export default function CSVExportToolkit({
     let base = grades.filter(g => !g.is_template);
     if (filters.classId !== 'all') base = base.filter(g => g.class_id === filters.classId);
     if (filters.termId !== 'all') base = base.filter(g => g.term_id === filters.termId);
-    if (filters.dateFrom) base = base.filter(g => g.created_date >= filters.dateFrom);
-    if (filters.dateTo) base = base.filter(g => g.created_date <= filters.dateTo);
+    if (filters.dateFrom) base = base.filter(g => g.created_at >= filters.dateFrom);
+    if (filters.dateTo) base = base.filter(g => g.created_at <= filters.dateTo);
     return base;
   }, [grades, filters]);
 

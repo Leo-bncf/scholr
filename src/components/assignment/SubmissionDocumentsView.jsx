@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Presentation, Table, FileIcon, Link as LinkIcon, ExternalLink, Trash2, AlertCircle } from 'lucide-react';
+import { FileText, Presentation, Table, FileIcon, Link as LinkIcon, ExternalLink, Trash2 } from 'lucide-react';
 import FileInlinePreview from './FileInlinePreview';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';

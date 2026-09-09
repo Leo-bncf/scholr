@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader2, Plus, FileText, Clock, CheckCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import {
@@ -15,6 +13,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import ReportBuilder from './ReportBuilder';
+import * as reportsData from '@/data/reports';
+import * as reportTemplatesData from '@/data/reportTemplates';
 
 /**
  * Coordinator dashboard for managing academic reports
@@ -27,7 +27,7 @@ export default function CoordinatorReportingDashboard({ schoolId, academicYearId
 
   const { data: reports = [], isLoading } = useQuery({
     queryKey: ['reports', schoolId, academicYearId],
-    queryFn: () => base44.entities.Report.filter({
+    queryFn: () => reportsData.where({
       school_id: schoolId,
       academic_year_id: academicYearId
     })
@@ -35,7 +35,7 @@ export default function CoordinatorReportingDashboard({ schoolId, academicYearId
 
   const { data: templates = [] } = useQuery({
     queryKey: ['report-templates', schoolId],
-    queryFn: () => base44.entities.ReportTemplate.filter({ school_id: schoolId })
+    queryFn: () => reportTemplatesData.where({ school_id: schoolId })
   });
 
   // Filter reports

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,8 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
-import { Megaphone, Loader2, Send } from 'lucide-react';
+import { Megaphone, Loader2 } from 'lucide-react';
 import { useMessagingPolicy } from '@/hooks/useMessagingPolicy';
+import * as classesData from '@/data/classes';
+import * as messagesData from '@/data/messages';
 
 export default function AnnouncementComposer({ userId, userName, userRole, schoolId }) {
   const queryClient = useQueryClient();
@@ -23,7 +24,7 @@ export default function AnnouncementComposer({ userId, userName, userRole, schoo
   const { data: classes = [] } = useQuery({
     queryKey: ['announcement-composer-classes', schoolId, userId],
     queryFn: async () => {
-      const all = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
+      const all = await classesData.where({ school_id: schoolId, status: 'active' });
       if (userRole === 'teacher' || userRole === 'ib_coordinator') {
         return all.filter(c => c.teacher_ids?.includes(userId));
       }
@@ -33,7 +34,7 @@ export default function AnnouncementComposer({ userId, userName, userRole, schoo
   });
 
   const sendMutation = useMutation({
-    mutationFn: (data) => base44.entities.Message.create(data),
+    mutationFn: (data) => messagesData.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['announcements'] });
       queryClient.invalidateQueries({ queryKey: ['student-announcements'] });

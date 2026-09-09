@@ -1,24 +1,17 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+
+
 import { Loader2, Plus, Grid3x3, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import RubricBuilder from './RubricBuilder';
-import RubricGradingDialog from './RubricGradingDialog';
+import * as gradebookData from '@/data/gradebook';
 
 /**
  * Teacher workflow for creating and managing grade items
@@ -49,9 +42,9 @@ export default function TeacherGradeItemWorkflow({
   const mutation = useMutation({
     mutationFn: async (data) => {
       if (existingGradeItem) {
-        return base44.entities.GradeItem.update(existingGradeItem.id, data);
+        return gradebookData.update(existingGradeItem.id, data);
       }
-      return base44.entities.GradeItem.create(data);
+      return gradebookData.create(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['class-grades', classId] });

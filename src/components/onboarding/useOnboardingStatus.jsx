@@ -1,16 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as academics from '@/data/academics';
+import * as classesData from '@/data/classes';
+import * as membershipsData from '@/data/memberships';
 
 export function useOnboardingStatus(schoolId) {
   return useQuery({
     queryKey: ['onboarding-status', schoolId],
     queryFn: async () => {
       const [academicYears, terms, subjects, classes, memberships] = await Promise.all([
-        base44.entities.AcademicYear.filter({ school_id: schoolId }),
-        base44.entities.Term.filter({ school_id: schoolId }),
-        base44.entities.Subject.filter({ school_id: schoolId }),
-        base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.SchoolMembership.filter({ school_id: schoolId, status: 'active' }),
+        academics.whereAcademicYears({ school_id: schoolId }),
+        academics.whereTerms({ school_id: schoolId }),
+        academics.whereSubjects({ school_id: schoolId }),
+        classesData.where({ school_id: schoolId, status: 'active' }),
+        membershipsData.where({ school_id: schoolId, status: 'active' }),
       ]);
 
       const teachers = memberships.filter(m => ['teacher', 'ib_coordinator'].includes(m.role));

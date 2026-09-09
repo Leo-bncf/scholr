@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PublicNavbar from '@/components/public/PublicNavbar';
 import PublicFooter from '@/components/public/PublicFooter';
-import { base44 } from '@/api/base44Client';
+import * as demoRequests from '@/data/demoRequests';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,12 +16,23 @@ export default function Demo() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const [error, setError] = useState(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await base44.entities.DemoRequest.create(form);
-    setLoading(false);
-    setSubmitted(true);
+    setError(null);
+    try {
+      await demoRequests.create(form);
+      setSubmitted(true);
+    } catch (err) {
+      // The old code awaited the create with no catch, so a failed submission
+      // silently showed the success screen and the lead was lost.
+      console.error('Demo request failed', err);
+      setError("We couldn't send your request. Please try again, or email us directly.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -117,6 +128,12 @@ export default function Demo() {
                     <Textarea value={form.message} onChange={e => setForm({...form, message: e.target.value})} placeholder="Tell us about your school and what you're looking for..." className="mt-1.5" rows={3} />
                   </div>
                   
+                  {error && (
+                    <p role="alert" className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                      {error}
+                    </p>
+                  )}
+
                   <Button type="submit" disabled={loading} className="w-full bg-indigo-600 hover:bg-indigo-700 rounded-xl h-11">
                     {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                     Request Demo

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Loader2, Plus, EyeOff } from 'lucide-react';
 import { format } from 'date-fns';
+import * as behaviorPoliciesData from '@/data/behaviorPolicies';
+import * as behaviorRecordsData from '@/data/behaviorRecords';
 
 export default function CreateBehaviorRecord({ schoolId, studentId, studentName, recorderId, recorderName, onClose, trigger }) {
   const queryClient = useQueryClient();
@@ -30,7 +31,7 @@ export default function CreateBehaviorRecord({ schoolId, studentId, studentName,
 
   const { data: policies = [] } = useQuery({
     queryKey: ['behavior-policy', schoolId],
-    queryFn: () => base44.entities.BehaviorPolicy.filter({ school_id: schoolId }),
+    queryFn: () => behaviorPoliciesData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
   const policy = policies[0] || null;
@@ -56,7 +57,7 @@ export default function CreateBehaviorRecord({ schoolId, studentId, studentName,
   const visibilityLocked = selectedIncidentType?.staff_only || (!policy?.allow_teacher_visibility_override && !!selectedIncidentType);
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.BehaviorRecord.create(data),
+    mutationFn: (data) => behaviorRecordsData.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['student-behavior'] });
       queryClient.invalidateQueries({ queryKey: ['parent-child-behavior'] });

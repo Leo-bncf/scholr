@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, AlertCircle, CheckCircle } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
+import * as reportsData from '@/data/reports';
+import { getCurrentUser } from '@/data/session';
 
 /**
  * Workflow for publishing reports and managing visibility
@@ -26,7 +27,7 @@ export default function ReportPublishingWorkflow({
 
   const publishMutation = useMutation({
     mutationFn: async () => {
-      return base44.entities.Report.update(report.id, {
+      return reportsData.update(report.id, {
         status: 'published',
         visibility: {
           visible_to_student: visibleToStudent,
@@ -36,8 +37,8 @@ export default function ReportPublishingWorkflow({
         approvals: [
           ...(report.approvals || []),
           {
-            approved_by: (await base44.auth.me()).id,
-            approved_by_name: (await base44.auth.me()).full_name,
+            approved_by: (await getCurrentUser()).id,
+            approved_by_name: (await getCurrentUser()).full_name,
             approved_by_role: 'coordinator',
             approved_at: new Date().toISOString(),
             comments: coordinatorApprovalNotes

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Loader2, TrendingUp, Lock, AlertTriangle } from 'lucide-react';
 import { useGradebookPolicy } from '@/hooks/useGradebookPolicy';
 import { useUser } from '@/components/auth/UserContext';
+import * as gradebookData from '@/data/gradebook';
 
 export default function PredictedGradeDialog({ classData, student, existingPrediction, open, onClose }) {
   const queryClient = useQueryClient();
@@ -40,9 +40,9 @@ export default function PredictedGradeDialog({ classData, student, existingPredi
   const saveMutation = useMutation({
     mutationFn: (data) => {
       if (existingPrediction) {
-        return base44.entities.PredictedGrade.update(existingPrediction.id, data);
+        return gradebookData.updatePredicted(existingPrediction.id, data);
       }
-      return base44.entities.PredictedGrade.create(data);
+      return gradebookData.createPredicted(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['predicted-grades'] });

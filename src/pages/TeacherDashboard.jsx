@@ -1,12 +1,13 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as classesData from '@/data/classes';
+import * as assignmentsData from '@/data/assignments';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import StatCard from '@/components/app/StatCard';
 import TodaySchedule from '@/components/timetable/TodaySchedule';
 import { useUser } from '@/components/auth/UserContext';
-import { Loader2, Clock, AlertCircle, BookOpen, Users, ClipboardCheck, BarChart3 } from 'lucide-react';
+import { Loader2, Clock, AlertCircle, BookOpen, Users, ClipboardCheck } from 'lucide-react';
 import { format } from 'date-fns';
 import { getAppSidebarLinks } from '@/components/app/sidebarLinks';
 
@@ -16,16 +17,15 @@ export default function TeacherDashboard() {
 
   const { data: classes = [], isLoading } = useQuery({
     queryKey: ['teacher-classes', schoolId, userId],
-    queryFn: async () => {
-      const all = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
-      return all.filter(c => c.teacher_ids?.includes(userId));
-    },
+    // Was: fetch every active class in the school, then filter in the browser
+    // on teacher_ids. Now the array containment runs in Postgres.
+    queryFn: () => classesData.listForTeacher(schoolId, userId),
     enabled: !!schoolId && !!userId,
   });
 
   const { data: assignments = [] } = useQuery({
     queryKey: ['teacher-assignments', schoolId, userId],
-    queryFn: () => base44.entities.Assignment.filter({ school_id: schoolId, teacher_id: userId }),
+    queryFn: () => assignmentsData.listForTeacher(schoolId, userId),
     enabled: !!schoolId && !!userId,
   });
 

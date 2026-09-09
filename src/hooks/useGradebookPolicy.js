@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as gradebookPoliciesData from '@/data/gradebookPolicies';
 
 export const DEFAULT_GRADEBOOK_POLICY = {
   grading_model: 'points_based',
@@ -30,7 +30,7 @@ export function useGradebookPolicy(schoolId) {
     queryKey: ['gradebook-policy', schoolId],
     queryFn: async () => {
       if (!schoolId) return null;
-      const results = await base44.entities.GradebookPolicy.filter({ school_id: schoolId });
+      const results = await gradebookPoliciesData.where({ school_id: schoolId });
       return results[0] || null;
     },
     enabled: !!schoolId,

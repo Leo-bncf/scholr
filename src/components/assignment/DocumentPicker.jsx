@@ -4,10 +4,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { base44 } from '@/api/base44Client';
+import * as storage from '@/data/storage';
+import { useUser } from '@/components/auth/UserContext';
 import { FileText, Link2, Upload, Loader2, Plus, Sheet, Presentation, FolderOpen } from 'lucide-react';
 
 export default function DocumentPicker({ open, onClose, onAddDocuments, trigger }) {
+  // Uploads are scoped to a school by storage policy, and this component isn't
+  // given one, so take it from the signed-in user's context.
+  const { schoolId } = useUser();
   const [activeTab, setActiveTab] = useState('upload');
   const [uploading, setUploading] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
@@ -19,7 +23,8 @@ export default function DocumentPicker({ open, onClose, onAddDocuments, trigger 
     
     setUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const uploaded = await storage.upload(file, { schoolId: schoolId, prefix: 'documents' });
+      const file_url = uploaded.url;
       
       const fileType = file.name.split('.').pop()?.toLowerCase() || file.type;
       const document = {

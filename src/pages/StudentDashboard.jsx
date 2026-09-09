@@ -1,19 +1,18 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import StatCard from '@/components/app/StatCard';
 import TodaySchedule from '@/components/timetable/TodaySchedule';
 import { useUser } from '@/components/auth/UserContext';
-import { 
-  LayoutDashboard, BookOpen, ClipboardCheck, BarChart3, 
-  MessageSquare, Star, Loader2, Clock, AlertTriangle, GraduationCap, CalendarDays, ClipboardList
+import { BookOpen, ClipboardCheck, BarChart3, Star, Loader2, Clock
 } from 'lucide-react';
 import { format } from 'date-fns';
-import { Badge } from '@/components/ui/badge';
 import { createPageUrl } from '@/utils';
 import { getStudentSidebarLinks } from '@/components/app/studentSidebarLinks';
+import * as classesData from '@/data/classes';
+import * as assignmentsData from '@/data/assignments';
+import * as gradebookData from '@/data/gradebook';
 
 export default function StudentDashboard() {
   const { user, school, schoolId, curriculum, effectiveUserId } = useUser();
@@ -23,7 +22,7 @@ export default function StudentDashboard() {
   const { data: classes = [], isLoading } = useQuery({
     queryKey: ['student-classes', schoolId, userId],
     queryFn: async () => {
-      const all = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
+      const all = await classesData.where({ school_id: schoolId, status: 'active' });
       return all.filter(c => c.student_ids?.includes(userId));
     },
     enabled: !!schoolId && !!userId,
@@ -34,7 +33,7 @@ export default function StudentDashboard() {
     queryFn: async () => {
       const classIds = classes.map(c => c.id);
       if (classIds.length === 0) return [];
-      const all = await base44.entities.Assignment.filter({ school_id: schoolId, status: 'published' });
+      const all = await assignmentsData.where({ school_id: schoolId, status: 'published' });
       return all.filter(a => classIds.includes(a.class_id));
     },
     enabled: !!schoolId && classes.length > 0,
@@ -42,7 +41,7 @@ export default function StudentDashboard() {
 
   const { data: grades = [] } = useQuery({
     queryKey: ['student-grades', schoolId, userId],
-    queryFn: () => base44.entities.GradeItem.filter({ school_id: schoolId, student_id: userId, visible_to_student: true }),
+    queryFn: () => gradebookData.whereGradeItems({ school_id: schoolId, student_id: userId, visible_to_student: true }),
     enabled: !!schoolId && !!userId,
   });
 

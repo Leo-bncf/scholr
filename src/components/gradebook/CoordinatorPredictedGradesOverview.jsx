@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Loader2, TrendingUp, AlertCircle } from 'lucide-react';
 import {
   Select,
@@ -13,6 +11,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import * as gradebookData from '@/data/gradebook';
+import * as academics from '@/data/academics';
+import * as classesData from '@/data/classes';
 
 /**
  * Coordinator-facing overview of predicted grades across cohorts
@@ -26,22 +27,22 @@ export default function CoordinatorPredictedGradesOverview({ schoolId, academicY
   const { data: predictedGrades = [], isLoading } = useQuery({
     queryKey: ['predicted-grades-overview', schoolId, academicYearId],
     queryFn: async () => {
-      const grades = await base44.entities.PredictedGrade.filter({
+      const grades = await gradebookData.wherePredictedGrades({
         school_id: schoolId,
         academic_year_id: academicYearId
       });
-      return grades.sort((a, b) => b.created_date - a.created_date);
+      return grades.sort((a, b) => b.created_at - a.created_at);
     }
   });
 
   const { data: subjects = [] } = useQuery({
     queryKey: ['subjects', schoolId],
-    queryFn: () => base44.entities.Subject.filter({ school_id: schoolId })
+    queryFn: () => academics.whereSubjects({ school_id: schoolId })
   });
 
   const { data: classes = [] } = useQuery({
     queryKey: ['classes', schoolId],
-    queryFn: () => base44.entities.Class.filter({ school_id: schoolId })
+    queryFn: () => classesData.where({ school_id: schoolId })
   });
 
   // Filter data

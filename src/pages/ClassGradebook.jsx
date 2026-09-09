@@ -1,12 +1,13 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 import GradebookView from '@/components/gradebook/GradebookView';
 import RoleGuard from '@/components/auth/RoleGuard';
+import * as classesData from '@/data/classes';
+import * as assignmentsData from '@/data/assignments';
 
 export default function ClassGradebook() {
   const { user, schoolId } = useUser();
@@ -16,7 +17,7 @@ export default function ClassGradebook() {
   const { data: classData, isLoading: loadingClass } = useQuery({
     queryKey: ['class-for-gradebook', classId],
     queryFn: async () => {
-      const results = await base44.entities.Class.filter({ id: classId, school_id: schoolId });
+      const results = await classesData.where({ id: classId, school_id: schoolId });
       return results[0];
     },
     enabled: !!classId && !!schoolId,
@@ -24,7 +25,7 @@ export default function ClassGradebook() {
 
   const { data: assignments = [] } = useQuery({
     queryKey: ['assignments-for-gradebook', classId],
-    queryFn: () => base44.entities.Assignment.filter({ 
+    queryFn: () => assignmentsData.where({ 
       school_id: schoolId, 
       class_id: classId 
     }),

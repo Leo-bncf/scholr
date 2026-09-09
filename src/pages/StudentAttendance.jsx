@@ -1,17 +1,16 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
-  LayoutDashboard, BarChart3, Star, MessageSquare, CalendarDays,
   CheckCircle2, XCircle, Clock, AlertCircle, Loader2, ClipboardList
 } from 'lucide-react';
-import { format, subDays, eachWeekOfInterval, startOfWeek, endOfWeek, parseISO, isWithinInterval } from 'date-fns';
+import { format, subDays, eachWeekOfInterval, endOfWeek, parseISO, isWithinInterval } from 'date-fns';
 import { getStudentSidebarLinks } from '@/components/app/studentSidebarLinks';
+import * as classesData from '@/data/classes';
+import * as attendanceData from '@/data/attendance';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
@@ -102,7 +101,7 @@ export default function StudentAttendance() {
   const { data: classes = [], isLoading: loadingClasses } = useQuery({
     queryKey: ['student-classes', schoolId, user?.id],
     queryFn: async () => {
-      const all = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
+      const all = await classesData.where({ school_id: schoolId, status: 'active' });
       return all.filter(c => c.student_ids?.includes(user.id));
     },
     enabled: !!schoolId && !!user?.id,
@@ -111,10 +110,10 @@ export default function StudentAttendance() {
   const { data: allRecords = [], isLoading: loadingRecords } = useQuery({
     queryKey: ['student-attendance-all', schoolId, user?.id],
     queryFn: async () => {
-      const recs = await base44.entities.AttendanceRecord.filter({
+      const recs = await attendanceData.whereRecords({
         school_id: schoolId,
         student_id: user.id,
-      }, '-date');
+      }, { order: 'date', ascending: false });
       const classMap = Object.fromEntries(classes.map(c => [c.id, c.name]));
       return recs.map(r => ({ ...r, class_name: classMap[r.class_id] || 'Unknown' }));
     },

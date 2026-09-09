@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Loader2, Upload, FileText, Link2, FolderOpen, ExternalLink, Trash2, Download } from 'lucide-react';
@@ -7,6 +6,7 @@ import { format } from 'date-fns';
 import { useUser } from '@/components/auth/UserContext';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
 import AddMaterialDialog from './AddMaterialDialog';
+import * as classMaterialsData from '@/data/classMaterials';
 
 function formatSize(bytes) {
   if (!bytes) return '';
@@ -23,15 +23,12 @@ export default function ClassMaterials({ classData, isTeacher }) {
 
   const { data: materials = [], isLoading } = useQuery({
     queryKey: ['class-materials', classData.id],
-    queryFn: async () => base44.entities.ClassMaterial.filter(
-      { class_id: classData.id },
-      '-created_date',
-    ),
+    queryFn: async () => classMaterialsData.where({ class_id: classData.id }, { order: 'created_at', ascending: false }),
     enabled: !!classData?.id,
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id) => base44.entities.ClassMaterial.delete(id),
+    mutationFn: async (id) => classMaterialsData.remove(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['class-materials', classData.id] });
       setToDelete(null);
@@ -81,7 +78,7 @@ export default function ClassMaterials({ classData, isTeacher }) {
                       {m.type === 'file' ? (m.file_name || 'File') : 'Link'}
                       {m.file_size ? ` · ${formatSize(m.file_size)}` : ''}
                       {m.uploaded_by_name ? ` · ${m.uploaded_by_name}` : ''}
-                      {m.created_date ? ` · ${format(new Date(m.created_date), 'dd MMM yyyy')}` : ''}
+                      {m.created_at ? ` · ${format(new Date(m.created_at), 'dd MMM yyyy')}` : ''}
                     </p>
                   </div>
                 </div>

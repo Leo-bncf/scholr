@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader2, FileText, Download } from 'lucide-react';
 import ReportView from './ReportView';
+import * as parentStudentLinksData from '@/data/parentStudentLinks';
+import * as reportsData from '@/data/reports';
 
 /**
  * Parent-facing portal to view child's published reports
@@ -20,7 +21,7 @@ export default function ParentReportPortal({ schoolId, parentId }) {
   const { data: children = [], isLoading: loadingChildren } = useQuery({
     queryKey: ['parent-children', schoolId, parentId],
     queryFn: async () => {
-      const links = await base44.entities.ParentStudentLink.filter({
+      const links = await parentStudentLinksData.where({
         school_id: schoolId,
         parent_id: parentId
       });
@@ -35,7 +36,7 @@ export default function ParentReportPortal({ schoolId, parentId }) {
     queryKey: ['parent-reports', schoolId, activeChildId],
     queryFn: async () => {
       if (!activeChildId) return [];
-      const allReports = await base44.entities.Report.filter({
+      const allReports = await reportsData.where({
         school_id: schoolId,
         student_id: activeChildId
       });

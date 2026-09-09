@@ -175,7 +175,7 @@ export default function SuperAdminAuditLogs() {
                       <div className="flex items-center gap-4 text-xs text-slate-500">
                         {log.user_email && <span>By: {log.user_email}</span>}
                         {log.entity_type && <span>Entity: {log.entity_type}</span>}
-                        <span>{format(new Date(log.created_date), 'MMM d, yyyy HH:mm:ss')}</span>
+                        <span>{format(new Date(log.created_at), 'MMM d, yyyy HH:mm:ss')}</span>
                       </div>
                     </div>
                   </div>

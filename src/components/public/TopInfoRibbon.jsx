@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { isAuthenticated, redirectToLogin } from '@/data/session';
 
 export default function TopInfoRibbon() {
   const handleSignIn = async () => {
-    const isAuthed = await base44.auth.isAuthenticated();
+    const isAuthed = await isAuthenticated();
     if (isAuthed) {
       window.location.href = '/AppHome';
     } else {
-      base44.auth.redirectToLogin('/AppHome');
+      redirectToLogin('/AppHome');
     }
   };
 

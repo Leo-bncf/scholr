@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Send, Pin, MessageSquare } from 'lucide-react';
+import { Loader2, Send, MessageSquare } from 'lucide-react';
 import { format } from 'date-fns';
+import * as messagesData from '@/data/messages';
 
 export default function ClassStream({ classData, isTeacher, userId }) {
   const queryClient = useQueryClient();
@@ -12,14 +12,14 @@ export default function ClassStream({ classData, isTeacher, userId }) {
 
   const { data: messages = [], isLoading } = useQuery({
     queryKey: ['class-stream', classData.id],
-    queryFn: () => base44.entities.Message.filter({ 
+    queryFn: () => messagesData.where({ 
       school_id: classData.school_id, 
       class_id: classData.id 
-    }, '-created_date'),
+    }, { order: 'created_at', ascending: false }),
   });
 
   const postMutation = useMutation({
-    mutationFn: (data) => base44.entities.Message.create(data),
+    mutationFn: (data) => messagesData.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['class-stream'] });
       setNewPost('');
@@ -80,7 +80,7 @@ export default function ClassStream({ classData, isTeacher, userId }) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-semibold text-slate-900">{msg.sender_name || 'Unknown'}</span>
-                    <span className="text-xs text-slate-400">{msg.created_date ? format(new Date(msg.created_date), 'MMM d, h:mm a') : ''}</span>
+                    <span className="text-xs text-slate-400">{msg.created_at ? format(new Date(msg.created_at), 'MMM d, h:mm a') : ''}</span>
                   </div>
                   <p className="text-slate-700 whitespace-pre-wrap">{msg.body}</p>
                 </div>

@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -10,6 +9,11 @@ import { Loader2 } from 'lucide-react';
 import CoverageSummaryCards from '@/components/curriculum/CoverageSummaryCards';
 import SubjectCoverageList from '@/components/curriculum/SubjectCoverageList';
 import TopicCoverageTable from '@/components/curriculum/TopicCoverageTable';
+import * as academics from '@/data/academics';
+import * as curriculumTopicsData from '@/data/curriculumTopics';
+import * as assignmentsData from '@/data/assignments';
+import * as gradebookData from '@/data/gradebook';
+import * as classesData from '@/data/classes';
 
 const indicatorMeta = (avg) => {
   if (avg === null) return { label: 'No Data', className: 'bg-slate-100 text-slate-700 border-0' };
@@ -29,11 +33,11 @@ export default function CurriculumMapping() {
     queryKey: ['curriculum-mapping', schoolId, role, user?.id],
     queryFn: async () => {
       const [subjects, topics, assignments, gradeItems, classes] = await Promise.all([
-        base44.entities.Subject.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.CurriculumTopic.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.Assignment.filter({ school_id: schoolId }),
-        base44.entities.GradeItem.filter({ school_id: schoolId }),
-        base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
+        academics.whereSubjects({ school_id: schoolId, status: 'active' }),
+        curriculumTopicsData.where({ school_id: schoolId, status: 'active' }),
+        assignmentsData.where({ school_id: schoolId }),
+        gradebookData.whereGradeItems({ school_id: schoolId }),
+        classesData.where({ school_id: schoolId, status: 'active' }),
       ]);
 
       const visibleClassIds = role === 'teacher'

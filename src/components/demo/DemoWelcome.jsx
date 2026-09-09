@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle, AlertCircle, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 
 export default function DemoWelcome({ schoolName, userRole, userName }) {
   const roleDescriptions = {

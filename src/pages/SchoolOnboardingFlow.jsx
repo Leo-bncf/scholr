@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -18,6 +17,11 @@ import SchoolOnboardingProgress from '@/components/onboarding-flow/SchoolOnboard
 import SchoolOnboardingReview from '@/components/onboarding-flow/SchoolOnboardingReview';
 import DemoDataControls from '@/components/onboarding/DemoDataControls';
 import BulkImportTab from '@/components/users/BulkImportTab';
+import * as schoolsData from '@/data/schools';
+import * as classesData from '@/data/classes';
+import * as membershipsData from '@/data/memberships';
+import * as academics from '@/data/academics';
+import { updateMyProfile } from '@/data/session';
 
 const steps = [
   { id: 'school_profile', label: 'Create school profile', icon: Building2, description: 'Add the core details for your school account.' },
@@ -46,11 +50,11 @@ export default function SchoolOnboardingFlow() {
     queryKey: ['school-onboarding-flow', schoolId],
     queryFn: async () => {
       const [schools, classes, memberships, subjects, academicYears] = await Promise.all([
-        base44.entities.School.filter({ id: schoolId }),
-        base44.entities.Class.filter({ school_id: schoolId }),
-        base44.entities.SchoolMembership.filter({ school_id: schoolId }),
-        base44.entities.Subject.filter({ school_id: schoolId }),
-        base44.entities.AcademicYear.filter({ school_id: schoolId }),
+        schoolsData.where({ id: schoolId }),
+        classesData.where({ school_id: schoolId }),
+        membershipsData.where({ school_id: schoolId }),
+        academics.whereSubjects({ school_id: schoolId }),
+        academics.whereAcademicYears({ school_id: schoolId }),
       ]);
       return {
         school: schools[0],
@@ -97,7 +101,7 @@ export default function SchoolOnboardingFlow() {
     setSaving(true);
     setError('');
     setSuccess('');
-    await base44.auth.updateMe({
+    await updateMyProfile({
       onboarding_flow_step: currentStep,
       onboarding_flow_saved_at: new Date().toISOString(),
       onboarding_school_profile: schoolProfile,
@@ -129,7 +133,7 @@ export default function SchoolOnboardingFlow() {
 
     try {
       if (currentStep === 1 && classDraft.name.trim()) {
-        await base44.entities.Class.create({
+        await classesData.create({
           school_id: schoolId,
           name: classDraft.name.trim(),
           section: classDraft.section.trim(),
@@ -143,7 +147,7 @@ export default function SchoolOnboardingFlow() {
       }
 
       if (currentStep === 2 && teacherDraft.name.trim() && teacherDraft.email.trim()) {
-        await base44.entities.SchoolMembership.create({
+        await membershipsData.create({
           school_id: schoolId,
           user_name: teacherDraft.name.trim(),
           user_email: teacherDraft.email.trim(),
@@ -157,11 +161,11 @@ export default function SchoolOnboardingFlow() {
       if (currentStep === 4 && subjectAssignment.classId && subjectAssignment.subjectId) {
         const selectedClass = safeData.classes.find((item) => item.id === subjectAssignment.classId);
         if (selectedClass) {
-          await base44.entities.Class.update(selectedClass.id, { subject_id: subjectAssignment.subjectId });
+          await classesData.update(selectedClass.id, { subject_id: subjectAssignment.subjectId });
         }
       }
 
-      await base44.auth.updateMe({
+      await updateMyProfile({
         onboarding_flow_step: Math.min(currentStep + 1, steps.length - 1),
         onboarding_flow_saved_at: new Date().toISOString(),
         onboarding_school_profile: schoolProfile,

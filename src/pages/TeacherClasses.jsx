@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import { useUser } from '@/components/auth/UserContext';
-import { LayoutDashboard, BookOpen, ClipboardCheck, BarChart3, MessageSquare, Loader2, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { LayoutDashboard, BookOpen, MessageSquare, Loader2, Users } from 'lucide-react';
 import { createPageUrl } from '@/utils';
+import * as classesData from '@/data/classes';
 
 const sidebarLinks = [
   { label: 'Dashboard', page: 'TeacherDashboard', icon: LayoutDashboard },
@@ -21,7 +20,7 @@ export default function TeacherClasses() {
   const { data: classes = [], isLoading } = useQuery({
     queryKey: ['teacher-classes', schoolId, user?.id],
     queryFn: async () => {
-      const all = await base44.entities.Class.filter({ school_id: schoolId });
+      const all = await classesData.where({ school_id: schoolId });
       return all.filter(c => c.teacher_ids?.includes(user.id));
     },
     enabled: !!schoolId && !!user?.id,

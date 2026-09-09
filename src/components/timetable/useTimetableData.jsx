@@ -1,35 +1,41 @@
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as scheduleEntriesData from '@/data/scheduleEntries';
+import * as periodsData from '@/data/periods';
+import * as roomsData from '@/data/rooms';
+import * as timetableSyncsData from '@/data/timetableSyncs';
+import * as timetableSettingsData from '@/data/timetableSettings';
+import * as membershipsData from '@/data/memberships';
+import * as classesData from '@/data/classes';
 
 export function useTimetableData(schoolId) {
   const scheduleEntries = useQuery({
     queryKey: ['timetable-entries', schoolId],
-    queryFn: () => base44.entities.ScheduleEntry.filter({ school_id: schoolId }),
+    queryFn: () => scheduleEntriesData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const periods = useQuery({
     queryKey: ['timetable-periods', schoolId],
-    queryFn: () => base44.entities.Period.filter({ school_id: schoolId }),
+    queryFn: () => periodsData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const rooms = useQuery({
     queryKey: ['timetable-rooms', schoolId],
-    queryFn: () => base44.entities.Room.filter({ school_id: schoolId }),
+    queryFn: () => roomsData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const syncHistory = useQuery({
     queryKey: ['timetable-sync-history', schoolId],
-    queryFn: () => base44.entities.TimetableSync.filter({ school_id: schoolId }, '-started_at', 30),
+    queryFn: () => timetableSyncsData.where({ school_id: schoolId }, { order: 'started_at', ascending: false, limit: 30 }),
     enabled: !!schoolId,
   });
 
   const settings = useQuery({
     queryKey: ['timetable-settings', schoolId],
     queryFn: async () => {
-      const results = await base44.entities.TimetableSettings.filter({ school_id: schoolId });
+      const results = await timetableSettingsData.where({ school_id: schoolId });
       return results[0] || null;
     },
     enabled: !!schoolId,
@@ -37,13 +43,13 @@ export function useTimetableData(schoolId) {
 
   const memberships = useQuery({
     queryKey: ['timetable-memberships', schoolId],
-    queryFn: () => base44.entities.SchoolMembership.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => membershipsData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
   const classes = useQuery({
     queryKey: ['timetable-classes', schoolId],
-    queryFn: () => base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => classesData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 

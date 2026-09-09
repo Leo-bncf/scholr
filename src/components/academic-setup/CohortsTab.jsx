@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as academics from '@/data/academics';
+import * as membershipsData from '@/data/memberships';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -65,37 +66,36 @@ export default function CohortsTab({ schoolId }) {
 
   const { data: cohorts = [], isLoading: cohortsLoading } = useQuery({
     queryKey: ['cohorts', schoolId],
-    queryFn: () => base44.entities.Cohort.filter({ school_id: schoolId }),
+    queryFn: () => academics.listCohorts(schoolId, { status: null }),
     enabled: !!schoolId,
   });
 
   const { data: years = [] } = useQuery({
     queryKey: ['academic-years', schoolId],
-    queryFn: () => base44.entities.AcademicYear.filter({ school_id: schoolId }),
+    queryFn: () => academics.listAcademicYears(schoolId),
     enabled: !!schoolId,
   });
 
-  const { data: memberships = [] } = useQuery({
-    queryKey: ['school-memberships-cohorts', schoolId],
-    queryFn: () => base44.entities.SchoolMembership.filter({ school_id: schoolId, status: 'active' }),
+  const { data: students = [] } = useQuery({
+    queryKey: ['school-students', schoolId],
+    queryFn: () => membershipsData.listStudents(schoolId),
     enabled: !!schoolId,
   });
-  const students = memberships.filter(m => m.role === 'student');
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ['cohorts', schoolId] });
 
   const createMutation = useMutation({
-    mutationFn: (d) => base44.entities.Cohort.create({ ...d, school_id: schoolId, student_ids: [] }),
+    mutationFn: (d) => academics.createCohort({ ...d, school_id: schoolId, student_ids: [] }),
     onSuccess: () => { invalidate(); closeDialog(); },
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Cohort.update(id, data),
+    mutationFn: ({ id, data }) => academics.updateCohort(id, data),
     onSuccess: () => { invalidate(); closeDialog(); },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Cohort.delete(id),
+    mutationFn: (id) => academics.removeCohort(id),
     onSuccess: invalidate,
   });
 
@@ -103,7 +103,7 @@ export default function CohortsTab({ schoolId }) {
     mutationFn: ({ cohort, userId }) => {
       const current = cohort.student_ids || [];
       const updated = current.includes(userId) ? current.filter(id => id !== userId) : [...current, userId];
-      return base44.entities.Cohort.update(cohort.id, { student_ids: updated });
+      return academics.updateCohort(cohort.id, { student_ids: updated });
     },
     onSuccess: () => {
       invalidate();

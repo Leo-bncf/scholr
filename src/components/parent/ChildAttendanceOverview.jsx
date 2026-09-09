@@ -1,17 +1,16 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { Badge } from '@/components/ui/badge';
 import { Loader2, Calendar, CheckCircle2, XCircle, Clock, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
+import * as attendanceData from '@/data/attendance';
 
 export default function ChildAttendanceOverview({ schoolId, studentId }) {
   const { data: attendanceRecords = [], isLoading } = useQuery({
     queryKey: ['parent-child-attendance', schoolId, studentId],
-    queryFn: () => base44.entities.AttendanceRecord.filter({
+    queryFn: () => attendanceData.whereRecords({
       school_id: schoolId,
       student_id: studentId
-    }, '-date'),
+    }, { order: 'date', ascending: false }),
     enabled: !!schoolId && !!studentId,
   });
 

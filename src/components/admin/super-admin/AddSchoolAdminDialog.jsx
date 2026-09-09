@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import * as email from '@/data/email';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,6 +13,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { AlertCircle, CheckCircle2, Copy, Loader2, Mail, UserPlus } from 'lucide-react';
+import * as membershipsData from '@/data/memberships';
+import * as userInvitationsData from '@/data/userInvitations';
+import { getCurrentUser } from '@/data/session';
 
 const EMPTY_FORM = {
   email: '',
@@ -44,7 +47,7 @@ export default function AddSchoolAdminDialog({ open, onOpenChange, school }) {
     setSuccess('');
 
     const normalizedEmail = form.email.trim().toLowerCase();
-    const existingAdmins = await base44.entities.SchoolMembership.filter({
+    const existingAdmins = await membershipsData.where({
       school_id: school.id,
       role: 'school_admin',
       status: 'active',
@@ -56,7 +59,7 @@ export default function AddSchoolAdminDialog({ open, onOpenChange, school }) {
       return;
     }
 
-    const existingInvites = await base44.entities.UserInvitation.filter({
+    const existingInvites = await userInvitationsData.where({
       school_id: school.id,
       email: normalizedEmail,
       role: 'school_admin',
@@ -73,9 +76,9 @@ export default function AddSchoolAdminDialog({ open, onOpenChange, school }) {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
 
-    const currentUser = await base44.auth.me();
+    const currentUser = await getCurrentUser();
 
-    await base44.entities.UserInvitation.create({
+    await userInvitationsData.create({
       school_id: school.id,
       email: normalizedEmail,
       role: 'school_admin',
@@ -96,9 +99,9 @@ export default function AddSchoolAdminDialog({ open, onOpenChange, school }) {
 
     let emailSent = true;
     try {
-      await base44.integrations.Core.SendEmail({
+      await email.send({
         to: normalizedEmail,
-        from_name: school.name,
+        fromName: school.name,
         subject: `You're invited to join ${school.name} as a School Admin`,
         body: `
           <h2>You're invited to join ${school.name}</h2>

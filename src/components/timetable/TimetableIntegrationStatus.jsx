@@ -1,19 +1,18 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Badge } from '@/components/ui/badge';
 import { RefreshCw, CheckCircle, XCircle, Clock, AlertTriangle, Activity } from 'lucide-react';
 import { format } from 'date-fns';
+import * as timetableSyncsData from '@/data/timetableSyncs';
+import * as scheduleEntriesData from '@/data/scheduleEntries';
+import * as periodsData from '@/data/periods';
+import * as roomsData from '@/data/rooms';
 
 export default function TimetableIntegrationStatus({ schoolId }) {
   const { data: latestSync, isLoading } = useQuery({
     queryKey: ['latest-timetable-sync', schoolId],
     queryFn: async () => {
-      const syncs = await base44.entities.TimetableSync.filter(
-        { school_id: schoolId },
-        '-started_at',
-        1
-      );
+      const syncs = await timetableSyncsData.where({ school_id: schoolId }, { order: 'started_at', ascending: false, limit: 1 });
       return syncs[0] || null;
     },
     enabled: !!schoolId,
@@ -23,9 +22,9 @@ export default function TimetableIntegrationStatus({ schoolId }) {
     queryKey: ['timetable-sync-stats', schoolId],
     queryFn: async () => {
       const [scheduleEntries, periods, rooms] = await Promise.all([
-        base44.entities.ScheduleEntry.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.Period.filter({ school_id: schoolId }),
-        base44.entities.Room.filter({ school_id: schoolId, status: 'active' }),
+        scheduleEntriesData.where({ school_id: schoolId, status: 'active' }),
+        periodsData.where({ school_id: schoolId }),
+        roomsData.where({ school_id: schoolId, status: 'active' }),
       ]);
 
       const syncedSchedule = scheduleEntries.filter(e => e.external_sync_id).length;

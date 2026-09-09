@@ -13,9 +13,8 @@ import {
   ACTIONS,
   DEFAULT_ROLES,
   getAllRoles,
-  formatPermission,
 } from '@/components/auth/PermissionsModule';
-import { CheckCircle2, Shield, Lock, Plus } from 'lucide-react';
+import { CheckCircle2, Shield, Plus } from 'lucide-react';
 
 export default function RolePermissionManager() {
   const [selectedRole, setSelectedRole] = useState('teacher');

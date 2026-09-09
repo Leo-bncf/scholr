@@ -1,10 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, TrendingDown, Clock, Users, CheckCircle2, XCircle, ChevronRight, ArrowLeft } from 'lucide-react';
 import { format, subDays, eachDayOfInterval, parseISO, differenceInDays } from 'date-fns';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, LineChart, Line, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, Legend } from 'recharts';
+import * as attendanceData from '@/data/attendance';
+import * as classesData from '@/data/classes';
+import * as academics from '@/data/academics';
+import * as attendancePoliciesData from '@/data/attendancePolicies';
 
 function StatCard({ label, value, sub, accent = 'slate', icon: Icon, onClick }) {
   const accents = {
@@ -129,26 +132,26 @@ export default function AttendanceDashboard({ schoolId }) {
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: ['attendance-dashboard', schoolId],
-    queryFn: () => base44.entities.AttendanceRecord.filter({ school_id: schoolId }),
+    queryFn: () => attendanceData.whereRecords({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: classes = [] } = useQuery({
     queryKey: ['classes-for-attendance', schoolId],
-    queryFn: () => base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => classesData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
   const { data: cohorts = [] } = useQuery({
     queryKey: ['cohorts-for-attendance', schoolId],
-    queryFn: () => base44.entities.Cohort.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => academics.whereCohorts({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
   const { data: policy = {} } = useQuery({
     queryKey: ['attendance-policy', schoolId],
     queryFn: async () => {
-      const p = await base44.entities.AttendancePolicy.filter({ school_id: schoolId });
+      const p = await attendancePoliciesData.where({ school_id: schoolId });
       return p[0] || {};
     },
     enabled: !!schoolId,

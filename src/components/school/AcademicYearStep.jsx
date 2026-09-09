@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Check, Plus, AlertCircle, Trash2 } from 'lucide-react';
+import * as academics from '@/data/academics';
 
 /**
  * Academic year setup step
@@ -29,7 +29,7 @@ export default function AcademicYearStep({ schoolId, onComplete }) {
   useEffect(() => {
     const loadYears = async () => {
       try {
-        const academicYears = await base44.entities.AcademicYear.filter({
+        const academicYears = await academics.whereAcademicYears({
           school_id: schoolId
         });
         setYears(academicYears);
@@ -54,7 +54,7 @@ export default function AcademicYearStep({ schoolId, onComplete }) {
     setError('');
 
     try {
-      const created = await base44.entities.AcademicYear.create({
+      const created = await academics.createAcademicYear({
         school_id: schoolId,
         name: newYear.name,
         start_date: newYear.start_date,
@@ -77,7 +77,7 @@ export default function AcademicYearStep({ schoolId, onComplete }) {
     if (!window.confirm('Are you sure you want to delete this academic year?')) return;
 
     try {
-      await base44.entities.AcademicYear.delete(id);
+      await academics.removeAcademicYear(id);
       setYears(years.filter(y => y.id !== id));
     } catch (err) {
       console.error('Error deleting year:', err);

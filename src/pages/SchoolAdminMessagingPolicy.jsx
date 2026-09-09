@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -15,6 +14,7 @@ import AnnouncementsGovernancePanel from '@/components/messaging-policy/Announce
 import QuietHoursPanel from '@/components/messaging-policy/QuietHoursPanel';
 import CompliancePanel from '@/components/messaging-policy/CompliancePanel';
 import { logAudit, AuditActions, AuditLevels } from '@/components/utils/auditLogger';
+import * as messagingPoliciesData from '@/data/messagingPolicies';
 
 
 
@@ -47,7 +47,7 @@ export default function SchoolAdminMessagingPolicy() {
 
   const { data: policies = [], isLoading } = useQuery({
     queryKey: ['messaging-policy', schoolId],
-    queryFn: () => base44.entities.MessagingPolicy.filter({ school_id: schoolId }),
+    queryFn: () => messagingPoliciesData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
   const policyRecord = policies[0] || null;
@@ -62,8 +62,8 @@ export default function SchoolAdminMessagingPolicy() {
     mutationFn: (data) => {
       const payload = { ...data, school_id: schoolId };
       return policyRecord
-        ? base44.entities.MessagingPolicy.update(policyRecord.id, payload)
-        : base44.entities.MessagingPolicy.create(payload);
+        ? messagingPoliciesData.update(policyRecord.id, payload)
+        : messagingPoliciesData.create(payload);
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['messaging-policy', schoolId] });

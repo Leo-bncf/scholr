@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Check, Plus, AlertCircle, Trash2 } from 'lucide-react';
+import * as academics from '@/data/academics';
 
 /**
  * Terms setup step
@@ -30,7 +30,7 @@ export default function TermsStep({ schoolId, onComplete }) {
   useEffect(() => {
     const loadYears = async () => {
       try {
-        const years = await base44.entities.AcademicYear.filter({
+        const years = await academics.whereAcademicYears({
           school_id: schoolId
         });
         setAcademicYears(years);
@@ -54,7 +54,7 @@ export default function TermsStep({ schoolId, onComplete }) {
       if (!selectedYear) return;
 
       try {
-        const termList = await base44.entities.Term.filter({
+        const termList = await academics.whereTerms({
           school_id: schoolId,
           academic_year_id: selectedYear
         });
@@ -77,7 +77,7 @@ export default function TermsStep({ schoolId, onComplete }) {
     setError('');
 
     try {
-      const created = await base44.entities.Term.create({
+      const created = await academics.createTerm({
         school_id: schoolId,
         academic_year_id: selectedYear,
         name: newTerm.name,
@@ -101,7 +101,7 @@ export default function TermsStep({ schoolId, onComplete }) {
     if (!window.confirm('Delete this term?')) return;
 
     try {
-      await base44.entities.Term.delete(id);
+      await academics.removeTerm(id);
       setTerms(terms.filter(t => t.id !== id));
     } catch (err) {
       console.error('Error deleting term:', err);

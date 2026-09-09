@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -8,8 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import {
-  Search, Loader2, Pencil, Trash2, UserCheck, ShieldAlert, UserX,
-  ChevronDown, Download, MoreHorizontal, RefreshCw, Filter
+  Search, Loader2, Pencil, Trash2, UserCheck, UserX, Download, MoreHorizontal, Filter
 } from 'lucide-react';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -18,6 +16,9 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
 import { ROLE_CONFIG } from './userConstants';
+import * as membershipsData from '@/data/memberships';
+import * as academics from '@/data/academics';
+import * as fns from '@/data/functions';
 
 const STATUS_CONFIG = {
   active:   { label: 'Active',    classes: 'bg-emerald-50 text-emerald-700', dot: 'bg-emerald-500' },
@@ -37,7 +38,7 @@ function EditMemberDialog({ member, onClose, schoolId }) {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data) => base44.entities.SchoolMembership.update(member.id, data),
+    mutationFn: (data) => membershipsData.update(member.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] });
       onClose();
@@ -158,23 +159,23 @@ export default function UserDirectoryTab({ schoolId }) {
 
   const { data: memberships = [], isLoading } = useQuery({
     queryKey: ['school-memberships', schoolId],
-    queryFn: () => base44.entities.SchoolMembership.filter({ school_id: schoolId }),
+    queryFn: () => membershipsData.where({ school_id: schoolId }),
     enabled: !!schoolId,
     staleTime: 0,
   });
 
   const { data: cohorts = [] } = useQuery({
     queryKey: ['cohorts', schoolId],
-    queryFn: () => base44.entities.Cohort.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => academics.whereCohorts({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await base44.functions.invoke('removeSchoolMember', { membershipId: id });
-      const errMsg = res?.data?.error || res?.error;
+      const res = await fns.invoke('removeSchoolMember', { membershipId: id });
+      const errMsg = res?.error || res?.error;
       if (errMsg) throw new Error(errMsg);
-      return res?.data;
+      return res;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] });
@@ -197,7 +198,7 @@ export default function UserDirectoryTab({ schoolId }) {
   });
 
   const suspendMutation = useMutation({
-    mutationFn: (id) => base44.entities.SchoolMembership.update(id, { status: 'inactive' }),
+    mutationFn: (id) => membershipsData.update(id, { status: 'inactive' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] });
       toast({ title: 'User suspended' });
@@ -212,7 +213,7 @@ export default function UserDirectoryTab({ schoolId }) {
   });
 
   const reactivateMutation = useMutation({
-    mutationFn: (id) => base44.entities.SchoolMembership.update(id, { status: 'active' }),
+    mutationFn: (id) => membershipsData.update(id, { status: 'active' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['school-memberships', schoolId] });
       toast({ title: 'User reactivated' });
@@ -263,7 +264,7 @@ export default function UserDirectoryTab({ schoolId }) {
         ROLE_CONFIG[m.role]?.label || m.role,
         m.status,
         m.grade_level || m.department || '',
-        m.created_date ? new Date(m.created_date).toLocaleDateString() : '',
+        m.created_at ? new Date(m.created_at).toLocaleDateString() : '',
       ]),
     ];
     const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');

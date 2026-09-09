@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useUser } from '@/components/auth/UserContext';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import AttendanceRecorder from '@/components/attendance/AttendanceRecorder';
 import { CheckCircle2, XCircle, Clock, AlertCircle, BarChart2, PenSquare } from 'lucide-react';
 import { format, subDays } from 'date-fns';
+import * as attendanceData from '@/data/attendance';
 
 const STATUS_META = {
   present: { label: 'Present', icon: CheckCircle2, bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
@@ -18,7 +18,7 @@ function StudentAttendanceHistory({ classData, userId }) {
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: ['my-attendance', classData.id, userId],
-    queryFn: () => base44.entities.AttendanceRecord.filter({
+    queryFn: () => attendanceData.whereRecords({
       school_id: classData.school_id,
       class_id: classData.id,
       student_id: userId,

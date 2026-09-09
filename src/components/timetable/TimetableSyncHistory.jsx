@@ -1,19 +1,15 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, XCircle, Clock, AlertTriangle, RefreshCw, ChevronRight } from 'lucide-react';
 import { format } from 'date-fns';
+import * as timetableSyncsData from '@/data/timetableSyncs';
 
 export default function TimetableSyncHistory({ schoolId }) {
   const { data: syncHistory = [], isLoading } = useQuery({
     queryKey: ['timetable-sync-history', schoolId],
-    queryFn: () => base44.entities.TimetableSync.filter(
-      { school_id: schoolId },
-      '-started_at',
-      20
-    ),
+    queryFn: () => timetableSyncsData.where({ school_id: schoolId }, { order: 'started_at', ascending: false, limit: 20 }),
     enabled: !!schoolId,
   });
 

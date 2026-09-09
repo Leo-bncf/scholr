@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as email from '@/data/email';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
@@ -18,6 +17,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { format, formatDistanceToNow } from 'date-fns';
 import { ROLE_CONFIG } from './userConstants';
+import * as userInvitationsData from '@/data/userInvitations';
+import * as fns from '@/data/functions';
 
 function InviteDialog({ open, onClose, schoolId, schoolName }) {
   const queryClient = useQueryClient();
@@ -30,7 +31,7 @@ function InviteDialog({ open, onClose, schoolId, schoolName }) {
     mutationFn: async (data) => {
       // Route through backend function so school admins (whose platform role is just "user")
       // can create invitations via service-role with proper SchoolMembership authorization.
-      const res = await base44.functions.invoke('sendInvitation', {
+      const res = await fns.invoke('sendInvitation', {
         schoolId,
         schoolName,
         email: data.email,
@@ -41,8 +42,8 @@ function InviteDialog({ open, onClose, schoolId, schoolName }) {
         department: data.department,
         customMessage: data.custom_message,
       });
-      if (res?.data?.error) throw new Error(res.data.error);
-      return res?.data;
+      if (res?.error) throw new Error(res.error);
+      return res;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-invitations', schoolId] });
@@ -141,16 +142,16 @@ export default function InvitationsTab({ schoolId, schoolName }) {
 
   const { data: invitations = [], isLoading } = useQuery({
     queryKey: ['user-invitations', schoolId],
-    queryFn: () => base44.entities.UserInvitation.filter({ school_id: schoolId }, '-created_date', 100),
+    queryFn: () => userInvitationsData.where({ school_id: schoolId }, { order: 'created_at', ascending: false, limit: 100 }),
     enabled: !!schoolId,
   });
 
   const resendMutation = useMutation({
     mutationFn: async (inv) => {
       const inviteUrl = `${window.location.origin}/AcceptInvitation?token=${inv.invitation_token}`;
-      await base44.integrations.Core.SendEmail({
+      await email.send({
         to: inv.email,
-        from_name: schoolName,
+        fromName: schoolName,
         subject: `Reminder: Your invitation to ${schoolName}`,
         body: `<p>You still have a pending invitation to join <strong>${schoolName}</strong>.</p><p><a href="${inviteUrl}" style="display:inline-block;padding:12px 24px;background:#4F46E5;color:white;border-radius:8px;text-decoration:none;font-weight:600;">Accept Invitation</a></p>`,
       });
@@ -159,7 +160,7 @@ export default function InvitationsTab({ schoolId, schoolName }) {
   });
 
   const cancelMutation = useMutation({
-    mutationFn: (id) => base44.entities.UserInvitation.update(id, { status: 'cancelled' }),
+    mutationFn: (id) => userInvitationsData.update(id, { status: 'cancelled' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['user-invitations', schoolId] }),
   });
 
@@ -230,7 +231,7 @@ export default function InvitationsTab({ schoolId, schoolName }) {
                         )}
                       </div>
                       <p className="text-[11px] text-slate-400 mt-0.5">
-                        Invited {formatDistanceToNow(new Date(inv.created_date), { addSuffix: true })}
+                        Invited {formatDistanceToNow(new Date(inv.created_at), { addSuffix: true })}
                         {inv.invited_by_name && ` · by ${inv.invited_by_name}`}
                         {inv.status === 'accepted' && inv.accepted_at && (
                           ` · Accepted ${format(new Date(inv.accepted_at), 'MMM d, yyyy')}`

@@ -1,12 +1,15 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import {
   Users, GraduationCap, CheckSquare, FileText, Loader2,
-  AlertTriangle, CheckCircle, ArrowRight, Settings, Archive
+  AlertTriangle, CheckCircle, ArrowRight, Settings
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format, subDays } from 'date-fns';
+import * as membershipsData from '@/data/memberships';
+import * as attendanceData from '@/data/attendance';
+import * as assignmentsData from '@/data/assignments';
+import * as gradebookData from '@/data/gradebook';
 
 /**
  * Admin landing tab — "is this class healthy?" view.
@@ -19,14 +22,14 @@ export default function AdminOverviewTab({ classData, onNavigate }) {
     queryKey: ['class-teachers', classData.school_id, classData.teacher_ids],
     queryFn: async () => {
       if (!classData.teacher_ids?.length) return [];
-      const all = await base44.entities.SchoolMembership.filter({ school_id: classData.school_id });
+      const all = await membershipsData.where({ school_id: classData.school_id });
       return all.filter(m => classData.teacher_ids.includes(m.user_id));
     },
   });
 
   const { data: attendance = [], isLoading: loadingAtt } = useQuery({
     queryKey: ['class-att-30d', classData.id],
-    queryFn: () => base44.entities.AttendanceRecord.filter({
+    queryFn: () => attendanceData.whereRecords({
       school_id: classData.school_id,
       class_id: classData.id,
     }),
@@ -34,7 +37,7 @@ export default function AdminOverviewTab({ classData, onNavigate }) {
 
   const { data: assignments = [], isLoading: loadingAssign } = useQuery({
     queryKey: ['class-assignments-admin', classData.id],
-    queryFn: () => base44.entities.Assignment.filter({
+    queryFn: () => assignmentsData.where({
       school_id: classData.school_id,
       class_id: classData.id,
     }),
@@ -42,7 +45,7 @@ export default function AdminOverviewTab({ classData, onNavigate }) {
 
   const { data: grades = [] } = useQuery({
     queryKey: ['class-grades-admin', classData.id],
-    queryFn: () => base44.entities.GradeItem.filter({
+    queryFn: () => gradebookData.whereGradeItems({
       school_id: classData.school_id,
       class_id: classData.id,
     }),

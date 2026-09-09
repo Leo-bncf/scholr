@@ -1,26 +1,30 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { Loader2, BarChart3, ClipboardCheck, Calendar, AlertCircle, TrendingUp } from 'lucide-react';
+import { Loader2, BarChart3, ClipboardCheck, Calendar } from 'lucide-react';
 import { format, isPast } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
+import * as gradebookData from '@/data/gradebook';
+import * as classesData from '@/data/classes';
+import * as assignmentsData from '@/data/assignments';
+import * as submissionsData from '@/data/submissions';
+import * as attendanceData from '@/data/attendance';
 
 export default function ChildOverviewHub({ schoolId, studentId }) {
   const { data: grades = [], isLoading: loadingGrades } = useQuery({
     queryKey: ['parent-child-grades', schoolId, studentId],
-    queryFn: () => base44.entities.GradeItem.filter({
+    queryFn: () => gradebookData.whereGradeItems({
       school_id: schoolId,
       student_id: studentId,
       visible_to_parent: true,
       status: 'published'
-    }, '-created_date', 10),
+    }, { order: 'created_at', ascending: false, limit: 10 }),
     enabled: !!schoolId && !!studentId,
   });
 
   const { data: studentClasses = [] } = useQuery({
     queryKey: ['parent-child-classes', schoolId, studentId],
     queryFn: async () => {
-      const all = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
+      const all = await classesData.where({ school_id: schoolId, status: 'active' });
       return all.filter(c => c.student_ids?.includes(studentId));
     },
     enabled: !!schoolId && !!studentId,
@@ -30,7 +34,7 @@ export default function ChildOverviewHub({ schoolId, studentId }) {
     queryKey: ['parent-child-assignments', schoolId, studentClasses],
     queryFn: async () => {
       const classIds = new Set(studentClasses.map(c => c.id));
-      const all = await base44.entities.Assignment.filter({ school_id: schoolId, status: 'published' });
+      const all = await assignmentsData.where({ school_id: schoolId, status: 'published' });
       return all.filter(a => classIds.has(a.class_id)).slice(0, 5);
     },
     enabled: !!schoolId && studentClasses.length > 0,
@@ -38,13 +42,13 @@ export default function ChildOverviewHub({ schoolId, studentId }) {
 
   const { data: submissions = [] } = useQuery({
     queryKey: ['parent-child-submissions', schoolId, studentId],
-    queryFn: () => base44.entities.Submission.filter({ school_id: schoolId, student_id: studentId }),
+    queryFn: () => submissionsData.where({ school_id: schoolId, student_id: studentId }),
     enabled: !!schoolId && !!studentId,
   });
 
   const { data: attendance = [], isLoading: loadingAttendance } = useQuery({
     queryKey: ['parent-child-attendance', schoolId, studentId],
-    queryFn: () => base44.entities.AttendanceRecord.filter({ school_id: schoolId, student_id: studentId }, '-date', 30),
+    queryFn: () => attendanceData.whereRecords({ school_id: schoolId, student_id: studentId }, { order: 'date', ascending: false, limit: 30 }),
     enabled: !!schoolId && !!studentId,
   });
 

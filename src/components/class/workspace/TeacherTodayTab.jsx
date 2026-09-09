@@ -1,12 +1,14 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import {
   CheckSquare, ClipboardList, FileText, Loader2, ArrowRight,
-  Calendar, AlertCircle, Sparkles
+  Calendar
 } from 'lucide-react';
 import { format, isToday, isPast, differenceInDays } from 'date-fns';
 import { Button } from '@/components/ui/button';
+import * as attendanceData from '@/data/attendance';
+import * as assignmentsData from '@/data/assignments';
+import * as submissionsData from '@/data/submissions';
 
 /**
  * Teacher landing tab — shows what needs attention right now.
@@ -17,7 +19,7 @@ export default function TeacherTodayTab({ classData, onNavigate }) {
 
   const { data: todayAttendance = [], isLoading: loadingAtt } = useQuery({
     queryKey: ['class-today-attendance', classData.id, todayISO],
-    queryFn: () => base44.entities.AttendanceRecord.filter({
+    queryFn: () => attendanceData.whereRecords({
       school_id: classData.school_id,
       class_id: classData.id,
       date: todayISO,
@@ -26,7 +28,7 @@ export default function TeacherTodayTab({ classData, onNavigate }) {
 
   const { data: assignments = [], isLoading: loadingAssign } = useQuery({
     queryKey: ['class-assignments', classData.id],
-    queryFn: () => base44.entities.Assignment.filter({
+    queryFn: () => assignmentsData.where({
       school_id: classData.school_id,
       class_id: classData.id,
     }),
@@ -34,7 +36,7 @@ export default function TeacherTodayTab({ classData, onNavigate }) {
 
   const { data: submissions = [], isLoading: loadingSubs } = useQuery({
     queryKey: ['class-submissions', classData.id],
-    queryFn: () => base44.entities.Submission.filter({
+    queryFn: () => submissionsData.where({
       school_id: classData.school_id,
       class_id: classData.id,
     }),
@@ -104,8 +106,8 @@ export default function TeacherTodayTab({ classData, onNavigate }) {
             ungradedSubs.length > 0
               ? `Oldest: ${format(new Date(
                   [...ungradedSubs].sort((a, b) =>
-                    new Date(a.submitted_at || a.created_date) - new Date(b.submitted_at || b.created_date)
-                  )[0].submitted_at || ungradedSubs[0].created_date
+                    new Date(a.submitted_at || a.created_at) - new Date(b.submitted_at || b.created_at)
+                  )[0].submitted_at || ungradedSubs[0].created_at
                 ), 'MMM d')}`
               : 'No pending submissions'
           }

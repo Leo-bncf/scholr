@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,8 +14,12 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import * as reportTemplatesData from '@/data/reportTemplates';
+import * as usersData from '@/data/users';
+import * as classesData from '@/data/classes';
+import * as fns from '@/data/functions';
 
 /**
  * Coordinator/Admin workflow for generating academic reports
@@ -43,23 +46,23 @@ export default function ReportBuilder({
 
   const { data: templates = [] } = useQuery({
     queryKey: ['report-templates', schoolId],
-    queryFn: () => base44.entities.ReportTemplate.filter({ school_id: schoolId })
+    queryFn: () => reportTemplatesData.where({ school_id: schoolId })
   });
 
   const { data: students = [] } = useQuery({
     queryKey: ['students', schoolId],
-    queryFn: () => base44.entities.User.filter({ school_id: schoolId, role: 'student' })
+    queryFn: () => usersData.where({ school_id: schoolId, role: 'student' })
   });
 
   const { data: classes = [] } = useQuery({
     queryKey: ['classes', schoolId],
-    queryFn: () => base44.entities.Class.filter({ school_id: schoolId })
+    queryFn: () => classesData.where({ school_id: schoolId })
   });
 
   const generateMutation = useMutation({
     mutationFn: async (data) => {
       // This will be called by a backend function that aggregates the report data
-      return base44.functions.invoke('generateReport', data);
+      return fns.invoke('generateReport', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reports'] });

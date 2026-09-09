@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Loader2, Save, Lock, Pencil, ShieldAlert, Globe, RefreshCw } from 'lucide-react';
+import { Loader2, Save } from 'lucide-react';
 import { OVERRIDE_POLICY_CONFIG } from './useTimetableData';
+import * as timetableSettingsData from '@/data/timetableSettings';
 
 const DEFAULT_FIELD_MAPPING = {
   teacher_id_field: 'teacher_code',
@@ -67,8 +66,8 @@ export default function SyncSettingsTab({ schoolId, settings }) {
       };
       delete payload.cycle_days_raw;
       return isNew
-        ? base44.entities.TimetableSettings.create(payload)
-        : base44.entities.TimetableSettings.update(settings.id, payload);
+        ? timetableSettingsData.create(payload)
+        : timetableSettingsData.update(settings.id, payload);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['timetable-settings', schoolId] }),
   });

@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
-  Search, Users, UserCheck, Pencil, Crown, UserMinus, UserPlus, Loader2,
-  ChevronDown, Lock, BookOpen
+  Search, Users, Pencil, Crown, Loader2, Lock, BookOpen
 } from 'lucide-react';
 import { CO_TEACHER_PERMS } from './classConstants';
+import * as classesData from '@/data/classes';
 
 function TeacherAssignDialog({ classObj, onClose, schoolId, memberships }) {
   const queryClient = useQueryClient();
@@ -29,7 +27,7 @@ function TeacherAssignDialog({ classObj, onClose, schoolId, memberships }) {
   const [coPermissions, setCoPermissions] = useState(classObj.co_teacher_permissions || {});
 
   const mutation = useMutation({
-    mutationFn: (data) => base44.entities.Class.update(classObj.id, data),
+    mutationFn: (data) => classesData.update(classObj.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['school-classes', schoolId] });
       onClose();

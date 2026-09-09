@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import * as tables from '@/data/tables';
 import { Button } from '@/components/ui/button';
 import { Download, Upload, FileJson, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 
@@ -34,7 +34,7 @@ export default function DataExportImport() {
 
   const handleExport = async (entityKey) => {
     setExporting(prev => ({ ...prev, [entityKey]: true }));
-    const records = await base44.entities[entityKey].list('-created_date', 5000);
+    const records = await tables.select(entityKey, {}, { order: 'created_at', ascending: false, limit: 5000 });
     const filename = `export_${entityKey.toLowerCase()}_${new Date().toISOString().slice(0, 10)}.json`;
     downloadJson({ entity: entityKey, exported_at: new Date().toISOString(), count: records.length, records }, filename);
     setExporting(prev => ({ ...prev, [entityKey]: false }));
@@ -44,7 +44,7 @@ export default function DataExportImport() {
     setExportAll(true);
     const result = {};
     for (const e of EXPORTABLE_ENTITIES) {
-      result[e.key] = await base44.entities[e.key].list('-created_date', 5000);
+      result[e.key] = await tables.select(e.key, {}, { order: 'created_at', ascending: false, limit: 5000 });
     }
     downloadJson({ exported_at: new Date().toISOString(), data: result }, `platform_full_export_${new Date().toISOString().slice(0, 10)}.json`);
     setExportAll(false);
@@ -77,14 +77,14 @@ export default function DataExportImport() {
   const handleImport = async () => {
     if (!importPreview) return;
     const { entity, records } = importPreview;
-    if (!base44.entities[entity]) {
+    if (!tables.isKnown(entity)) {
       setImportError(`Unknown entity type: ${entity}`);
       return;
     }
     setImporting(true);
     setImportError(null);
     setImportSuccess(null);
-    await base44.entities[entity].bulkCreate(records.map(({ id, created_date, updated_date, ...rest }) => rest));
+    await tables.insertMany(entity, records.map(({ id, created_at, updated_at, ...rest }) => rest));
     setImportSuccess(`Successfully imported ${records.length} ${entity} records.`);
     setImportFile(null);
     setImportPreview(null);

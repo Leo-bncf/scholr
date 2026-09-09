@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Dialog,
   DialogContent,
@@ -14,6 +12,8 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Loader2, AlertCircle, Mail } from 'lucide-react';
+import * as schoolsData from '@/data/schools';
+import * as fns from '@/data/functions';
 import {
   DEFAULT_BILLING_STATUS,
   DEFAULT_SCHOOL_PLAN,
@@ -60,7 +60,7 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
       }
 
       // Create school
-      const newSchool = await base44.entities.School.create({
+      const newSchool = await schoolsData.create({
         name: formData.name,
         email: formData.email,
         billing_email: formData.email,
@@ -78,7 +78,7 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
       let warning = '';
       if (sendInvite) {
         try {
-          await base44.functions.invoke('sendInvitation', {
+          await fns.invoke('sendInvitation', {
             schoolId: newSchool.id,
             schoolName: newSchool.name,
             email: formData.email,

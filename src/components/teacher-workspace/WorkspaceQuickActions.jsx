@@ -1,5 +1,5 @@
 import React from 'react';
-import { FilePlus2, MessageSquare, Download } from 'lucide-react';
+import { MessageSquare, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CreateAssignment from '@/components/assignment/CreateAssignment';
 

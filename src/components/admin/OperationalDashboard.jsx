@@ -12,7 +12,6 @@ import {
   Settings,
   Lock,
   Zap,
-  Database,
 } from 'lucide-react';
 import DeploymentStatus from './DeploymentStatus';
 import EnvironmentStatus from './EnvironmentStatus';

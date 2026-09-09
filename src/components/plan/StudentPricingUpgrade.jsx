@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, Loader2, GraduationCap, Users, BookOpen, Zap, CreditCard } from 'lucide-react';
-import { PLAN_LIMITS, PLAN_NAMES, PLAN_DESCRIPTIONS, calcAnnualCost } from './PlanConfig';
+import { PLAN_LIMITS, PLAN_DESCRIPTIONS, calcAnnualCost } from './PlanConfig';
+import * as fns from '@/data/functions';
 
 const PLANS = [
   {
@@ -47,12 +47,12 @@ export default function StudentPricingUpgrade({ schoolId, currentPlan, currentSt
     }
     setLoading(true);
     try {
-      const response = await base44.functions.invoke('createCheckoutSession', {
+      const response = await fns.invoke('createCheckoutSession', {
         schoolId,
         plan: selectedPlan,
         studentCount,
       });
-      window.location.href = response.data.url;
+      window.location.href = response.url;
     } catch (error) {
       console.error('Checkout error:', error);
       setLoading(false);

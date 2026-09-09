@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Loader2, Plus, X } from 'lucide-react';
+import * as gradebookData from '@/data/gradebook';
 
 export default function CreateRubricGradeItem({ classData, onClose, trigger }) {
   const queryClient = useQueryClient();
@@ -22,7 +22,7 @@ export default function CreateRubricGradeItem({ classData, onClose, trigger }) {
   ]);
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.GradeItem.create(data),
+    mutationFn: (data) => gradebookData.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['class-grade-items'] });
       setOpen(false);

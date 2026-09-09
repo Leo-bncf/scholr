@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, FileText, Presentation, Table, AlertCircle } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
+import * as fns from '@/data/functions';
 
 const TYPE_LABELS = {
   google_doc: { label: 'Google Doc', icon: FileText },
@@ -34,19 +34,19 @@ export default function GoogleDocCreator({ type, open, onClose, onDocumentCreate
     setError(null);
 
     try {
-      const response = await base44.functions.invoke('googleDocsCreate', {
+      const response = await fns.invoke('googleDocsCreate', {
         title: title.trim(),
         type,
         assignmentId: new URLSearchParams(window.location.search).get('assignment_id'),
         schoolId,
       });
 
-      if (response.data.document) {
-        onDocumentCreated(response.data.document);
+      if (response.document) {
+        onDocumentCreated(response.document);
         setTitle('');
         onClose();
-      } else if (response.data.error) {
-        setError(response.data.error);
+      } else if (response.error) {
+        setError(response.error);
       }
     } catch (err) {
       setError(`Failed to create document: ${err.message}`);

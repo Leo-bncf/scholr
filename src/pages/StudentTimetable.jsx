@@ -1,17 +1,19 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import { Badge } from '@/components/ui/badge';
 import {
-  LayoutDashboard, BarChart3, Star, MessageSquare,
-  CalendarDays, Clock, MapPin, User, AlertTriangle,
+  CalendarDays, Clock, MapPin, User,
   ChevronLeft, ChevronRight, Loader2, Bell, Calendar
 } from 'lucide-react';
-import { format, addDays, subDays, startOfWeek, getDay, isPast, differenceInDays, isSameDay } from 'date-fns';
+import { format, addDays, subDays, startOfWeek, getDay, differenceInDays, isSameDay } from 'date-fns';
 import { getStudentSidebarLinks } from '@/components/app/studentSidebarLinks';
+import * as classesData from '@/data/classes';
+import * as scheduleEntriesData from '@/data/scheduleEntries';
+import * as assignmentsData from '@/data/assignments';
+import * as submissionsData from '@/data/submissions';
 
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const FULL_DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -207,7 +209,7 @@ export default function StudentTimetable() {
   const { data: classes = [], isLoading: loadingClasses } = useQuery({
     queryKey: ['student-classes', schoolId, user?.id],
     queryFn: async () => {
-      const all = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
+      const all = await classesData.where({ school_id: schoolId, status: 'active' });
       return all.filter(c => c.student_ids?.includes(user.id));
     },
     enabled: !!schoolId && !!user?.id,
@@ -216,7 +218,7 @@ export default function StudentTimetable() {
   const { data: scheduleEntries = [], isLoading: loadingSchedule } = useQuery({
     queryKey: ['student-schedule', schoolId, user?.id],
     queryFn: async () => {
-      const all = await base44.entities.ScheduleEntry.filter({ school_id: schoolId, status: 'active' });
+      const all = await scheduleEntriesData.where({ school_id: schoolId, status: 'active' });
       const classIds = new Set(classes.map(c => c.id));
       return all.filter(e => classIds.has(e.class_id));
     },
@@ -227,7 +229,7 @@ export default function StudentTimetable() {
     queryKey: ['student-assignments-tt', schoolId, user?.id],
     queryFn: async () => {
       const classIds = new Set(classes.map(c => c.id));
-      const all = await base44.entities.Assignment.filter({ school_id: schoolId, status: 'published' });
+      const all = await assignmentsData.where({ school_id: schoolId, status: 'published' });
       const classMap = Object.fromEntries(classes.map(c => [c.id, c.name]));
       return all.filter(a => classIds.has(a.class_id)).map(a => ({ ...a, class_name: classMap[a.class_id] || '' }));
     },
@@ -236,7 +238,7 @@ export default function StudentTimetable() {
 
   const { data: submissions = [] } = useQuery({
     queryKey: ['student-submissions-tt', schoolId, user?.id],
-    queryFn: () => base44.entities.Submission.filter({ school_id: schoolId, student_id: user?.id }),
+    queryFn: () => submissionsData.where({ school_id: schoolId, student_id: user?.id }),
     enabled: !!schoolId && !!user?.id,
   });
 

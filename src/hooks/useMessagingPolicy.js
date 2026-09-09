@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as messagingPoliciesData from '@/data/messagingPolicies';
 
 export const DEFAULT_MESSAGING_POLICY = {
   permission_rules: {
@@ -60,7 +60,7 @@ export const DEFAULT_MESSAGING_POLICY = {
 export function useMessagingPolicy(schoolId) {
   const { data: policies = [], isLoading } = useQuery({
     queryKey: ['messaging-policy', schoolId],
-    queryFn: () => base44.entities.MessagingPolicy.filter({ school_id: schoolId }),
+    queryFn: () => messagingPoliciesData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 

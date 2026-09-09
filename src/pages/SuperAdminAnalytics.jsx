@@ -1,8 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Area,
-  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
@@ -21,7 +19,6 @@ import {
   BarChart3,
   Download,
   DollarSign,
-  TrendingUp,
   Users,
   Building2,
 } from 'lucide-react';
@@ -119,25 +116,22 @@ export default function SuperAdminAnalytics() {
   const [reportType, setReportType] = useState('schools');
 
   const schools = data?.schools || [];
-  const memberships = data?.memberships || [];
   const auditLogs = data?.auditLogs || [];
-  const classes = data?.classes || [];
-  const subjects = data?.subjects || [];
-  const messages = data?.messages || [];
-  const attendanceRecords = data?.attendanceRecords || [];
-  const behaviorRecords = data?.behaviorRecords || [];
-  const casExperiences = data?.casExperiences || [];
+  // Only creation timestamps — the growth chart buckets these by month.
+  const memberships = data?.membershipDates || [];
+  // Adoption is computed in Postgres from the school_stats view.
+  const featureAdoption = data?.featureAdoption || [];
 
   const analytics = useMemo(() => {
-    const rangedSchools = schools.filter((school) => inRange(school.created_date, rangeDays));
-    const rangedMemberships = memberships.filter((membership) => inRange(membership.created_date, rangeDays));
-    const rangedAuditLogs = auditLogs.filter((log) => inRange(log.created_date, rangeDays));
+    const rangedSchools = schools.filter((school) => inRange(school.created_at, rangeDays));
+    const rangedMemberships = memberships.filter((membership) => inRange(membership.created_at, rangeDays));
+    const rangedAuditLogs = auditLogs.filter((log) => inRange(log.created_at, rangeDays));
     const monthBuckets = buildMonthBuckets(rangeDays >= 365 ? 12 : 6);
 
     const schoolGrowthSeries = monthBuckets.map((bucket) => {
-      const newSchools = schools.filter((school) => monthKey(new Date(school.created_date)) === bucket.key).length;
-      const newUsers = memberships.filter((membership) => monthKey(new Date(membership.created_date)) === bucket.key).length;
-      const activityEvents = auditLogs.filter((log) => monthKey(new Date(log.created_date)) === bucket.key).length;
+      const newSchools = schools.filter((school) => monthKey(new Date(school.created_at)) === bucket.key).length;
+      const newUsers = memberships.filter((membership) => monthKey(new Date(membership.created_at)) === bucket.key).length;
+      const activityEvents = auditLogs.filter((log) => monthKey(new Date(log.created_at)) === bucket.key).length;
       return {
         month: bucket.label,
         newSchools,
@@ -146,25 +140,6 @@ export default function SuperAdminAnalytics() {
       };
     });
 
-    const schoolIds = schools.map((school) => school.id);
-    const adoptionDefinitions = [
-      { key: 'subjects', label: 'Curriculum Setup', records: subjects },
-      { key: 'classes', label: 'Classes', records: classes },
-      { key: 'messages', label: 'Messaging', records: messages },
-      { key: 'attendance', label: 'Attendance', records: attendanceRecords },
-      { key: 'behavior', label: 'Behavior', records: behaviorRecords },
-      { key: 'cas', label: 'CAS', records: casExperiences },
-    ];
-
-    const featureAdoption = adoptionDefinitions.map((definition) => {
-      const adoptedIds = new Set(definition.records.map((record) => record.school_id).filter(Boolean));
-      const adoptedSchools = schoolIds.filter((id) => adoptedIds.has(id)).length;
-      return {
-        feature: definition.label,
-        schools: adoptedSchools,
-        adoptionRate: schools.length ? Math.round((adoptedSchools / schools.length) * 100) : 0,
-      };
-    });
 
     const billingMix = ['trial', 'active', 'past_due', 'incomplete', 'canceled']
       .map((status) => ({
@@ -181,7 +156,7 @@ export default function SuperAdminAnalytics() {
     const revenueSeries = monthBuckets.map((bucket) => ({
       month: bucket.label,
       mrrAdded: schools
-        .filter((school) => isPaidSchool(school) && monthKey(new Date(school.created_date)) === bucket.key)
+        .filter((school) => isPaidSchool(school) && monthKey(new Date(school.created_at)) === bucket.key)
         .reduce((sum, school) => sum + getPlanPrice(school.plan), 0),
     }));
     const avgNewSchools = Math.max(0, Math.round(average(growthValues.slice(-3))));
@@ -205,7 +180,7 @@ export default function SuperAdminAnalytics() {
         billing_status: school.billing_status,
         city: school.city,
         country: school.country,
-        created_date: school.created_date,
+        created_at: school.created_at,
       })),
       billing: schools.map((school) => ({
         school: school.name,

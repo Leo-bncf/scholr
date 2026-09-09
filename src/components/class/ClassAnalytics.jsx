@@ -1,16 +1,20 @@
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend
+  Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts';
 import {
   TrendingUp, Users, ClipboardCheck, BarChart3,
   CheckCircle, XCircle, Clock, AlertCircle, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { format, subDays, parseISO, startOfWeek } from 'date-fns';
+import * as assignmentsData from '@/data/assignments';
+import * as gradebookData from '@/data/gradebook';
+import * as submissionsData from '@/data/submissions';
+import * as attendanceData from '@/data/attendance';
+import * as membershipsData from '@/data/memberships';
 
 // ── small helpers ─────────────────────────────────────────────────────────────
 
@@ -264,31 +268,31 @@ export default function ClassAnalytics({ classData, isTeacher }) {
 
   const { data: assignments = [] } = useQuery({
     queryKey: ['analytics-assignments', classData.id],
-    queryFn: () => base44.entities.Assignment.filter({ school_id: classData.school_id, class_id: classData.id }),
+    queryFn: () => assignmentsData.where({ school_id: classData.school_id, class_id: classData.id }),
     enabled: isTeacher,
   });
 
   const { data: grades = [] } = useQuery({
     queryKey: ['analytics-grades', classData.id],
-    queryFn: () => base44.entities.GradeItem.filter({ school_id: classData.school_id, class_id: classData.id }),
+    queryFn: () => gradebookData.whereGradeItems({ school_id: classData.school_id, class_id: classData.id }),
     enabled: isTeacher,
   });
 
   const { data: submissions = [] } = useQuery({
     queryKey: ['analytics-submissions', classData.id],
-    queryFn: () => base44.entities.Submission.filter({ school_id: classData.school_id, class_id: classData.id }),
+    queryFn: () => submissionsData.where({ school_id: classData.school_id, class_id: classData.id }),
     enabled: isTeacher,
   });
 
   const { data: attendance = [] } = useQuery({
     queryKey: ['analytics-attendance', classData.id],
-    queryFn: () => base44.entities.AttendanceRecord.filter({ school_id: classData.school_id, class_id: classData.id }),
+    queryFn: () => attendanceData.whereRecords({ school_id: classData.school_id, class_id: classData.id }),
     enabled: isTeacher,
   });
 
   const { data: memberships = [] } = useQuery({
     queryKey: ['analytics-memberships', classData.school_id],
-    queryFn: () => base44.entities.SchoolMembership.filter({ school_id: classData.school_id, status: 'active' }),
+    queryFn: () => membershipsData.where({ school_id: classData.school_id, status: 'active' }),
     enabled: isTeacher,
   });
 

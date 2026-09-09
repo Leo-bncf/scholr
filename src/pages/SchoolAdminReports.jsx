@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import {
-  LayoutDashboard, FileText, FileSpreadsheet, Printer, Star, Users,
+  LayoutDashboard, FileSpreadsheet, Printer, Star, Users,
 } from 'lucide-react';
 import AdminTabNavigation from '@/components/admin/AdminTabNavigation';
 import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
@@ -14,6 +13,13 @@ import CSVExportToolkit from '@/components/reports/CSVExportToolkit';
 import PDFReportBuilder from '@/components/reports/PDFReportBuilder';
 import CoordinatorReports from '@/components/reports/CoordinatorReports';
 import ClassProgressReport from '@/components/reports/ClassProgressReport';
+import * as membershipsData from '@/data/memberships';
+import * as classesData from '@/data/classes';
+import * as gradebookData from '@/data/gradebook';
+import * as attendanceData from '@/data/attendance';
+import * as behaviorRecordsData from '@/data/behaviorRecords';
+import * as casExperiencesData from '@/data/casExperiences';
+import * as academics from '@/data/academics';
 
 
 
@@ -22,55 +28,55 @@ export default function SchoolAdminReports() {
 
   const { data: memberships = [] } = useQuery({
     queryKey: ['school-memberships-reports', schoolId],
-    queryFn: () => base44.entities.SchoolMembership.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => membershipsData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
   const { data: classes = [] } = useQuery({
     queryKey: ['school-classes-reports', schoolId],
-    queryFn: () => base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => classesData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
   const { data: grades = [] } = useQuery({
     queryKey: ['school-grades-reports', schoolId],
-    queryFn: () => base44.entities.GradeItem.filter({ school_id: schoolId }),
+    queryFn: () => gradebookData.whereGradeItems({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: attendance = [] } = useQuery({
     queryKey: ['school-attendance-reports', schoolId],
-    queryFn: () => base44.entities.AttendanceRecord.filter({ school_id: schoolId }),
+    queryFn: () => attendanceData.whereRecords({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: behavior = [] } = useQuery({
     queryKey: ['school-behavior-reports', schoolId],
-    queryFn: () => base44.entities.BehaviorRecord.filter({ school_id: schoolId }),
+    queryFn: () => behaviorRecordsData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: predictedGrades = [] } = useQuery({
     queryKey: ['school-pg-reports', schoolId],
-    queryFn: () => base44.entities.PredictedGrade.filter({ school_id: schoolId }),
+    queryFn: () => gradebookData.wherePredictedGrades({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: casExperiences = [] } = useQuery({
     queryKey: ['school-cas-reports', schoolId],
-    queryFn: () => base44.entities.CASExperience.filter({ school_id: schoolId }),
+    queryFn: () => casExperiencesData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: terms = [] } = useQuery({
     queryKey: ['school-terms-reports', schoolId],
-    queryFn: () => base44.entities.Term.filter({ school_id: schoolId }),
+    queryFn: () => academics.whereTerms({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: cohorts = [] } = useQuery({
     queryKey: ['school-cohorts-reports', schoolId],
-    queryFn: () => base44.entities.Cohort.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => academics.whereCohorts({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 

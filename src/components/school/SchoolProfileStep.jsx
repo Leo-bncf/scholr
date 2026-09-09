@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Check, AlertCircle } from 'lucide-react';
+import * as schoolsData from '@/data/schools';
 
 /**
  * School profile setup step
@@ -30,7 +29,7 @@ export default function SchoolProfileStep({ schoolId, onComplete }) {
   useEffect(() => {
     const loadSchool = async () => {
       try {
-        const schools = await base44.entities.School.filter({ id: schoolId });
+        const schools = await schoolsData.where({ id: schoolId });
         if (schools.length > 0) {
           const s = schools[0];
           setSchool(s);
@@ -64,7 +63,7 @@ export default function SchoolProfileStep({ schoolId, onComplete }) {
     setSuccess(false);
 
     try {
-      await base44.entities.School.update(schoolId, {
+      await schoolsData.update(schoolId, {
         name,
         email: email || undefined,
         phone: phone || undefined,

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Circle, ChevronRight, AlertCircle } from 'lucide-react';
+import { CheckCircle, Circle, ChevronRight } from 'lucide-react';
+import * as academics from '@/data/academics';
+import * as classesData from '@/data/classes';
+import * as membershipsData from '@/data/memberships';
 
 /**
  * Displays checklist of setup tasks with status
@@ -22,11 +24,11 @@ export default function SetupChecklist({ schoolId, onNavigate }) {
           classes,
           members
         ] = await Promise.all([
-          base44.entities.AcademicYear.filter({ school_id: schoolId }),
-          base44.entities.Term.filter({ school_id: schoolId }),
-          base44.entities.Subject.filter({ school_id: schoolId }),
-          base44.entities.Class.filter({ school_id: schoolId }),
-          base44.entities.SchoolMembership.filter({ school_id: schoolId })
+          academics.whereAcademicYears({ school_id: schoolId }),
+          academics.whereTerms({ school_id: schoolId }),
+          academics.whereSubjects({ school_id: schoolId }),
+          classesData.where({ school_id: schoolId }),
+          membershipsData.where({ school_id: schoolId })
         ]);
 
         const setupTasks = [

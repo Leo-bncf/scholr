@@ -1,17 +1,16 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Search, Users, UserPlus, UserMinus, Loader2, Lock, ChevronDown,
-  BookOpen, Check, Filter, AlertTriangle
+  BookOpen, Check, Filter
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import * as classesData from '@/data/classes';
 
 function EnrollDialog({ classObj, onClose, schoolId, memberships }) {
   const queryClient = useQueryClient();
@@ -34,7 +33,7 @@ function EnrollDialog({ classObj, onClose, schoolId, memberships }) {
   const [selected, setSelected] = useState([]);
 
   const enrollMutation = useMutation({
-    mutationFn: (ids) => base44.entities.Class.update(classObj.id, {
+    mutationFn: (ids) => classesData.update(classObj.id, {
       student_ids: [...new Set([...enrolledIds, ...ids])],
     }),
     onSuccess: () => {
@@ -142,7 +141,7 @@ export default function StudentEnrollmentTab({ schoolId, classes, memberships })
   const [enrollingClass, setEnrollingClass] = useState(null);
 
   const updateMutation = useMutation({
-    mutationFn: ({ classId, data }) => base44.entities.Class.update(classId, data),
+    mutationFn: ({ classId, data }) => classesData.update(classId, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['school-classes', schoolId] }),
   });
 

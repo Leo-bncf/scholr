@@ -44,7 +44,6 @@ import SchoolAdminMessagingPolicy from './pages/SchoolAdminMessagingPolicy';
 import SchoolAdminGovernance from './pages/SchoolAdminGovernance';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-import { RLSProvider } from '@/components/security/RLSProvider';
 import { ImpersonationProvider, useImpersonation } from '@/components/auth/ImpersonationContext';
 import ImpersonationBanner from '@/components/auth/ImpersonationBanner';
 
@@ -352,12 +351,10 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <ImpersonationProvider>
-          <RLSProvider>
-            <Router>
-              <ImpersonationBanner />
-              <AuthenticatedApp />
-            </Router>
-          </RLSProvider>
+          <Router>
+            <ImpersonationBanner />
+            <AuthenticatedApp />
+          </Router>
           <Toaster />
         </ImpersonationProvider>
       </QueryClientProvider>

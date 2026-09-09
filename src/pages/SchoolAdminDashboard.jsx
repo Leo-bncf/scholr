@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@/components/auth/UserContext';
 import { useSchoolOperationsData } from '@/components/hooks/useSchoolOperationsData';
-import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import {
   Activity, ShieldCheck, Zap, Sparkles,
@@ -16,6 +15,7 @@ import OperationalAlerts from '@/components/dashboard/OperationalAlerts';
 import QuickActionsHub from '@/components/dashboard/QuickActionsHub';
 import OnboardingChecklist from '@/components/onboarding/OnboardingChecklist';
 import { format } from 'date-fns';
+import { redirectToLogin } from '@/data/session';
 
 
 
@@ -53,7 +53,7 @@ export default function SchoolAdminDashboard() {
 
   useEffect(() => {
     if (!userLoading && !user) {
-      base44.auth.redirectToLogin(createPageUrl('AppHome'));
+      redirectToLogin(createPageUrl('AppHome'));
     }
   }, [user, userLoading]);
 

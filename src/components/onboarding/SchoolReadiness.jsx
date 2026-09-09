@@ -1,8 +1,12 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import * as membershipsData from '@/data/memberships';
+import * as userInvitationsData from '@/data/userInvitations';
+import * as classesData from '@/data/classes';
+import * as academics from '@/data/academics';
+import * as parentStudentLinksData from '@/data/parentStudentLinks';
 import {
   GraduationCap, Users, BookOpen, Layers, Mail, Link2,
   CheckCircle2, AlertCircle, Rocket, Clock
@@ -18,12 +22,12 @@ export default function SchoolReadiness({ schoolId }) {
     queryKey: ['school-readiness', schoolId],
     queryFn: async () => {
       const [memberships, invitations, classes, subjects, links, academicYears] = await Promise.all([
-        base44.entities.SchoolMembership.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.UserInvitation.filter({ school_id: schoolId }),
-        base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.Subject.filter({ school_id: schoolId }),
-        base44.entities.ParentStudentLink.filter({ school_id: schoolId }),
-        base44.entities.AcademicYear.filter({ school_id: schoolId }),
+        membershipsData.where({ school_id: schoolId, status: 'active' }),
+        userInvitationsData.where({ school_id: schoolId }),
+        classesData.where({ school_id: schoolId, status: 'active' }),
+        academics.whereSubjects({ school_id: schoolId }),
+        parentStudentLinksData.where({ school_id: schoolId }),
+        academics.whereAcademicYears({ school_id: schoolId }),
       ]);
 
       const teachers = memberships.filter(m => ['teacher', 'ib_coordinator'].includes(m.role));

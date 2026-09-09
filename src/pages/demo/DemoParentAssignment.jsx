@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import DemoShell from '@/components/demo-sandbox/DemoShell';
 import AppStyleCard from '@/components/demo-sandbox/AppStyleCard';
-import { Badge } from '@/components/ui/badge';
 import {
   PARENT, getAssignment, getClass, getSubject, getTeacher,
-  getSubmission, getFeedbackForSubmission, getChildrenOf,
+  getSubmission, getFeedbackForSubmission,
 } from '@/components/demo-sandbox/mockSchoolData';
 import {
   ArrowLeft, Calendar, CheckCircle2, Clock, AlertCircle, CircleDashed,

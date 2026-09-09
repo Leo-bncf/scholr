@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, Loader2, ShieldAlert } from 'lucide-react';
+import * as schoolsData from '@/data/schools';
 
 export default function MaintenanceModePanel({ schools }) {
   const [platformMaintenance, setPlatformMaintenance] = useState(false);
@@ -21,7 +21,7 @@ export default function MaintenanceModePanel({ schools }) {
     const promises = schools
       .filter((school) => schoolMaintenance[school.id] !== undefined)
       .map((school) =>
-        base44.entities.School.update(school.id, {
+        schoolsData.update(school.id, {
           status: schoolMaintenance[school.id] ? 'suspended' : 'active',
         })
       );

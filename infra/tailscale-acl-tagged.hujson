@@ -1,0 +1,106 @@
+// Tailnet policy — isolation by DEVICE TAG, no per-user accounts.
+//
+// Leo chose to add Conor's and Alec's laptops as tagged devices rather than
+// invite them as Tailscale users. That works: a device joined with a tagged
+// auth key is owned by the tag, not by the account that issued the key, and
+// ACL rules can be written against tags.
+//
+// The trade-off to know about: this constrains MACHINES, not PEOPLE. Every
+// tag:scholr device is identical to the policy — you cannot tell Conor from
+// Alec, and anyone holding a tag:scholr auth key can join another machine to
+// that group. Revocation is per-device, from the admin console.
+//
+// Default deny: only the rules below permit anything.
+
+{
+  "tagOwners": {
+    "tag:infra":    ["support@schedual-pro.com"],
+    "tag:schedual": ["support@schedual-pro.com"],
+    "tag:scholr":   ["support@schedual-pro.com"],
+    "tag:ai-agent": ["support@schedual-pro.com"],
+  },
+
+  "acls": [
+    // ── Leo / Erik (the account) reach everything, both products ───────────
+    // Their own machines are untagged and owned by this account, so this is
+    // what keeps CODE ROUGE working.
+    {
+      "action": "accept",
+      "src":    ["support@schedual-pro.com"],
+      "dst":    ["*:*"],
+    },
+
+    // ── Scholr devices reach Scholr only ───────────────────────────────────
+    // This covers Conor's and Alec's laptops AND scholr-prod. There is
+    // deliberately no rule from tag:scholr to tag:schedual or tag:infra, so
+    // the default deny fences them out.
+    {
+      "action": "accept",
+      "src":    ["tag:scholr"],
+      "dst":    ["tag:scholr:*"],
+    },
+
+    // ── Schedual servers among themselves ──────────────────────────────────
+    // Required for the things that already run over the tailnet: Postgres
+    // streaming replication sched-prod -> sched-standby, and prod reaching
+    // the solver and the n8n box.
+    {
+      "action": "accept",
+      "src":    ["tag:schedual"],
+      "dst":    ["tag:schedual:*"],
+    },
+  ],
+
+  "ssh": [
+    // Account holders: anything, including root.
+    {
+      "action": "accept",
+      "src":    ["support@schedual-pro.com"],
+      "dst":    ["tag:infra", "tag:schedual", "tag:scholr"],
+      "users":  ["root", "autogroup:nonroot"],
+    },
+
+    // Scholr devices: unprivileged shells on Scholr boxes only. No root, so
+    // sudo remains a second gate.
+    {
+      "action": "accept",
+      "src":    ["tag:scholr"],
+      "dst":    ["tag:scholr"],
+      "users":  ["autogroup:nonroot"],
+    },
+  ],
+
+  // These run on every save. If a later edit ever lets a Scholr laptop reach
+  // Schedual, Tailscale refuses the policy instead of quietly allowing it.
+  "tests": [
+    {
+      // The isolation Leo actually asked for.
+      "src":    "tag:scholr",
+      "accept": ["tag:scholr:22", "tag:scholr:443"],
+      "deny": [
+        "tag:schedual:22",
+        "tag:schedual:5432",
+        "tag:schedual:443",
+        "tag:infra:8006",
+        "tag:infra:22",
+      ],
+    },
+    {
+      // Leo keeps everything — including the two hosts CODE ROUGE needs.
+      "src":    "support@schedual-pro.com",
+      "accept": [
+        "100.121.81.45:22",
+        "100.101.121.61:22",
+        "100.91.152.126:8006",
+        "tag:scholr:22",
+      ],
+    },
+    {
+      // Schedual's own plumbing must survive the tightening: replication to
+      // the standby and prod -> solver.
+      "src":    "tag:schedual",
+      "accept": ["tag:schedual:5432", "tag:schedual:8080", "tag:schedual:22"],
+      "deny":   ["tag:scholr:22"],
+    },
+  ],
+}

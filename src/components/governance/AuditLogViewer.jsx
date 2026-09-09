@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -9,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Search, Download, RefreshCw, AlertTriangle, Info, ShieldAlert, ChevronDown, ChevronUp } from 'lucide-react';
 import { format } from 'date-fns';
 import { buildCSV, downloadCSV } from '@/components/reports/reportUtils';
+import * as admin from '@/data/admin';
 
 const CATEGORY_MAP = {
   user_created: 'Users', user_invited: 'Users', user_role_changed: 'Users',
@@ -54,8 +54,8 @@ function LogRow({ log }) {
         onClick={() => setExpanded(e => !e)}
       >
         <div className="w-36 shrink-0">
-          <p className="text-xs text-slate-500">{log.created_date ? format(new Date(log.created_date), 'dd MMM yyyy') : '—'}</p>
-          <p className="text-xs text-slate-400">{log.created_date ? format(new Date(log.created_date), 'HH:mm:ss') : ''}</p>
+          <p className="text-xs text-slate-500">{log.created_at ? format(new Date(log.created_at), 'dd MMM yyyy') : '—'}</p>
+          <p className="text-xs text-slate-400">{log.created_at ? format(new Date(log.created_at), 'HH:mm:ss') : ''}</p>
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
@@ -80,7 +80,7 @@ function LogRow({ log }) {
             <div><span className="text-slate-400 font-medium">Entity Type:</span> <span className="text-slate-700">{log.entity_type || '—'}</span></div>
             <div><span className="text-slate-400 font-medium">Entity ID:</span> <span className="text-slate-700 font-mono truncate">{log.entity_id || '—'}</span></div>
             <div className="col-span-2"><span className="text-slate-400 font-medium">Details:</span> <span className="text-slate-700">{log.details || '—'}</span></div>
-            <div className="col-span-2"><span className="text-slate-400 font-medium">Timestamp:</span> <span className="text-slate-700">{log.created_date ? format(new Date(log.created_date), "dd MMM yyyy 'at' HH:mm:ss") : '—'}</span></div>
+            <div className="col-span-2"><span className="text-slate-400 font-medium">Timestamp:</span> <span className="text-slate-700">{log.created_at ? format(new Date(log.created_at), "dd MMM yyyy 'at' HH:mm:ss") : '—'}</span></div>
           </div>
         </div>
       )}
@@ -100,7 +100,7 @@ export default function AuditLogViewer({ schoolId }) {
 
   const { data: logs = [], isLoading, refetch } = useQuery({
     queryKey: ['audit-logs-school', schoolId],
-    queryFn: () => base44.entities.AuditLog.filter({ school_id: schoolId }, '-created_date', 500),
+    queryFn: () => admin.whereAuditLogs({ school_id: schoolId }, { order: 'created_at', ascending: false, limit: 500 }),
     enabled: !!schoolId,
     staleTime: 30_000,
   });
@@ -111,8 +111,8 @@ export default function AuditLogViewer({ schoolId }) {
       if (level !== 'all' && log.level !== level) return false;
       if (userFilter && !log.user_email?.toLowerCase().includes(userFilter.toLowerCase())) return false;
       if (search && !log.details?.toLowerCase().includes(search.toLowerCase()) && !log.action?.toLowerCase().includes(search.toLowerCase())) return false;
-      if (dateFrom && log.created_date < dateFrom) return false;
-      if (dateTo && log.created_date > dateTo + 'T23:59:59') return false;
+      if (dateFrom && log.created_at < dateFrom) return false;
+      if (dateTo && log.created_at > dateTo + 'T23:59:59') return false;
       return true;
     });
   }, [logs, category, level, userFilter, search, dateFrom, dateTo]);
@@ -122,7 +122,7 @@ export default function AuditLogViewer({ schoolId }) {
 
   const exportCSV = () => {
     const cols = [
-      { key: 'created_date', label: 'Timestamp', fn: r => r.created_date ? format(new Date(r.created_date), 'yyyy-MM-dd HH:mm:ss') : '' },
+      { key: 'created_at', label: 'Timestamp', fn: r => r.created_at ? format(new Date(r.created_at), 'yyyy-MM-dd HH:mm:ss') : '' },
       { key: 'action', label: 'Action' },
       { key: 'level', label: 'Level' },
       { key: 'user_email', label: 'User Email' },

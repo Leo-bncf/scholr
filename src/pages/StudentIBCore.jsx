@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -9,13 +8,14 @@ import CASExperienceCard from '@/components/ibcore/CASExperienceCard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  LayoutDashboard, BarChart3, Star, MessageSquare, CalendarDays,
-  ClipboardList, Plus, Loader2, Filter, FileText, Clock,
+import { Star, Plus, Loader2, Filter, FileText, Clock,
   CheckCircle2, Upload, BookOpen
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { getStudentSidebarLinks } from '@/components/app/studentSidebarLinks';
+import * as casExperiencesData from '@/data/casExperiences';
+import * as tokTasksData from '@/data/tokTasks';
+import * as eeMilestonesData from '@/data/eeMilestones';
 
 const milestoneOrder = ['initial_proposal', 'first_meeting', 'research_planning', 'first_draft', 'interim_reflection', 'second_draft', 'final_draft', 'viva_voce'];
 const milestoneLabels = {
@@ -43,7 +43,7 @@ function CASTab({ schoolId, userId }) {
 
   const { data: experiences = [], isLoading } = useQuery({
     queryKey: ['student-cas', schoolId, userId],
-    queryFn: () => base44.entities.CASExperience.filter({ school_id: schoolId, student_id: userId }),
+    queryFn: () => casExperiencesData.where({ school_id: schoolId, student_id: userId }),
     enabled: !!schoolId && !!userId,
   });
 
@@ -119,8 +119,8 @@ function TOKTab({ schoolId, userId }) {
     queryKey: ['student-tok', schoolId, userId],
     queryFn: async () => {
       const [mine, classWide] = await Promise.all([
-        base44.entities.TOKTask.filter({ school_id: schoolId, student_id: userId }),
-        base44.entities.TOKTask.filter({ school_id: schoolId, is_class_wide: true }),
+        tokTasksData.where({ school_id: schoolId, student_id: userId }),
+        tokTasksData.where({ school_id: schoolId, is_class_wide: true }),
       ]);
       return [...mine, ...classWide];
     },
@@ -204,7 +204,7 @@ function TOKTab({ schoolId, userId }) {
 function EETab({ schoolId, userId }) {
   const { data: milestones = [], isLoading } = useQuery({
     queryKey: ['student-ee', schoolId, userId],
-    queryFn: () => base44.entities.EEMilestone.filter({ school_id: schoolId, student_id: userId }),
+    queryFn: () => eeMilestonesData.where({ school_id: schoolId, student_id: userId }),
     enabled: !!schoolId && !!userId,
   });
 

@@ -1,9 +1,10 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Clock, MapPin, User } from 'lucide-react';
 import { format, getDay } from 'date-fns';
+import * as scheduleEntriesData from '@/data/scheduleEntries';
+import * as classesData from '@/data/classes';
 
 export default function TodaySchedule({ schoolId, userId, userRole }) {
   const today = getDay(new Date()); // 0=Sunday, 1=Monday, etc.
@@ -11,7 +12,7 @@ export default function TodaySchedule({ schoolId, userId, userRole }) {
   const { data: scheduleEntries = [], isLoading } = useQuery({
     queryKey: ['today-schedule', schoolId, userId, today],
     queryFn: async () => {
-      const all = await base44.entities.ScheduleEntry.filter({
+      const all = await scheduleEntriesData.where({
         school_id: schoolId,
         day_of_week: today,
         status: 'active'
@@ -20,7 +21,7 @@ export default function TodaySchedule({ schoolId, userId, userRole }) {
       // Filter based on role
       if (userRole === 'student') {
         // Get student's classes
-        const classes = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
+        const classes = await classesData.where({ school_id: schoolId, status: 'active' });
         const studentClasses = classes.filter(c => c.student_ids?.includes(userId));
         const studentClassIds = studentClasses.map(c => c.id);
         return all.filter(e => studentClassIds.includes(e.class_id)).sort((a, b) => 

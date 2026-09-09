@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
+import { signOut } from '@/data/session';
 import {
   Activity,
   BarChart3,
@@ -50,7 +50,7 @@ export default function SuperAdminShell({ activeItem, currentUser, children }) {
           <div className="flex items-center gap-3 min-w-0">
             <span className="hidden md:block text-slate-500 text-sm truncate max-w-[240px]">{currentUser.email}</span>
             <Button
-              onClick={() => base44.auth.logout()}
+              onClick={() => signOut()}
               variant="ghost"
               size="sm"
               className="text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-xs"

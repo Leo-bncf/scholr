@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
-  Archive, RotateCcw, Copy, Scissors, Merge, CheckCircle,
-  Loader2, BookOpen, AlertTriangle, Info, ChevronRight, Users
+  Archive, RotateCcw, Copy, Scissors,
+  Loader2, AlertTriangle, Info
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
+import * as classesData from '@/data/classes';
+import * as fns from '@/data/functions';
 
 function DuplicateDialog({ classObj, onClose, schoolId, academicYears }) {
   const queryClient = useQueryClient();
@@ -43,7 +43,7 @@ function DuplicateDialog({ classObj, onClose, schoolId, academicYears }) {
         subject_teacher_assignments: keepSubjects ? (classObj.subject_teacher_assignments || []) : [],
         roster_locked: false,
       };
-      return base44.entities.Class.create(payload);
+      return classesData.create(payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['school-classes', schoolId] });
@@ -144,10 +144,10 @@ function SplitDialog({ classObj, onClose, schoolId, memberships }) {
         status: 'active',
         roster_locked: false,
       };
-      await base44.entities.Class.create({ ...base, name: nameA, student_ids: groupA });
-      await base44.entities.Class.create({ ...base, name: nameB, student_ids: groupB });
+      await classesData.create({ ...base, name: nameA, student_ids: groupA });
+      await classesData.create({ ...base, name: nameB, student_ids: groupB });
       // Archive original
-      await base44.entities.Class.update(classObj.id, { status: 'archived' });
+      await classesData.update(classObj.id, { status: 'archived' });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['school-classes', schoolId] });
@@ -226,12 +226,12 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
 
   const archiveMutation = useMutation({
     mutationFn: async ({ id, status }) => {
-      const res = await base44.functions.invoke('updateClassStatus', { classId: id, status });
-      const errMsg = res?.data?.error || res?.error;
+      const res = await fns.invoke('updateClassStatus', { classId: id, status });
+      const errMsg = res?.error || res?.error;
       if (errMsg) throw new Error(errMsg);
-      const failure = res?.data?.failures?.[0];
+      const failure = res?.failures?.[0];
       if (failure) throw new Error(failure.error || 'Update failed');
-      return res?.data;
+      return res;
     },
     onSuccess: (_data, vars) => {
       queryClient.invalidateQueries({ queryKey: ['school-classes', schoolId] });
@@ -248,10 +248,10 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
 
   const bulkArchiveMutation = useMutation({
     mutationFn: async (ids) => {
-      const res = await base44.functions.invoke('updateClassStatus', { classIds: ids, status: 'archived' });
-      const errMsg = res?.data?.error || res?.error;
+      const res = await fns.invoke('updateClassStatus', { classIds: ids, status: 'archived' });
+      const errMsg = res?.error || res?.error;
       if (errMsg) throw new Error(errMsg);
-      return res?.data;
+      return res;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['school-classes', schoolId] });

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as notificationsData from '@/data/notifications';
 import { Bell } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,23 +13,22 @@ export default function NotificationBell({ userId, schoolId }) {
 
   const { data: notifications = [] } = useQuery({
     queryKey: ['user-notifications', userId, schoolId],
-    queryFn: () => base44.entities.Notification.filter({ user_id: userId, school_id: schoolId }, '-timestamp', 30),
+    queryFn: () => notificationsData.where({ user_id: userId, school_id: schoolId }, { order: 'timestamp', ascending: false, limit: 30 }),
     enabled: !!userId && !!schoolId,
     initialData: [],
   });
 
   useEffect(() => {
     if (!userId || !schoolId) return;
-    const unsubscribe = base44.entities.Notification.subscribe((event) => {
-      if (event.data?.user_id === userId && event.data?.school_id === schoolId) {
-        queryClient.invalidateQueries({ queryKey: ['user-notifications', userId, schoolId] });
-      }
+    // Filtered server-side by user_id, so this only fires for rows that
+    // concern this user rather than every change in the app.
+    return notificationsData.subscribe({ userId, schoolId }, () => {
+      queryClient.invalidateQueries({ queryKey: ['user-notifications', userId, schoolId] });
     });
-    return unsubscribe;
   }, [userId, schoolId, queryClient]);
 
   const toggleMutation = useMutation({
-    mutationFn: (notification) => base44.entities.Notification.update(notification.id, { read_status: !notification.read_status }),
+    mutationFn: (notification) => notificationsData.update(notification.id, { read_status: !notification.read_status }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['user-notifications', userId, schoolId] }),
   });
 

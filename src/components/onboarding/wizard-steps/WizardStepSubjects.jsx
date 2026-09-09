@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, Plus, Trash2, BookOpen } from 'lucide-react';
 import { getSubjectTemplate } from '@/lib/curriculumTemplates';
 import { getCurriculumConfig } from '@/lib/curriculumConfig';
+import * as academics from '@/data/academics';
 
 export default function WizardStepSubjects({ schoolId, curriculum = 'ib_dp', onDone }) {
   const queryClient = useQueryClient();
@@ -22,7 +22,7 @@ export default function WizardStepSubjects({ schoolId, curriculum = 'ib_dp', onD
 
   const { data: existingSubjects = [], refetch } = useQuery({
     queryKey: ['subjects-wizard', schoolId],
-    queryFn: () => base44.entities.Subject.filter({ school_id: schoolId }),
+    queryFn: () => academics.whereSubjects({ school_id: schoolId }),
   });
 
   const toggleTemplate = (code) => {
@@ -47,7 +47,7 @@ export default function WizardStepSubjects({ schoolId, curriculum = 'ib_dp', onD
       : subjects.filter(s => s.name.trim());
 
     await Promise.all(
-      toCreate.map(s => base44.entities.Subject.create({ ...s, school_id: schoolId, status: 'active' }))
+      toCreate.map(s => academics.createSubject({ ...s, school_id: schoolId, status: 'active' }))
     );
     await refetch();
     queryClient.invalidateQueries({ queryKey: ['onboarding-status', schoolId] });

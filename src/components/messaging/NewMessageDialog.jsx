@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,6 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Loader2, Plus, Send, Moon, AlertTriangle } from 'lucide-react';
 import { useMessagingPolicy } from '@/hooks/useMessagingPolicy';
+import * as classesData from '@/data/classes';
+import * as parentStudentLinksData from '@/data/parentStudentLinks';
+import * as membershipsData from '@/data/memberships';
+import * as messagesData from '@/data/messages';
 
 export default function NewMessageDialog({ userId, userName, userRole, schoolId, onClose, trigger }) {
   const queryClient = useQueryClient();
@@ -20,7 +23,7 @@ export default function NewMessageDialog({ userId, userName, userRole, schoolId,
   const { data: teacherClasses = [] } = useQuery({
     queryKey: ['messaging-teacher-classes', schoolId, userId],
     queryFn: async () => {
-      const all = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
+      const all = await classesData.where({ school_id: schoolId, status: 'active' });
       return all.filter(c => c.teacher_ids?.includes(userId));
     },
     enabled: userRole === 'teacher' && !!schoolId && !!userId,
@@ -29,7 +32,7 @@ export default function NewMessageDialog({ userId, userName, userRole, schoolId,
   const { data: studentClasses = [] } = useQuery({
     queryKey: ['messaging-student-classes', schoolId, userId],
     queryFn: async () => {
-      const all = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
+      const all = await classesData.where({ school_id: schoolId, status: 'active' });
       return all.filter(c => c.student_ids?.includes(userId));
     },
     enabled: (userRole === 'student') && !!schoolId && !!userId,
@@ -38,9 +41,9 @@ export default function NewMessageDialog({ userId, userName, userRole, schoolId,
   const { data: parentClasses = [] } = useQuery({
     queryKey: ['messaging-parent-classes', schoolId, userId],
     queryFn: async () => {
-      const links = await base44.entities.ParentStudentLink.filter({ parent_id: userId });
+      const links = await parentStudentLinksData.where({ parent_id: userId });
       const childIds = links.map(l => l.student_id);
-      const all = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
+      const all = await classesData.where({ school_id: schoolId, status: 'active' });
       return all.filter(c => childIds.some(id => c.student_ids?.includes(id)));
     },
     enabled: userRole === 'parent' && !!schoolId && !!userId,
@@ -55,14 +58,14 @@ export default function NewMessageDialog({ userId, userName, userRole, schoolId,
 
   const { data: classMembers = [] } = useQuery({
     queryKey: ['messaging-members', schoolId, form.context],
-    queryFn: () => base44.entities.SchoolMembership.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => membershipsData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!form.context,
   });
 
   // For admin/coordinator: load all staff for school-wide messaging
   const { data: allStaff = [] } = useQuery({
     queryKey: ['messaging-staff', schoolId],
-    queryFn: () => base44.entities.SchoolMembership.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => membershipsData.where({ school_id: schoolId, status: 'active' }),
     enabled: (userRole === 'school_admin' || userRole === 'ib_coordinator') && !!schoolId,
   });
 
@@ -83,10 +86,10 @@ export default function NewMessageDialog({ userId, userName, userRole, schoolId,
   const recipients = getRecipients();
 
   const sendMutation = useMutation({
-    mutationFn: (data) => base44.entities.Message.create(data),
+    mutationFn: (data) => messagesData.create(data),
     onSuccess: (newMsg) => {
       // Set thread_id to the new message's id to start a thread
-      base44.entities.Message.update(newMsg.id, { thread_id: newMsg.id });
+      messagesData.update(newMsg.id, { thread_id: newMsg.id });
       queryClient.invalidateQueries({ queryKey: ['user-conversations'] });
       setOpen(false);
       if (onClose) onClose();

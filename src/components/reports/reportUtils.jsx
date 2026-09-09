@@ -44,7 +44,7 @@ export const COLUMNS = {
     { key: 'user_email', label: 'Email' },
     { key: 'grade_level', label: 'Grade Level' },
     { key: 'status', label: 'Status' },
-    { key: 'created_date', label: 'Enrolled Date', fn: r => r.created_date ? format(new Date(r.created_date), 'yyyy-MM-dd') : '' },
+    { key: 'created_at', label: 'Enrolled Date', fn: r => r.created_at ? format(new Date(r.created_at), 'yyyy-MM-dd') : '' },
   ],
   teachers: [
     { key: 'user_id', label: 'User ID' },
@@ -90,7 +90,7 @@ export const COLUMNS = {
     { key: 'ib_grade', label: 'IB Grade (1-7)' },
     { key: 'status', label: 'Status' },
     { key: 'term_id', label: 'Term ID' },
-    { key: 'created_date', label: 'Date', fn: r => r.created_date ? format(new Date(r.created_date), 'yyyy-MM-dd') : '' },
+    { key: 'created_at', label: 'Date', fn: r => r.created_at ? format(new Date(r.created_at), 'yyyy-MM-dd') : '' },
   ],
   attendance: [
     { key: 'student_name', label: 'Student Name' },

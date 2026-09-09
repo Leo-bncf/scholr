@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { canAccessSuperAdmin, SUPER_ADMIN_ALLOWED_ROLES } from '@/components/admin/super-admin/superAdminConfig';
+import { getCurrentUser, isAuthenticated } from '@/data/session';
 
 export function useSuperAdminAccess(navigate, allowedRoles = SUPER_ADMIN_ALLOWED_ROLES) {
   const [currentUser, setCurrentUser] = useState(null);
@@ -11,14 +11,14 @@ export function useSuperAdminAccess(navigate, allowedRoles = SUPER_ADMIN_ALLOWED
     let cancelled = false;
 
     const checkAccess = async () => {
-      const authed = await base44.auth.isAuthenticated();
+      const authed = await isAuthenticated();
       if (!authed) {
         navigate('/');
         if (!cancelled) setIsChecking(false);
         return;
       }
 
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       if (!canAccessSuperAdmin(user, allowedRoles)) {
         navigate('/');
         if (!cancelled) setIsChecking(false);

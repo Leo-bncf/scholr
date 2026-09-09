@@ -40,7 +40,7 @@ export default function SuperAdminDashboard() {
     return null;
   }
 
-  const recentSchools = [...schools].sort((a, b) => new Date(b.created_date) - new Date(a.created_date)).slice(0, 8);
+  const recentSchools = [...schools].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 8);
   const atRiskSchools = schools.filter(
     (school) => school.billing_status === 'past_due' || school.billing_status === 'incomplete' || school.status === 'suspended'
   );

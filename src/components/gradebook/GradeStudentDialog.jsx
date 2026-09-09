@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -12,6 +11,7 @@ import { logAudit, AuditActions, AuditLevels } from '@/components/utils/auditLog
 import { useGradebookPolicy } from '@/hooks/useGradebookPolicy';
 import { useUser } from '@/components/auth/UserContext';
 import { getCurriculumConfig } from '@/lib/curriculumConfig';
+import * as gradebookData from '@/data/gradebook';
 
 export default function GradeStudentDialog({ gradeItem, student, existingGrade, open, onClose }) {
   const queryClient = useQueryClient();
@@ -47,7 +47,7 @@ export default function GradeStudentDialog({ gradeItem, student, existingGrade, 
     mutationFn: async (data) => {
       let result;
       if (existingGrade) {
-        result = await base44.entities.GradeItem.update(existingGrade.id, data);
+        result = await gradebookData.update(existingGrade.id, data);
         await logAudit({
           action: AuditActions.GRADE_UPDATED,
           entityType: 'GradeItem',
@@ -57,7 +57,7 @@ export default function GradeStudentDialog({ gradeItem, student, existingGrade, 
           schoolId: gradeItem.school_id,
         });
       } else {
-        result = await base44.entities.GradeItem.create(data);
+        result = await gradebookData.create(data);
         await logAudit({
           action: AuditActions.GRADE_CREATED,
           entityType: 'GradeItem',

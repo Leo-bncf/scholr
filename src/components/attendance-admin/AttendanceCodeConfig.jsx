@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Plus, Trash2, Save, Tag, BookOpen } from 'lucide-react';
+import * as attendancePoliciesData from '@/data/attendancePolicies';
 
 const COLOR_OPTIONS = [
   { value: 'emerald', label: 'Green', bg: 'bg-emerald-100', text: 'text-emerald-800', border: 'border-emerald-300' },
@@ -40,7 +40,7 @@ export default function AttendanceCodeConfig({ schoolId }) {
 
   const { data: policies = [], isLoading } = useQuery({
     queryKey: ['attendance-policy', schoolId],
-    queryFn: () => base44.entities.AttendancePolicy.filter({ school_id: schoolId }),
+    queryFn: () => attendancePoliciesData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
@@ -70,9 +70,9 @@ export default function AttendanceCodeConfig({ schoolId }) {
   const saveMutation = useMutation({
     mutationFn: async (data) => {
       if (policy) {
-        return base44.entities.AttendancePolicy.update(policy.id, data);
+        return attendancePoliciesData.update(policy.id, data);
       }
-      return base44.entities.AttendancePolicy.create({ school_id: schoolId, ...data });
+      return attendancePoliciesData.create({ school_id: schoolId, ...data });
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['attendance-policy', schoolId] }),
   });

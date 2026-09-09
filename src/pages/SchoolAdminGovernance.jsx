@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -12,6 +11,7 @@ import AuditLogViewer from '@/components/governance/AuditLogViewer';
 import ChangeReasonEnforcement from '@/components/governance/ChangeReasonEnforcement';
 import DataRetentionPanel from '@/components/governance/DataRetentionPanel';
 import PrivacyRequestsPanel from '@/components/governance/PrivacyRequestsPanel';
+import * as governancePoliciesData from '@/data/governancePolicies';
 
 
 
@@ -60,7 +60,7 @@ export default function SchoolAdminGovernance() {
   const { data: policyRecord, isLoading } = useQuery({
     queryKey: ['governance-policy', schoolId],
     queryFn: async () => {
-      const results = await base44.entities.GovernancePolicy.filter({ school_id: schoolId });
+      const results = await governancePoliciesData.where({ school_id: schoolId });
       return results[0] || null;
     },
     enabled: !!schoolId,
@@ -83,8 +83,8 @@ export default function SchoolAdminGovernance() {
     mutationFn: (data) => {
       const payload = { ...data, school_id: schoolId };
       return policyRecord
-        ? base44.entities.GovernancePolicy.update(policyRecord.id, payload)
-        : base44.entities.GovernancePolicy.create(payload);
+        ? governancePoliciesData.update(policyRecord.id, payload)
+        : governancePoliciesData.create(payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['governance-policy', schoolId] });

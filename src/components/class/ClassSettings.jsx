@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, Settings, Archive } from 'lucide-react';
+import * as classesData from '@/data/classes';
+import * as fns from '@/data/functions';
 
 export default function ClassSettings({ classData, isTeacher }) {
   const queryClient = useQueryClient();
@@ -16,14 +17,14 @@ export default function ClassSettings({ classData, isTeacher }) {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data) => base44.entities.Class.update(classData.id, data),
+    mutationFn: (data) => classesData.update(classData.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['class-details'] });
     },
   });
 
   const archiveMutation = useMutation({
-    mutationFn: () => base44.functions.invoke('archiveClass', { classId: classData.id, schoolId: classData.school_id }),
+    mutationFn: () => fns.invoke('updateClassStatus', { classId: classData.id, status: 'archived' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['class-details'] });
       queryClient.invalidateQueries({ queryKey: ['school-classes'] });

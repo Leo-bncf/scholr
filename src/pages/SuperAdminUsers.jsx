@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Search, Users, Trash2, UserX } from 'lucide-react';
 import ManageUserDialog from '@/components/admin/ManageUserDialog';
@@ -13,6 +12,7 @@ import SuperAdminShell from '@/components/admin/super-admin/SuperAdminShell';
 import { useSuperAdminAccess } from '@/components/hooks/useSuperAdminAccess';
 import { usePaginatedItems, useSuperAdminUsersQuery } from '@/components/hooks/useSuperAdminData';
 import { useToast } from '@/components/ui/use-toast';
+import * as fns from '@/data/functions';
 
 const PAGE_SIZE = 25;
 
@@ -77,9 +77,9 @@ export default function SuperAdminUsers() {
     if (!userToDelete) return;
     setIsDeleting(true);
     try {
-      const res = await base44.functions.invoke('superAdminDeleteUser', { userId: userToDelete.id });
-      const errMsg = res?.data?.error || res?.error;
-      const failures = res?.data?.failures || [];
+      const res = await fns.invoke('superAdminDeleteUser', { userId: userToDelete.id });
+      const errMsg = res?.error || res?.error;
+      const failures = res?.failures || [];
       if (errMsg) throw new Error(errMsg);
       if (failures.length > 0) throw new Error(failures[0].error || 'Delete failed');
       toast({ title: 'User deleted', description: userToDelete.email || userToDelete.id });
@@ -102,8 +102,8 @@ export default function SuperAdminUsers() {
     if (blanks.length === 0) return;
     setIsDeleting(true);
     try {
-      const res = await base44.functions.invoke('superAdminDeleteUser', { userIds: blanks.map((u) => u.id) });
-      const deleted = res?.data?.deleted || 0;
+      const res = await fns.invoke('superAdminDeleteUser', { userIds: blanks.map((u) => u.id) });
+      const deleted = res?.deleted || 0;
       toast({ title: `Deleted ${deleted} blank account${deleted === 1 ? '' : 's'}` });
     } catch (err) {
       toast({
@@ -276,8 +276,8 @@ export default function SuperAdminUsers() {
                     </td>
                     <td className="px-4 py-3 hidden lg:table-cell">
                       <span className="text-xs text-slate-500">
-                        {user.created_date
-                          ? new Date(user.created_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                        {user.created_at
+                          ? new Date(user.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
                           : '—'}
                       </span>
                     </td>

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Download, Loader2, FileText, CheckCircle2 } from 'lucide-react';
 import { format } from 'date-fns';
 import jsPDF from 'jspdf';
+import * as gradebookData from '@/data/gradebook';
+import * as attendanceData from '@/data/attendance';
 
 export default function TermReportExport({ schoolId, userId, userName, schoolName, classes }) {
   const [generating, setGenerating] = useState(false);
@@ -13,19 +13,19 @@ export default function TermReportExport({ schoolId, userId, userName, schoolNam
 
   const { data: grades = [] } = useQuery({
     queryKey: ['export-grades', schoolId, userId],
-    queryFn: () => base44.entities.GradeItem.filter({ school_id: schoolId, student_id: userId, visible_to_student: true, status: 'published' }, '-created_date'),
+    queryFn: () => gradebookData.whereGradeItems({ school_id: schoolId, student_id: userId, visible_to_student: true, status: 'published' }, { order: 'created_at', ascending: false }),
     enabled: !!schoolId && !!userId,
   });
 
   const { data: predictions = [] } = useQuery({
     queryKey: ['export-predicted', schoolId, userId],
-    queryFn: () => base44.entities.PredictedGrade.filter({ school_id: schoolId, student_id: userId, visible_to_student: true }),
+    queryFn: () => gradebookData.wherePredictedGrades({ school_id: schoolId, student_id: userId, visible_to_student: true }),
     enabled: !!schoolId && !!userId,
   });
 
   const { data: attendance = [] } = useQuery({
     queryKey: ['export-attendance', schoolId, userId],
-    queryFn: () => base44.entities.AttendanceRecord.filter({ school_id: schoolId, student_id: userId }),
+    queryFn: () => attendanceData.whereRecords({ school_id: schoolId, student_id: userId }),
     enabled: !!schoolId && !!userId,
   });
 

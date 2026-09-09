@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as storage from '@/data/storage';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -12,6 +12,8 @@ import { Loader2, Plus, Upload, X, FileText } from 'lucide-react';
 import SubmissionFormatSelector from './SubmissionFormatSelector';
 import AssessmentBuilderDialog from '@/components/assessment/AssessmentBuilderDialog';
 import { useSubmissionPolicy } from '@/hooks/useSubmissionPolicy';
+import * as curriculumTopicsData from '@/data/curriculumTopics';
+import * as assignmentsData from '@/data/assignments';
 
 export default function CreateAssignment({ classData, userId, onClose, trigger }) {
   const queryClient = useQueryClient();
@@ -37,12 +39,12 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
 
   const { data: curriculumTopics = [] } = useQuery({
     queryKey: ['assignment-curriculum-topics', classData.school_id],
-    queryFn: () => base44.entities.CurriculumTopic.filter({ school_id: classData.school_id, status: 'active' }),
+    queryFn: () => curriculumTopicsData.where({ school_id: classData.school_id, status: 'active' }),
     enabled: !!classData?.school_id,
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.Assignment.create(data),
+    mutationFn: (data) => assignmentsData.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['class-assignments'] });
       setOpen(false);
@@ -70,7 +72,8 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
     if (!file) return;
     setUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const uploaded = await storage.upload(file, { schoolId: classData?.school_id, prefix: 'assignments' });
+      const file_url = uploaded.url;
       setAttachments([...attachments, { name: file.name, url: file_url }]);
     } catch (error) {
       console.error('Upload failed:', error);

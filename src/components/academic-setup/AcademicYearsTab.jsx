@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Plus, Loader2, Pencil, Trash2, CheckCircle2, Circle, CalendarDays, Star } from 'lucide-react';
+import { Plus, Loader2, Pencil, Trash2, Circle, CalendarDays, Star } from 'lucide-react';
+import * as academics from '@/data/academics';
 
 const EMPTY = { name: '', start_date: '', end_date: '', is_current: false, status: 'planning' };
 
@@ -67,24 +67,24 @@ export default function AcademicYearsTab({ schoolId }) {
 
   const { data: years = [], isLoading } = useQuery({
     queryKey: ['academic-years', schoolId],
-    queryFn: () => base44.entities.AcademicYear.filter({ school_id: schoolId }),
+    queryFn: () => academics.whereAcademicYears({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ['academic-years', schoolId] });
 
   const createMutation = useMutation({
-    mutationFn: (d) => base44.entities.AcademicYear.create({ ...d, school_id: schoolId }),
+    mutationFn: (d) => academics.createAcademicYear({ ...d, school_id: schoolId }),
     onSuccess: () => { invalidate(); closeDialog(); },
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.AcademicYear.update(id, data),
+    mutationFn: ({ id, data }) => academics.updateAcademicYear(id, data),
     onSuccess: () => { invalidate(); closeDialog(); },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.AcademicYear.delete(id),
+    mutationFn: (id) => academics.removeAcademicYear(id),
     onSuccess: invalidate,
   });
 
@@ -92,9 +92,9 @@ export default function AcademicYearsTab({ schoolId }) {
     mutationFn: async (year) => {
       await Promise.all(
         years.filter(y => y.is_current && y.id !== year.id)
-          .map(y => base44.entities.AcademicYear.update(y.id, { is_current: false, status: y.status === 'active' ? 'archived' : y.status }))
+          .map(y => academics.updateAcademicYear(y.id, { is_current: false, status: y.status === 'active' ? 'archived' : y.status }))
       );
-      await base44.entities.AcademicYear.update(year.id, { is_current: true, status: 'active' });
+      await academics.updateAcademicYear(year.id, { is_current: true, status: 'active' });
     },
     onSuccess: invalidate,
   });

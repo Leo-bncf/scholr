@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -10,11 +9,11 @@ import NewMessageDialog from '@/components/messaging/NewMessageDialog';
 import StudentAnnouncements from '@/components/student/StudentAnnouncements';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import {
-  LayoutDashboard, BarChart3, Star, MessageSquare, CalendarDays,
-  ClipboardList, Megaphone, Loader2
+import { MessageSquare, Megaphone, Loader2
 } from 'lucide-react';
 import { getStudentSidebarLinks } from '@/components/app/studentSidebarLinks';
+import * as classesData from '@/data/classes';
+import * as messagesData from '@/data/messages';
 
 export default function StudentCommunication() {
   const { user, school, schoolId, membership, curriculum } = useUser();
@@ -24,7 +23,7 @@ export default function StudentCommunication() {
   const { data: classes = [] } = useQuery({
     queryKey: ['student-classes', schoolId, user?.id],
     queryFn: async () => {
-      const all = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
+      const all = await classesData.where({ school_id: schoolId, status: 'active' });
       return all.filter(c => c.student_ids?.includes(user.id));
     },
     enabled: !!schoolId && !!user?.id,
@@ -33,10 +32,10 @@ export default function StudentCommunication() {
   const { data: conversations = [], isLoading } = useQuery({
     queryKey: ['student-conversations', schoolId, user?.id],
     queryFn: async () => {
-      const allMessages = await base44.entities.Message.filter({
+      const allMessages = await messagesData.where({
         school_id: schoolId,
         is_announcement: false,
-      }, '-updated_date');
+      }, { order: 'updated_at', ascending: false });
 
       const userMessages = allMessages.filter(m =>
         m.sender_id === user.id || m.recipient_ids?.includes(user.id)
@@ -55,7 +54,7 @@ export default function StudentCommunication() {
             participant_name: msg.sender_id === user.id ? 'Recipient' : msg.sender_name,
             participant_role: msg.sender_id === user.id ? '' : msg.sender_role,
             subject: msg.subject,
-            updated_date: msg.updated_date || msg.created_date,
+            updated_at: msg.updated_at || msg.created_at,
             recipient_ids: msg.recipient_ids,
             unread_count: !msg.read_by?.includes(user.id) ? 1 : 0,
           };
@@ -71,7 +70,7 @@ export default function StudentCommunication() {
     queryKey: ['student-announcement-count', schoolId, user?.id],
     queryFn: async () => {
       const classIds = new Set(classes.map(c => c.id));
-      const all = await base44.entities.Message.filter({ school_id: schoolId, is_announcement: true });
+      const all = await messagesData.where({ school_id: schoolId, is_announcement: true });
       return all.filter(m => m.is_school_wide || classIds.has(m.class_id)).length;
     },
     enabled: !!schoolId && classes.length > 0,

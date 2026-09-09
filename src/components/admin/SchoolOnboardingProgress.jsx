@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle, Circle } from 'lucide-react';
+import * as academics from '@/data/academics';
+import * as classesData from '@/data/classes';
 
 function ProgressView({ progress, items }) {
   return (
@@ -43,10 +44,10 @@ export default function SchoolOnboardingProgress({ schoolId, summary }) {
     const loadProgress = async () => {
       try {
         const [academicYears, terms, subjects, classes] = await Promise.all([
-          base44.entities.AcademicYear.filter({ school_id: schoolId }),
-          base44.entities.Term.filter({ school_id: schoolId }),
-          base44.entities.Subject.filter({ school_id: schoolId }),
-          base44.entities.Class.filter({ school_id: schoolId }),
+          academics.whereAcademicYears({ school_id: schoolId }),
+          academics.whereTerms({ school_id: schoolId }),
+          academics.whereSubjects({ school_id: schoolId }),
+          classesData.where({ school_id: schoolId }),
         ]);
 
         const setupItems = [

@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -8,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Link2, Users, Trash2, Plus, UserCheck, Loader2, Search } from 'lucide-react';
+import * as membershipsData from '@/data/memberships';
+import * as parentStudentLinksData from '@/data/parentStudentLinks';
 
 /**
  * Admin UI to link parents to their children.
@@ -21,13 +22,13 @@ export default function ParentLinkingPanel({ schoolId }) {
 
   const { data: memberships = [], isLoading: loadingMembers } = useQuery({
     queryKey: ['school-memberships-for-linking', schoolId],
-    queryFn: () => base44.entities.SchoolMembership.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => membershipsData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
   const { data: links = [], isLoading: loadingLinks } = useQuery({
     queryKey: ['parent-student-links', schoolId],
-    queryFn: () => base44.entities.ParentStudentLink.filter({ school_id: schoolId }),
+    queryFn: () => parentStudentLinksData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
@@ -35,7 +36,7 @@ export default function ParentLinkingPanel({ schoolId }) {
   const students = useMemo(() => memberships.filter(m => m.role === 'student'), [memberships]);
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.ParentStudentLink.delete(id),
+    mutationFn: (id) => parentStudentLinksData.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['parent-student-links', schoolId] }),
   });
 
@@ -145,7 +146,7 @@ function LinkParentDialog({ open, onClose, schoolId, parents, students, existing
   const student = students.find(s => s.user_id === studentId);
 
   const createMutation = useMutation({
-    mutationFn: () => base44.entities.ParentStudentLink.create({
+    mutationFn: () => parentStudentLinksData.create({
       school_id: schoolId,
       parent_id: parentId,
       parent_name: parent?.user_name,

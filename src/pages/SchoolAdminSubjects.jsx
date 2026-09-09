@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import { useUser } from '@/components/auth/UserContext';
@@ -14,6 +13,8 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import * as academics from '@/data/academics';
+import * as classesData from '@/data/classes';
 
 const sidebarLinks = [
   { label: 'Dashboard', page: 'SchoolAdminDashboard', icon: LayoutDashboard },
@@ -60,28 +61,28 @@ export default function SchoolAdminSubjects() {
 
   const { data: subjects = [], isLoading } = useQuery({
     queryKey: ['school-subjects', schoolId],
-    queryFn: () => base44.entities.Subject.filter({ school_id: schoolId }),
+    queryFn: () => academics.whereSubjects({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: classes = [] } = useQuery({
     queryKey: ['school-classes-subjects', schoolId],
-    queryFn: () => base44.entities.Class.filter({ school_id: schoolId }),
+    queryFn: () => classesData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.Subject.create({ ...data, school_id: schoolId }),
+    mutationFn: (data) => academics.createSubject({ ...data, school_id: schoolId }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['school-subjects'] }); setShowCreate(false); setForm(EMPTY_FORM); },
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Subject.update(id, data),
+    mutationFn: ({ id, data }) => academics.updateSubject(id, data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['school-subjects'] }); setEditingSubject(null); },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Subject.delete(id),
+    mutationFn: (id) => academics.removeSubject(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['school-subjects'] }),
   });
 

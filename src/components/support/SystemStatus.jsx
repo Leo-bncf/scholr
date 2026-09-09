@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Badge } from '@/components/ui/badge';
 import {
   CheckCircle2, AlertTriangle, XCircle, Clock, RefreshCw,
   Database, Globe, Lock, FileText, Bell, Activity
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import * as schoolsData from '@/data/schools';
 
 // Static service definitions — in a real deployment these would come from a status API
 const SERVICES = [
@@ -94,7 +94,7 @@ export default function SystemStatus({ schoolId, school }) {
   const { data: schoolData, refetch, isRefetching } = useQuery({
     queryKey: ['system-status-school', schoolId],
     queryFn: async () => {
-      const schools = await base44.entities.School.filter({ id: schoolId });
+      const schools = await schoolsData.where({ id: schoolId });
       return schools[0];
     },
     enabled: !!schoolId,

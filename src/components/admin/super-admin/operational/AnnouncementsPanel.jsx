@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle2, Loader2, Megaphone, Send } from 'lucide-react';
+import { CheckCircle2, Loader2, Send } from 'lucide-react';
 
 export default function AnnouncementsPanel({ schools }) {
   const [subject, setSubject] = useState('');
@@ -42,7 +41,7 @@ export default function AnnouncementsPanel({ schools }) {
 
     await Promise.all(
       emails.map((email) =>
-        base44.integrations.Core.SendEmail({
+        email.send({
           to: email,
           subject,
           body,

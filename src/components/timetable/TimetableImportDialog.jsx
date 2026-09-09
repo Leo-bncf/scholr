@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Upload, FileJson, AlertCircle, RefreshCw, Database } from 'lucide-react';
+import { Upload, AlertCircle, RefreshCw, Database } from 'lucide-react';
 
 export default function TimetableImportDialog({ open, onClose, schoolId }) {
   const [importData, setImportData] = useState('');

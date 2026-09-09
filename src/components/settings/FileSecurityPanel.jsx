@@ -4,8 +4,9 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { Plus, X, HardDrive, FileBox, Clock, AlertTriangle } from 'lucide-react';
+import { Plus, X, HardDrive, Clock, AlertTriangle } from 'lucide-react';
+import * as submissionsData from '@/data/submissions';
+import * as assignmentsData from '@/data/assignments';
 
 const COMMON_EXTENSIONS = ['.pdf', '.docx', '.doc', '.pptx', '.xlsx', '.txt', '.jpg', '.jpeg', '.png', '.mp4', '.zip'];
 
@@ -18,13 +19,13 @@ const PLAN_STORAGE_LIMITS = {
 function StorageMonitor({ schoolId, plan }) {
   const { data: submissions = [] } = useQuery({
     queryKey: ['storage-monitor-submissions', schoolId],
-    queryFn: () => base44.entities.Submission.filter({ school_id: schoolId }),
+    queryFn: () => submissionsData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: assignments = [] } = useQuery({
     queryKey: ['storage-monitor-assignments', schoolId],
-    queryFn: () => base44.entities.Assignment.filter({ school_id: schoolId }),
+    queryFn: () => assignmentsData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 

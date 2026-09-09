@@ -1,18 +1,18 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, BarChart3, TrendingUp } from 'lucide-react';
 import { format } from 'date-fns';
+import * as gradebookData from '@/data/gradebook';
 
 export default function ChildGradesOverview({ schoolId, studentId }) {
   const { data: grades = [], isLoading } = useQuery({
     queryKey: ['parent-child-grades', schoolId, studentId],
-    queryFn: () => base44.entities.GradeItem.filter({
+    queryFn: () => gradebookData.whereGradeItems({
       school_id: schoolId,
       student_id: studentId,
       visible_to_parent: true
-    }, '-created_date'),
+    }, { order: 'created_at', ascending: false }),
     enabled: !!schoolId && !!studentId,
   });
 
@@ -53,7 +53,7 @@ export default function ChildGradesOverview({ schoolId, studentId }) {
               <div className="flex-1">
                 <h4 className="font-semibold text-slate-900">{grade.title}</h4>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  {grade.created_date ? format(new Date(grade.created_date), 'MMM d, yyyy') : ''}
+                  {grade.created_at ? format(new Date(grade.created_at), 'MMM d, yyyy') : ''}
                 </p>
               </div>
               <div className="text-right">

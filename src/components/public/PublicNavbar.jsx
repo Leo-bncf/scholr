@@ -3,19 +3,19 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
+import { isAuthenticated, redirectToLogin } from '@/data/session';
 
 export default function PublicNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleSignIn = async () => {
-    const isAuthed = await base44.auth.isAuthenticated();
+    const isAuthed = await isAuthenticated();
     if (isAuthed) {
       navigate(createPageUrl('AppHome'));
     } else {
-      base44.auth.redirectToLogin(createPageUrl('AppHome'));
+      redirectToLogin(createPageUrl('AppHome'));
     }
   };
 

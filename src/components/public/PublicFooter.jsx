@@ -9,7 +9,7 @@ export default function PublicFooter() {
           <div className="md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
               <img
-                src="https://media.base44.com/images/public/69a0347d243a60c91ce938c9/3799d407a_image.png"
+                src="/brand/scholr-mark.png"
                 alt="Scholr"
                 className="w-8 h-8 rounded-lg object-cover"
               />

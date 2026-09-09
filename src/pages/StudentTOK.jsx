@@ -1,6 +1,5 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -8,10 +7,11 @@ import { STUDENT_SIDEBAR_LINKS } from '@/components/app/studentSidebarLinks';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { 
-  LayoutDashboard, BookOpen, ClipboardCheck, BarChart3, 
+  LayoutDashboard, BarChart3, 
   MessageSquare, Star, Loader2, FileText, Clock, Upload
 } from 'lucide-react';
 import { format } from 'date-fns';
+import * as tokTasksData from '@/data/tokTasks';
 
 const sidebarLinks = [
   { label: 'Dashboard', page: 'StudentDashboard', icon: LayoutDashboard },
@@ -46,8 +46,8 @@ export default function StudentTOK() {
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ['student-tok', schoolId, user?.id],
     queryFn: async () => {
-      const studentTasks = await base44.entities.TOKTask.filter({ school_id: schoolId, student_id: user.id });
-      const classWideTasks = await base44.entities.TOKTask.filter({ school_id: schoolId, is_class_wide: true });
+      const studentTasks = await tokTasksData.where({ school_id: schoolId, student_id: user.id });
+      const classWideTasks = await tokTasksData.where({ school_id: schoolId, is_class_wide: true });
       return [...studentTasks, ...classWideTasks];
     },
     enabled: !!schoolId && !!user?.id,

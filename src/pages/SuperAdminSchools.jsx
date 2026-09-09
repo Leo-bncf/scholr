@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, Edit2, Loader2, Plus, School, Search, Trash2 } from 'lucide-react';
 import CreateSchoolDialog from '@/components/admin/CreateSchoolDialog';
@@ -11,6 +10,7 @@ import SuperAdminPageHeader from '@/components/admin/super-admin/SuperAdminPageH
 import SuperAdminPagination from '@/components/admin/super-admin/SuperAdminPagination';
 import SuperAdminShell from '@/components/admin/super-admin/SuperAdminShell';
 import { useSuperAdminAccess } from '@/components/hooks/useSuperAdminAccess';
+import * as schoolsData from '@/data/schools';
 import {
   usePaginatedItems,
   useSuperAdminSchoolOverviewQuery,
@@ -48,7 +48,7 @@ export default function SuperAdminSchools() {
   const handleDeleteSchool = async (school) => {
     if (!window.confirm(`Permanently delete "${school.name}"? This cannot be undone.`)) return;
     setDeletingSchoolId(school.id);
-    await base44.entities.School.delete(school.id);
+    await schoolsData.remove(school.id);
     await refetch();
     setDeletingSchoolId(null);
   };
@@ -205,7 +205,7 @@ export default function SuperAdminSchools() {
                             <div>
                               <p className="text-slate-500">Created</p>
                               <p className="text-slate-700 font-medium">
-                                {new Date(school.created_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                {new Date(school.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                               </p>
                             </div>
                             <div>

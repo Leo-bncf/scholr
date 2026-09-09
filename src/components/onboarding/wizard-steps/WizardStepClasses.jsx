@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CheckCircle2, Plus, Trash2, Layers } from 'lucide-react';
+import * as academics from '@/data/academics';
+import * as classesData from '@/data/classes';
 
 export default function WizardStepClasses({ schoolId, onDone }) {
   const queryClient = useQueryClient();
@@ -14,11 +15,11 @@ export default function WizardStepClasses({ schoolId, onDone }) {
 
   const { data: academicYears = [] } = useQuery({
     queryKey: ['academic-years-wizard', schoolId],
-    queryFn: () => base44.entities.AcademicYear.filter({ school_id: schoolId }),
+    queryFn: () => academics.whereAcademicYears({ school_id: schoolId }),
   });
   const { data: existingClasses = [], refetch } = useQuery({
     queryKey: ['classes-wizard', schoolId],
-    queryFn: () => base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => classesData.where({ school_id: schoolId, status: 'active' }),
   });
 
   const [yearId, setYearId] = useState('');
@@ -32,7 +33,7 @@ export default function WizardStepClasses({ schoolId, onDone }) {
     setSaving(true);
     await Promise.all(
       newClasses.filter(c => c.name.trim()).map(c =>
-        base44.entities.Class.create({
+        classesData.create({
           name: c.name,
           section: c.section || undefined,
           school_id: schoolId,

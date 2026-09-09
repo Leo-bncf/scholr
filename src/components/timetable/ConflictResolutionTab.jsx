@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,9 +7,11 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import * as timetableSettingsData from '@/data/timetableSettings';
+import * as timetableSyncsData from '@/data/timetableSyncs';
 import {
   AlertTriangle, CheckCircle, Plus, Trash2, Link2, ShieldCheck,
-  Users, MapPin, BookOpen, Clock, Loader2, Search, RefreshCw
+  Users, MapPin, BookOpen, Clock, Loader2, Search
 } from 'lucide-react';
 
 const ENTITY_TYPES = [
@@ -60,8 +61,8 @@ function AddMappingDialog({ onClose, schoolId, settings, memberships, classes, r
       const currentMappings = settings?.id_mappings || [];
       const payload = { id_mappings: [...currentMappings, newMapping] };
       return settings
-        ? base44.entities.TimetableSettings.update(settings.id, payload)
-        : base44.entities.TimetableSettings.create({ school_id: schoolId, ...payload });
+        ? timetableSettingsData.update(settings.id, payload)
+        : timetableSettingsData.create({ school_id: schoolId, ...payload });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['timetable-settings', schoolId] });
@@ -153,7 +154,7 @@ export default function ConflictResolutionTab({ schoolId, syncHistory, settings,
       const updated = (sync.mapping_conflicts || []).map((c, i) =>
         i === conflictIdx ? { ...c, resolved: true, resolution } : c
       );
-      return base44.entities.TimetableSync.update(sync.id, { mapping_conflicts: updated });
+      return timetableSyncsData.update(sync.id, { mapping_conflicts: updated });
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['timetable-sync-history', schoolId] }),
   });
@@ -161,7 +162,7 @@ export default function ConflictResolutionTab({ schoolId, syncHistory, settings,
   const validateMutation = useMutation({
     mutationFn: (mappingId) => {
       const updated = idMappings.map(m => m.id === mappingId ? { ...m, validated: true } : m);
-      return base44.entities.TimetableSettings.update(settings.id, { id_mappings: updated });
+      return timetableSettingsData.update(settings.id, { id_mappings: updated });
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['timetable-settings', schoolId] }),
   });
@@ -169,7 +170,7 @@ export default function ConflictResolutionTab({ schoolId, syncHistory, settings,
   const deleteMappingMutation = useMutation({
     mutationFn: (mappingId) => {
       const updated = idMappings.filter(m => m.id !== mappingId);
-      return base44.entities.TimetableSettings.update(settings.id, { id_mappings: updated });
+      return timetableSettingsData.update(settings.id, { id_mappings: updated });
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['timetable-settings', schoolId] }),
   });

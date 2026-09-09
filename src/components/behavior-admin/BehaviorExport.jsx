@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Loader2, Download, FileText, BarChart2, Shield, AlertTriangle } from 'lucide-react';
 import { format, subDays } from 'date-fns';
 import { logAudit, AuditActions, AuditLevels } from '@/components/utils/auditLogger';
+import * as behaviorRecordsData from '@/data/behaviorRecords';
 
 function downloadCSV(filename, rows, headers) {
   const lines = [headers.join(','), ...rows.map(r => headers.map(h => `"${(r[h] ?? '').toString().replace(/"/g, '""')}"`).join(','))];
@@ -24,7 +24,7 @@ export default function BehaviorExport({ schoolId, schoolName }) {
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: ['behavior-export', schoolId],
-    queryFn: () => base44.entities.BehaviorRecord.filter({ school_id: schoolId }),
+    queryFn: () => behaviorRecordsData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 

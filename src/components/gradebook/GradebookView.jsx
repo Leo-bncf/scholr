@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useGradebookPolicy } from '@/hooks/useGradebookPolicy';
-import { base44 } from '@/api/base44Client';
 import { Loader2, Edit, Eye, EyeOff, ClipboardCheck } from 'lucide-react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -13,6 +12,8 @@ import CreateRubricGradeItem from './CreateRubricGradeItem';
 import PredictedGradeDialog from './PredictedGradeDialog';
 import { useUser } from '@/components/auth/UserContext';
 import { getCurriculumConfig, formatGrade } from '@/lib/curriculumConfig';
+import * as membershipsData from '@/data/memberships';
+import * as gradebookData from '@/data/gradebook';
 
 export default function GradebookView({ classData, assignments = [] }) {
   const { policy } = useGradebookPolicy(classData?.school_id);
@@ -31,7 +32,7 @@ export default function GradebookView({ classData, assignments = [] }) {
   const { data: students = [] } = useQuery({
     queryKey: ['class-students-gradebook', classData.id],
     queryFn: async () => {
-      const members = await base44.entities.SchoolMembership.filter({
+      const members = await membershipsData.where({
         school_id: classData.school_id,
         status: 'active'
       });
@@ -42,7 +43,7 @@ export default function GradebookView({ classData, assignments = [] }) {
   const { data: gradeItems = [], isLoading: loadingItems } = useQuery({
     queryKey: ['class-grade-items', classData.id],
     queryFn: async () => {
-      const items = await base44.entities.GradeItem.filter({
+      const items = await gradebookData.whereGradeItems({
         school_id: classData.school_id,
         class_id: classData.id
       });
@@ -59,7 +60,7 @@ export default function GradebookView({ classData, assignments = [] }) {
 
   const { data: allGrades = [], isLoading: loadingGrades } = useQuery({
     queryKey: ['class-grades', classData.id],
-    queryFn: () => base44.entities.GradeItem.filter({
+    queryFn: () => gradebookData.whereGradeItems({
       school_id: classData.school_id,
       class_id: classData.id
     }),
@@ -67,7 +68,7 @@ export default function GradebookView({ classData, assignments = [] }) {
 
   const { data: predictedGrades = [] } = useQuery({
     queryKey: ['predicted-grades', classData.id],
-    queryFn: () => base44.entities.PredictedGrade.filter({
+    queryFn: () => gradebookData.wherePredictedGrades({
       school_id: classData.school_id,
       class_id: classData.id
     }),

@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Trash2, Lock, Unlock, AlertTriangle } from 'lucide-react';
-import { format } from 'date-fns';
 
 export default function GradeLocksPanel({ form, onChange, terms = [] }) {
   const [showNew, setShowNew] = useState(false);

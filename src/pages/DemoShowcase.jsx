@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Copy, Check, Zap, Users, BookOpen, BarChart3, Settings, Shield } from 'lucide-react';
+import * as fns from '@/data/functions';
 
 const DEMO_ROLES = [
   {
@@ -60,10 +60,10 @@ export default function DemoShowcase() {
     setIsSeeding(true);
     setSeedError(null);
     try {
-      const response = await base44.functions.invoke('seedDemoData');
-      setSeedStatus(response.data);
+      const response = await fns.invoke('seedDemoData');
+      setSeedStatus(response);
     } catch (error) {
-      setSeedError(error.response?.data?.error || error.message);
+      setSeedError(error.message);
     } finally {
       setIsSeeding(false);
     }

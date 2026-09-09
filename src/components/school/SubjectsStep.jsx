@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Check, Plus, AlertCircle, Trash2 } from 'lucide-react';
+import * as academics from '@/data/academics';
 
 /**
  * Subjects setup step
@@ -44,7 +44,7 @@ export default function SubjectsStep({ schoolId, onComplete }) {
   useEffect(() => {
     const loadSubjects = async () => {
       try {
-        const subjectList = await base44.entities.Subject.filter({
+        const subjectList = await academics.whereSubjects({
           school_id: schoolId
         });
         setSubjects(subjectList);
@@ -69,7 +69,7 @@ export default function SubjectsStep({ schoolId, onComplete }) {
     setError('');
 
     try {
-      const created = await base44.entities.Subject.create({
+      const created = await academics.createSubject({
         school_id: schoolId,
         name: newSubject.name,
         code: newSubject.code || undefined,
@@ -91,7 +91,7 @@ export default function SubjectsStep({ schoolId, onComplete }) {
   const handleAddQuickSubject = async (subject) => {
     setSaving(true);
     try {
-      const created = await base44.entities.Subject.create({
+      const created = await academics.createSubject({
         school_id: schoolId,
         name: subject.name,
         code: subject.code,
@@ -112,7 +112,7 @@ export default function SubjectsStep({ schoolId, onComplete }) {
     if (!window.confirm('Delete this subject?')) return;
 
     try {
-      await base44.entities.Subject.delete(id);
+      await academics.removeSubject(id);
       setSubjects(subjects.filter(s => s.id !== id));
     } catch (err) {
       console.error('Error deleting subject:', err);

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,7 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Plus, Trash2, Lock, Unlock, BookOpen, Edit2, ChevronDown, ChevronRight } from 'lucide-react';
+import { Plus, Trash2, Lock, BookOpen, Edit2, ChevronDown, ChevronRight } from 'lucide-react';
+import * as rubricTemplatesData from '@/data/rubricTemplates';
 
 const SUBJECT_GROUPS = [
   { value: 'general', label: 'General' },
@@ -67,7 +67,7 @@ function TemplateDialog({ schoolId, template, onClose }) {
   const saveMutation = useMutation({
     mutationFn: (data) => {
       const payload = { ...data, school_id: schoolId, total_max_score: totalMax };
-      return isEdit ? base44.entities.RubricTemplate.update(template.id, payload) : base44.entities.RubricTemplate.create(payload);
+      return isEdit ? rubricTemplatesData.update(template.id, payload) : rubricTemplatesData.create(payload);
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['rubric-templates', schoolId] }); onClose(); },
   });
@@ -158,12 +158,12 @@ export default function RubricTemplateLibrary({ schoolId }) {
 
   const { data: templates = [], isLoading } = useQuery({
     queryKey: ['rubric-templates', schoolId],
-    queryFn: () => base44.entities.RubricTemplate.filter({ school_id: schoolId }),
+    queryFn: () => rubricTemplatesData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const archiveMutation = useMutation({
-    mutationFn: (t) => base44.entities.RubricTemplate.update(t.id, { status: t.status === 'archived' ? 'active' : 'archived' }),
+    mutationFn: (t) => rubricTemplatesData.update(t.id, { status: t.status === 'archived' ? 'active' : 'archived' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['rubric-templates', schoolId] }),
   });
 

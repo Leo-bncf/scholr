@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CheckCircle2, Plus, Trash2 } from 'lucide-react';
+import * as academics from '@/data/academics';
 
 const TERM_PRESETS = [
   { label: '3 Terms', terms: ['Term 1', 'Term 2', 'Term 3'] },
@@ -20,14 +20,14 @@ export default function WizardStepTerms({ schoolId, academicYearId, onDone }) {
 
   const { data: academicYears = [] } = useQuery({
     queryKey: ['academic-years-wizard', schoolId],
-    queryFn: () => base44.entities.AcademicYear.filter({ school_id: schoolId }),
+    queryFn: () => academics.whereAcademicYears({ school_id: schoolId }),
   });
 
   const [selectedYearId, setSelectedYearId] = useState(academicYearId || '');
 
   const { data: existingTerms = [], refetch } = useQuery({
     queryKey: ['terms-wizard', schoolId],
-    queryFn: () => base44.entities.Term.filter({ school_id: schoolId }),
+    queryFn: () => academics.whereTerms({ school_id: schoolId }),
   });
 
   const activeYearId = selectedYearId || academicYears[0]?.id;
@@ -45,7 +45,7 @@ export default function WizardStepTerms({ schoolId, academicYearId, onDone }) {
     setSaving(true);
     await Promise.all(
       newTerms.filter(t => t.name).map(t =>
-        base44.entities.Term.create({ ...t, school_id: schoolId, academic_year_id: activeYearId })
+        academics.createTerm({ ...t, school_id: schoolId, academic_year_id: activeYearId })
       )
     );
     await refetch();

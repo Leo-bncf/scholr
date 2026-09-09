@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import { useUser } from '@/components/auth/UserContext';
@@ -11,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import * as schoolsData from '@/data/schools';
 
 const sidebarLinks = [
   { label: 'Dashboard', page: 'SuperAdminDashboard', icon: LayoutDashboard },
@@ -31,12 +31,12 @@ export default function SuperAdminPlanManagement() {
 
   const { data: schools = [], isLoading } = useQuery({
     queryKey: ['schools-management'],
-    queryFn: () => base44.entities.School.list('-created_date'),
+    queryFn: () => schoolsData.where({}, { order: 'created_at', ascending: false }),
   });
 
   const updateMutation = useMutation({
     mutationFn: async ({ schoolId, data }) => {
-      return base44.entities.School.update(schoolId, data);
+      return schoolsData.update(schoolId, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['schools-management'] });

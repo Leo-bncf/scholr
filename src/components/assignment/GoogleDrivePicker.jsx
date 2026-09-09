@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Loader2, FolderOpen, AlertCircle, CheckCircle, FileText } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { Loader2, FolderOpen, AlertCircle, CheckCircle } from 'lucide-react';
+import * as fns from '@/data/functions';
 
 export default function GoogleDrivePicker({ open, onClose, onFilesSelected }) {
   const [loading, setLoading] = useState(false);
@@ -39,8 +39,8 @@ export default function GoogleDrivePicker({ open, onClose, onFilesSelected }) {
   const handleOpenPicker = async () => {
     try {
       // Get access token
-      const response = await base44.functions.invoke('getGooglePickerToken');
-      const accessToken = response.data.token;
+      const response = await fns.invoke('getGooglePickerToken');
+      const accessToken = response.token;
 
       if (!accessToken) {
         setError('Could not authenticate with Google. Please try again.');
@@ -73,16 +73,16 @@ export default function GoogleDrivePicker({ open, onClose, onFilesSelected }) {
     setError(null);
 
     try {
-      const response = await base44.functions.invoke('googleDrivePicker', {
+      const response = await fns.invoke('googleDrivePicker', {
         fileIds,
       });
 
-      if (response.data.documents) {
-        onFilesSelected(response.data.documents);
+      if (response.documents) {
+        onFilesSelected(response.documents);
         setSelectedFiles([]);
         onClose();
-      } else if (response.data.error) {
-        setError(response.data.error);
+      } else if (response.error) {
+        setError(response.error);
       }
     } catch (err) {
       setError(`Failed to attach files: ${err.message}`);

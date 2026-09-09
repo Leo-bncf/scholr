@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import * as unifiedCalendarEventsData from '@/data/unifiedCalendarEvents';
 
 export default function CreateCalendarEventDialog({ open, onOpenChange, schoolId, user }) {
   const queryClient = useQueryClient();
@@ -20,7 +20,7 @@ export default function CreateCalendarEventDialog({ open, onOpenChange, schoolId
   });
 
   const createMutation = useMutation({
-    mutationFn: () => base44.entities.UnifiedCalendarEvent.create({
+    mutationFn: () => unifiedCalendarEventsData.create({
       ...form,
       school_id: schoolId,
       created_by_id: user?.id,

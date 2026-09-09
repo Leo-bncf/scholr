@@ -1,5 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as membershipsData from '@/data/memberships';
+import * as classesData from '@/data/classes';
+import * as academics from '@/data/academics';
+import * as attendanceData from '@/data/attendance';
+import * as assignmentsData from '@/data/assignments';
+import * as submissionsData from '@/data/submissions';
+import * as messagesData from '@/data/messages';
+import * as timetableSyncsData from '@/data/timetableSyncs';
+import * as schoolsData from '@/data/schools';
 
 /**
  * Fetches all operational data needed for the School Admin dashboard.
@@ -22,17 +30,17 @@ export function useSchoolOperationsData(schoolId) {
         timetableSyncs,
         school,
       ] = await Promise.all([
-        base44.entities.SchoolMembership.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.AcademicYear.filter({ school_id: schoolId }),
-        base44.entities.Term.filter({ school_id: schoolId }),
-        base44.entities.Subject.filter({ school_id: schoolId }),
-        base44.entities.AttendanceRecord.filter({ school_id: schoolId }),
-        base44.entities.Assignment.filter({ school_id: schoolId }),
-        base44.entities.Submission.filter({ school_id: schoolId }),
-        base44.entities.Message.filter({ school_id: schoolId }),
-        base44.entities.TimetableSync.filter({ school_id: schoolId }).catch(() => []),
-        base44.entities.School.filter({ id: schoolId }).then(r => r[0] || null),
+        membershipsData.where({ school_id: schoolId, status: 'active' }),
+        classesData.where({ school_id: schoolId, status: 'active' }),
+        academics.whereAcademicYears({ school_id: schoolId }),
+        academics.whereTerms({ school_id: schoolId }),
+        academics.whereSubjects({ school_id: schoolId }),
+        attendanceData.whereRecords({ school_id: schoolId }),
+        assignmentsData.where({ school_id: schoolId }),
+        submissionsData.where({ school_id: schoolId }),
+        messagesData.where({ school_id: schoolId }),
+        timetableSyncsData.where({ school_id: schoolId }).catch(() => []),
+        schoolsData.where({ id: schoolId }).then(r => r[0] || null),
       ]);
 
       // --- Member Breakdown ---
@@ -78,7 +86,7 @@ export function useSchoolOperationsData(schoolId) {
         : null;
 
       // --- Messaging volume (last 30 days) ---
-      const recentMessages = messages.filter(m => new Date(m.created_date) >= thirtyDaysAgo);
+      const recentMessages = messages.filter(m => new Date(m.created_at) >= thirtyDaysAgo);
 
       // --- Timetable sync errors ---
       const failedSyncs = timetableSyncs.filter(s => s.status === 'error' || s.status === 'failed');

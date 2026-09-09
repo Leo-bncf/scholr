@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import {
   Users, UserCheck, Users2, BookOpen, MessageSquare,
-  CalendarDays, AlertTriangle, CheckCircle2, TrendingUp,
-  TrendingDown, Minus, Clock, ArrowRight, GraduationCap,
+  CalendarDays, AlertTriangle, CheckCircle2, Clock, ArrowRight, GraduationCap,
   BarChart3, Activity,
 } from 'lucide-react';
 

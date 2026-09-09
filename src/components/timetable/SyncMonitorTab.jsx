@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
-  CheckCircle, XCircle, AlertTriangle, Clock, RefreshCw, ChevronDown,
-  ChevronRight, Activity, Calendar, Users, MapPin
+  CheckCircle, XCircle, AlertTriangle, Clock, RefreshCw, ChevronDown, Activity, Calendar, MapPin
 } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { SYNC_STATUS_CONFIG } from './useTimetableData';

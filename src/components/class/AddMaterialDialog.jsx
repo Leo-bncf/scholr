@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import * as storage from '@/data/storage';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Loader2, Upload, Link2, FileText } from 'lucide-react';
+import * as classMaterialsData from '@/data/classMaterials';
 
 export default function AddMaterialDialog({ open, onOpenChange, classData, user, schoolId }) {
   const queryClient = useQueryClient();
@@ -29,7 +30,7 @@ export default function AddMaterialDialog({ open, onOpenChange, classData, user,
   };
 
   const createMutation = useMutation({
-    mutationFn: async (payload) => base44.entities.ClassMaterial.create(payload),
+    mutationFn: async (payload) => classMaterialsData.create(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['class-materials', classData.id] });
       reset();
@@ -51,7 +52,8 @@ export default function AddMaterialDialog({ open, onOpenChange, classData, user,
       }
       setUploading(true);
       try {
-        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        const uploaded = await storage.upload(file, { schoolId: schoolId, prefix: 'materials' });
+      const file_url = uploaded.url;
         await createMutation.mutateAsync({
           school_id: schoolId,
           class_id: classData.id,

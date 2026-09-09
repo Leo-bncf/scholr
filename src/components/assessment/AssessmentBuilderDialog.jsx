@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus } from 'lucide-react';
 import QuestionBuilder from './QuestionBuilder';
+import * as assignmentsData from '@/data/assignments';
+import * as assessmentsData from '@/data/assessments';
 
 const createQuestion = () => ({ id: crypto.randomUUID(), type: 'multiple_choice', prompt: '', options: ['', ''], correct_answer: '', points: 1 });
 
@@ -20,7 +21,7 @@ export default function AssessmentBuilderDialog({ open, onOpenChange, classData,
 
   const createMutation = useMutation({
     mutationFn: async (status) => {
-      const assignment = await base44.entities.Assignment.create({
+      const assignment = await assignmentsData.create({
         school_id: classData.school_id,
         class_id: classData.id,
         teacher_id: userId,
@@ -34,7 +35,7 @@ export default function AssessmentBuilderDialog({ open, onOpenChange, classData,
         primary_submission_format: 'file_upload',
       });
 
-      await base44.entities.Assessment.create({
+      await assessmentsData.create({
         school_id: classData.school_id,
         class_id: classData.id,
         assignment_id: assignment.id,

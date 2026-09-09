@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +8,8 @@ import {
   Loader2, ChevronRight, Info, Users, RefreshCw
 } from 'lucide-react';
 import { ROLE_CONFIG } from './userConstants';
+import * as membershipsData from '@/data/memberships';
+import { getCurrentUser } from '@/data/session';
 
 const VALID_ROLES = Object.keys(ROLE_CONFIG);
 const TEMPLATE_HEADERS = ['email', 'name', 'role', 'grade_level', 'department'];
@@ -68,13 +69,13 @@ export default function BulkImportTab({ schoolId, schoolName }) {
 
   const importMutation = useMutation({
     mutationFn: async (validRows) => {
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       let created = 0, skipped = 0, errors = [];
 
       for (const row of validRows) {
         try {
           // Check if membership already exists (by email)
-          const existing = await base44.entities.SchoolMembership.filter({
+          const existing = await membershipsData.where({
             school_id: schoolId,
             user_email: row.email,
           });
@@ -83,7 +84,7 @@ export default function BulkImportTab({ schoolId, schoolName }) {
             continue;
           }
 
-          await base44.entities.SchoolMembership.create({
+          await membershipsData.create({
             school_id: schoolId,
             user_email: row.email,
             user_name: row.name || '',

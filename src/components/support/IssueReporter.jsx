@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as storage from '@/data/storage';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import * as admin from '@/data/admin';
+import * as supportTicketsData from '@/data/supportTickets';
+import * as email from '@/data/email';
 import {
   Bug, MessageSquare, CheckCircle2, Loader2, Upload,
   Info, AlertTriangle, Zap, ChevronDown, ChevronUp
@@ -40,7 +42,7 @@ export default function IssueReporter({ schoolId, user, school }) {
 
   const { data: recentAuditLogs = [] } = useQuery({
     queryKey: ['recent-audit-logs', schoolId],
-    queryFn: () => base44.entities.AuditLog.filter({ school_id: schoolId }),
+    queryFn: () => admin.whereAuditLogs({ school_id: schoolId }),
     enabled: !!schoolId && includeContext,
     select: data => data.slice(-5),
   });
@@ -65,11 +67,12 @@ export default function IssueReporter({ schoolId, user, school }) {
     try {
       let screenshotUrl = null;
       if (screenshotFile) {
-        const { file_url } = await base44.integrations.Core.UploadFile({ file: screenshotFile });
+        const uploaded = await storage.upload(screenshotFile, { schoolId: schoolId, prefix: 'support' });
+      const file_url = uploaded.url;
         screenshotUrl = file_url;
       }
 
-      await base44.entities.SupportTicket.create({
+      await supportTicketsData.create({
         school: school?.name || schoolId,
         subject: `[${type.toUpperCase()}] ${subject}`,
         priority: PRIORITY_MAP[type] || 'medium',
@@ -82,7 +85,7 @@ export default function IssueReporter({ schoolId, user, school }) {
         ? `\n\n--- Context ---\n${Object.entries(contextInfo).map(([k, v]) => `${k}: ${v}`).join('\n')}${screenshotUrl ? `\nScreenshot: ${screenshotUrl}` : ''}`
         : '';
 
-      await base44.integrations.Core.SendEmail({
+      await email.send({
         to: 'support@ibmanager.io',
         subject: `Support: [${type.toUpperCase()}] ${subject} — ${school?.name}`,
         body: `${description}${contextBlock}`,

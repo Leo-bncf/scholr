@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {
@@ -10,6 +9,10 @@ import {
 } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, AlertCircle, Copy, Check, User, Building2 } from 'lucide-react';
+import * as schoolsData from '@/data/schools';
+import * as usersData from '@/data/users';
+import * as membershipsData from '@/data/memberships';
+import * as fns from '@/data/functions';
 
 const ROLES = [
   { value: 'user', label: 'User (no school)' },
@@ -43,7 +46,7 @@ export default function ManageUserDialog({ open, onOpenChange, user, onUserUpdat
   useEffect(() => {
     if (open) {
       setLoadingSchools(true);
-      base44.entities.School.list('-name', 1000).then(list => {
+      schoolsData.where({}, { order: 'name', ascending: false, limit: 1000 }).then(list => {
         setSchools(list);
         setLoadingSchools(false);
       }).catch(() => setLoadingSchools(false));
@@ -64,11 +67,11 @@ export default function ManageUserDialog({ open, onOpenChange, user, onUserUpdat
         return;
       }
 
-      const response = await base44.functions.invoke('adminUpdateUser', payload);
+      const response = await fns.invoke('adminUpdateUser', payload);
       console.log('adminUpdateUser response:', response);
 
       // Surface backend-reported errors that the SDK didn't throw on
-      const errMsg = response?.data?.error || response?.error;
+      const errMsg = response?.error || response?.error;
       if (errMsg) {
         throw new Error(errMsg);
       }
@@ -78,7 +81,7 @@ export default function ManageUserDialog({ open, onOpenChange, user, onUserUpdat
       // User entity itself, so mirror the change directly on the User record.
       if (payload.schoolId !== undefined) {
         try {
-          await base44.entities.User.update(user.id, {
+          await usersData.update(user.id, {
             active_school_id: newSchoolId || null,
             school_id: newSchoolId || null,
           });
@@ -90,7 +93,7 @@ export default function ManageUserDialog({ open, onOpenChange, user, onUserUpdat
         // (Enrollments, rosters) immediately see this user in the school with
         // a proper name/email. Super_admins have create/update/delete rights.
         try {
-          const existing = await base44.entities.SchoolMembership.filter({ user_id: user.id });
+          const existing = await membershipsData.where({ user_id: user.id });
           const effectiveRole = newRole && newRole !== 'super_admin' ? newRole : 'teacher';
 
           if (newSchoolId) {
@@ -104,17 +107,17 @@ export default function ManageUserDialog({ open, onOpenChange, user, onUserUpdat
             };
             if (existing.length > 0) {
               // Update the first, delete any duplicates so the enrollment list stays clean
-              await base44.entities.SchoolMembership.update(existing[0].id, membershipData);
+              await membershipsData.update(existing[0].id, membershipData);
               for (let i = 1; i < existing.length; i++) {
-                await base44.entities.SchoolMembership.delete(existing[i].id);
+                await membershipsData.remove(existing[i].id);
               }
             } else {
-              await base44.entities.SchoolMembership.create(membershipData);
+              await membershipsData.create(membershipData);
             }
           } else {
             // Removing from school — clear all memberships
             for (const m of existing) {
-              await base44.entities.SchoolMembership.delete(m.id);
+              await membershipsData.remove(m.id);
             }
           }
         } catch (memErr) {

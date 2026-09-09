@@ -6,8 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import {
-  Printer, Download, Users, BarChart3, CheckCircle2,
-  XCircle, Clock, AlertCircle, GraduationCap, Loader2, FileText
+  Printer, Download, Users, BarChart3, GraduationCap, Loader2
 } from 'lucide-react';
 import { generatePrintableHTML, printHTML, buildCSV, downloadCSV, COLUMNS } from './reportUtils';
 import { format } from 'date-fns';

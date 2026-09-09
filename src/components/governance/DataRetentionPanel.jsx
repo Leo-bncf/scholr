@@ -1,11 +1,13 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Save, Loader2, Info, Archive, Database, Clock, HardDrive } from 'lucide-react';
+import * as attendanceData from '@/data/attendance';
+import * as behaviorRecordsData from '@/data/behaviorRecords';
+import * as admin from '@/data/admin';
+import * as submissionsData from '@/data/submissions';
 
 const RETENTION_FIELDS = [
   {
@@ -105,10 +107,10 @@ export default function DataRetentionPanel({ policy, onChange, onSave, saving, s
     queryKey: ['governance-data-stats', schoolId],
     queryFn: async () => {
       const [attendance, behavior, auditLogs, submissions] = await Promise.all([
-        base44.entities.AttendanceRecord.filter({ school_id: schoolId }),
-        base44.entities.BehaviorRecord.filter({ school_id: schoolId }),
-        base44.entities.AuditLog.filter({ school_id: schoolId }),
-        base44.entities.Submission.filter({ school_id: schoolId }),
+        attendanceData.whereRecords({ school_id: schoolId }),
+        behaviorRecordsData.where({ school_id: schoolId }),
+        admin.whereAuditLogs({ school_id: schoolId }),
+        submissionsData.where({ school_id: schoolId }),
       ]);
       return { attendance: attendance.length, behavior: behavior.length, auditLogs: auditLogs.length, submissions: submissions.length };
     },

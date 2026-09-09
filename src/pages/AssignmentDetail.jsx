@@ -1,6 +1,5 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import { Loader2, ArrowLeft, Calendar, FileText, Paperclip, Presentation, Table, Upload, Link as LinkIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,6 +11,9 @@ import TeacherSubmissions from '@/components/assignment/TeacherSubmissions';
 import AssignmentComments from '@/components/assignment/AssignmentComments';
 import AssessmentStudentPanel from '@/components/assessment/AssessmentStudentPanel';
 import AssessmentTeacherReview from '@/components/assessment/AssessmentTeacherReview';
+import * as assignmentsData from '@/data/assignments';
+import * as classesData from '@/data/classes';
+import * as submissionsData from '@/data/submissions';
 
 export default function AssignmentDetail() {
   const { user, schoolId, membership } = useUser();
@@ -21,7 +23,7 @@ export default function AssignmentDetail() {
   const { data: assignment, isLoading: loadingAssignment } = useQuery({
     queryKey: ['assignment-detail', assignmentId],
     queryFn: async () => {
-      const results = await base44.entities.Assignment.filter({ id: assignmentId, school_id: schoolId });
+      const results = await assignmentsData.where({ id: assignmentId, school_id: schoolId });
       return results[0];
     },
     enabled: !!assignmentId && !!schoolId,
@@ -30,7 +32,7 @@ export default function AssignmentDetail() {
   const { data: classData } = useQuery({
     queryKey: ['class-for-assignment', assignment?.class_id],
     queryFn: async () => {
-      const results = await base44.entities.Class.filter({ id: assignment.class_id, school_id: schoolId });
+      const results = await classesData.where({ id: assignment.class_id, school_id: schoolId });
       return results[0];
     },
     enabled: !!assignment?.class_id && !!schoolId,
@@ -39,7 +41,7 @@ export default function AssignmentDetail() {
   const { data: studentSubmission } = useQuery({
     queryKey: ['student-submission', assignmentId, user?.id],
     queryFn: async () => {
-      const results = await base44.entities.Submission.filter({
+      const results = await submissionsData.where({
         assignment_id: assignmentId,
         student_id: user.id
       });

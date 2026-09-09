@@ -1,75 +1,61 @@
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as schools from '@/data/schools';
 
 /**
- * Optimized dashboard data fetching hook with built-in caching and batching
+ * Dashboard queries.
+ *
+ * These are all cached with a generous staleTime — dashboards are re-entered
+ * constantly and none of this changes minute to minute.
+ */
+
+/**
+ * Counts behind the onboarding checklist.
+ *
+ * Resolved as five head-only counts in Postgres. This previously fetched
+ * academic years, terms, subjects, classes and memberships in full and called
+ * `.length` on each, which pulled thousands of rows to render five numbers.
  */
 export function useSchoolMetrics(schoolId) {
   return useQuery({
     queryKey: ['school-metrics', schoolId],
-    queryFn: async () => {
-      const [academicYears, terms, subjects, classes, members] = await Promise.all([
-        base44.entities.AcademicYear.filter({ school_id: schoolId }),
-        base44.entities.Term.filter({ school_id: schoolId }),
-        base44.entities.Subject.filter({ school_id: schoolId }),
-        base44.entities.Class.filter({ school_id: schoolId }),
-        base44.entities.SchoolMembership.filter({ school_id: schoolId }),
-      ]);
-
-      const completedSetupItems = [
-        academicYears.length > 0 ? 1 : 0,
-        terms.length > 0 ? 1 : 0,
-        subjects.length > 0 ? 1 : 0,
-        classes.length > 0 ? 1 : 0,
-        members.length > 1 ? 1 : 0,
-      ];
-
-      return {
-        academicYears: academicYears.length,
-        terms: terms.length,
-        subjects: subjects.length,
-        classes: classes.length,
-        staff: Math.max(0, members.length - 1),
-        setupProgress: {
-          completed: completedSetupItems.reduce((a, b) => a + b, 0),
-          total: 5,
-        },
-      };
-    },
+    queryFn: () => schools.getSetupMetrics(schoolId),
     enabled: !!schoolId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 }
 
 export function useSchoolData(schoolId) {
   return useQuery({
     queryKey: ['school', schoolId],
-    queryFn: async () => {
-      const schools = await base44.entities.School.filter({ id: schoolId });
-      return schools[0] || null;
-    },
+    queryFn: () => schools.get(schoolId),
     enabled: !!schoolId,
-    staleTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 10 * 60 * 1000,
   });
 }
 
+/**
+ * Every school the caller can see.
+ *
+ * For a super admin that's all of them; for anyone else RLS narrows it to their
+ * own, so this is safe to call from shared components.
+ */
 export function useAllSchools(options = {}) {
   return useQuery({
     queryKey: ['schools'],
-    queryFn: () => base44.entities.School.list('-updated_date', 100),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    queryFn: () => schools.list(),
+    staleTime: 5 * 60 * 1000,
     ...options,
   });
 }
 
-export function usePlatformMetrics(schools) {
+export function usePlatformMetrics(schools = []) {
   return {
     total: schools.length,
-    active: schools.filter(s => s.status === 'active').length,
-    onboarding: schools.filter(s => s.status === 'onboarding').length,
-    trial: schools.filter(s => s.billing_status === 'trial').length,
-    paid: schools.filter(s => s.billing_status === 'active' || s.billing_status === 'past_due').length,
-    atRisk: schools.filter(s => s.billing_status === 'past_due' || s.billing_status === 'canceled').length,
-    suspended: schools.filter(s => s.status === 'suspended').length,
+    active: schools.filter((s) => s.status === 'active').length,
+    onboarding: schools.filter((s) => s.status === 'onboarding').length,
+    trial: schools.filter((s) => s.billing_status === 'trial').length,
+    paid: schools.filter((s) => ['active', 'past_due'].includes(s.billing_status)).length,
+    atRisk: schools.filter((s) => ['past_due', 'canceled'].includes(s.billing_status)).length,
+    suspended: schools.filter((s) => s.status === 'suspended').length,
   };
 }

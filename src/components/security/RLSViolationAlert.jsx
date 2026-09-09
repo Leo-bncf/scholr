@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, Shield } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function RLSViolationAlert({ violation }) {

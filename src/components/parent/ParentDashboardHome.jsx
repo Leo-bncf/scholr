@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { format, isAfter, isBefore, addDays } from 'date-fns';
-import { Clock, BookOpen, BarChart3, CalendarX, CheckCircle, Bell, ChevronRight } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { format, isAfter, addDays } from 'date-fns';
+import { Clock, BarChart3, CalendarX, CheckCircle, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import * as classesData from '@/data/classes';
+import * as assignmentsData from '@/data/assignments';
+import * as gradebookData from '@/data/gradebook';
+import * as attendanceData from '@/data/attendance';
+import * as messagesData from '@/data/messages';
 
 function SectionHeader({ icon: Icon, title, color }) {
   return (
@@ -27,7 +30,7 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
   const { data: classes = [] } = useQuery({
     queryKey: ['parent-child-classes', schoolId, studentId],
     queryFn: async () => {
-      const all = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
+      const all = await classesData.where({ school_id: schoolId, status: 'active' });
       return all.filter(c => c.student_ids?.includes(studentId));
     },
     enabled: !!schoolId && !!studentId,
@@ -39,7 +42,7 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
   const { data: assignments = [] } = useQuery({
     queryKey: ['parent-child-assignments', schoolId, studentId],
     queryFn: async () => {
-      const all = await base44.entities.Assignment.filter({ school_id: schoolId, status: 'published' });
+      const all = await assignmentsData.where({ school_id: schoolId, status: 'published' });
       return all
         .filter(a => classIds.includes(a.class_id) && a.due_date && isAfter(new Date(a.due_date), now))
         .sort((a, b) => new Date(a.due_date) - new Date(b.due_date));
@@ -51,13 +54,13 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
   const { data: grades = [] } = useQuery({
     queryKey: ['parent-child-grades', schoolId, studentId],
     queryFn: async () => {
-      const all = await base44.entities.GradeItem.filter({
+      const all = await gradebookData.whereGradeItems({
         school_id: schoolId,
         student_id: studentId,
         visible_to_parent: true,
         status: 'published',
       });
-      return all.sort((a, b) => new Date(b.created_date) - new Date(a.created_date)).slice(0, 6);
+      return all.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 6);
     },
     enabled: !!schoolId && !!studentId,
   });
@@ -67,7 +70,7 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
     queryKey: ['parent-child-attendance-issues', schoolId, studentId],
     queryFn: async () => {
       const cutoff = format(addDays(now, -30), 'yyyy-MM-dd');
-      const all = await base44.entities.AttendanceRecord.filter({ school_id: schoolId, student_id: studentId });
+      const all = await attendanceData.whereRecords({ school_id: schoolId, student_id: studentId });
       return all
         .filter(a => a.status !== 'present' && a.date >= cutoff)
         .sort((a, b) => b.date.localeCompare(a.date))
@@ -80,10 +83,10 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
   const { data: messages = [] } = useQuery({
     queryKey: ['parent-messages', schoolId, parentUserId],
     queryFn: async () => {
-      const all = await base44.entities.Message.filter({ school_id: schoolId });
+      const all = await messagesData.where({ school_id: schoolId });
       return all
         .filter(m => m.recipient_ids?.includes(parentUserId))
-        .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         .slice(0, 8);
     },
     enabled: !!schoolId && !!parentUserId,
@@ -92,7 +95,7 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
   const acknowledgeMutation = useMutation({
     mutationFn: async (msg) => {
       const readBy = Array.from(new Set([...(msg.read_by || []), parentUserId]));
-      return base44.entities.Message.update(msg.id, { read_by: readBy });
+      return messagesData.update(msg.id, { read_by: readBy });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['parent-messages', schoolId, parentUserId] });
@@ -149,7 +152,7 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
                     <p className="text-sm font-medium text-slate-800 truncate">{g.title}</p>
                     <p className="text-xs text-slate-400 mt-0.5">
                       {g.score != null && g.max_score ? `${g.score} / ${g.max_score}` : ''}
-                      {g.created_date ? ` · ${format(new Date(g.created_date), 'MMM d')}` : ''}
+                      {g.created_at ? ` · ${format(new Date(g.created_at), 'MMM d')}` : ''}
                     </p>
                   </div>
                   {g.ib_grade != null && (
@@ -196,7 +199,7 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold text-slate-800 truncate">{msg.subject}</p>
-                      <p className="text-xs text-slate-500 mt-0.5">{msg.sender_name} · {format(new Date(msg.created_date), 'MMM d')}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">{msg.sender_name} · {format(new Date(msg.created_at), 'MMM d')}</p>
                     </div>
                     <Button
                       size="sm"
@@ -213,7 +216,7 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
               {readMessages.map(msg => (
                 <div key={msg.id} className="px-4 py-3 opacity-60">
                   <p className="text-sm text-slate-600 truncate">{msg.subject}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">{msg.sender_name} · {format(new Date(msg.created_date), 'MMM d')}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">{msg.sender_name} · {format(new Date(msg.created_at), 'MMM d')}</p>
                 </div>
               ))}
             </div>

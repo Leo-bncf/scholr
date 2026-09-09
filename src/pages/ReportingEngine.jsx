@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -13,6 +12,12 @@ import ReportingSummaryCards from '@/components/reporting/ReportingSummaryCards'
 import ReportingChartPanel from '@/components/reporting/ReportingChartPanel';
 import ReportingTable from '@/components/reporting/ReportingTable';
 import { downloadCSV } from '@/components/reporting/reportingExportUtils';
+import * as membershipsData from '@/data/memberships';
+import * as classesData from '@/data/classes';
+import * as academics from '@/data/academics';
+import * as gradebookData from '@/data/gradebook';
+import * as attendanceData from '@/data/attendance';
+import * as fns from '@/data/functions';
 
 const reportConfigs = {
   student_performance: {
@@ -64,11 +69,11 @@ export default function ReportingEngine() {
     queryKey: ['reporting-engine', schoolId],
     queryFn: async () => {
       const [memberships, classes, subjects, grades, attendance] = await Promise.all([
-        base44.entities.SchoolMembership.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.Subject.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.GradeItem.filter({ school_id: schoolId }),
-        base44.entities.AttendanceRecord.filter({ school_id: schoolId }),
+        membershipsData.where({ school_id: schoolId, status: 'active' }),
+        classesData.where({ school_id: schoolId, status: 'active' }),
+        academics.whereSubjects({ school_id: schoolId, status: 'active' }),
+        gradebookData.whereGradeItems({ school_id: schoolId }),
+        attendanceData.whereRecords({ school_id: schoolId }),
       ]);
       return { memberships, classes, subjects, grades, attendance };
     },
@@ -156,8 +161,8 @@ export default function ReportingEngine() {
   }, [data, filters, reportType]);
 
   const handleExportPDF = async () => {
-    const response = await base44.functions.invoke('exportReportPDF', { reportId: null, reporting_engine: { title: reportConfigs[reportType].label, rows: computed.rows, columns: reportConfigs[reportType].columns } });
-    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const response = await fns.invoke('exportReportPDF', { reportId: null, reporting_engine: { title: reportConfigs[reportType].label, rows: computed.rows, columns: reportConfigs[reportType].columns } });
+    const blob = new Blob([response], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
   };

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -29,6 +28,7 @@ import SuperAdminShell from '@/components/admin/super-admin/SuperAdminShell';
 import { useSuperAdminAccess } from '@/components/hooks/useSuperAdminAccess';
 import { getSchoolHealthIssues } from '@/components/admin/super-admin/superAdminConfig';
 import { useSuperAdminSchoolDetailQuery } from '@/components/hooks/useSuperAdminData';
+import * as schoolsData from '@/data/schools';
 
 export default function SuperAdminSchoolDetail() {
   const navigate = useNavigate();
@@ -77,14 +77,14 @@ export default function SuperAdminSchoolDetail() {
     }
 
     setActionLoading(true);
-    await base44.entities.School.update(schoolId, { status: 'suspended' });
+    await schoolsData.update(schoolId, { status: 'suspended' });
     await reloadSchool();
     setActionLoading(false);
   };
 
   const handleActivateSchool = async () => {
     setActionLoading(true);
-    await base44.entities.School.update(schoolId, { status: 'active' });
+    await schoolsData.update(schoolId, { status: 'active' });
     await reloadSchool();
     setActionLoading(false);
   };
@@ -93,7 +93,7 @@ export default function SuperAdminSchoolDetail() {
     if (!window.confirm(`Permanently delete "${school.name}"? This cannot be undone.`)) return;
     if (!window.confirm(`Second confirmation: all school data will be lost. Are you absolutely sure?`)) return;
     setActionLoading(true);
-    await base44.entities.School.delete(schoolId);
+    await schoolsData.remove(schoolId);
     navigate('/SuperAdminSchools');
   };
 
@@ -138,7 +138,7 @@ export default function SuperAdminSchoolDetail() {
               <div className="min-w-0">
                 <h1 className="text-2xl md:text-3xl font-bold text-slate-900 truncate">{school.name}</h1>
                 <p className="text-xs md:text-sm text-slate-600 mt-1 truncate">
-                  {school.city}, {school.country} • Created {new Date(school.created_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                  {school.city}, {school.country} • Created {new Date(school.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                 </p>
               </div>
               <div className="flex-shrink-0">

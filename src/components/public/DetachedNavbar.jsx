@@ -1,15 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { base44 } from '@/api/base44Client';
+import { isAuthenticated, redirectToLogin } from '@/data/session';
 
 export default function DetachedNavbar() {
   const handleLogin = async () => {
-    const isAuthed = await base44.auth.isAuthenticated();
+    const isAuthed = await isAuthenticated();
     if (isAuthed) {
       window.location.href = '/AppHome';
     } else {
-      base44.auth.redirectToLogin('/AppHome');
+      redirectToLogin('/AppHome');
     }
   };
 
@@ -18,7 +18,7 @@ export default function DetachedNavbar() {
       <div className="flex items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-3 shrink-0">
           <img
-            src="https://media.base44.com/images/public/69a0347d243a60c91ce938c9/3799d407a_image.png"
+            src="/brand/scholr-mark.png"
             alt="Scholr"
             className="h-9 w-9 rounded-xl shadow-sm object-cover"
           />

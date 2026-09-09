@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, AlertCircle } from 'lucide-react';
+import { redirectToLogin } from '@/data/session';
 
 /**
  * Login form with account state handling
@@ -25,7 +25,7 @@ export default function LoginForm() {
 
     try {
       // Attempt login via Base44 auth
-      await base44.auth.redirectToLogin(`${window.location.origin}/first-login`);
+      await redirectToLogin(`${window.location.origin}/first-login`);
       
       // If we get here, login was successful
       navigate('/dashboard');

@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -10,14 +9,15 @@ import { format } from 'date-fns';
 import { FileText, Presentation, Table, Upload as UploadIcon, Link as LinkIcon } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useUser } from '@/components/auth/UserContext';
-import DocumentCard from './DocumentCard';
 import DocumentPicker from './DocumentPicker';
 import GoogleDocCreator from './GoogleDocCreator';
 import GoogleDrivePicker from './GoogleDrivePicker';
 import SubmissionDocumentsView from './SubmissionDocumentsView';
 import SubmissionHistory from './SubmissionHistory';
 import GoogleConnectionStatus from '@/components/google/GoogleConnectionStatus';
-import { useSubmissionPolicy, validateFileForPolicy, getLateSubmissionStatus } from '@/hooks/useSubmissionPolicy';
+import { useSubmissionPolicy, getLateSubmissionStatus } from '@/hooks/useSubmissionPolicy';
+import * as submissionsData from '@/data/submissions';
+import * as fns from '@/data/functions';
 
 export default function StudentSubmission({ assignment, studentId, studentName, existingSubmission }) {
   const queryClient = useQueryClient();
@@ -35,7 +35,7 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
 
   const { data: submissionHistory = [] } = useQuery({
     queryKey: ['submission-history', assignment?.id, studentId],
-    queryFn: () => base44.entities.Submission.filter({ assignment_id: assignment.id, student_id: studentId }),
+    queryFn: () => submissionsData.where({ assignment_id: assignment.id, student_id: studentId }),
     enabled: !!assignment?.id && !!studentId,
   });
 
@@ -45,12 +45,12 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
   const submitMutation = useMutation({
     mutationFn: async (data) => {
       if (data.status === 'draft' && activeSubmission && activeSubmission.status === 'draft') {
-        return base44.entities.Submission.update(activeSubmission.id, data);
+        return submissionsData.update(activeSubmission.id, data);
       }
       if (activeSubmission && data.status !== 'draft') {
-        await base44.entities.Submission.update(activeSubmission.id, { is_current_version: false });
+        await submissionsData.update(activeSubmission.id, { is_current_version: false });
       }
-      return base44.entities.Submission.create(data);
+      return submissionsData.create(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assignment-detail'] });
@@ -95,16 +95,16 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
 
   const handleCreateGoogleDoc = async (type) => {
     try {
-      const response = await base44.functions.invoke('verifyGoogleConnection', {
+      const response = await fns.invoke('verifyGoogleConnection', {
         schoolId: school?.id,
         userId: studentId
       });
       
-      if (response.data.requiresReconnection || response.data.requiresConnection) {
+      if (response.requiresReconnection || response.requiresConnection) {
         setGoogleConnectionAlert({
           type: 'connection_error',
-          message: response.data.message,
-          errorCode: response.data.errorCode
+          message: response.message,
+          errorCode: response.errorCode
         });
         return;
       }
@@ -130,16 +130,16 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
 
   const handleGoogleDrivePickerOpen = async () => {
     try {
-      const response = await base44.functions.invoke('verifyGoogleConnection', {
+      const response = await fns.invoke('verifyGoogleConnection', {
         schoolId: school?.id,
         userId: studentId
       });
       
-      if (response.data.requiresReconnection || response.data.requiresConnection) {
+      if (response.requiresReconnection || response.requiresConnection) {
         setGoogleConnectionAlert({
           type: 'connection_error',
-          message: response.data.message,
-          errorCode: response.data.errorCode
+          message: response.message,
+          errorCode: response.errorCode
         });
         return;
       }

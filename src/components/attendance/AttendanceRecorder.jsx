@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Loader2, CheckCircle2, XCircle, Clock, AlertCircle, Save, Users, Zap } from 'lucide-react';
+import { Loader2, CheckCircle2, XCircle, Clock, AlertCircle, Save, Users } from 'lucide-react';
 import { format } from 'date-fns';
+import * as attendancePoliciesData from '@/data/attendancePolicies';
+import * as membershipsData from '@/data/memberships';
 
 const DEFAULT_STATUSES = [
   { key: 'present', label: 'Present', icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-300', activeBg: 'bg-emerald-500 text-white' },
@@ -40,7 +39,7 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
   const { data: policy } = useQuery({
     queryKey: ['attendance-policy', classData.school_id],
     queryFn: async () => {
-      const p = await base44.entities.AttendancePolicy.filter({ school_id: classData.school_id });
+      const p = await attendancePoliciesData.where({ school_id: classData.school_id });
       return p[0] || null;
     },
   });
@@ -64,7 +63,7 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
   const { data: students = [], isLoading: loadingStudents } = useQuery({
     queryKey: ['class-students-attendance', classData.id],
     queryFn: async () => {
-      const members = await base44.entities.SchoolMembership.filter({
+      const members = await membershipsData.where({
         school_id: classData.school_id,
         status: 'active'
       });
@@ -74,7 +73,7 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
 
   const { data: existingRecords = [], isLoading: loadingRecords } = useQuery({
     queryKey: ['class-attendance-records', classData.id, selectedDate],
-    queryFn: () => base44.entities.AttendanceRecord.filter({
+    queryFn: () => attendanceData.whereRecords({
       school_id: classData.school_id,
       class_id: classData.id,
       date: selectedDate
@@ -98,9 +97,9 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
       const promises = records.map(record => {
         const existing = existingRecords.find(r => r.student_id === record.student_id);
         if (existing) {
-          return base44.entities.AttendanceRecord.update(existing.id, record);
+          return attendanceData.update(existing.id, record);
         }
-        return base44.entities.AttendanceRecord.create(record);
+        return attendanceData.create(record);
       });
       return Promise.all(promises);
     },

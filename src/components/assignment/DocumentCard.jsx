@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, ExternalLink, Sheet, Presentation, File, Link2, Download, X } from 'lucide-react';
+import { FileText, ExternalLink, Sheet, Presentation, File, Link2, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const documentTypeConfig = {

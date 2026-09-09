@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -8,16 +7,15 @@ import {
   Zap,
   School,
   Users,
-  Calendar,
   LifeBuoy,
-  FileSpreadsheet,
-  Wrench,
   ArrowRight,
   Loader2,
   Monitor,
   Globe,
 } from 'lucide-react';
 import PricingTierSwitch from './PricingTierSwitch';
+import { getCurrentUser, redirectToLogin } from '@/data/session';
+import * as fns from '@/data/functions';
 
 const SHARED_FEATURES = [
   'Full platform access — every feature included',
@@ -135,25 +133,25 @@ export default function PricingTiersSection() {
       return;
     }
 
-    const isAuthenticated = await base44.auth.isAuthenticated();
+    const isAuthenticated = await isAuthenticated();
     if (!isAuthenticated) {
-      base44.auth.redirectToLogin(window.location.href);
+      redirectToLogin(window.location.href);
       return;
     }
 
-    const user = await base44.auth.me();
+    const user = await getCurrentUser();
     setLoadingTier(tierId);
 
     try {
-      const response = await base44.functions.invoke('createStripeCheckout', {
+      const response = await fns.invoke('createCheckoutSession', {
         priceId,
         tier: tierId,
         userId: user.id,
         userEmail: user.email,
       });
 
-      if (response?.data?.url) {
-        window.location.href = response.data.url;
+      if (response?.url) {
+        window.location.href = response.url;
         return;
       }
     } catch (error) {

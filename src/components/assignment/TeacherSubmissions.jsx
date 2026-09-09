@@ -1,18 +1,19 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { Loader2, CheckCircle, Clock, XCircle, AlertCircle, Eye, FileText, Presentation, Table, Upload, Link as LinkIcon, ExternalLink, Lock } from 'lucide-react';
+import { Loader2, CheckCircle, Clock, XCircle, AlertCircle, Eye, FileText, Presentation, Table, Upload, Link as LinkIcon, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { createPageUrl } from '@/utils';
 import DocumentAccessValidator from '@/components/google/DocumentAccessValidator';
+import * as membershipsData from '@/data/memberships';
+import * as submissionsData from '@/data/submissions';
 
 export default function TeacherSubmissions({ assignment, classData }) {
   const { data: students = [] } = useQuery({
     queryKey: ['class-students', classData.id],
     queryFn: async () => {
-      const members = await base44.entities.SchoolMembership.filter({
+      const members = await membershipsData.where({
         school_id: classData.school_id,
         status: 'active'
       });
@@ -22,7 +23,7 @@ export default function TeacherSubmissions({ assignment, classData }) {
 
   const { data: submissions = [], isLoading } = useQuery({
     queryKey: ['assignment-submissions', assignment.id],
-    queryFn: () => base44.entities.Submission.filter({
+    queryFn: () => submissionsData.where({
       school_id: assignment.school_id,
       assignment_id: assignment.id
     }),

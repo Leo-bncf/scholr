@@ -1,0 +1,52 @@
+// INTERIM tailnet policy — renaming and tagging only, NO isolation yet.
+//
+// Why this exists: the tailnet has a single user account
+// (support@schedual-pro.com). Tailscale ACLs discriminate by identity, so
+// isolating Conor and Alec from Schedual is impossible until they have their
+// own accounts. This policy therefore changes NOTHING about who can reach
+// what — it only declares the new tags so devices can be renamed and re-tagged
+// now, ahead of that.
+//
+// Access here is deliberately identical to the previous policy. Swap in
+// tailscale-acl.hujson (the real one) once per-person accounts exist.
+
+{
+  "tagOwners": {
+    "tag:infra":    ["support@schedual-pro.com"],
+    "tag:schedual": ["support@schedual-pro.com"],
+    "tag:scholr":   ["support@schedual-pro.com"],
+
+    // tag:server removed 2026-08-15 — every device is now on infra/schedual/
+    // scholr, so nothing carries it.
+
+    // Pre-existing, unused by any current device but kept so nothing breaks.
+    "tag:ai-agent": ["support@schedual-pro.com"],
+  },
+
+  // Unchanged from the previous policy — open between tailnet nodes. This is
+  // what makes the rename a zero-risk operation: no access is added or removed.
+  "acls": [
+    {
+      "action": "accept",
+      "src":    ["*"],
+      "dst":    ["*:*"],
+    },
+  ],
+
+  "ssh": [
+    {
+      "action": "accept",
+      "src":    ["support@schedual-pro.com"],
+      "dst":    ["tag:infra", "tag:schedual", "tag:scholr"],
+      "users":  ["root", "autogroup:nonroot"],
+    },
+  ],
+
+  "tests": [
+    {
+      // The two boxes the CODE ROUGE runbook depends on must stay reachable.
+      "src":    "support@schedual-pro.com",
+      "accept": ["100.121.81.45:22", "100.101.121.61:22", "100.91.152.126:8006"],
+    },
+  ],
+}

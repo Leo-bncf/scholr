@@ -1,22 +1,26 @@
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
 import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, PieChart, Pie, Cell, RadarChart,
-  Radar, PolarGrid, PolarAngleAxis
+  Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import {
-  TrendingUp, Users, BookOpen, BarChart3, AlertTriangle,
-  CheckCircle2, GraduationCap, Activity, Loader2
+  TrendingUp, Users, AlertTriangle,
+  CheckCircle2, Activity, Loader2
 } from 'lucide-react';
 import { format, subDays, startOfWeek, parseISO } from 'date-fns';
+import * as membershipsData from '@/data/memberships';
+import * as classesData from '@/data/classes';
+import * as gradebookData from '@/data/gradebook';
+import * as attendanceData from '@/data/attendance';
+import * as academics from '@/data/academics';
+import * as behaviorRecordsData from '@/data/behaviorRecords';
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -308,43 +312,43 @@ export default function SchoolAnalytics() {
 
   const { data: memberships = [], isLoading: loadingM } = useQuery({
     queryKey: ['analytics-memberships', schoolId],
-    queryFn: () => base44.entities.SchoolMembership.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => membershipsData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
   const { data: classes = [], isLoading: loadingC } = useQuery({
     queryKey: ['analytics-classes', schoolId],
-    queryFn: () => base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => classesData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
   const { data: grades = [], isLoading: loadingG } = useQuery({
     queryKey: ['analytics-grades-school', schoolId],
-    queryFn: () => base44.entities.GradeItem.filter({ school_id: schoolId }),
+    queryFn: () => gradebookData.whereGradeItems({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: attendance = [], isLoading: loadingA } = useQuery({
     queryKey: ['analytics-attendance-school', schoolId],
-    queryFn: () => base44.entities.AttendanceRecord.filter({ school_id: schoolId }),
+    queryFn: () => attendanceData.whereRecords({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: cohorts = [] } = useQuery({
     queryKey: ['analytics-cohorts', schoolId],
-    queryFn: () => base44.entities.Cohort.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => academics.whereCohorts({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
   const { data: predictedGrades = [] } = useQuery({
     queryKey: ['analytics-pg', schoolId],
-    queryFn: () => base44.entities.PredictedGrade.filter({ school_id: schoolId }),
+    queryFn: () => gradebookData.wherePredictedGrades({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: behavior = [] } = useQuery({
     queryKey: ['analytics-behavior', schoolId],
-    queryFn: () => base44.entities.BehaviorRecord.filter({ school_id: schoolId }),
+    queryFn: () => behaviorRecordsData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 

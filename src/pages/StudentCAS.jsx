@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -8,11 +7,10 @@ import CASProgressOverview from '@/components/ibcore/CASProgressOverview';
 import CASExperienceCard from '@/components/ibcore/CASExperienceCard';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  LayoutDashboard, BookOpen, ClipboardCheck, BarChart3, 
-  MessageSquare, Star, Plus, Loader2, Filter
+import { Star, Plus, Loader2, Filter
 } from 'lucide-react';
 import { STUDENT_SIDEBAR_LINKS } from '@/components/app/studentSidebarLinks';
+import * as casExperiencesData from '@/data/casExperiences';
 
 export default function StudentCAS() {
   const { user, school, schoolId } = useUser();
@@ -21,7 +19,7 @@ export default function StudentCAS() {
 
   const { data: experiences = [], isLoading } = useQuery({
     queryKey: ['student-cas', schoolId, user?.id],
-    queryFn: () => base44.entities.CASExperience.filter({ school_id: schoolId, student_id: user.id }),
+    queryFn: () => casExperiencesData.where({ school_id: schoolId, student_id: user.id }),
     enabled: !!schoolId && !!user?.id,
   });
 

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Moon, Sun, Save, Settings } from 'lucide-react';
+import { Moon, Sun, Save } from 'lucide-react';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import { getAppSidebarLinks } from '@/components/app/sidebarLinks';
 import { getStudentSidebarLinks } from '@/components/app/studentSidebarLinks';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { updateMyProfile } from '@/data/session';
 
 export default function PersonalSettings() {
   const { user, school, schoolId, role, reload, curriculum } = useUser();
@@ -34,7 +34,7 @@ export default function PersonalSettings() {
 
   const handleSave = async () => {
     setSaving(true);
-    await base44.auth.updateMe({
+    await updateMyProfile({
       display_name: displayName,
       email_preferences: {
         assignments: emailAssignments,

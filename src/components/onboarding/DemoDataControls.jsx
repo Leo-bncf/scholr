@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Sparkles, Trash2, AlertTriangle, CheckCircle2, Loader2, Database, Layers3, ShieldCheck } from 'lucide-react';
+import { Trash2, AlertTriangle, CheckCircle2, Loader2, Database, Layers3, ShieldCheck } from 'lucide-react';
+import * as fns from '@/data/functions';
 
 const demoHighlights = [
   '1 academic year + 2 terms',
@@ -95,14 +95,14 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
     setSeeding(true);
     setResult(null);
     try {
-      const response = await base44.functions.invoke('seedSchoolDemoData', { schoolId });
+      const response = await fns.invoke('seedSchoolDemoData', { schoolId });
       setResult({
         type: 'success',
-        message: `Demo data seeded: ${response.data.stats?.subjects ?? 0} subjects, ${response.data.stats?.classes ?? 0} classes, ${response.data.stats?.memberships ?? 0} memberships created.`,
+        message: `Demo data seeded: ${response.stats?.subjects ?? 0} subjects, ${response.stats?.classes ?? 0} classes, ${response.stats?.memberships ?? 0} memberships created.`,
       });
       onRefresh?.();
     } catch (err) {
-      setResult({ type: 'error', message: err?.response?.data?.error || 'Failed to seed demo data.' });
+      setResult({ type: 'error', message: err?.message || 'Failed to seed demo data.' });
     } finally {
       setSeeding(false);
     }
@@ -112,12 +112,12 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
     setClearing(true);
     setResult(null);
     try {
-      const response = await base44.functions.invoke('clearSchoolDemoData', { schoolId });
-      setResult({ type: 'success', message: `Demo data cleared: ${response.data.deleted ?? 0} records removed.` });
+      const response = await fns.invoke('clearSchoolDemoData', { schoolId });
+      setResult({ type: 'success', message: `Demo data cleared: ${response.deleted ?? 0} records removed.` });
       setConfirmClear(false);
       onRefresh?.();
     } catch (err) {
-      setResult({ type: 'error', message: err?.response?.data?.error || 'Failed to clear demo data.' });
+      setResult({ type: 'error', message: err?.message || 'Failed to clear demo data.' });
     } finally {
       setClearing(false);
     }

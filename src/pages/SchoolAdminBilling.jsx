@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import { useUser } from '@/components/auth/UserContext';
 import { usePlan } from '@/components/plan/PlanProvider';
-import {
-  Users, CreditCard, CheckCircle2, AlertCircle, Loader2,
-  ExternalLink, Shield, ArrowUpCircle, RefreshCw, GraduationCap,
+import { CreditCard, CheckCircle2, AlertCircle, Loader2,
+  ExternalLink, ArrowUpCircle, RefreshCw, GraduationCap,
 } from 'lucide-react';
 import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import AdminTabNavigation from '@/components/admin/AdminTabNavigation';
 import TrialBanner from '@/components/plan/TrialBanner';
@@ -19,6 +16,9 @@ import BillingStatusBanner from '@/components/plan/BillingStatusBanner';
 import StudentPricingUpgrade from '@/components/plan/StudentPricingUpgrade';
 import { PLAN_LIMITS, PLAN_NAMES, PLAN_DESCRIPTIONS, calcAnnualCost, getUpgradePlans } from '@/components/plan/PlanConfig';
 import { format } from 'date-fns';
+import * as schoolsData from '@/data/schools';
+import * as membershipsData from '@/data/memberships';
+import * as fns from '@/data/functions';
 
 const BILLING_STATUS_CONFIG = {
   trial:     { label: 'Free Trial',   color: 'bg-blue-100 text-blue-700 border-blue-200',    dot: 'bg-blue-500' },
@@ -50,7 +50,7 @@ export default function SchoolAdminBilling() {
   const { data: schoolData, refetch } = useQuery({
     queryKey: ['school-billing', schoolId],
     queryFn: async () => {
-      const schools = await base44.entities.School.filter({ id: schoolId });
+      const schools = await schoolsData.where({ id: schoolId });
       if (!schools || schools.length === 0) throw new Error('School not found');
       return schools[0];
     },
@@ -60,7 +60,7 @@ export default function SchoolAdminBilling() {
   const { data: studentCount = 0 } = useQuery({
     queryKey: ['student-count', schoolId],
     queryFn: async () => {
-      const students = await base44.entities.SchoolMembership.filter({ school_id: schoolId, role: 'student', status: 'active' });
+      const students = await membershipsData.where({ school_id: schoolId, role: 'student', status: 'active' });
       return students.length;
     },
     enabled: !!schoolId,
@@ -79,8 +79,8 @@ export default function SchoolAdminBilling() {
   const handleManageBilling = async () => {
     setLoading(true);
     try {
-      const response = await base44.functions.invoke('createCustomerPortalSession', { schoolId });
-      const url = response?.data?.url;
+      const response = await fns.invoke('createCustomerPortalSession', { schoolId });
+      const url = response?.url;
       if (!url) throw new Error('No portal URL returned');
       window.location.href = url;
     } catch {

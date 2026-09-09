@@ -3,8 +3,7 @@ import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { FileText, Presentation, Table, Upload, Link, Info } from 'lucide-react';
+import { FileText, Presentation, Table, Upload, Link } from 'lucide-react';
 
 const FORMAT_META = {
   file_upload:   { label: 'File Upload',     icon: Upload,       color: 'bg-slate-100 text-slate-700 border-slate-200' },

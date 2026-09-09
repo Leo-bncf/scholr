@@ -5,8 +5,8 @@ import PublicFooter from '@/components/public/PublicFooter';
 import ConsentModal from '@/components/public/ConsentModal';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { base44 } from '@/api/base44Client';
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
+import { isAuthenticated } from '@/data/session';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
 import TopMarqueeSection from '@/components/landing/TopMarqueeSection';
 import LandingAnimatedBackground from '@/components/landing/LandingAnimatedBackground';
@@ -40,11 +40,12 @@ function HeroSection() {
   const wordmarkScale = useTransform(scrollY, [0, 220, 520], [1.16, 1.08, 0.98]);
 
   const handleSignIn = async () => {
-    const isAuthed = await base44.auth.isAuthenticated();
-    if (isAuthed) {
+    // Supabase has no hosted login page to bounce to — the app renders its own
+    // sign-in, so an unauthenticated visitor goes there with a return path.
+    if (await isAuthenticated()) {
       window.location.href = '/AppHome';
     } else {
-      base44.auth.redirectToLogin('/AppHome');
+      window.location.href = `/FirstLogin?next=${encodeURIComponent('/AppHome')}`;
     }
   };
 

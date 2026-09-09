@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Loader2, Download, FileText, BarChart2, Calendar, Shield } from 'lucide-react';
 import { format, subDays, eachDayOfInterval, parseISO } from 'date-fns';
 import { logAudit, AuditActions, AuditLevels } from '@/components/utils/auditLogger';
+import * as attendanceData from '@/data/attendance';
+import * as classesData from '@/data/classes';
+import * as academics from '@/data/academics';
 
 function downloadCSV(filename, rows, headers) {
   const lines = [headers.join(','), ...rows.map(r => headers.map(h => `"${(r[h] ?? '').toString().replace(/"/g, '""')}"`).join(','))];
@@ -26,19 +28,19 @@ export default function AttendanceExport({ schoolId, schoolName }) {
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: ['attendance-export-data', schoolId],
-    queryFn: () => base44.entities.AttendanceRecord.filter({ school_id: schoolId }),
+    queryFn: () => attendanceData.whereRecords({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: classes = [] } = useQuery({
     queryKey: ['classes-for-export', schoolId],
-    queryFn: () => base44.entities.Class.filter({ school_id: schoolId }),
+    queryFn: () => classesData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: cohorts = [] } = useQuery({
     queryKey: ['cohorts-for-export', schoolId],
-    queryFn: () => base44.entities.Cohort.filter({ school_id: schoolId }),
+    queryFn: () => academics.whereCohorts({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 

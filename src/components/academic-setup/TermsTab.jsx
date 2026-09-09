@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Loader2, Pencil, Trash2, BookMarked, Lock, CalendarCheck, ChevronDown, ChevronUp } from 'lucide-react';
+import * as academics from '@/data/academics';
 
 const EMPTY_TERM = {
   name: '', start_date: '', end_date: '', is_current: false,
@@ -95,7 +95,7 @@ export default function TermsTab({ schoolId }) {
 
   const { data: years = [], isLoading: yearsLoading } = useQuery({
     queryKey: ['academic-years', schoolId],
-    queryFn: () => base44.entities.AcademicYear.filter({ school_id: schoolId }),
+    queryFn: () => academics.whereAcademicYears({ school_id: schoolId }),
     enabled: !!schoolId,
     onSuccess: (data) => { if (data.length && !selectedYearId) setSelectedYearId(data.find(y => y.is_current)?.id || data[0]?.id); },
   });
@@ -109,24 +109,24 @@ export default function TermsTab({ schoolId }) {
 
   const { data: terms = [], isLoading: termsLoading } = useQuery({
     queryKey: ['terms', schoolId, selectedYearId],
-    queryFn: () => base44.entities.Term.filter({ school_id: schoolId, academic_year_id: selectedYearId }),
+    queryFn: () => academics.whereTerms({ school_id: schoolId, academic_year_id: selectedYearId }),
     enabled: !!schoolId && !!selectedYearId,
   });
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ['terms', schoolId, selectedYearId] });
 
   const createMutation = useMutation({
-    mutationFn: (d) => base44.entities.Term.create({ ...d, school_id: schoolId, academic_year_id: selectedYearId }),
+    mutationFn: (d) => academics.createTerm({ ...d, school_id: schoolId, academic_year_id: selectedYearId }),
     onSuccess: () => { invalidate(); closeDialog(); },
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Term.update(id, data),
+    mutationFn: ({ id, data }) => academics.updateTerm(id, data),
     onSuccess: () => { invalidate(); closeDialog(); },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Term.delete(id),
+    mutationFn: (id) => academics.removeTerm(id),
     onSuccess: invalidate,
   });
 

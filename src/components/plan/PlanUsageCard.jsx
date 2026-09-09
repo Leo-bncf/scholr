@@ -2,11 +2,11 @@ import React from 'react';
 import { usePlan } from './PlanProvider';
 import { useUser } from '@/components/auth/UserContext';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { GraduationCap, Users, AlertTriangle, CheckCircle2, Infinity } from 'lucide-react';
+import { GraduationCap, Users, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { PLAN_NAMES } from './PlanConfig';
+import * as membershipsData from '@/data/memberships';
 
 export default function PlanUsageCard({ studentCount: studentCountProp }) {
   const plan = usePlan();
@@ -15,7 +15,7 @@ export default function PlanUsageCard({ studentCount: studentCountProp }) {
   const { data: studentCount = studentCountProp ?? 0 } = useQuery({
     queryKey: ['student-count-usage', schoolId],
     queryFn: async () => {
-      const students = await base44.entities.SchoolMembership.filter({ school_id: schoolId, role: 'student', status: 'active' });
+      const students = await membershipsData.where({ school_id: schoolId, role: 'student', status: 'active' });
       return students.length;
     },
     enabled: !!schoolId && studentCountProp === undefined,

@@ -1,9 +1,13 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, TrendingDown, Clock, FileX, CheckCircle2, Loader2 } from 'lucide-react';
-import { format, subDays, parseISO } from 'date-fns';
+import { subDays } from 'date-fns';
+import * as membershipsData from '@/data/memberships';
+import * as attendanceData from '@/data/attendance';
+import * as assignmentsData from '@/data/assignments';
+import * as submissionsData from '@/data/submissions';
+import * as gradebookData from '@/data/gradebook';
 
 function AlertBadge({ type }) {
   const config = {
@@ -26,7 +30,7 @@ export default function StudentAlerts({ classData }) {
   const { data: students = [], isLoading: loadingStudents } = useQuery({
     queryKey: ['alert-students', classData.id],
     queryFn: async () => {
-      const members = await base44.entities.SchoolMembership.filter({
+      const members = await membershipsData.where({
         school_id: classData.school_id, status: 'active'
       });
       return members.filter(m => classData.student_ids?.includes(m.user_id));
@@ -35,7 +39,7 @@ export default function StudentAlerts({ classData }) {
 
   const { data: attendance = [], isLoading: loadingAttendance } = useQuery({
     queryKey: ['alert-attendance', classData.id],
-    queryFn: () => base44.entities.AttendanceRecord.filter({
+    queryFn: () => attendanceData.whereRecords({
       school_id: classData.school_id,
       class_id: classData.id,
     }),
@@ -43,7 +47,7 @@ export default function StudentAlerts({ classData }) {
 
   const { data: assignments = [], isLoading: loadingAssignments } = useQuery({
     queryKey: ['alert-assignments', classData.id],
-    queryFn: () => base44.entities.Assignment.filter({
+    queryFn: () => assignmentsData.where({
       school_id: classData.school_id,
       class_id: classData.id,
       status: 'published',
@@ -52,7 +56,7 @@ export default function StudentAlerts({ classData }) {
 
   const { data: submissions = [], isLoading: loadingSubmissions } = useQuery({
     queryKey: ['alert-submissions', classData.id],
-    queryFn: () => base44.entities.Submission.filter({
+    queryFn: () => submissionsData.where({
       school_id: classData.school_id,
       class_id: classData.id,
     }),
@@ -61,7 +65,7 @@ export default function StudentAlerts({ classData }) {
 
   const { data: grades = [], isLoading: loadingGrades } = useQuery({
     queryKey: ['alert-grades', classData.id],
-    queryFn: () => base44.entities.GradeItem.filter({
+    queryFn: () => gradebookData.whereGradeItems({
       school_id: classData.school_id,
       class_id: classData.id,
     }),

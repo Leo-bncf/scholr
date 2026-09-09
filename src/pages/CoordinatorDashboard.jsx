@@ -1,18 +1,21 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import StatCard from '@/components/app/StatCard';
 import { useUser } from '@/components/auth/UserContext';
-import { 
-  LayoutDashboard, Users, BarChart3, Star, FileText, 
+import { Users, 
   Loader2, GraduationCap, BookOpen, TrendingUp
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { getCoordinatorSidebarLinks } from '@/components/app/coordinatorSidebarLinks';
 import { useCurriculum } from '@/hooks/useCurriculum';
 import AssignmentCompletionChart from '@/components/coordinator/AssignmentCompletionChart';
+import * as membershipsData from '@/data/memberships';
+import * as classesData from '@/data/classes';
+import * as academics from '@/data/academics';
+import * as assignmentsData from '@/data/assignments';
+import * as submissionsData from '@/data/submissions';
 
 export default function CoordinatorDashboard() {
   const { user, school, schoolId } = useUser();
@@ -21,31 +24,31 @@ export default function CoordinatorDashboard() {
 
   const { data: memberships = [], isLoading } = useQuery({
     queryKey: ['school-memberships-coord', schoolId],
-    queryFn: () => base44.entities.SchoolMembership.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => membershipsData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
   const { data: classes = [] } = useQuery({
     queryKey: ['school-classes-coord', schoolId],
-    queryFn: () => base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => classesData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
   const { data: subjects = [] } = useQuery({
     queryKey: ['school-subjects-coord', schoolId],
-    queryFn: () => base44.entities.Subject.filter({ school_id: schoolId, status: 'active' }),
+    queryFn: () => academics.whereSubjects({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
   const { data: assignments = [] } = useQuery({
     queryKey: ['school-assignments-coord', schoolId],
-    queryFn: () => base44.entities.Assignment.filter({ school_id: schoolId }),
+    queryFn: () => assignmentsData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: submissions = [] } = useQuery({
     queryKey: ['school-submissions-coord', schoolId],
-    queryFn: () => base44.entities.Submission.filter({ school_id: schoolId }),
+    queryFn: () => submissionsData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 

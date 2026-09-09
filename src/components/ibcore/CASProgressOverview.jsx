@@ -1,5 +1,4 @@
 import React from 'react';
-import { Badge } from '@/components/ui/badge';
 import { Palette, Heart, Users, CheckCircle2 } from 'lucide-react';
 
 export default function CASProgressOverview({ experiences }) {

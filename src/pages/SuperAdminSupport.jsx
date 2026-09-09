@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import {
   ChevronDown,
   ChevronUp,
@@ -12,6 +11,7 @@ import SuperAdminLoadingState from '@/components/admin/super-admin/SuperAdminLoa
 import SuperAdminPageHeader from '@/components/admin/super-admin/SuperAdminPageHeader';
 import SuperAdminShell from '@/components/admin/super-admin/SuperAdminShell';
 import { useSuperAdminAccess } from '@/components/hooks/useSuperAdminAccess';
+import * as supportTicketsData from '@/data/supportTickets';
 
 // ─── Sample data (KB only) ────────────────────────────────────────────────────
 
@@ -40,7 +40,7 @@ function TicketManagement() {
   const [expandedId, setExpandedId] = useState(null);
 
   useEffect(() => {
-    base44.entities.SupportTicket.list('-created_date', 200).then((data) => {
+    supportTicketsData.where({}, { order: 'created_at', ascending: false, limit: 200 }).then((data) => {
       setTickets(data);
       setLoading(false);
     });
@@ -55,7 +55,7 @@ function TicketManagement() {
 
   const handleStatusChange = async (id, status) => {
     setTickets((prev) => prev.map((t) => t.id === id ? { ...t, status } : t));
-    await base44.entities.SupportTicket.update(id, { status });
+    await supportTicketsData.update(id, { status });
   };
 
   const openCount = tickets.filter((t) => t.status === 'open').length;
@@ -135,7 +135,7 @@ function TicketManagement() {
                         <span className="text-xs font-mono text-slate-400">{ticket.ticket_id}</span>
                         <span className="text-sm font-medium text-slate-800 truncate">{ticket.subject}</span>
                       </div>
-                      <p className="text-xs text-slate-500 mt-0.5">{ticket.school} · {ticket.created_date ? ticket.created_date.slice(0, 10) : ''}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">{ticket.school} · {ticket.created_at ? ticket.created_at.slice(0, 10) : ''}</p>
                     </div>
                     <span className={`hidden sm:inline text-xs px-2 py-0.5 rounded-full border font-medium ${pm.color}`}>{pm.label}</span>
                     <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${sm.color}`}>{sm.label}</span>

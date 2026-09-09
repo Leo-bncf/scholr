@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -12,6 +11,9 @@ import AnnouncementsFeed from '@/components/messaging/AnnouncementsFeed';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MessageSquare, Loader2, Megaphone } from 'lucide-react';
 import { getAppSidebarLinks } from '@/components/app/sidebarLinks';
+import * as classesData from '@/data/classes';
+import * as parentStudentLinksData from '@/data/parentStudentLinks';
+import * as messagesData from '@/data/messages';
 
 export default function Messages() {
   const { user, school, schoolId, role } = useUser();
@@ -22,11 +24,11 @@ export default function Messages() {
   const { data: myClasses = [] } = useQuery({
     queryKey: ['my-classes-messages', schoolId, user?.id, role],
     queryFn: async () => {
-      const all = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
+      const all = await classesData.where({ school_id: schoolId, status: 'active' });
       if (role === 'teacher' || role === 'ib_coordinator') return all.filter(c => c.teacher_ids?.includes(user.id));
       if (role === 'student') return all.filter(c => c.student_ids?.includes(user.id));
       if (role === 'parent') {
-        const links = await base44.entities.ParentStudentLink.filter({ parent_id: user.id });
+        const links = await parentStudentLinksData.where({ parent_id: user.id });
         const childIds = links.map(l => l.student_id);
         return all.filter(c => childIds.some(id => c.student_ids?.includes(id)));
       }
@@ -38,10 +40,10 @@ export default function Messages() {
   const { data: conversations = [], isLoading } = useQuery({
     queryKey: ['user-conversations', schoolId, user?.id],
     queryFn: async () => {
-      const allMessages = await base44.entities.Message.filter({
+      const allMessages = await messagesData.where({
         school_id: schoolId,
         is_announcement: false,
-      }, '-updated_date');
+      }, { order: 'updated_at', ascending: false });
 
       // Only messages involving this user
       const mine = allMessages.filter(m =>
@@ -52,7 +54,7 @@ export default function Messages() {
       const threads = {};
       mine.forEach(msg => {
         const key = msg.thread_id || msg.id;
-        if (!threads[key] || new Date(msg.created_date) > new Date(threads[key].created_date)) {
+        if (!threads[key] || new Date(msg.created_at) > new Date(threads[key].created_at)) {
           threads[key] = msg;
         }
       });
@@ -69,10 +71,10 @@ export default function Messages() {
           participant_name: msg.sender_id === user.id ? 'Recipient' : (msg.sender_name || 'Unknown'),
           participant_role: msg.sender_id === user.id ? '' : (msg.sender_role || ''),
           subject: msg.subject,
-          updated_date: msg.updated_date || msg.created_date,
+          updated_at: msg.updated_at || msg.created_at,
           unread_count: !msg.read_by?.includes(user.id) && msg.sender_id !== user.id ? 1 : 0,
         };
-      }).sort((a, b) => new Date(b.updated_date) - new Date(a.updated_date));
+      }).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
     },
     enabled: !!schoolId && !!user?.id,
   });

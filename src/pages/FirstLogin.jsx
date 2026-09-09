@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, CheckCircle, AlertCircle, User, Lock, FileText } from 'lucide-react';
+import { Loader2, CheckCircle, AlertCircle, User, Lock } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
+import * as membershipsData from '@/data/memberships';
+import * as accountStatesData from '@/data/accountStates';
+import { getCurrentUser, isAuthenticated, updateMyProfile } from '@/data/session';
 
 /**
  * First login onboarding experience
@@ -38,14 +40,14 @@ export default function FirstLogin() {
     if (!state?.school_id || !state?.role) return;
     if (!currentUser?.full_name || !currentUser?.email) return; // guard against blank rows
 
-    const memberships = await base44.entities.SchoolMembership.filter({
+    const memberships = await membershipsData.where({
       user_id: currentUser.id,
       school_id: state.school_id,
     });
 
     if (memberships.length === 0) return; // no membership = user was not properly invited; do nothing
 
-    await base44.entities.SchoolMembership.update(memberships[0].id, {
+    await membershipsData.update(memberships[0].id, {
       user_email: currentUser.email,
       user_name: currentUser.full_name,
       role: state.role,
@@ -53,24 +55,24 @@ export default function FirstLogin() {
     });
 
     if (currentUser.active_school_id !== state.school_id) {
-      await base44.auth.updateMe({ active_school_id: state.school_id });
+      await updateMyProfile({ active_school_id: state.school_id });
     }
   };
 
   useEffect(() => {
     const initializeFirstLogin = async () => {
       try {
-        const authed = await base44.auth.isAuthenticated();
+        const authed = await isAuthenticated();
         if (!authed) {
           navigate('/');
           return;
         }
 
-        const currentUser = await base44.auth.me();
+        const currentUser = await getCurrentUser();
         setUser(currentUser);
 
         // Get account state
-        const states = await base44.entities.AccountState.filter({
+        const states = await accountStatesData.where({
           user_id: currentUser.id
         });
 
@@ -114,11 +116,11 @@ export default function FirstLogin() {
 
     setIsProcessing(true);
     try {
-      await base44.auth.updateMe({ password });
+      await updateMyProfile({ password });
       
       // Update account state
       if (accountState) {
-        await base44.entities.AccountState.update(accountState.id, {
+        await accountStatesData.update(accountState.id, {
           password_set_at: new Date().toISOString(),
           account_status: 'active'
         });
@@ -137,14 +139,14 @@ export default function FirstLogin() {
   const handleCompleteProfile = async () => {
     setIsProcessing(true);
     try {
-      await base44.auth.updateMe({
+      await updateMyProfile({
         phone: phone || undefined,
         bio: bio || undefined
       });
 
       // Update account state
       if (accountState) {
-        await base44.entities.AccountState.update(accountState.id, {
+        await accountStatesData.update(accountState.id, {
           profile_completed: true,
           onboarding_step: 'complete'
         });

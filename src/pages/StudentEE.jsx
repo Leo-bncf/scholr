@@ -1,6 +1,5 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -8,11 +7,12 @@ import { STUDENT_SIDEBAR_LINKS } from '@/components/app/studentSidebarLinks';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { 
-  LayoutDashboard, BookOpen, ClipboardCheck, BarChart3, 
+  LayoutDashboard, BarChart3, 
   MessageSquare, Star, FileText, Loader2, CheckCircle2, 
-  Clock, AlertCircle, Upload
+  Clock, Upload
 } from 'lucide-react';
 import { format } from 'date-fns';
+import * as eeMilestonesData from '@/data/eeMilestones';
 
 const sidebarLinks = [
   { label: 'Dashboard', page: 'StudentDashboard', icon: LayoutDashboard },
@@ -45,7 +45,7 @@ export default function StudentEE() {
 
   const { data: milestones = [], isLoading } = useQuery({
     queryKey: ['student-ee', schoolId, user?.id],
-    queryFn: () => base44.entities.EEMilestone.filter({ school_id: schoolId, student_id: user.id }),
+    queryFn: () => eeMilestonesData.where({ school_id: schoolId, student_id: user.id }),
     enabled: !!schoolId && !!user?.id,
   });
 

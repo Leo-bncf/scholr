@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { DEFAULT_ROLES, getAllRoles } from '@/components/auth/PermissionsModule';
+import { getAllRoles } from '@/components/auth/PermissionsModule';
 import { Shield } from 'lucide-react';
 
 export default function RoleSelector({ value, onChange, disabled = false }) {

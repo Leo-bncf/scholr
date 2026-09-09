@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Badge } from '@/components/ui/badge';
 import { Megaphone, Globe, BookOpen, Loader2, Pin, ChevronDown, ChevronUp } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
+import * as messagesData from '@/data/messages';
 
 function AnnouncementCard({ msg }) {
   const [expanded, setExpanded] = useState(false);
@@ -32,7 +32,7 @@ function AnnouncementCard({ msg }) {
             </div>
             <p className="font-semibold text-slate-900 truncate">{msg.subject}</p>
             <p className="text-xs text-slate-500 mt-0.5">
-              {msg.sender_name || 'School'} · {msg.created_date ? format(parseISO(msg.created_date), 'MMM d, yyyy') : ''}
+              {msg.sender_name || 'School'} · {msg.created_at ? format(parseISO(msg.created_at), 'MMM d, yyyy') : ''}
             </p>
           </div>
         </div>
@@ -65,10 +65,10 @@ export default function AnnouncementsFeed({ schoolId, userId, classIds = [], sho
   const { data: announcements = [], isLoading } = useQuery({
     queryKey: ['announcements', schoolId, userId, classIds],
     queryFn: async () => {
-      const all = await base44.entities.Message.filter({
+      const all = await messagesData.where({
         school_id: schoolId,
         is_announcement: true,
-      }, '-created_date');
+      }, { order: 'created_at', ascending: false });
 
       if (showAll) return all; // admins see all
 

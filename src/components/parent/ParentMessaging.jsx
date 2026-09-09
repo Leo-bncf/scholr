@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -8,6 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Send, MessageSquare } from 'lucide-react';
 import { format } from 'date-fns';
+import * as classesData from '@/data/classes';
+import * as membershipsData from '@/data/memberships';
+import * as messagesData from '@/data/messages';
 
 export default function ParentMessaging({ parentId, parentName, schoolId, studentId }) {
   const queryClient = useQueryClient();
@@ -21,7 +23,7 @@ export default function ParentMessaging({ parentId, parentName, schoolId, studen
   const { data: studentClasses = [] } = useQuery({
     queryKey: ['parent-student-classes', schoolId, studentId],
     queryFn: async () => {
-      const all = await base44.entities.Class.filter({ school_id: schoolId, status: 'active' });
+      const all = await classesData.where({ school_id: schoolId, status: 'active' });
       return all.filter(c => c.student_ids?.includes(studentId));
     },
     enabled: !!schoolId && !!studentId,
@@ -33,7 +35,7 @@ export default function ParentMessaging({ parentId, parentName, schoolId, studen
       const allTeacherIds = new Set();
       studentClasses.forEach(c => c.teacher_ids?.forEach(tid => allTeacherIds.add(tid)));
       
-      const members = await base44.entities.SchoolMembership.filter({
+      const members = await membershipsData.where({
         school_id: schoolId,
         status: 'active'
       });
@@ -46,10 +48,10 @@ export default function ParentMessaging({ parentId, parentName, schoolId, studen
   const { data: messages = [], isLoading } = useQuery({
     queryKey: ['parent-messages', schoolId, parentId],
     queryFn: async () => {
-      const all = await base44.entities.Message.filter({
+      const all = await messagesData.where({
         school_id: schoolId,
         is_announcement: false
-      }, '-created_date');
+      }, { order: 'created_at', ascending: false });
       
       return all.filter(m => m.sender_id === parentId || m.recipient_ids?.includes(parentId));
     },
@@ -57,7 +59,7 @@ export default function ParentMessaging({ parentId, parentName, schoolId, studen
   });
 
   const sendMutation = useMutation({
-    mutationFn: (data) => base44.entities.Message.create(data),
+    mutationFn: (data) => messagesData.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['parent-messages'] });
       setShowNewMessage(false);
@@ -155,7 +157,7 @@ export default function ParentMessaging({ parentId, parentName, schoolId, studen
                 <div className="flex items-start justify-between mb-1">
                   <p className="font-medium text-slate-900 text-sm">{msg.subject}</p>
                   <span className="text-xs text-slate-500">
-                    {msg.created_date ? format(new Date(msg.created_date), 'MMM d') : ''}
+                    {msg.created_at ? format(new Date(msg.created_at), 'MMM d') : ''}
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 mb-2">{msg.sender_name}</p>

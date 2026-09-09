@@ -17,7 +17,7 @@ import {
 } from '@/components/demo-sandbox/useDemoStore';
 import {
   Heart, CalendarDays, MessageSquare, BarChart3, Megaphone,
-  CheckCircle2, BookOpen, Star, Sparkles,
+  CheckCircle2, Star, Sparkles,
 } from 'lucide-react';
 
 function StatCard({ label, value, icon: Icon, color }) {

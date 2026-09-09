@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  LayoutDashboard, Users, BarChart3, FileText, Loader2, Star, 
+import { Users, FileText, Loader2, Star, 
   Palette, Heart, Users as UsersIcon, GraduationCap
 } from 'lucide-react';
 import { getCoordinatorSidebarLinks } from '@/components/app/coordinatorSidebarLinks';
 import { useCurriculum } from '@/hooks/useCurriculum';
+import * as casExperiencesData from '@/data/casExperiences';
+import * as eeMilestonesData from '@/data/eeMilestones';
+import * as tokTasksData from '@/data/tokTasks';
+import * as membershipsData from '@/data/memberships';
 
 export default function CoordinatorIBCore() {
   const { user, school, schoolId } = useUser();
@@ -20,26 +22,26 @@ export default function CoordinatorIBCore() {
 
   const { data: casExperiences = [], isLoading: casLoading } = useQuery({
     queryKey: ['all-cas', schoolId],
-    queryFn: () => base44.entities.CASExperience.filter({ school_id: schoolId }),
+    queryFn: () => casExperiencesData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: eeMilestones = [], isLoading: eeLoading } = useQuery({
     queryKey: ['all-ee', schoolId],
-    queryFn: () => base44.entities.EEMilestone.filter({ school_id: schoolId }),
+    queryFn: () => eeMilestonesData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: tokTasks = [], isLoading: tokLoading } = useQuery({
     queryKey: ['all-tok', schoolId],
-    queryFn: () => base44.entities.TOKTask.filter({ school_id: schoolId }),
+    queryFn: () => tokTasksData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: students = [] } = useQuery({
     queryKey: ['dp-students', schoolId],
     queryFn: async () => {
-      const memberships = await base44.entities.SchoolMembership.filter({ school_id: schoolId, role: 'student' });
+      const memberships = await membershipsData.where({ school_id: schoolId, role: 'student' });
       return memberships.filter(m => m.grade_level?.includes('DP'));
     },
     enabled: !!schoolId,

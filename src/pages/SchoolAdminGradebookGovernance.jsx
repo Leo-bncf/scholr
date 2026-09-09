@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -17,6 +16,8 @@ import VisibilityRulesPanel from '@/components/gradebook-governance/VisibilityRu
 import GradeLocksPanel from '@/components/gradebook-governance/GradeLocksPanel';
 import RubricTemplateLibrary from '@/components/gradebook-governance/RubricTemplateLibrary';
 import PredictedGradesPolicy from '@/components/gradebook-governance/PredictedGradesPolicy';
+import * as gradebookPoliciesData from '@/data/gradebookPolicies';
+import * as academics from '@/data/academics';
 
 
 
@@ -30,7 +31,7 @@ export default function SchoolAdminGradebookGovernance() {
     queryKey: ['gradebook-policy', schoolId],
     queryFn: async () => {
       if (!schoolId) return null;
-      const results = await base44.entities.GradebookPolicy.filter({ school_id: schoolId });
+      const results = await gradebookPoliciesData.where({ school_id: schoolId });
       return results[0] || null;
     },
     enabled: !!schoolId,
@@ -38,7 +39,7 @@ export default function SchoolAdminGradebookGovernance() {
 
   const { data: terms = [] } = useQuery({
     queryKey: ['terms', schoolId],
-    queryFn: () => base44.entities.Term.filter({ school_id: schoolId }),
+    queryFn: () => academics.whereTerms({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
@@ -52,8 +53,8 @@ export default function SchoolAdminGradebookGovernance() {
     mutationFn: (data) => {
       const payload = { ...data, school_id: schoolId };
       return policyRecord
-        ? base44.entities.GradebookPolicy.update(policyRecord.id, payload)
-        : base44.entities.GradebookPolicy.create(payload);
+        ? gradebookPoliciesData.update(policyRecord.id, payload)
+        : gradebookPoliciesData.create(payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['gradebook-policy', schoolId] });

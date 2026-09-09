@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -10,8 +9,14 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import CalendarEventDialog from '@/components/calendar/CalendarEventDialog';
 import CreateCalendarEventDialog from '@/components/calendar/CreateCalendarEventDialog';
-import { CalendarDays, ChevronLeft, ChevronRight, Loader2, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2, Plus } from 'lucide-react';
 import { addDays, addMonths, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, startOfMonth, startOfWeek, subMonths } from 'date-fns';
+import * as classesData from '@/data/classes';
+import * as scheduleEntriesData from '@/data/scheduleEntries';
+import * as assignmentsData from '@/data/assignments';
+import * as unifiedCalendarEventsData from '@/data/unifiedCalendarEvents';
+import * as academics from '@/data/academics';
+import * as parentStudentLinksData from '@/data/parentStudentLinks';
 
 const eventColors = {
   class: 'bg-sky-100 text-sky-800 border-sky-200',
@@ -100,12 +105,12 @@ export default function UnifiedCalendar() {
     queryKey: ['unified-calendar', schoolId, user?.id, role],
     queryFn: async () => {
       const [classes, scheduleEntries, assignments, manualEvents, subjects, parentLinks] = await Promise.all([
-        base44.entities.Class.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.ScheduleEntry.filter({ school_id: schoolId, status: 'active' }),
-        base44.entities.Assignment.filter({ school_id: schoolId, status: 'published' }),
-        base44.entities.UnifiedCalendarEvent.filter({ school_id: schoolId }),
-        base44.entities.Subject.filter({ school_id: schoolId, status: 'active' }),
-        role === 'parent' ? base44.entities.ParentStudentLink.filter({ school_id: schoolId, parent_id: user.id }) : Promise.resolve([]),
+        classesData.where({ school_id: schoolId, status: 'active' }),
+        scheduleEntriesData.where({ school_id: schoolId, status: 'active' }),
+        assignmentsData.where({ school_id: schoolId, status: 'published' }),
+        unifiedCalendarEventsData.where({ school_id: schoolId }),
+        academics.whereSubjects({ school_id: schoolId, status: 'active' }),
+        role === 'parent' ? parentStudentLinksData.where({ school_id: schoolId, parent_id: user.id }) : Promise.resolve([]),
       ]);
 
       let relevantClasses = classes;

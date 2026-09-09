@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Loader2, BookMarked, Lock, Search, ChevronDown, ChevronUp } from 'lucide-react';
+import { Loader2, BookMarked, Lock, Search } from 'lucide-react';
+import * as rubricTemplatesData from '@/data/rubricTemplates';
 
 const subjectLabels = {
   group1_language_literature: 'Language & Literature',
@@ -126,7 +126,7 @@ export default function ClassRubrics({ classData }) {
 
   const { data: rubrics = [], isLoading } = useQuery({
     queryKey: ['rubric-templates', classData.school_id],
-    queryFn: () => base44.entities.RubricTemplate.filter({ school_id: classData.school_id, status: 'active' }),
+    queryFn: () => rubricTemplatesData.where({ school_id: classData.school_id, status: 'active' }),
   });
 
   const filtered = rubrics.filter(r => {

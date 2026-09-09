@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { Loader2 } from 'lucide-react';
 import AccountStateRouter from './AccountStateRouter';
 
@@ -15,7 +14,7 @@ export default function ProtectedRoute({ children }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const authed = await base44.auth.isAuthenticated();
+        const authed = await isAuthenticated();
         setIsAuthenticated(authed);
         
         if (!authed) {

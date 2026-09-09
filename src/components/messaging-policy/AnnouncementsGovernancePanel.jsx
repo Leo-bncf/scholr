@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
-import { Megaphone, Monitor, Clock, CheckCircle2 } from 'lucide-react';
+import { Megaphone, Monitor, Clock } from 'lucide-react';
 
 const ALL_ROLES = ['school_admin', 'ib_coordinator', 'teacher', 'student', 'parent'];
 const ROLE_LABELS = {

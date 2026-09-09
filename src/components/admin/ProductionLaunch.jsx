@@ -4,11 +4,11 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import * as fns from '@/data/functions';
 import {
   CheckCircle2,
   AlertCircle,
@@ -26,10 +26,10 @@ export default function ProductionLaunch() {
   useEffect(() => {
     const fetchLaunchStatus = async () => {
       try {
-        const response = await base44.functions.invoke(
+        const response = await fns.invoke(
           'productionLaunchSign'
         );
-        setLaunchStatus(response.data);
+        setLaunchStatus(response);
       } catch (error) {
         console.error('Failed to fetch launch status:', error);
       } finally {

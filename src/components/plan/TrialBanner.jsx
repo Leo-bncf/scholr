@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { usePlan } from './PlanProvider';
 import { useUser } from '@/components/auth/UserContext';
-import { base44 } from '@/api/base44Client';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Clock, AlertTriangle, CreditCard, X } from 'lucide-react';
+import * as fns from '@/data/functions';
 
 export default function TrialBanner() {
   const plan = usePlan();
@@ -21,11 +21,11 @@ export default function TrialBanner() {
     if (!isAdmin) return;
     setLoading(true);
     try {
-      const response = await base44.functions.invoke('createCheckoutSession', {
+      const response = await fns.invoke('createCheckoutSession', {
         schoolId,
         plan: plan.plan,
       });
-      window.location.href = response.data.url;
+      window.location.href = response.url;
     } catch (error) {
       console.error('Subscription error:', error);
       setLoading(false);

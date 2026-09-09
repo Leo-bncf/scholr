@@ -1,6 +1,9 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as admin from '@/data/admin';
+import * as schoolsData from '@/data/schools';
+import * as membershipsData from '@/data/memberships';
+import * as fns from '@/data/functions';
 import {
   getPlanPrice,
   getSchoolHealthIssues,
@@ -9,69 +12,48 @@ import {
 } from '@/components/admin/super-admin/superAdminConfig';
 
 const DEFAULT_STALE_TIME = 5 * 60 * 1000;
-const ENTITY_LIMIT = 2000;
 
-async function fetchSchools() {
-  return base44.entities.School.list('-updated_date', 200);
-}
-
-function buildCountMap(records) {
-  return records.reduce((acc, record) => {
-    if (!record.school_id) return acc;
-    acc[record.school_id] = (acc[record.school_id] || 0) + 1;
-    return acc;
-  }, {});
-}
-
-function buildOnboardingSummary(schoolId, counts) {
+/**
+ * Turn a school_stats row into the { progress, items } shape the onboarding
+ * widgets already render.
+ */
+function buildOnboardingSummary(stats) {
   const items = [
     { label: 'School Profile', completed: true },
-    { label: 'Academic Years', completed: (counts.academicYears[schoolId] || 0) > 0 },
-    { label: 'Terms', completed: (counts.terms[schoolId] || 0) > 0 },
-    { label: 'Subjects', completed: (counts.subjects[schoolId] || 0) > 0 },
-    { label: 'Classes', completed: (counts.classes[schoolId] || 0) > 0 },
+    { label: 'Academic Years', completed: (stats?.academic_years ?? 0) > 0 },
+    { label: 'Terms', completed: (stats?.terms ?? 0) > 0 },
+    { label: 'Subjects', completed: (stats?.subjects ?? 0) > 0 },
+    { label: 'Classes', completed: (stats?.classes ?? 0) > 0 },
   ];
-
-  const completedCount = items.filter((item) => item.completed).length;
-
-  return {
-    progress: (completedCount / items.length) * 100,
-    items,
-  };
+  const completed = items.filter((i) => i.completed).length;
+  return { progress: (completed / items.length) * 100, items };
 }
 
 export function useSuperAdminSchoolsQuery(options = {}) {
   return useQuery({
     queryKey: ['super-admin', 'schools'],
-    queryFn: fetchSchools,
+    queryFn: () => schoolsData.list(),
     staleTime: DEFAULT_STALE_TIME,
     ...options,
   });
 }
 
+/**
+ * Schools plus their onboarding progress.
+ *
+ * One query against the school_stats view. This previously fetched every
+ * academic year, term, subject and class on the platform (capped at 2000 each,
+ * so it under-counted once there were more) purely to build count maps.
+ */
 export function useSuperAdminSchoolOverviewQuery(options = {}) {
   return useQuery({
     queryKey: ['super-admin', 'school-overview'],
     queryFn: async () => {
-      const [schools, academicYears, terms, subjects, classes] = await Promise.all([
-        fetchSchools(),
-        base44.entities.AcademicYear.list('-created_date', ENTITY_LIMIT),
-        base44.entities.Term.list('-created_date', ENTITY_LIMIT),
-        base44.entities.Subject.list('-created_date', ENTITY_LIMIT),
-        base44.entities.Class.list('-created_date', ENTITY_LIMIT),
-      ]);
-
-      const counts = {
-        academicYears: buildCountMap(academicYears),
-        terms: buildCountMap(terms),
-        subjects: buildCountMap(subjects),
-        classes: buildCountMap(classes),
-      };
-
+      const [schools, stats] = await Promise.all([schoolsData.list(), admin.listSchoolStats()]);
+      const byId = Object.fromEntries(stats.map((s) => [s.school_id, s]));
       const onboardingBySchool = Object.fromEntries(
-        schools.map((school) => [school.id, buildOnboardingSummary(school.id, counts)])
+        schools.map((school) => [school.id, buildOnboardingSummary(byId[school.id])]),
       );
-
       return { schools, onboardingBySchool };
     },
     staleTime: DEFAULT_STALE_TIME,
@@ -79,19 +61,28 @@ export function useSuperAdminSchoolOverviewQuery(options = {}) {
   });
 }
 
+/**
+ * Every user on the platform.
+ *
+ * Goes through the `listAllUsers` edge function: profiles RLS only exposes
+ * people you share a school with, so enumerating the platform needs the service
+ * role. The function checks the caller is a super admin before doing so.
+ */
 export function useSuperAdminUsersQuery(options = {}) {
   return useQuery({
     queryKey: ['super-admin', 'users'],
     queryFn: async () => {
-      const [schools, usersRes] = await Promise.all([
-        fetchSchools(),
-        base44.functions.invoke('listAllUsers', {}),
+      const [schools, result] = await Promise.all([
+        schoolsData.list(),
+        fns.invoke('listAllUsers'),
       ]);
 
-      const schoolMap = Object.fromEntries(schools.map((school) => [school.id, school.name]));
-      const users = (usersRes.data?.users || []).map((user) => ({
+      const schoolNames = Object.fromEntries(schools.map((s) => [s.id, s.name]));
+      const users = (result?.users ?? []).map((user) => ({
         ...user,
-        school_name: user.active_school_id ? schoolMap[user.active_school_id] || 'Unknown' : '—',
+        school_name: user.active_school_id
+          ? (schoolNames[user.active_school_id] ?? 'Unknown')
+          : '—',
       }));
 
       return { schools, users };
@@ -104,7 +95,7 @@ export function useSuperAdminUsersQuery(options = {}) {
 export function useSuperAdminAuditLogsQuery(options = {}) {
   return useQuery({
     queryKey: ['super-admin', 'audit-logs'],
-    queryFn: () => base44.entities.AuditLog.list('-created_date', 500),
+    queryFn: () => admin.listAuditLogs({ limit: 500 }),
     staleTime: 30 * 1000,
     refetchInterval: 30 * 1000,
     ...options,
@@ -115,23 +106,20 @@ export function useSuperAdminSchoolDetailQuery(schoolId, options = {}) {
   return useQuery({
     queryKey: ['super-admin', 'school-detail', schoolId],
     queryFn: async () => {
-      const [schools, academicYears, terms, subjects, classes, members] = await Promise.all([
-        base44.entities.School.filter({ id: schoolId }),
-        base44.entities.AcademicYear.filter({ school_id: schoolId }),
-        base44.entities.Term.filter({ school_id: schoolId }),
-        base44.entities.Subject.filter({ school_id: schoolId }),
-        base44.entities.Class.filter({ school_id: schoolId }),
-        base44.entities.SchoolMembership.filter({ school_id: schoolId }),
+      const [school, stats, members] = await Promise.all([
+        schoolsData.get(schoolId),
+        admin.getSchoolStats(schoolId),
+        membershipsData.listForSchool(schoolId, { status: null }),
       ]);
 
       return {
-        school: schools[0] || null,
+        school,
         stats: {
-          academicYears: academicYears.length,
-          terms: terms.length,
-          subjects: subjects.length,
-          classes: classes.length,
-          staff: members.length,
+          academicYears: stats?.academic_years ?? 0,
+          terms: stats?.terms ?? 0,
+          subjects: stats?.subjects ?? 0,
+          classes: stats?.classes ?? 0,
+          staff: stats?.members ?? 0,
         },
         members,
       };
@@ -146,63 +134,63 @@ export function useSuperAdminConfigurationQuery(options = {}) {
   return useQuery({
     queryKey: ['super-admin', 'configuration'],
     queryFn: async () => {
-      const [schools, configs] = await Promise.all([
-        fetchSchools(),
-        base44.entities.PlatformConfig.list('-updated_date', 1),
+      const [schools, config] = await Promise.all([
+        schoolsData.list(),
+        admin.getPlatformConfig(),
       ]);
-
-      return {
-        schools,
-        config: configs[0] || null,
-      };
+      return { schools, config };
     },
     staleTime: DEFAULT_STALE_TIME,
     ...options,
   });
 }
 
+/**
+ * Platform analytics.
+ *
+ * Now sourced from the school_stats view plus a bounded audit-log window,
+ * rather than pulling nine tables at 2000 rows each. Consumers that want
+ * per-entity detail should query the relevant domain module for one school
+ * instead of asking for the whole platform.
+ */
 export function useSuperAdminAnalyticsQuery(options = {}) {
   return useQuery({
     queryKey: ['super-admin', 'analytics'],
     queryFn: async () => {
-      const [
-        schools,
-        memberships,
-        auditLogs,
-        classes,
-        subjects,
-        messages,
-        attendanceRecords,
-        behaviorRecords,
-        casExperiences,
-      ] = await Promise.all([
-        fetchSchools(),
-        base44.entities.SchoolMembership.list('-created_date', ENTITY_LIMIT),
-        base44.entities.AuditLog.list('-created_date', ENTITY_LIMIT),
-        base44.entities.Class.list('-created_date', ENTITY_LIMIT),
-        base44.entities.Subject.list('-created_date', ENTITY_LIMIT),
-        base44.entities.Message.list('-created_date', ENTITY_LIMIT),
-        base44.entities.AttendanceRecord.list('-created_date', ENTITY_LIMIT),
-        base44.entities.BehaviorRecord.list('-created_date', ENTITY_LIMIT),
-        base44.entities.CASExperience.list('-created_date', ENTITY_LIMIT),
+      const [schools, stats, auditLogs, membershipDates] = await Promise.all([
+        schoolsData.list(),
+        admin.listSchoolStats(),
+        admin.listAuditLogs({ limit: 1000 }),
+        admin.listMembershipCreationDates(),
       ]);
 
-      return {
-        schools,
-        memberships,
-        auditLogs,
-        classes,
-        subjects,
-        messages,
-        attendanceRecords,
-        behaviorRecords,
-        casExperiences,
-      };
+      // Adoption is "does this school have any rows for that feature", which
+      // the view already answers. Previously this fetched every message,
+      // attendance record, behaviour note and CAS entry on the platform.
+      const adoption = [
+        { key: 'subjects', label: 'Curriculum Setup', column: 'subjects' },
+        { key: 'classes', label: 'Classes', column: 'classes' },
+        { key: 'messages', label: 'Messaging', column: 'messages' },
+        { key: 'attendance', label: 'Attendance', column: 'attendance_records' },
+        { key: 'behavior', label: 'Behavior', column: 'behavior_records' },
+        { key: 'cas', label: 'CAS', column: 'cas_experiences' },
+      ].map(({ label, column }) => {
+        const adopted = stats.filter((s) => Number(s[column] ?? 0) > 0).length;
+        return {
+          feature: label,
+          schools: adopted,
+          adoptionRate: stats.length ? Math.round((adopted / stats.length) * 100) : 0,
+        };
+      });
+
+      return { schools, stats, auditLogs, membershipDates, featureAdoption: adoption };
     },
-    staleTime: 10 * 60 * 1000,
+    staleTime: DEFAULT_STALE_TIME,
     ...options,
   });
 }
+
+// ── Pure helpers, unchanged from the base44 version ─────────────────────────
 
 export function usePaginatedItems(items, pageSize, page) {
   return useMemo(() => {

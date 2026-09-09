@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as submissionPoliciesData from '@/data/submissionPolicies';
 
 export const DEFAULT_POLICY = {
   allowed_formats: ['file_upload', 'link', 'google_doc', 'google_slides', 'google_sheet'],
@@ -27,7 +27,7 @@ export function useSubmissionPolicy(schoolId) {
     queryKey: ['submission-policy', schoolId],
     queryFn: async () => {
       if (!schoolId) return null;
-      const results = await base44.entities.SubmissionPolicy.filter({ school_id: schoolId });
+      const results = await submissionPoliciesData.where({ school_id: schoolId });
       return results[0] || null;
     },
     enabled: !!schoolId,

@@ -14,7 +14,6 @@ import ParentMessaging from '@/components/parent/ParentMessaging';
 import { LayoutDashboard, Users, MessageSquare, BarChart3, ClipboardCheck, Calendar, FileText, Megaphone, Home } from 'lucide-react';
 import ParentDashboardHome from '@/components/parent/ParentDashboardHome';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
 import AnnouncementsFeed from '@/components/messaging/AnnouncementsFeed';
 
 const sidebarLinks = [

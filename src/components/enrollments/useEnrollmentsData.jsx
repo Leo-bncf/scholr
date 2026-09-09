@@ -1,5 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import * as classesData from '@/data/classes';
+import * as academics from '@/data/academics';
+import * as membershipsData from '@/data/memberships';
 
 /**
  * Shared data + mutations for the Enrollments page.
@@ -10,26 +12,26 @@ export function useEnrollmentsData(schoolId) {
 
   const classesQuery = useQuery({
     queryKey: ['enroll-classes', schoolId],
-    queryFn: () => base44.entities.Class.filter({ school_id: schoolId }, '-created_date'),
+    queryFn: () => classesData.where({ school_id: schoolId }, { order: 'created_at', ascending: false }),
     enabled: !!schoolId,
   });
 
   const subjectsQuery = useQuery({
     queryKey: ['enroll-subjects', schoolId],
-    queryFn: () => base44.entities.Subject.filter({ school_id: schoolId }),
+    queryFn: () => academics.whereSubjects({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const membershipsQuery = useQuery({
     queryKey: ['enroll-members', schoolId],
     queryFn: () =>
-      base44.entities.SchoolMembership.filter({ school_id: schoolId, status: 'active' }),
+      membershipsData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
 
   const academicYearsQuery = useQuery({
     queryKey: ['enroll-years', schoolId],
-    queryFn: () => base44.entities.AcademicYear.filter({ school_id: schoolId }),
+    queryFn: () => academics.whereAcademicYears({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
@@ -38,17 +40,17 @@ export function useEnrollmentsData(schoolId) {
   };
 
   const createClassMutation = useMutation({
-    mutationFn: (data) => base44.entities.Class.create({ ...data, school_id: schoolId }),
+    mutationFn: (data) => classesData.create({ ...data, school_id: schoolId }),
     onSuccess: invalidate,
   });
 
   const updateClassMutation = useMutation({
-    mutationFn: ({ classId, data }) => base44.entities.Class.update(classId, data),
+    mutationFn: ({ classId, data }) => classesData.update(classId, data),
     onSuccess: invalidate,
   });
 
   const deleteClassMutation = useMutation({
-    mutationFn: (classId) => base44.entities.Class.delete(classId),
+    mutationFn: (classId) => classesData.remove(classId),
     onSuccess: invalidate,
   });
 

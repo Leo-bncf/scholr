@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,6 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Loader2, Pencil, Trash2, Library, Search } from 'lucide-react';
 import { getCurriculumConfig } from '@/lib/curriculumConfig';
+import * as academics from '@/data/academics';
+import * as classesData from '@/data/classes';
 
 const IB_GROUPS = [
   { value: 'group1_language_literature',  label: 'Group 1 – Language & Literature',   short: 'G1' },
@@ -84,37 +85,37 @@ export default function SubjectCatalogTab({ schoolId, curriculum = 'ib_dp' }) {
 
   const { data: subjects = [], isLoading } = useQuery({
     queryKey: ['school-subjects', schoolId],
-    queryFn: () => base44.entities.Subject.filter({ school_id: schoolId }),
+    queryFn: () => academics.whereSubjects({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const { data: classes = [] } = useQuery({
     queryKey: ['school-classes-catalog', schoolId],
-    queryFn: () => base44.entities.Class.filter({ school_id: schoolId }),
+    queryFn: () => classesData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ['school-subjects', schoolId] });
 
   const createMutation = useMutation({
-    mutationFn: (d) => base44.entities.Subject.create({ ...d, school_id: schoolId }),
+    mutationFn: (d) => academics.createSubject({ ...d, school_id: schoolId }),
     onSuccess: () => { invalidate(); closeDialog(); },
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Subject.update(id, data),
+    mutationFn: ({ id, data }) => academics.updateSubject(id, data),
     onSuccess: () => { invalidate(); closeDialog(); },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Subject.delete(id),
+    mutationFn: (id) => academics.removeSubject(id),
     onSuccess: invalidate,
   });
 
   const bulkAddMutation = useMutation({
     mutationFn: async (items) => {
       for (const item of items) {
-        await base44.entities.Subject.create({ ...item, school_id: schoolId, status: 'active' });
+        await academics.createSubject({ ...item, school_id: schoolId, status: 'active' });
       }
     },
     onSuccess: () => { invalidate(); setShowQuickAdd(false); },

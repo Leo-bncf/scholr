@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import * as membershipsData from '@/data/memberships';
+import * as submissionsData from '@/data/submissions';
+import * as messagesData from '@/data/messages';
+import * as attendanceData from '@/data/attendance';
+import * as behaviorRecordsData from '@/data/behaviorRecords';
 import {
   ShieldAlert, Search, Loader2, Trash2, EyeOff, CheckCircle2,
   AlertCircle, UserX, FileX, User
@@ -54,7 +58,7 @@ export default function GdprPrivacyTools() {
     if (!email.trim()) return;
     setSearching(true);
     reset();
-    const memberships = await base44.entities.SchoolMembership.filter({ user_email: email.trim() });
+    const memberships = await membershipsData.where({ user_email: email.trim() });
     if (memberships.length === 0) {
       setSearchError('No user found with that email address.');
       setSearching(false);
@@ -62,10 +66,10 @@ export default function GdprPrivacyTools() {
     }
     const userId = memberships[0].user_id;
     const [submissions, messages, attendance, behavior] = await Promise.all([
-      base44.entities.Submission.filter({ student_id: userId }),
-      base44.entities.Message.filter({ sender_id: userId }),
-      base44.entities.AttendanceRecord.filter({ student_id: userId }),
-      base44.entities.BehaviorRecord.filter({ student_id: userId }),
+      submissionsData.where({ student_id: userId }),
+      messagesData.where({ sender_id: userId }),
+      attendanceData.whereRecords({ student_id: userId }),
+      behaviorRecordsData.where({ student_id: userId }),
     ]);
     setFound({ userId, email: email.trim(), memberships });
     setSummary({
@@ -90,19 +94,19 @@ export default function GdprPrivacyTools() {
     const anonEmail = `anon_${found.userId.slice(-6)}@redacted.invalid`;
     // Anonymize memberships
     for (const id of summary.membershipIds) {
-      await base44.entities.SchoolMembership.update(id, { user_name: anonName, user_email: anonEmail });
+      await membershipsData.update(id, { user_name: anonName, user_email: anonEmail });
     }
     // Anonymize submissions
     for (const id of summary.submissionIds) {
-      await base44.entities.Submission.update(id, { student_name: anonName });
+      await submissionsData.update(id, { student_name: anonName });
     }
     // Anonymize attendance
     for (const id of summary.attendanceIds) {
-      await base44.entities.AttendanceRecord.update(id, { student_name: anonName });
+      await attendanceData.update(id, { student_name: anonName });
     }
     // Anonymize behavior
     for (const id of summary.behaviorIds) {
-      await base44.entities.BehaviorRecord.update(id, { student_name: anonName });
+      await behaviorRecordsData.update(id, { student_name: anonName });
     }
     setActionResult({ type: 'success', message: `User data anonymized. ${summary.membershipIds.length + summary.submissionIds.length + summary.attendanceIds.length + summary.behaviorIds.length} records updated.` });
     setAnonymizing(false);
@@ -115,10 +119,10 @@ export default function GdprPrivacyTools() {
     if (!found || !confirmDelete) return;
     setDeleting(true);
     setActionResult(null);
-    for (const id of summary.membershipIds) await base44.entities.SchoolMembership.delete(id);
-    for (const id of summary.submissionIds) await base44.entities.Submission.delete(id);
-    for (const id of summary.attendanceIds) await base44.entities.AttendanceRecord.delete(id);
-    for (const id of summary.behaviorIds) await base44.entities.BehaviorRecord.delete(id);
+    for (const id of summary.membershipIds) await membershipsData.remove(id);
+    for (const id of summary.submissionIds) await submissionsData.remove(id);
+    for (const id of summary.attendanceIds) await attendanceData.remove(id);
+    for (const id of summary.behaviorIds) await behaviorRecordsData.remove(id);
     const total = summary.membershipIds.length + summary.submissionIds.length + summary.attendanceIds.length + summary.behaviorIds.length;
     setActionResult({ type: 'success', message: `${total} records permanently deleted for this user.` });
     setDeleting(false);

@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FileText, TrendingUp, Download, Loader2, BarChart3, Users, Briefcase } from 'lucide-react';
+import * as reportsData from '@/data/reports';
+import * as gradebookData from '@/data/gradebook';
+import * as membershipsData from '@/data/memberships';
+import * as academics from '@/data/academics';
+import * as submissionsData from '@/data/submissions';
+import * as fns from '@/data/functions';
 
 export default function ChildReporting({ schoolId, studentId, studentName }) {
   const [downloading, setDownloading] = useState(null);
@@ -12,26 +17,26 @@ export default function ChildReporting({ schoolId, studentId, studentName }) {
   // Fetch term reports
   const { data: reports = [], isLoading: reportsLoading } = useQuery({
     queryKey: ['parentReports', schoolId, studentId],
-    queryFn: () => base44.entities.Report.filter({ school_id: schoolId, entity_type: 'student', entity_id: studentId }),
+    queryFn: () => reportsData.where({ school_id: schoolId, entity_type: 'student', entity_id: studentId }),
   });
 
   // Fetch predicted grades for analytics
   const { data: predictedGrades = [] } = useQuery({
     queryKey: ['parentPredictedGrades', schoolId, studentId],
-    queryFn: () => base44.entities.PredictedGrade.filter({ school_id: schoolId, student_id: studentId }),
+    queryFn: () => gradebookData.wherePredictedGrades({ school_id: schoolId, student_id: studentId }),
   });
 
   // Fetch grades for trend analytics
   const { data: grades = [] } = useQuery({
     queryKey: ['parentGrades', schoolId, studentId],
-    queryFn: () => base44.entities.GradeItem.filter({ school_id: schoolId, student_id: studentId }),
+    queryFn: () => gradebookData.whereGradeItems({ school_id: schoolId, student_id: studentId }),
   });
 
   // Fetch cohort data for class context
   const { data: cohorts = [], isLoading: cohortsLoading } = useQuery({
     queryKey: ['parentCohorts', schoolId, studentId],
     queryFn: async () => {
-      const memberships = await base44.entities.SchoolMembership.filter({ 
+      const memberships = await membershipsData.where({ 
         user_id: studentId, 
         school_id: schoolId 
       });
@@ -44,7 +49,7 @@ export default function ChildReporting({ schoolId, studentId, studentName }) {
       
       if (cohortIds.length === 0) return [];
       
-      return base44.entities.Cohort.filter({ 
+      return academics.whereCohorts({ 
         school_id: schoolId,
         grade_level: { $in: cohortIds }
       });
@@ -54,7 +59,7 @@ export default function ChildReporting({ schoolId, studentId, studentName }) {
   // Fetch student submissions/portfolio
   const { data: submissions = [], isLoading: submissionsLoading } = useQuery({
     queryKey: ['parentSubmissions', schoolId, studentId],
-    queryFn: () => base44.entities.Submission.filter({ 
+    queryFn: () => submissionsData.where({ 
       school_id: schoolId, 
       student_id: studentId,
       status: 'submitted'
@@ -64,15 +69,15 @@ export default function ChildReporting({ schoolId, studentId, studentName }) {
   const handleDownloadReport = async (reportId) => {
     setDownloading(reportId);
     try {
-      const response = await base44.functions.invoke('generateReportPDF', {
+      const response = await fns.invoke('exportReportPDF', {
         reportId,
         studentId,
         schoolId,
       });
       
-      if (response.data?.url) {
+      if (response?.url) {
         const link = document.createElement('a');
-        link.href = response.data.url;
+        link.href = response.url;
         link.download = `report-${reportId}.pdf`;
         document.body.appendChild(link);
         link.click();
@@ -88,7 +93,7 @@ export default function ChildReporting({ schoolId, studentId, studentName }) {
   const calculateGradeTrends = () => {
     if (grades.length < 2) return null;
     
-    const sorted = [...grades].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+    const sorted = [...grades].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     const latest = sorted[0]?.percentage || 0;
     const previous = sorted[1]?.percentage || 0;
     const trend = latest - previous;
@@ -128,7 +133,7 @@ export default function ChildReporting({ schoolId, studentId, studentName }) {
                   <div>
                     <h4 className="font-medium text-slate-900">{report.name || 'Term Report'}</h4>
                     <p className="text-xs text-slate-500 mt-1">
-                      Generated {new Date(report.created_date).toLocaleDateString()}
+                      Generated {new Date(report.created_at).toLocaleDateString()}
                     </p>
                   </div>
                   <Button

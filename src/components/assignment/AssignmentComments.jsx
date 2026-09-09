@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, MessageCircle, Send, Eye, EyeOff } from 'lucide-react';
 import { format } from 'date-fns';
 import { useGradebookPolicy } from '@/hooks/useGradebookPolicy';
+import * as messagesData from '@/data/messages';
 
 /**
  * AssignmentComments — thread of teacher/student feedback on an assignment or submission.
@@ -26,13 +26,13 @@ export default function AssignmentComments({ assignment, submissionId, userId, u
   const { data: comments = [], isLoading } = useQuery({
     queryKey,
     queryFn: async () => {
-      const all = await base44.entities.Message.filter({
+      const all = await messagesData.where({
         school_id: schoolId,
         assignment_id: assignment.id,
         is_announcement: false,
         is_comment: true,
         ...(submissionId ? { submission_id: submissionId } : {}),
-      }, 'created_date');
+      }, { order: 'created_at', ascending: true });
 
       // Students only see comments marked visible
       if (!isTeacher) {
@@ -44,7 +44,7 @@ export default function AssignmentComments({ assignment, submissionId, userId, u
   });
 
   const postMutation = useMutation({
-    mutationFn: (data) => base44.entities.Message.create(data),
+    mutationFn: (data) => messagesData.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
       setBody('');
@@ -108,7 +108,7 @@ export default function AssignmentComments({ assignment, submissionId, userId, u
                       {isTeacherComment && !isOwn && <span className="ml-1 text-indigo-500 font-medium">· Teacher</span>}
                     </span>
                     <span className="text-xs text-slate-300">
-                      {comment.created_date ? format(new Date(comment.created_date), 'MMM d, h:mm a') : ''}
+                      {comment.created_at ? format(new Date(comment.created_at), 'MMM d, h:mm a') : ''}
                     </span>
                     {isTeacher && comment.visible_to_student === false && (
                       <span className="text-xs text-amber-600 flex items-center gap-0.5">

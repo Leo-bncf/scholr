@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, GraduationCap, BookOpen } from 'lucide-react';
 import { CURRICULUM_OPTIONS, getCurriculumConfig } from '@/lib/curriculumConfig';
 import { getSubjectTemplate } from '@/lib/curriculumTemplates';
+import * as schoolsData from '@/data/schools';
 
 export default function WizardStepCurriculum({ schoolId, currentCurriculum, onDone }) {
   const [selected, setSelected] = useState(currentCurriculum || 'ib_dp');
@@ -15,7 +15,7 @@ export default function WizardStepCurriculum({ schoolId, currentCurriculum, onDo
 
   const handleSave = async () => {
     setSaving(true);
-    await base44.entities.School.update(schoolId, { curriculum: selected });
+    await schoolsData.update(schoolId, { curriculum: selected });
     onDone?.({ curriculum: selected });
   };
 

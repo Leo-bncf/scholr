@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Shield, Plus, Clock, CheckCircle2, AlertTriangle, XCircle, Loader2, Save, ChevronDown, ChevronUp, Info } from 'lucide-react';
 import { format, addDays } from 'date-fns';
+import * as privacyRequestsData from '@/data/privacyRequests';
 
 const REQUEST_TYPES = {
   data_export: { label: 'Data Export', color: 'bg-sky-100 text-sky-700' },
@@ -89,7 +88,7 @@ function RequestCard({ req, onUpdate, schoolId, user }) {
         <div className="border-t border-slate-100 p-4 space-y-3">
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div><span className="text-slate-400 font-medium">Subject:</span> <span className="text-slate-700">{req.subject_name || req.subject_user_id || '—'}</span></div>
-            <div><span className="text-slate-400 font-medium">Received:</span> <span className="text-slate-700">{req.created_date ? format(new Date(req.created_date), 'dd MMM yyyy') : '—'}</span></div>
+            <div><span className="text-slate-400 font-medium">Received:</span> <span className="text-slate-700">{req.created_at ? format(new Date(req.created_at), 'dd MMM yyyy') : '—'}</span></div>
             <div><span className="text-slate-400 font-medium">Assigned to:</span> <span className="text-slate-700">{req.assigned_to_name || 'Unassigned'}</span></div>
             <div><span className="text-slate-400 font-medium">Identity verified:</span> <span className="text-slate-700">{req.identity_verified ? 'Yes' : 'No'}</span></div>
           </div>
@@ -142,12 +141,12 @@ export default function PrivacyRequestsPanel({ policy, onChange, onSave, saving,
 
   const { data: requests = [], isLoading } = useQuery({
     queryKey: ['privacy-requests', schoolId],
-    queryFn: () => base44.entities.PrivacyRequest.filter({ school_id: schoolId }, '-created_date', 200),
+    queryFn: () => privacyRequestsData.where({ school_id: schoolId }, { order: 'created_at', ascending: false, limit: 200 }),
     enabled: !!schoolId,
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.PrivacyRequest.create({
+    mutationFn: (data) => privacyRequestsData.create({
       ...data,
       school_id: schoolId,
       due_date: format(addDays(new Date(), 30), 'yyyy-MM-dd'),
@@ -160,7 +159,7 @@ export default function PrivacyRequestsPanel({ policy, onChange, onSave, saving,
   });
 
   const updateRequest = async (id, data) => {
-    await base44.entities.PrivacyRequest.update(id, data);
+    await privacyRequestsData.update(id, data);
     queryClient.invalidateQueries({ queryKey: ['privacy-requests', schoolId] });
   };
 

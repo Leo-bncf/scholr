@@ -1,17 +1,17 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Loader2 } from 'lucide-react';
 import BehaviorRecordsList from '@/components/behavior/BehaviorRecordsList';
+import * as behaviorRecordsData from '@/data/behaviorRecords';
 
 export default function ChildBehaviorOverview({ schoolId, studentId }) {
   const { data: records = [], isLoading } = useQuery({
     queryKey: ['parent-child-behavior', schoolId, studentId],
-    queryFn: () => base44.entities.BehaviorRecord.filter({
+    queryFn: () => behaviorRecordsData.where({
       school_id: schoolId,
       student_id: studentId,
       visible_to_parent: true
-    }, '-date'),
+    }, { order: 'date', ascending: false }),
     enabled: !!schoolId && !!studentId,
   });
 
