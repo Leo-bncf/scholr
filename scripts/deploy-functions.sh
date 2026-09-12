@@ -23,6 +23,19 @@ SSH=(ssh "${SSH_OPTS[@]}" "$HOST")
 cd "$(dirname "$0")/.."
 [ -d supabase/functions ] || { echo "no supabase/functions directory" >&2; exit 1; }
 
+# Same stale-checkout guard as scripts/deploy.sh — and it matters more here,
+# because the September incident wiped edge functions specifically.
+if [ -d .git ] && [ "${ALLOW_DIRTY_DEPLOY:-}" != "1" ]; then
+  branch=$(git rev-parse --abbrev-ref HEAD)
+  git fetch -q origin "$branch" 2>/dev/null || true
+  behind=$(git rev-list --count "HEAD..origin/$branch" 2>/dev/null || echo 0)
+  if [ "$behind" -gt 0 ]; then
+    echo "Refusing to deploy: branch is $behind commit(s) behind origin/$branch." >&2
+    echo "Run 'git pull --rebase' first." >&2
+    exit 1
+  fi
+fi
+
 only="${1:-}"
 
 echo "==> sync"

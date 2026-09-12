@@ -21,6 +21,42 @@ SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=15)
 
 cd "$(dirname "$0")/.."
 
+# ── Refuse to publish from a stale or dirty tree ────────────────────────────
+#
+# In September 2026 a deploy from an older fork wiped features off the sibling
+# project — features that existed only in someone's uncommitted working tree.
+# The fix is mechanical, not social: anyone may deploy, but not from a checkout
+# that doesn't match the remote.
+#
+# Override with ALLOW_DIRTY_DEPLOY=1 when you genuinely mean it (a hotfix you
+# haven't pushed yet). You will be told exactly what you're publishing.
+if [ -d .git ] && [ "${ALLOW_DIRTY_DEPLOY:-}" != "1" ]; then
+  branch=$(git rev-parse --abbrev-ref HEAD)
+  git fetch -q origin "$branch" 2>/dev/null || true
+
+  if [ -n "$(git status --porcelain)" ]; then
+    echo "Refusing to deploy: you have uncommitted changes." >&2
+    git status --short | sed 's/^/    /' >&2
+    echo >&2
+    echo "Commit and push them, or re-run with ALLOW_DIRTY_DEPLOY=1." >&2
+    exit 1
+  fi
+
+  behind=$(git rev-list --count "HEAD..origin/$branch" 2>/dev/null || echo 0)
+  if [ "$behind" -gt 0 ]; then
+    echo "Refusing to deploy: your branch is $behind commit(s) behind origin/$branch." >&2
+    git log --oneline "HEAD..origin/$branch" | sed 's/^/    /' >&2
+    echo >&2
+    echo "Run 'git pull --rebase' first — deploying now would revert that work." >&2
+    exit 1
+  fi
+
+  ahead=$(git rev-list --count "origin/$branch..HEAD" 2>/dev/null || echo 0)
+  if [ "$ahead" -gt 0 ]; then
+    echo "Note: $ahead local commit(s) not yet pushed. Publishing them anyway." >&2
+  fi
+fi
+
 echo "==> build"
 npm run build
 

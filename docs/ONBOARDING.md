@@ -144,28 +144,30 @@ the first time someone opens that screen.
 
 ## Who does what
 
-| | Lane — yours to decide and ship within |
+**Leo and Erik are co-founders with equal authority** over Scholr and Schedual
+alike — either can decide anything, including deploying. The split below is
+about focus, not permission.
+
+| | Focus |
 | --- | --- |
-| Leo (founder) | Infrastructure, database, server functions, integrations, releases |
-| Erik (co-founder) | Public site, marketing, i18n |
+| Leo | Infrastructure, database, server functions, integrations |
+| Erik | Public site, marketing, i18n |
 | Alec | Application features — the product surface |
 | Conor | Application features — the product surface |
 
-**Your lane is yours.** Design calls, copy, structure, which approach to take —
-decide them and get on with it. You don't need sign-off to work; you need a
-release, which is a different thing (see Deploying).
-
 Alec and Conor are both in application code, so **split by feature area, not by
-layer**, or you'll spend your time in merge conflicts. Agree who owns
-gradebook, attendance, reporting, timetable and so on before starting, and keep
-branches short.
+layer**, or you'll spend your time in merge conflicts.
+
+Agree who owns gradebook, attendance, reporting, timetable and so on before
+starting, and keep branches short.
 
 ## Deploying
 
 `main` is not auto-deployed. `npm run deploy` publishes the frontend;
 `npm run deploy:functions` publishes edge functions and restarts the runtime.
 
-**Leo runs both.** There's one shared production and no staging yet, and a
-deploy from a stale fork once wiped features off the sibling project — so
-publishing stays with one pair of hands until there's a dev environment and a
-release pipeline. Build it, push the branch, say it's ready.
+There's one shared production and no staging yet, so both scripts **refuse to
+run from a dirty or out-of-date checkout**. That's not about who's allowed —
+it's because a deploy from a stale fork once wiped features off the sibling
+project. Pull, commit, push, then deploy. `ALLOW_DIRTY_DEPLOY=1` overrides it
+if you really mean to publish unpushed work.
