@@ -29,6 +29,10 @@ Everything else: decide, do it, say what you did.
 
 ## Hard rules
 
+**Work on a branch and open a pull request.** `main` is merged by Leo on
+GitHub, the same way Schedual works. Push your branch, say it's ready, and let
+the PR be the review surface — don't commit to `main` directly.
+
 **Deploy from a clean, up-to-date checkout.** `npm run deploy` and
 `npm run deploy:functions` publish straight to the live site, and there is one
 shared production with no staging yet.

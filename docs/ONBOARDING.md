@@ -161,6 +161,19 @@ layer**, or you'll spend your time in merge conflicts.
 Agree who owns gradebook, attendance, reporting, timetable and so on before
 starting, and keep branches short.
 
+## Branches and review
+
+`main` is protected by convention: **work on a branch, open a pull request, Leo
+merges it.** Same as Schedual.
+
+```bash
+git checkout -b feature/what-it-does
+# … work, npm run verify …
+git push -u origin feature/what-it-does
+```
+
+Then open the PR on GitHub and say it's ready.
+
 ## Deploying
 
 `main` is not auto-deployed. `npm run deploy` publishes the frontend;
