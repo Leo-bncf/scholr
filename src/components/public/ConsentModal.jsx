@@ -14,22 +14,21 @@ export default function ConsentModal({ isOpen, onClose }) {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ y: 100, opacity: 0 }}
+          initial={{ y: 24, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 200, damping: 20 }}
-          className="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 md:w-96 bg-white border border-blue-100 shadow-lg p-6 rounded-2xl z-50"
+          exit={{ y: 12, opacity: 0 }}
+          transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+          className="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 md:w-96 bg-sl-paper border border-sl-rule p-6 rounded-sm z-50 font-landingBody"
         >
-          <h3 className="text-lg font-bold text-blue-950 mb-2">We respect your privacy</h3>
-          <p className="text-sm text-blue-800/80 mb-6 leading-relaxed">
-            We use cookies to improve your experience and analyze platform usage. 
-            By clicking "Accept", you agree to our use of cookies.
+          <h3 className="font-landing text-lg font-semibold text-sl-ink mb-2">We respect your privacy</h3>
+          <p className="text-sm text-sl-neutral mb-6 leading-relaxed">
+            We use cookies to improve your experience and analyse platform usage. By clicking &ldquo;Accept&rdquo;, you agree to our use of cookies.
           </p>
           <div className="flex justify-end gap-3">
-            <Button variant="outline" className="border-blue-200 text-blue-900 hover:bg-blue-50" onClick={onClose}>
+            <Button variant="outline" className="rounded-sm border-sl-rule bg-sl-paper text-sl-ink hover:bg-sl-paper2 focus-visible:ring-sl-focus" onClick={onClose}>
               Decline
             </Button>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleAccept}>
+            <Button className="rounded-sm bg-sl-accent text-sl-accentInk hover:bg-sl-ink focus-visible:ring-sl-focus" onClick={handleAccept}>
               Accept
             </Button>
           </div>

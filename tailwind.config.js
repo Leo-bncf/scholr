@@ -6,6 +6,7 @@ module.exports = {
     extend: {
       fontFamily: {
         landing: ['var(--font-landing-display)'],
+        landingBody: ['var(--font-landing-body)'],
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -13,6 +14,22 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)',
       },
       colors: {
+        // Scholr Landing (sl) — a self-contained token set for the redesigned
+        // marketing homepage only. Namespaced and additive so it can't collide
+        // with (or get overridden by) the app-wide indigo/blue/primary tokens
+        // below, which every authenticated screen still depends on.
+        sl: {
+          paper: 'oklch(97% 0.014 70)',
+          paper2: 'oklch(93% 0.016 68)',
+          rule: 'oklch(84% 0.020 55)',
+          neutral: 'oklch(58% 0.030 40)',
+          ink: 'oklch(20% 0.025 35)',
+          accent: 'oklch(33% 0.140 28)',
+          accentSoft: 'oklch(90% 0.030 28)',
+          accentInk: 'oklch(97% 0.014 70)',
+          accent2: 'oklch(70% 0.100 75)',
+          focus: 'oklch(40% 0.150 28)',
+        },
         // Global theme pivot: remap indigo + blue palettes to emerald/green
         // so every hardcoded bg-indigo-*, text-blue-*, border-indigo-* across
         // the app renders in the dark green theme without touching each file.
