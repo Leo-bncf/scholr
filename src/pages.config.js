@@ -1,7 +1,8 @@
 /**
  * pages.config.js - Page routing configuration
- * 
- * This file is AUTO-GENERATED. Do not add imports or modify PAGES manually.
+ *
+ * NO LONGER AUTO-GENERATED: base44's Vite plugin used to regenerate this, and
+ * that plugin is gone. Add new pages here by hand.
  * Pages are auto-registered when you create files in the ./pages/ folder.
  * 
  * THE ONLY EDITABLE VALUE: mainPage
@@ -60,6 +61,7 @@ import Demo from './pages/Demo';
 import DemoShowcase from './pages/DemoShowcase';
 import Features from './pages/Features';
 import FirstLogin from './pages/FirstLogin';
+import Login from './pages/Login';
 import Landing from './pages/Landing';
 import Messages from './pages/Messages';
 import NoSchool from './pages/NoSchool';
@@ -114,6 +116,7 @@ export const PAGES = {
     "Features": Features,
     "FirstLogin": FirstLogin,
     "Landing": Landing,
+    "Login": Login,
     "Messages": Messages,
     "NoSchool": NoSchool,
     "ParentDashboard": ParentDashboard,

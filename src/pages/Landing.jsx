@@ -40,12 +40,10 @@ function HeroSection() {
   const wordmarkScale = useTransform(scrollY, [0, 220, 520], [1.16, 1.08, 0.98]);
 
   const handleSignIn = async () => {
-    // Supabase has no hosted login page to bounce to — the app renders its own
-    // sign-in, so an unauthenticated visitor goes there with a return path.
     if (await isAuthenticated()) {
       window.location.href = '/AppHome';
     } else {
-      window.location.href = `/FirstLogin?next=${encodeURIComponent('/AppHome')}`;
+      window.location.href = `/Login?next=${encodeURIComponent('/AppHome')}`;
     }
   };
 

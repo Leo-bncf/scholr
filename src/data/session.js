@@ -90,6 +90,29 @@ export async function signInWithGoogle(redirectTo = window.location.origin) {
   return data;
 }
 
+/**
+ * Which third-party sign-in providers GoTrue actually has configured.
+ *
+ * Asked at runtime rather than baked in at build time, so enabling Google on
+ * the server makes the button appear without a redeploy — and, more usefully,
+ * a provider that isn't configured can't be offered as a button that leads
+ * straight to an error page.
+ *
+ * Returns {} if the call fails; callers should treat that as "none".
+ */
+export async function getEnabledProviders() {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/auth/v1/settings`, {
+      headers: { apikey: import.meta.env.VITE_SUPABASE_ANON_KEY },
+    });
+    if (!res.ok) return {};
+    const settings = await res.json();
+    return settings.external ?? {};
+  } catch {
+    return {};
+  }
+}
+
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
@@ -131,5 +154,5 @@ export function onAuthChange(handler) {
  */
 export function redirectToLogin(next = window.location.pathname) {
   const target = next && next !== '/' ? `?next=${encodeURIComponent(next)}` : '';
-  window.location.href = `/FirstLogin${target}`;
+  window.location.href = `/Login${target}`;
 }
