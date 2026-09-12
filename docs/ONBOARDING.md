@@ -144,12 +144,16 @@ the first time someone opens that screen.
 
 ## Who does what
 
-| | Lane |
+| | Lane — yours to decide and ship within |
 | --- | --- |
-| Leo | Infrastructure, database, server functions, integrations, releases |
-| Erik | Public site, marketing, i18n |
+| Leo (founder) | Infrastructure, database, server functions, integrations, releases |
+| Erik (co-founder) | Public site, marketing, i18n |
 | Alec | Application features — the product surface |
 | Conor | Application features — the product surface |
+
+**Your lane is yours.** Design calls, copy, structure, which approach to take —
+decide them and get on with it. You don't need sign-off to work; you need a
+release, which is a different thing (see Deploying).
 
 Alec and Conor are both in application code, so **split by feature area, not by
 layer**, or you'll spend your time in merge conflicts. Agree who owns
@@ -160,4 +164,8 @@ branches short.
 
 `main` is not auto-deployed. `npm run deploy` publishes the frontend;
 `npm run deploy:functions` publishes edge functions and restarts the runtime.
-Ask before running either.
+
+**Leo runs both.** There's one shared production and no staging yet, and a
+deploy from a stale fork once wiped features off the sibling project — so
+publishing stays with one pair of hands until there's a dev environment and a
+release pipeline. Build it, push the branch, say it's ready.

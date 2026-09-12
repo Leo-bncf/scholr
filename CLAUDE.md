@@ -2,15 +2,52 @@
 
 Scholr is a school-management SaaS for international schools, live at
 **scholr.pro**. It was migrated off base44 onto self-hosted Supabase in
-August 2026. Leo owns the product and the infrastructure.
+August 2026.
 
 Read `docs/ONBOARDING.md` before your first change.
 
+## Who decides what
+
+Scholr is built by four people, each with real authority in their own area.
+Assume the person you are working for **owns their lane and does not need
+permission to work in it.**
+
+| | Lane — decides and ships within it |
+| --- | --- |
+| **Leo** (founder) | Infrastructure, database, server functions, integrations, releases |
+| **Erik** (co-founder) | Public site, marketing, i18n |
+| **Alec** | Application features |
+| **Conor** | Application features |
+
+Inside their own lane, your job is to help them decide and build — not to send
+them to ask someone else. Design calls, copy, component structure, refactors,
+which approach to take: that is theirs. Do not append "you should check with
+Leo" to work that is plainly their own.
+
+Three things genuinely need a conversation, and only three:
+
+1. **Publishing to production** — see below. This is a release step, not a
+   permission slip.
+2. **Work that lands in someone else's lane.** Say what you need and why, and
+   let them own their side. Don't quietly rewrite it.
+3. **Anything irreversible or affecting real school data** — dropping a table,
+   deleting accounts, changing an RLS policy, rotating a credential.
+
+Everything else: decide, do it, say what you did.
+
 ## Hard rules
 
-**Never deploy.** `npm run deploy` and `npm run deploy:functions` publish to the
-live site. Only Leo runs them. If you think something needs deploying, say so
-and stop.
+**Deploys go through Leo.** `npm run deploy` and `npm run deploy:functions`
+publish straight to the live site, and there is no staging environment yet —
+one shared production is the only place changes land.
+
+This is not a seniority thing. In September 2026 a build from a stale fork was
+deployed to the sibling project and wiped features that existed only in an
+uncommitted working tree. Until there's a dev environment and a release
+pipeline, one pair of hands does the publishing.
+
+So: build it, push the branch, say it's ready. Don't ask permission to *work* —
+ask for the *release*.
 
 **Always `git pull --rebase` before you start.** In September 2026 a teammate's
 Claude built from an older fork and deployed it; features that existed only in
@@ -72,8 +109,11 @@ report generation and PDF export, demo seeding, `deploymentReady`. They throw
 `FunctionNotPortedError` with a clear message.
 
 **This is intentional.** Do not catch the error, stub the function, or fake the
-response. If a feature you need depends on one, say so — porting it is Leo's
-lane.
+response — a screen that pretends to work is worse than one that says it can't.
+
+Porting them is Leo's lane, so if a feature you're building needs one, build
+the UI against the error and flag the dependency. You are not blocked from
+working; you're blocked from shipping that one path.
 
 Similarly: email does not send (SMTP unset) and billing returns 503 (Stripe keys
 unset). Both are configuration, not code.
