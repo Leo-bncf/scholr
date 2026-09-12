@@ -89,6 +89,13 @@ including a classmate — could read that row. It is now paired with
 entirely, so pastoral notes never reach the student or the family regardless of
 how the flags are set.
 
+**Attendance is a school-level choice, not a per-row one.** Grades carry
+`visible_to_parent` because each grade is published individually; attendance
+isn't published mark by mark, and a per-row flag would mean ticking a box on
+every register. So it lives on the school:
+`attendance_policies.parent_visibility`, default `true`. A school with no
+policy row gets the default rather than being locked out.
+
 Verified by `npm run verify:roles`, which asserts the negative cases too: a
 classmate cannot read another student's grades, a teacher outside the class
 sees nothing, and neither a student nor a parent can write a grade.

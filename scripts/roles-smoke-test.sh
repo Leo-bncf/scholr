@@ -99,6 +99,23 @@ check "élève B ne voit pas celle de A"        ""       "$(titles "$STUB" "$A")
 check "prof de la classe la voit"             "absent" "$(titles "$TEACH" "$A")"
 
 echo
+echo "== attendance: réglage école parent_visibility =="
+# Default is true, verified above. Now switch the school off and confirm the
+# parent loses sight of it while staff keep it.
+$PSQL -q <<SQL
+insert into public.attendance_policies (school_id, parent_visibility) values ('$S', false)
+on conflict do nothing;
+SQL
+check "parent ne voit plus rien (réglage off)" ""       "$(titles "$PAR" "$A")"
+check "le prof la voit toujours"               "absent" "$(titles "$TEACH" "$A")"
+check "l'élève voit toujours la sienne"        "absent" "$(titles "$STUA" "$A")"
+
+$PSQL -q <<SQL
+update public.attendance_policies set parent_visibility = true where school_id='$S';
+SQL
+check "réactivé: le parent la revoit"          "absent" "$(titles "$PAR" "$A")"
+
+echo
 echo "== écritures =="
 w(){ curl -s -o /dev/null -w '%{http_code}' -m 15 -X POST "$API/grade_items" -H "apikey: $ANON_KEY" \
   -H "Authorization: Bearer $1" -H 'Content-Type: application/json' \
@@ -114,6 +131,7 @@ check "parent ne peut pas noter"            "denied" "$code"
 echo
 echo "== cleanup =="
 $PSQL -q <<SQL
+delete from public.attendance_policies where school_id='$S';
 delete from public.grade_items where school_id='$S';
 delete from public.attendance_records where school_id='$S';
 delete from public.parent_student_links where school_id='$S';
