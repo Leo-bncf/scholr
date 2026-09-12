@@ -13,10 +13,11 @@
     "verify:data": "node scripts/verify-data-layer.mjs",
     "verify:rls": "ssh -o BatchMode=yes ${SCHOLR_SSH:-leo@scholr-prod} 'sudo bash -s' < scripts/rls-smoke-test.sh",
     "verify:functions": "ssh -o BatchMode=yes ${SCHOLR_SSH:-leo@scholr-prod} 'sudo bash -s' < scripts/functions-smoke-test.sh",
-    "verify": "npm run lint && npm run build && npm run verify:schema && npm run verify:rls && npm run verify:functions",
+    "verify": "npm run lint && npm run build && npm run verify:schema && npm run verify:rls && npm run verify:roles && npm run verify:functions",
     "deploy": "./scripts/deploy.sh",
     "deploy:functions": "./scripts/deploy-functions.sh",
-    "verify:schema": "ssh -o BatchMode=yes ${SCHOLR_SSH:-leo@scholr-prod} 'sudo docker exec -i supabase-db psql -U postgres -d postgres -tAf -' < scripts/dump-schema.sql | node scripts/audit-schema.mjs"
+    "verify:schema": "ssh -o BatchMode=yes ${SCHOLR_SSH:-leo@scholr-prod} 'sudo docker exec -i supabase-db psql -U postgres -d postgres -tAf -' < scripts/dump-schema.sql | node scripts/audit-schema.mjs",
+    "verify:roles": "ssh -o BatchMode=yes ${SCHOLR_SSH:-leo@scholr-prod} 'sudo bash -s' < scripts/roles-smoke-test.sh"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^17.0.0",

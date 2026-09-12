@@ -57,10 +57,38 @@ ssh leo@scholr-prod 'sudo bash -s' < scripts/rls-smoke-test.sh
 
 It cleans up after itself and exits non-zero on any failure.
 
-## Known gap
+## The role model
 
-`visible_to_parent = true` currently lets **any** member of the school read the
-row, not only the linked parent. That is base44's original semantics, carried
-over deliberately rather than changed silently. Tightening it means an `EXISTS`
-against `parent_student_links`, and should happen before real parents use the
-system.
+Established in `0011_role_model.sql`, applied consistently across grades,
+attendance, submissions, behaviour and predicted grades:
+
+| Role | Sees |
+| --- | --- |
+| `super_admin` | Everything, every school |
+| `school_admin` | Everything in their school |
+| `ib_coordinator` | Everything in their school |
+| `teacher` | Everything for the classes they teach |
+| `student` | Their own records, once published to students |
+| `parent` | Their linked children's records, once published to parents |
+
+Four helper functions carry it: `runs_school()`, `teaches_class()`,
+`teaches_student()` and `is_parent_of()`.
+
+Two rules are worth stating plainly because they are easy to get wrong:
+
+**A teacher's access follows the class, not authorship.** Previously a teacher
+could only see grades they had personally entered, so taking over a class made
+its history vanish. It is now `teaches_class(class_id)`.
+
+**Parent access is scoped to the actual parent.** `visible_to_parent = true`
+used to stand alone as a condition, which meant every member of the school —
+including a classmate — could read that row. It is now paired with
+`is_parent_of(student_id)`.
+
+`behavior_records` adds one more: `staff_only` overrides the visibility flags
+entirely, so pastoral notes never reach the student or the family regardless of
+how the flags are set.
+
+Verified by `npm run verify:roles`, which asserts the negative cases too: a
+classmate cannot read another student's grades, a teacher outside the class
+sees nothing, and neither a student nor a parent can write a grade.
