@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { getCurrentUser, onAuthChange } from '@/data/session';
 import * as memberships from '@/data/memberships';
 import * as schools from '@/data/schools';
+import * as fns from '@/data/functions';
 import { hasPermission, hasAllPermissions } from '@/components/auth/PermissionsModule';
 import { useImpersonation } from '@/components/auth/ImpersonationContext';
 
@@ -39,7 +40,23 @@ export function UserProvider({ children }) {
         return;
       }
 
-      const active = await memberships.resolveActive(me.id, me.active_school_id);
+      let active = await memberships.resolveActive(me.id, me.active_school_id);
+
+      // Signed in but attached to no school. This is the Google case: OAuth
+      // carries no invitation token, so an invited teacher arrives with a
+      // working login and nothing to see. Claim any pending invitation for
+      // their (Google-verified) email, once.
+      if (!active) {
+        try {
+          await fns.invoke('acceptInvitation', {});
+          active = await memberships.resolveActive(me.id, me.active_school_id);
+        } catch (err) {
+          // 404 "no pending invitation" is the ordinary case for someone who
+          // genuinely has no school — not worth surfacing.
+          if (err?.status !== 404) console.warn('Could not claim an invitation', err);
+        }
+      }
+
       setMembership(active);
       setSchool(active ? await schools.get(active.school_id) : null);
     } catch (err) {

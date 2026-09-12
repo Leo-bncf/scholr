@@ -62,31 +62,31 @@ Deno.serve(
       [invitation.metadata?.first_name, invitation.metadata?.last_name].filter(Boolean).join(' ').trim() ||
       email;
 
-    const { data: created, error: createError } = await admin.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true, // the invitation itself proves they control the address
-      user_metadata: { full_name: fullName },
-    });
+    // sendInvitation now creates the account up front (without a password) so
+    // that Google sign-in works for invitees. So the normal case here is
+    // "account exists, set its password" — not "create".
+    const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+    const existingUser = list?.users?.find((u) => (u.email ?? '').toLowerCase() === email);
 
-    if (createError) {
-      // An existing account isn't a failure state — they should sign in and let
-      // acceptInvitation attach the membership instead of creating a duplicate.
-      if (/already|exists|registered/i.test(createError.message)) {
-        return json(
-          req,
-          {
-            success: false,
-            error: 'An account already exists for this address. Sign in and open the invitation link again.',
-            code: 'account_exists',
-          },
-          409,
-        );
-      }
-      return json(req, { success: false, error: createError.message }, 500);
+    let userId: string;
+    if (existingUser) {
+      const { error: updateError } = await admin.auth.admin.updateUserById(existingUser.id, {
+        password,
+        email_confirm: true,
+        user_metadata: { ...existingUser.user_metadata, full_name: fullName },
+      });
+      if (updateError) return json(req, { success: false, error: updateError.message }, 500);
+      userId = existingUser.id;
+    } else {
+      const { data: created, error: createError } = await admin.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true, // the invitation itself proves they control the address
+        user_metadata: { full_name: fullName },
+      });
+      if (createError) return json(req, { success: false, error: createError.message }, 500);
+      userId = created.user.id;
     }
-
-    const userId = created.user.id;
 
     // handle_new_user creates the profile; fill in the parts only we know.
     await admin
@@ -106,9 +106,10 @@ Deno.serve(
     });
 
     if (membershipError) {
-      // Without a membership the account exists but belongs to no school, which
-      // is a confusing dead end. Roll the account back so they can retry.
-      await admin.auth.admin.deleteUser(userId);
+      // Only undo an account this call created. The invited-account case must
+      // never be rolled back — deleting it would destroy a login that
+      // sendInvitation established and that Google may already be linked to.
+      if (!existingUser) await admin.auth.admin.deleteUser(userId);
       return json(req, { success: false, error: membershipError.message }, 500);
     }
 

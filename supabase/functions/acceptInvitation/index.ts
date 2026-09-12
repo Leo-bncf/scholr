@@ -21,18 +21,49 @@ Deno.serve(
     if (!caller.user) return unauthorized(req, 'Sign in to accept an invitation.');
 
     const { token } = await readJsonBody<{ token?: string }>(req);
-    if (!token) return badRequest(req, 'An invitation token is required.');
 
     // Service role: the invitee has no membership yet, so RLS would hide the
     // invitation from them.
-    const { data: invitation, error } = await caller.admin
-      .from('user_invitations')
-      .select('id, school_id, email, role, status, expires_at, metadata')
-      .eq('invitation_token', token)
-      .maybeSingle();
+    //
+    // Two ways in. With a token, they followed the emailed link. WITHOUT one,
+    // they signed in some other way — in practice "Continue with Google" — and
+    // we look for a pending invitation addressed to them. That second path is
+    // what makes Google usable for clients at all: an OAuth sign-in never
+    // carries the token, so without it an invited teacher would land with a
+    // working login and no school.
+    //
+    // Claiming by email is safe because the email is the thing being proven:
+    // Google verified it, and the token path independently checks it below.
+    const COLUMNS = 'id, school_id, email, role, status, expires_at, metadata';
+
+    // The token lookup deliberately does NOT filter on status: re-clicking a
+    // used link should say "already accepted", not "not valid". Only the
+    // email path filters, because there it's selecting among many.
+    const { data: invitation, error } = token
+      ? await caller.admin
+          .from('user_invitations')
+          .select(COLUMNS)
+          .eq('invitation_token', token)
+          .maybeSingle()
+      : await caller.admin
+          .from('user_invitations')
+          .select(COLUMNS)
+          .eq('status', 'pending')
+          .ilike('email', caller.user.email ?? '')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
 
     if (error) return json(req, { error: error.message }, 500);
-    if (!invitation) return json(req, { error: 'That invitation link is not valid.' }, 404);
+    if (!invitation) {
+      return json(
+        req,
+        token
+          ? { error: 'That invitation link is not valid.' }
+          : { error: 'There is no pending invitation for your email address.', code: 'no_invitation' },
+        404,
+      );
+    }
 
     if (invitation.status !== 'pending') {
       return badRequest(req, `This invitation has already been ${invitation.status}.`);

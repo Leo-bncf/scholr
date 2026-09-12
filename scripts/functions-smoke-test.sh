@@ -115,6 +115,30 @@ r=$(call "$JWT_INVITEE" acceptInvitation "{\"token\":\"$TOKEN\"}")
 check "cannot redeem twice"         "400" "${r%%|*}"
 
 echo
+echo "== acceptInvitation sans token (chemin Google) =="
+# A Google sign-in never carries the invitation token, so an invited client
+# must be able to claim their membership by verified email alone.
+$PSQL -q <<SQL
+insert into public.user_invitations (school_id, email, role, status, invitation_token, expires_at, invited_by)
+values ('ffffffff-0000-4000-8000-00000000000f','stranger@fn-test.invalid','teacher','pending',
+        gen_random_uuid()::text, now() + interval '30 days','f1000000-0000-4000-8000-000000000001');
+SQL
+r=$(call "$JWT_STRANGER" acceptInvitation '{}')
+check "réclamation par e-mail sans token"  "200" "${r%%|*}"
+
+GOT=$($PSQLQ -tAc "select role from public.school_memberships where user_id='f3000000-0000-4000-8000-000000000003' and school_id='ffffffff-0000-4000-8000-00000000000f';" | tr -d ' ')
+check "adhésion accordée par e-mail"       "teacher" "$GOT"
+
+# Someone with no invitation must not be able to claim one.
+r=$(call "$JWT_SUPER" acceptInvitation '{}')
+check "aucune invitation => 404"           "404" "${r%%|*}"
+
+$PSQL -q <<SQL
+delete from public.school_memberships where user_id='f3000000-0000-4000-8000-000000000003';
+delete from public.user_invitations where email='stranger@fn-test.invalid';
+SQL
+
+echo
 echo "== createAccountFromInvitation (non authentifié) =="
 # A second invitation, this time redeemed by someone with no account at all.
 r=$(call "$JWT_ADMIN" sendInvitation '{"schoolId":"ffffffff-0000-4000-8000-00000000000f","email":"newbie@fn-test.invalid","role":"student"}')

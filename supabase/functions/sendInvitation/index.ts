@@ -101,28 +101,52 @@ Deno.serve(
 
     if (inviteError) return json(req, { error: inviteError.message }, 500);
 
-    // GoTrue sends the email and creates the auth user. An existing user is not
-    // an error — they already have an account and just need the new membership,
-    // which acceptInvitation grants from the token.
-    const { error: authError } = await caller.admin.auth.admin.inviteUserByEmail(
+    // Create the account up front, with no password.
+    //
+    // Two reasons this isn't left to inviteUserByEmail. First, that call
+    // *sends* an email, so with SMTP unconfigured it fails with a 500 and the
+    // account is never created — the invitation silently referred to nobody.
+    // Second, and more importantly: signups are disabled, so "Continue with
+    // Google" can only ever work for an address that already exists. Creating
+    // the account here is what lets an invited teacher sign in with Google
+    // without first setting a password.
+    //
+    // email_confirm is true because the school admin inviting them is the
+    // verification — the same assertion base44 relied on.
+    let accountCreated = false;
+    const { error: createError } = await caller.admin.auth.admin.createUser({
+      email: normalisedEmail,
+      email_confirm: true,
+      user_metadata: {
+        full_name: [body.firstName, body.lastName].filter(Boolean).join(' ') || undefined,
+        invited_to_school: schoolId,
+      },
+    });
+
+    if (createError && !/already|exists|registered/i.test(createError.message)) {
+      console.error('createUser failed:', createError.message);
+    } else {
+      accountCreated = true;
+    }
+
+    // Then try to email them the link. Separate step, because a mail failure
+    // must not undo the account.
+    let emailSent = true;
+    const { error: mailError } = await caller.admin.auth.admin.inviteUserByEmail(
       normalisedEmail,
       { redirectTo: `${APP_URL}/AcceptInvitation?token=${token}` },
     );
-
-    let emailSent = true;
-    if (authError) {
-      const alreadyRegistered = /already/i.test(authError.message);
-      if (!alreadyRegistered) {
-        console.error('inviteUserByEmail failed:', authError.message);
-      }
-      // Report honestly: the invitation exists either way, but the caller needs
-      // to know whether to pass the link on themselves.
+    if (mailError) {
+      // Expected while SMTP is unconfigured, and expected for an address that
+      // already had an account. Either way the caller needs to know so they can
+      // pass the link on themselves.
       emailSent = false;
     }
 
     return json(req, {
       success: true,
       invitation,
+      accountCreated,
       emailSent,
       acceptUrl: `${APP_URL}/AcceptInvitation?token=${token}`,
     });
