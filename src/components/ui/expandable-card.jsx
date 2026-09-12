@@ -8,7 +8,7 @@ export function ExpandableCard({
   title,
   src,
   icon: Icon,
-  color = "bg-primary/10 text-primary",
+  color = "bg-sl-accentSoft text-sl-accent",
   description,
   children,
   className,
@@ -51,7 +51,7 @@ export function ExpandableCard({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-md h-full w-full z-40"
+            className="fixed inset-0 bg-sl-ink/40 backdrop-blur-sm h-full w-full z-40"
           />
         )}
       </AnimatePresence>
@@ -66,13 +66,13 @@ export function ExpandableCard({
               layoutId={`card-${title}-${cardId}`}
               ref={cardRef}
               className={cn(
-                "w-full max-w-[850px] h-full flex flex-col overflow-auto [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] sm:rounded-t-3xl bg-white shadow-sm dark:shadow-none dark:bg-slate-950 relative",
+                "w-full max-w-[850px] h-full flex flex-col overflow-auto [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] sm:rounded-sm bg-sl-paper relative",
                 classNameExpanded,
               )}
               {...props}
             >
               <motion.div layoutId={`image-${title}-${cardId}`}>
-                <div className="relative before:absolute before:inset-x-0 before:bottom-[-1px] before:h-[70px] before:z-50 before:bg-gradient-to-t dark:before:from-slate-950 before:from-white">
+                <div className="relative before:absolute before:inset-x-0 before:bottom-[-1px] before:h-[70px] before:z-50 before:bg-gradient-to-t before:from-sl-paper">
                   {src ? (
                     <img
                       src={src}
@@ -86,26 +86,26 @@ export function ExpandableCard({
                   )}
                 </div>
               </motion.div>
-              <div className="relative h-full before:fixed before:inset-x-0 before:bottom-0 before:h-[70px] before:z-50 before:bg-gradient-to-t dark:before:from-slate-950 before:from-white">
+              <div className="relative h-full before:fixed before:inset-x-0 before:bottom-0 before:h-[70px] before:z-50 before:bg-gradient-to-t before:from-sl-paper">
                 <div className="flex justify-between items-start p-8 h-auto">
                   <div>
-                    <motion.p
-                      layoutId={`description-${description}-${cardId}`}
-                      className="text-primary dark:text-primary text-lg"
-                    >
-                      {description}
-                    </motion.p>
                     <motion.h3
                       layoutId={`title-${title}-${cardId}`}
-                      className="font-semibold text-slate-900 dark:text-white text-4xl sm:text-4xl mt-0.5"
+                      className="font-landing font-semibold text-sl-ink text-4xl sm:text-4xl"
                     >
                       {title}
                     </motion.h3>
+                    <motion.p
+                      layoutId={`description-${description}-${cardId}`}
+                      className="text-sl-accent text-lg font-landingBody mt-1"
+                    >
+                      {description}
+                    </motion.p>
                   </div>
                   <motion.button
                     aria-label="Close card"
                     layoutId={`button-${title}-${cardId}`}
-                    className="h-10 w-10 shrink-0 flex items-center justify-center rounded-full bg-white dark:bg-slate-950 text-primary dark:text-white/70 border border-primary/20 dark:border-primary/30 hover:bg-primary/5 dark:hover:bg-slate-900 hover:border-primary/40 hover:text-primary dark:hover:text-white dark:hover:border-primary/50 transition-colors duration-300 focus:outline-none z-50"
+                    className="h-10 w-10 shrink-0 flex items-center justify-center rounded-full bg-sl-paper text-sl-accent border border-sl-rule hover:bg-sl-accentSoft hover:border-sl-accent focus-visible:ring-2 focus-visible:ring-sl-focus focus:outline-none transition-colors duration-300 z-50"
                     onClick={() => setActive(false)}
                   >
                     <motion.div
@@ -135,7 +135,7 @@ export function ExpandableCard({
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="text-primary dark:text-primary text-base pb-10 flex flex-col items-start gap-4 overflow-auto "
+                    className="text-sl-ink font-landingBody text-lg pb-10 flex flex-col items-start gap-4 overflow-auto "
                   >
                     {children}
                   </motion.div>
@@ -153,9 +153,11 @@ export function ExpandableCard({
         layoutId={`card-${title}-${cardId}`}
         onClick={() => setActive(true)}
         className={cn(
-          "p-3 flex flex-col justify-between items-center bg-white shadow-sm dark:shadow-none dark:bg-slate-950 rounded-2xl cursor-pointer border border-primary/15 dark:border-primary/30 hover:shadow-md transition-shadow",
+          "p-4 flex flex-col justify-between items-stretch bg-sl-paper2 rounded-sm cursor-pointer border border-sl-rule hover:border-sl-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-focus",
           className,
         )}
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActive(true); } }}
       >
         <div className="flex gap-4 flex-col w-full h-full">
           <motion.div layoutId={`image-${title}-${cardId}`} className="w-full">
@@ -166,31 +168,32 @@ export function ExpandableCard({
                 className="w-full h-40 rounded-lg object-cover object-center"
               />
             ) : (
-              <div className={cn("w-full h-40 rounded-lg flex items-center justify-center", color)}>
-                {Icon && <Icon className="w-16 h-16 opacity-80" />}
+              <div className={cn("w-full h-28 rounded-sm flex items-center justify-center", color)}>
+                {Icon && <Icon className="w-10 h-10 opacity-90" />}
               </div>
             )}
           </motion.div>
-          <div className="flex justify-between items-center w-full flex-grow">
+          <div className="flex justify-between items-start w-full flex-grow gap-2">
             <div className="flex flex-col">
-              <motion.p
-                layoutId={`description-${description}-${cardId}`}
-                className="text-primary dark:text-primary md:text-left text-xs font-medium"
-              >
-                {description}
-              </motion.p>
               <motion.h3
                 layoutId={`title-${title}-${cardId}`}
-                className="text-slate-900 dark:text-white md:text-left font-semibold text-sm mt-1"
+                className="text-sl-ink md:text-left font-landing font-semibold text-base mt-2"
               >
                 {title}
               </motion.h3>
+              <motion.p
+                layoutId={`description-${description}-${cardId}`}
+                className="text-sl-neutral md:text-left text-xs font-landingBody mt-0.5"
+              >
+                {description}
+              </motion.p>
             </div>
             <motion.button
               aria-label="Open card"
               layoutId={`button-${title}-${cardId}`}
+              tabIndex={-1}
               className={cn(
-                "h-8 w-8 shrink-0 flex items-center justify-center rounded-full bg-white dark:bg-slate-950 text-primary dark:text-white/70 border border-primary/20 dark:border-primary/30 hover:bg-primary/5 dark:hover:bg-slate-900 hover:border-primary/40 hover:text-primary dark:hover:text-white dark:hover:border-primary/50 transition-colors duration-300 focus:outline-none",
+                "h-7 w-7 shrink-0 flex items-center justify-center rounded-full bg-sl-paper text-sl-accent border border-sl-rule transition-colors duration-300 mt-2",
                 className,
               )}
             >

@@ -1,20 +1,24 @@
+/* Hallmark · genre: editorial · macrostructure: Bento Grid
+ * F1 Bento knobs: tiles=8, spans=irregular, border=hairline all
+ * nav: N6 Newspaper masthead · footer: Ft1 Mast-headed
+ * theme: custom (vibe: "collegiate, academic, unhurried" · paper oklch(97% 0.014 70)
+ * · accent oklch(33% 0.140 28) warm-red · Fraunces + EB Garamond)
+ * Pre-emit self-critique: P5 H4 E4 S4 R5 V5
+ */
 import React, { useState, useEffect } from 'react';
 import DetachedNavbar from '@/components/public/DetachedNavbar';
 import { ExpandableCard } from '@/components/ui/expandable-card';
-import PublicFooter from '@/components/public/PublicFooter';
+import LandingFooter from '@/components/landing/LandingFooter';
 import ConsentModal from '@/components/public/ConsentModal';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { isAuthenticated } from '@/data/session';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, MotionConfig } from 'framer-motion';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
-import TopMarqueeSection from '@/components/landing/TopMarqueeSection';
 import LandingAnimatedBackground from '@/components/landing/LandingAnimatedBackground';
 import {
   ArrowRight,
   BookOpen,
-  ChevronRight,
-  Sparkles,
   GraduationCap,
   UserCircle,
   Compass,
@@ -28,67 +32,80 @@ import {
   CalendarDays,
   MessageSquareShare,
   Globe2,
+  Sparkles,
 } from 'lucide-react';
 
-function HeroSection() {
-  const { scrollY } = useScroll();
-  const opacity = useTransform(scrollY, [0, 120, 260], [0, 0.4, 1]);
-  const y = useTransform(scrollY, [0, 260], [180, 0]);
-  const scale = useTransform(scrollY, [0, 260], [0.96, 1]);
-  const wordmarkY = useTransform(scrollY, [0, 220, 520], ["-35vh", "-65vh", "-95vh"]);
-  const wordmarkOpacity = useTransform(scrollY, [0, 180, 420, 620], [0.92, 1, 0.55, 0]);
-  const wordmarkScale = useTransform(scrollY, [0, 220, 520], [1.16, 1.08, 0.98]);
+const CURRICULA = ['IB', 'IGCSE', 'A-Level', 'US Common Core', 'French Baccalauréat'];
 
-  const handleSignIn = async () => {
-    if (await isAuthenticated()) {
-      window.location.href = '/AppHome';
-    } else {
-      window.location.href = `/Login?next=${encodeURIComponent('/AppHome')}`;
-    }
-  };
+async function goToApp() {
+  if (await isAuthenticated()) {
+    window.location.href = '/AppHome';
+  } else {
+    window.location.href = `/Login?next=${encodeURIComponent('/AppHome')}`;
+  }
+}
 
+function Reveal({ children, className }) {
   return (
-    <section className="relative overflow-hidden pt-28 pb-20 lg:pt-40 lg:pb-32 min-h-[145vh] flex items-center">
-      <motion.div
-        className="pointer-events-none absolute inset-x-0 z-0 overflow-hidden"
-        style={{ y: wordmarkY, opacity: wordmarkOpacity, scale: wordmarkScale }}
-      >
-        <span className="block w-full text-center select-none text-[8.5rem] sm:text-[13rem] lg:text-[18rem] font-semibold tracking-[0.02em] text-[rgba(255,255,255,0.36)] leading-none whitespace-nowrap scale-x-[1.18] origin-center [text-shadow:0_2px_10px_rgba(255,255,255,0.10)]">
-          Scholr
-        </span>
-      </motion.div>
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div className="max-w-4xl mx-auto text-center pt-[70vh] lg:pt-[82vh]" style={{ opacity, y, scale }}>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1] drop-shadow-[0_6px_24px_rgba(0,0,0,0.22)]">
-           The LMS designed for
-           <span className="text-white"> the needs of</span>
-           {' '}International Schools
-          </h1>
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 14 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
-          <p className="mt-6 text-xl text-white leading-relaxed max-w-2xl mx-auto drop-shadow-[0_4px_18px_rgba(0,0,0,0.18)]">
-            A unified platform built for international schools — supporting multiple curricula, grading frameworks, and reporting standards.
-          </p>
-          
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-             <Button 
-               size="lg" 
-               className="bg-slate-900 hover:bg-slate-700 text-white rounded-full px-8 h-12 text-base font-medium shadow-sm transition-all"
-               onClick={handleSignIn}
-             >
-               Sign In <ArrowRight className="ml-2 w-4 h-4" />
-             </Button>
-             <Link to="/Demo">
-               <Button size="lg" variant="outline" className="rounded-full px-8 h-12 text-base font-medium border-slate-300 hover:bg-slate-50 text-slate-800">
-                 Contact Sales for a Free Demo
-               </Button>
-             </Link>
-           </div>
-        </motion.div>
-        
-        <div className="mt-40 lg:mt-52 mx-auto max-w-3xl">
-          <p className="text-lg text-white leading-relaxed text-center drop-shadow-[0_4px_18px_rgba(0,0,0,0.18)]">
-            <span className="font-semibold text-white">Multi-curricular</span> — built for schools running IB, IGCSE, A-Levels, US Common Core, and more. <span className="font-semibold text-white">Flexible frameworks</span> — every workflow adapts to your curriculum's structure, criteria, and terminology. <span className="font-semibold text-white">Zero noise</span> — trimmed to exactly what international educators and students need, nothing more.
-          </p>
+function HeroSection() {
+  return (
+    <section className="border-b border-sl-rule">
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-7">
+            <h1 className="font-landing text-4xl font-semibold leading-[1.1] tracking-tight text-sl-ink sm:text-5xl lg:text-6xl">
+              One LMS for every curriculum you teach.
+            </h1>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-sl-neutral">
+              Gradebook, attendance, reporting and the IB core — configured for IB, IGCSE, A&#8209;Level and US Common Core from day one, not bolted on after.
+            </p>
+            <div className="mt-9 flex flex-wrap items-center gap-4">
+              <Button
+                size="lg"
+                className="h-12 rounded-sm bg-sl-accent px-7 text-base font-medium text-sl-accentInk shadow-none hover:bg-sl-ink focus-visible:ring-sl-focus"
+                onClick={goToApp}
+              >
+                Sign in <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+              <Link to="/Demo">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="h-12 rounded-sm border-sl-rule bg-sl-paper px-7 text-base font-medium text-sl-ink hover:bg-sl-paper2 focus-visible:ring-sl-focus"
+                >
+                  Book a demo
+                </Button>
+              </Link>
+            </div>
+          </div>
+          <div className="lg:col-span-5 lg:pt-2">
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-sl-neutral">Built for</p>
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {CURRICULA.map((c) => (
+                <li
+                  key={c}
+                  className="rounded-sm border border-sl-rule bg-sl-paper2 px-3 py-1.5 text-sm text-sl-ink"
+                >
+                  {c}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 max-w-sm text-sm leading-relaxed text-sl-neutral">
+              Every workflow adapts to your curriculum&rsquo;s structure, criteria and terminology — an IB&#8209;only school and a US&#8209;curriculum school see two different apps built on one platform.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -97,35 +114,35 @@ function HeroSection() {
 
 function ProblemSection() {
   const problems = [
-    { text: 'Scattered data across spreadsheets, email, and disconnected tools' },
-    { text: "Weak role-based access — teachers see data they shouldn't" },
-    { text: 'Parents lack real-time visibility into their child\'s progress' },
-    { text: 'Tedious manual workflows for assignments, grading, and reporting' },
+    'Scattered data across spreadsheets, email and disconnected tools.',
+    "Weak role-based access — teachers see data they shouldn't.",
+    "Parents lack real-time visibility into their child's progress.",
+    'Tedious manual workflows for assignments, grading and reporting.',
   ];
 
   return (
-    <motion.section
-      className="py-20"
-      initial={{ opacity: 0, y: 70, scale: 0.96 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.55, ease: 'easeOut' }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white">International schools deserve better tools</h2>
-          <p className="mt-3 text-lg text-white">Current platforms weren't built for the unique demands of multi-curricular international schools</p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl mx-auto">
-          {problems.map((p, i) => (
-            <div key={i} className="flex items-start gap-4 p-5 bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200 shadow-sm">
-              <div className="w-1 h-1 rounded-full bg-primary600 mt-2 flex-shrink-0"></div>
-              <p className="text-sm text-slate-600 leading-relaxed">{p.text}</p>
-            </div>
-          ))}
-        </div>
+    <section className="border-b border-sl-rule">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-12 lg:gap-8 lg:px-8 lg:py-20">
+        <Reveal className="lg:col-span-4">
+          <h2 className="font-landing text-3xl font-semibold text-sl-ink">
+            International schools deserve better tools.
+          </h2>
+          <p className="mt-4 text-sl-neutral">
+            Generic school software wasn&rsquo;t built for the demands of multi&#8209;curricular international schools.
+          </p>
+        </Reveal>
+        <Reveal className="lg:col-span-8">
+          <ul className="divide-y divide-sl-rule border-t border-sl-rule">
+            {problems.map((p, i) => (
+              <li key={i} className="flex items-start gap-4 py-5">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sl-accent" aria-hidden="true" />
+                <p className="text-base leading-relaxed text-sl-ink">{p}</p>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
       </div>
-    </motion.section>
+    </section>
   );
 }
 
@@ -134,91 +151,85 @@ function FeaturesGrid() {
     {
       title: 'Executive Dashboards',
       short: 'Role-specific insights',
-      desc: 'Personalized dashboards for every stakeholder — students see academic progress, teachers manage their classes, coordinators oversee cohorts, parents track their children, and admins control the entire school. Each role receives contextual information tailored to their responsibilities, with quick actions and performance indicators prominently displayed.',
+      desc: 'Personalised dashboards for every stakeholder — students see academic progress, teachers manage their classes, coordinators oversee cohorts, parents track their children, and admins control the entire school.',
       icon: PieChart,
-      color: 'bg-gradient-to-br from-emerald-400 to-emerald-500 text-white shadow-inner'
+      span: 'md:col-span-2',
     },
     {
       title: 'Academic Workflows',
       short: 'Complete assignment lifecycle',
-      desc: 'From creation to grading — publish assignments with IB criteria alignment, students submit work through Google Docs, files, or links, teachers provide criterion-based feedback, and grades sync automatically. Support for multiple submission formats, late submission handling, and comprehensive submission tracking ensure transparency throughout.',
+      desc: 'Publish assignments with IB criteria alignment, students submit work through Google Docs, files, or links, teachers give criterion-based feedback, and grades sync automatically.',
       icon: ListChecks,
-      color: 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-inner'
+      span: 'md:col-span-2',
     },
     {
       title: 'Gradebook',
       short: 'Multi-framework grading',
-      desc: 'Support for multiple grading scales including 1-7 IB, A*-E, letter grades, and percentages. Predicted grade tracking with historical trends, rubric-based criterion assessment, and comprehensive term reports aligned to your curriculum. Generate assessment reports by criterion and lock grades for compliance.',
+      desc: 'Support for 1–7 IB, A*–E, letter grades and percentages. Predicted grade tracking with historical trends, rubric-based criterion assessment, and term reports aligned to your curriculum.',
       icon: Award,
-      color: 'bg-gradient-to-br from-teal-500 to-teal-600 text-white shadow-inner'
+      span: 'md:col-span-1',
     },
     {
       title: 'Parent Portal',
       short: 'Real-time family engagement',
-      desc: 'Parents see grades, attendance records, upcoming assignments, teacher feedback, and behavioral notes — all updated in real-time. Direct messaging with teachers keeps communication secure, organised, and compliant with school policies. Parents can also receive progress alerts and attendance warnings.',
+      desc: 'Parents see grades, attendance, upcoming assignments, teacher feedback and behavioural notes — all updated in real time, with direct messaging to teachers.',
       icon: HeartHandshake,
-      color: 'bg-gradient-to-br from-teal-600 to-emerald-600 text-white shadow-inner'
+      span: 'md:col-span-1',
     },
     {
       title: 'Timetable Integration',
       short: 'Schedule synchronisation',
-      desc: 'Sync with external timetable systems like Veracross or iSAMS, display daily class schedules, manage periods and rooms, resolve scheduling conflicts automatically, and track historical schedule changes. Supports multiple concurrent timetables and handles special events and exam schedules.',
+      desc: 'Sync with external timetable systems like Veracross or iSAMS, display daily schedules, manage periods and rooms, and resolve scheduling conflicts automatically.',
       icon: CalendarDays,
-      color: 'bg-gradient-to-br from-emerald-600 to-emerald-700 text-white shadow-inner'
+      span: 'md:col-span-1',
     },
     {
       title: 'Internal Messaging',
       short: 'Secure communication hub',
-      desc: 'Role-aware messaging between teachers, students, and parents with granular permission controls. Create class announcements, manage discussions, implement quiet hours policies, and maintain compliance logging for all communications. Thread-based conversations keep context clear and searchable.',
+      desc: 'Role-aware messaging between teachers, students and parents with granular permissions, class announcements, quiet-hours policies and compliance logging.',
       icon: MessageSquareShare,
-      color: 'bg-gradient-to-br from-emerald-700 to-green-700 text-white shadow-inner'
+      span: 'md:col-span-1',
     },
     {
       title: 'Enterprise Security',
-      short: 'Data protection',
-      desc: 'Complete multi-tenant isolation ensures schools cannot access each other\'s data. Granular role-based access control, audit logging of all critical actions, GDPR compliance tools including data export and deletion, and encrypted data storage at rest and in transit.',
+      short: 'Multi-tenant data protection',
+      desc: 'Complete multi-tenant isolation so schools cannot access each other’s data, granular role-based access control, audit logging, and GDPR export and deletion tools.',
       icon: ShieldCheck,
-      color: 'bg-gradient-to-br from-green-600 to-green-700 text-white shadow-inner'
+      span: 'md:col-span-2',
     },
     {
       title: 'Extended Curriculum',
       short: 'CAS, EE, TOK & more',
-      desc: 'Manage CAS experiences with strand mapping, supervisor tracking, and hourly reflection submissions. Track Extended Essay milestones from initial proposal through final viva voce. Manage TOK deadlines, student reflections, and coordinator approvals in one unified interface.',
+      desc: 'Manage CAS experiences with strand mapping and supervisor tracking, track Extended Essay milestones through to final viva voce, and manage TOK deadlines and reflections.',
       icon: Globe2,
-      color: 'bg-gradient-to-br from-green-700 to-emerald-800 text-white shadow-inner'
+      span: 'md:col-span-2',
     },
   ];
 
   return (
-    <section className="py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-white">Comprehensive Platform Capabilities</h2>
-          <p className="mt-3 text-lg text-white">Engineered for the rigorous demands of international multi-curricular institutions</p>
-        </div>
+    <section className="border-b border-sl-rule">
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+        <Reveal className="max-w-2xl">
+          <h2 className="font-landing text-3xl font-semibold text-sl-ink sm:text-4xl">
+            Comprehensive platform capabilities.
+          </h2>
+          <p className="mt-3 text-sl-neutral">
+            Engineered for the rigorous demands of international, multi&#8209;curricular institutions.
+          </p>
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
           {features.map((f, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 60, scale: 0.96 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.45, delay: i * 0.05, ease: 'easeOut' }}
-            >
-            <ExpandableCard
-              key={i}
-              title={f.title}
-              icon={f.icon}
-              color={f.color}
-              description={f.short}
-              classNameExpanded="[&_h4]:text-black dark:[&_h4]:text-white [&_h4]:font-medium"
-            >
-              <p className="text-lg leading-relaxed text-zinc-600 dark:text-zinc-300">
-                {f.desc}
-              </p>
-            </ExpandableCard>
-            </motion.div>
+            <div key={i} className={f.span}>
+              <ExpandableCard
+                title={f.title}
+                icon={f.icon}
+                description={f.short}
+                className="h-full"
+              >
+                <p className="text-lg leading-relaxed text-sl-neutral">{f.desc}</p>
+              </ExpandableCard>
+            </div>
           ))}
         </div>
       </div>
@@ -226,29 +237,12 @@ function FeaturesGrid() {
   );
 }
 
-function FadeInCard({ children, delay = 0 }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.4, delay, ease: 'easeOut' }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
 function RolesSection() {
-  const [selectedRole, setSelectedRole] = React.useState(null);
-
   const roles = [
     {
       name: 'Students',
-      short: 'Learn and track progress',
       icon: GraduationCap,
-      color: 'sky',
-      desc: 'A personalised academic hub that keeps students on top of their workload, performance, and extended curriculum commitments.',
+      desc: 'A personalised academic hub that keeps students on top of their workload, performance and extended curriculum commitments.',
       features: [
         'Personal dashboard with grade trends and upcoming deadlines',
         'Submit assignments via Google Docs, file upload, or links',
@@ -256,13 +250,11 @@ function RolesSection() {
         'Daily timetable with class schedule and room info',
         'Track CAS, EE, and TOK milestones and reflections',
         'Attendance history and absence notifications',
-      ]
+      ],
     },
     {
       name: 'Teachers',
-      short: 'Manage and assess',
       icon: BookOpen,
-      color: 'blue',
       desc: 'Everything a teacher needs to run their classes, assess students, and communicate — in one focused workspace.',
       features: [
         'Class workspace with stream, assignments, and gradebook',
@@ -271,14 +263,12 @@ function RolesSection() {
         'One-click attendance recording per class session',
         'Class analytics showing performance trends',
         'Direct messaging with students and parents',
-      ]
+      ],
     },
     {
       name: 'Parents',
-      short: 'Stay informed',
       icon: UserCircle,
-      color: 'cyan',
-      desc: "Real-time visibility into your child's academic life - grades, attendance, deadlines, and direct communication with teachers.",
+      desc: "Real-time visibility into your child's academic life: grades, attendance, deadlines, and direct communication with teachers.",
       features: [
         'Live grade and assessment overview per subject',
         'Upcoming assignments and submission status',
@@ -286,13 +276,11 @@ function RolesSection() {
         'Behavioural notes visible to parents',
         'Direct, secure messaging with teachers',
         'Term report access and progress summaries',
-      ]
+      ],
     },
     {
       name: 'Coordinators',
-      short: 'Oversee programmes',
       icon: Compass,
-      color: 'indigo',
       desc: 'Oversight tools for programme coordinators to manage cohorts, predicted grades, extended curriculum, and compliance.',
       features: [
         'Cohort-level grade and performance dashboards',
@@ -301,13 +289,11 @@ function RolesSection() {
         'Compliance reports and exam entry management',
         'Subject registration and level (HL/SL) management',
         'Coordinator approval workflows for student submissions',
-      ]
+      ],
     },
     {
       name: 'Administrators',
-      short: 'Control everything',
       icon: Settings2,
-      color: 'violet',
       desc: 'Full school management — users, policies, academic structure, billing, integrations, and security — from one admin panel.',
       features: [
         'User management, invitations, and role assignment',
@@ -316,13 +302,11 @@ function RolesSection() {
         'Timetable setup and external system integrations',
         'Audit logs, GDPR tools, and access controls',
         'Billing dashboard and subscription management',
-      ]
+      ],
     },
     {
-      name: 'Curriculum-Aware UI',
-      short: 'No irrelevant clutter',
+      name: 'Curriculum-aware UI',
       icon: Sparkles,
-      color: 'teal',
       desc: 'Tools not designed for your curriculum stay completely hidden. IB-only features like CAS, EE, and TOK never appear in an IGCSE or A-Level school — and vice versa.',
       features: [
         'Curriculum detected at school setup — no manual toggles',
@@ -331,146 +315,92 @@ function RolesSection() {
         'Terminology adapts to your curriculum automatically',
         'Module visibility controlled by school administrators',
         'Zero noise — only relevant tools in every workflow',
-      ]
+      ],
     },
   ];
 
-  const colorMap = {
-    sky: { bg: 'bg-sky-50', border: 'border-sky-100', icon: 'text-sky-500', activeBorder: 'border-sky-400' },
-    blue: { bg: 'bg-primary50', border: 'border-primary100', icon: 'text-primary600', activeBorder: 'border-primary400' },
-    cyan: { bg: 'bg-cyan-50', border: 'border-cyan-100', icon: 'text-cyan-600', activeBorder: 'border-cyan-400' },
-    indigo: { bg: 'bg-indigo-50', border: 'border-indigo-100', icon: 'text-indigo-600', activeBorder: 'border-indigo-400' },
-    violet: { bg: 'bg-violet-50', border: 'border-violet-100', icon: 'text-violet-600', activeBorder: 'border-violet-400' },
-    teal: { bg: 'bg-teal-50', border: 'border-teal-100', icon: 'text-teal-600', activeBorder: 'border-teal-400' },
-  };
-
-  const selected = selectedRole !== null ? roles[selectedRole] : null;
-  const sc = selected ? colorMap[selected.color] : null;
+  const [selected, setSelected] = useState(0);
+  const active = roles[selected];
 
   return (
-    <section className="py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-white">Purpose-Built Roles</h2>
-          <p className="mt-3 text-lg text-white">Every user type has a tailored experience. Click a role to explore its features.</p>
-        </div>
+    <section className="border-b border-sl-rule">
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+        <Reveal className="max-w-2xl">
+          <h2 className="font-landing text-3xl font-semibold text-sl-ink sm:text-4xl">
+            Purpose-built for every role.
+          </h2>
+          <p className="mt-3 text-sl-neutral">Every user type has a tailored experience.</p>
+        </Reveal>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+        <div role="tablist" aria-label="School roles" className="mt-8 flex flex-wrap gap-x-2 gap-y-3 border-b border-sl-rule pb-2">
           {roles.map((r, i) => {
-            const c = colorMap[r.color];
-            const isActive = selectedRole === i;
+            const isActive = i === selected;
             return (
-              <FadeInCard key={i} delay={i * 0.07}>
-                <button
-                  onClick={() => setSelectedRole(isActive ? null : i)}
-                  className={`w-full flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer ${
-                    isActive ? `${c.bg} ${c.activeBorder} shadow-md` : 'bg-white/70 backdrop-blur-sm border-slate-200 hover:shadow-md hover:border-slate-300'
-                  }`}
-                >
-                  <div className={`w-10 h-10 rounded-lg ${c.bg} ${c.border} border flex items-center justify-center`}>
-                    <r.icon className={`w-5 h-5 ${c.icon}`} />
-                  </div>
-                  <p className="text-sm font-semibold text-slate-900 text-center">{r.name}</p>
-                  <p className="text-xs text-slate-500 text-center leading-tight">{r.short}</p>
-                  <ChevronRight className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isActive ? 'rotate-90' : ''}`} />
-                </button>
-              </FadeInCard>
+              <button
+                key={r.name}
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => setSelected(i)}
+                className={`inline-flex items-center gap-2 rounded-sm px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-focus ${
+                  isActive ? 'bg-sl-ink text-sl-paper' : 'text-sl-neutral hover:bg-sl-paper2 hover:text-sl-ink'
+                }`}
+              >
+                <r.icon className="h-4 w-4" />
+                {r.name}
+              </button>
             );
           })}
         </div>
 
-        <AnimatePresence mode="wait">
-          {selected && sc && (
-            <motion.div
-              key={selectedRole}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
-              className={`bg-white/80 backdrop-blur-sm rounded-2xl border-2 ${sc.activeBorder} shadow-lg p-8`}
-            >
-              <div className="flex items-start gap-4 mb-5">
-                <div className={`w-12 h-12 rounded-xl ${sc.bg} ${sc.border} border flex items-center justify-center flex-shrink-0`}>
-                  <selected.icon className={`w-6 h-6 ${sc.icon}`} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-slate-900">{selected.name}</h3>
-                  <p className="text-sm text-slate-500 mt-0.5">{selected.short}</p>
-                </div>
-              </div>
-              <p className="text-slate-600 leading-relaxed mb-6">{selected.desc}</p>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {selected.features.map((f, j) => (
-                  <li key={j} className="flex items-start gap-2.5 bg-slate-50 rounded-lg p-3">
-                    <CheckCircle2 className={`w-4 h-4 ${sc.icon} flex-shrink-0 mt-0.5`} />
-                    <span className="text-sm text-slate-600 leading-relaxed">{f}</span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <motion.div
+          key={selected}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-8 grid gap-8 lg:grid-cols-12"
+        >
+          <div className="lg:col-span-4">
+            <h3 className="font-landing text-2xl font-semibold text-sl-ink">{active.name}</h3>
+            <p className="mt-3 leading-relaxed text-sl-neutral">{active.desc}</p>
+          </div>
+          <ul className="grid gap-x-8 gap-y-3 lg:col-span-8 sm:grid-cols-2">
+            {active.features.map((f, j) => (
+              <li key={j} className="flex items-start gap-2.5">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-sl-accent" />
+                <span className="text-sm leading-relaxed text-sl-ink">{f}</span>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
       </div>
     </section>
   );
 }
 
 function CTASection() {
-  const benefits = [
-    { title: 'Lightning Fast', desc: 'Deploy in days, not months. Get up and running quickly.' },
-    { title: 'Enterprise Grade', desc: 'Bank-level security with full GDPR compliance.' },
-    { title: 'Dedicated Support', desc: 'Expert team available to help you succeed.' },
-    { title: 'Always Improving', desc: 'Regular updates and new features based on school feedback.' },
-  ];
-
   return (
-    <motion.section
-      className="py-24"
-      initial={{ opacity: 0, y: 70, scale: 0.96 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.18 }}
-      transition={{ duration: 0.55, ease: 'easeOut' }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-white">Why Choose Scholr?</h2>
-          <p className="mt-3 text-lg text-white">Built by educators, for educators.</p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
-          {benefits.map((b, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 60, scale: 0.96 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.45, delay: i * 0.05, ease: 'easeOut' }}
-              className="bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200 shadow-sm p-6"
-            >
-              <div className="w-3 h-3 rounded-full bg-primary mb-4"></div>
-              <h3 className="font-bold text-slate-900 mb-2">{b.title}</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">{b.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-        <motion.div
-          className="bg-white/70 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-sm p-12 text-center"
-          initial={{ opacity: 0, y: 70, scale: 0.96 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, amount: 0.25 }}
-          transition={{ duration: 0.55, delay: 0.1, ease: 'easeOut' }}
-        >
-          <h3 className="text-2xl font-bold text-slate-900 mb-4">Ready to transform your school?</h3>
-          <p className="text-slate-600 mb-8 max-w-2xl mx-auto">See how Scholr can streamline your academic operations. Request a personalized demo or explore our flexible licensing plans.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+    <section>
+      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+        <Reveal className="max-w-2xl">
+          <h2 className="font-landing text-3xl font-semibold text-sl-ink sm:text-4xl">
+            Talk to us before you switch.
+          </h2>
+          <p className="mt-4 text-lg leading-relaxed text-sl-neutral">
+            We&rsquo;ll walk your team through gradebook, attendance and IB reporting on your own curriculum — not a generic demo script.
+          </p>
+          <div className="mt-8">
             <Link to="/Demo">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-8 h-12 text-base font-medium shadow-sm border-none">
-                Schedule Demo <ArrowRight className="ml-2 w-4 h-4" />
+              <Button
+                size="lg"
+                className="h-12 rounded-sm bg-sl-accent px-7 text-base font-medium text-sl-accentInk shadow-none hover:bg-sl-ink focus-visible:ring-sl-focus"
+              >
+                Book a demo <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
           </div>
-        </motion.div>
+        </Reveal>
       </div>
-    </motion.section>
+    </section>
   );
 }
 
@@ -481,12 +411,7 @@ export default function Landing() {
     const checkConsent = async () => {
       try {
         const consentGiven = localStorage.getItem('scholr_consent_accepted');
-        
-        if (consentGiven === 'true') {
-          setShowConsent(false);
-        } else {
-          setShowConsent(true);
-        }
+        setShowConsent(consentGiven !== 'true');
       } catch (error) {
         console.error('Error checking consent:', error);
         setShowConsent(true);
@@ -497,26 +422,21 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-transparent font-landing">
-      <LandingAnimatedBackground />
-      <div
-        className="fixed top-6 left-0 right-0 z-50 px-4 flex justify-center sm:top-8"
-      >
-        <DetachedNavbar />
-      </div>
-      <div className="relative z-20">
-        <div className="relative z-20">
-        <TopMarqueeSection />
-        <HeroSection />
-        <FeaturesGrid />
-        <RolesSection />
-        <ProblemSection />
-        <PricingTiersSection />
-        <CTASection />
-        <PublicFooter />
+    <MotionConfig reducedMotion="user">
+      <div className="min-h-screen bg-sl-paper font-landingBody text-sl-ink">
+        <LandingAnimatedBackground />
+        <div className="relative z-10">
+          <DetachedNavbar />
+          <HeroSection />
+          <ProblemSection />
+          <FeaturesGrid />
+          <RolesSection />
+          <PricingTiersSection />
+          <CTASection />
+          <LandingFooter />
         </div>
+        <ConsentModal isOpen={showConsent} onClose={() => setShowConsent(false)} />
       </div>
-      <ConsentModal isOpen={showConsent} onClose={() => setShowConsent(false)} />
-    </div>
+    </MotionConfig>
   );
 }

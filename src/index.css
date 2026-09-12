@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -39,7 +39,8 @@
     --sidebar-accent-foreground: 170 72% 10%;
     --sidebar-border: 168 28% 86%;
     --sidebar-ring: 170 72% 18%;
-    --font-landing-display: 'Merriweather', serif;
+    --font-landing-display: 'Fraunces', ui-serif, Georgia, serif;
+    --font-landing-body: 'EB Garamond', ui-serif, Georgia, serif;
   }
 
   .dark {

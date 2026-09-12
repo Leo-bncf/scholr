@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { isAuthenticated, redirectToLogin } from '@/data/session';
 
+// Hallmark · nav: N6 Newspaper masthead · knobs: issue-line=above wordmark,
+// wordmark=2xl, rule=double
 export default function DetachedNavbar() {
   const handleLogin = async () => {
     const isAuthed = await isAuthenticated();
@@ -14,38 +16,41 @@ export default function DetachedNavbar() {
   };
 
   return (
-    <nav className="w-full max-w-6xl rounded-full border border-white/40 bg-white/55 backdrop-blur-xl shadow-[0_10px_40px_rgba(15,40,35,0.18)] px-4 sm:px-6 py-3">
-      <div className="flex items-center justify-between gap-4">
-        <Link to="/" className="flex items-center gap-3 shrink-0">
-          <img
-            src="/brand/scholr-mark.png"
-            alt="Scholr"
-            className="h-9 w-9 rounded-xl shadow-sm object-cover"
-          />
-          <span className="text-2xl font-semibold text-slate-900 tracking-tight">Scholr</span>
+    <header className="w-full bg-sl-paper font-landingBody">
+      <div className="mx-auto max-w-6xl px-4 pt-4 sm:px-6 lg:px-8">
+        <p className="text-center text-[0.65rem] font-medium uppercase tracking-[0.22em] text-sl-neutral">
+          For IB · IGCSE · A&#8209;Level &amp; multi&#8209;curricular schools
+        </p>
+        <Link
+          to="/"
+          className="mt-1 block text-center font-landing text-3xl font-semibold tracking-tight text-sl-ink transition-colors hover:text-sl-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-focus sm:text-4xl"
+        >
+          Scholr
         </Link>
 
-        <div className="hidden md:flex items-center gap-8 text-sm font-bold text-slate-900">
-          <Link to="/" className="hover:text-primary transition-colors">Platform</Link>
-          <Link to="/Features" className="hover:text-primary transition-colors">Features</Link>
-          <Link to="/Pricing" className="hover:text-primary transition-colors">Pricing</Link>
-          <Link to="/Contact" className="hover:text-primary transition-colors">Contact</Link>
-        </div>
-
-        <div className="flex items-center gap-3 shrink-0">
-          <button
-            onClick={handleLogin}
-            className="hidden sm:inline-flex text-sm font-bold text-slate-900 hover:text-primary transition-colors"
-          >
-            Log in
-          </button>
-          <Link to="/Demo">
-            <Button className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-5 h-10 text-sm font-semibold shadow-md">
-              Book Demo
-            </Button>
-          </Link>
-        </div>
+        <nav className="mt-3 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 border-y border-sl-rule py-2.5 text-sm">
+          <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2">
+            <Link to="/Features" className="text-sl-ink/80 transition-colors hover:text-sl-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-focus">Features</Link>
+            <a href="#pricing" className="text-sl-ink/80 transition-colors hover:text-sl-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-focus">Pricing</a>
+            <Link to="/SecurityAndCompliance" className="text-sl-ink/80 transition-colors hover:text-sl-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-focus">Security</Link>
+            <Link to="/Contact" className="text-sl-ink/80 transition-colors hover:text-sl-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-focus">Contact</Link>
+          </div>
+          <div className="flex items-center gap-5 sm:ml-4">
+            <button
+              type="button"
+              onClick={handleLogin}
+              className="font-medium text-sl-ink/80 transition-colors hover:text-sl-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-focus"
+            >
+              Log in
+            </button>
+            <Link to="/Demo">
+              <Button className="h-9 rounded-sm bg-sl-accent px-4 text-sm font-medium text-sl-accentInk shadow-none hover:bg-sl-ink focus-visible:ring-sl-focus">
+                Book a demo
+              </Button>
+            </Link>
+          </div>
+        </nav>
       </div>
-    </nav>
+    </header>
   );
 }

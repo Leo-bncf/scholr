@@ -163,18 +163,14 @@ export default function PricingTiersSection() {
   };
 
   return (
-    <section id="pricing" className="relative overflow-hidden bg-transparent py-24">
+    <section id="pricing" className="relative overflow-hidden bg-sl-paper py-24 font-landingBody">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/70 backdrop-blur-sm px-4 py-2 text-sm font-semibold text-emerald-700 shadow-sm">
-            <Zap className="h-4 w-4 fill-current" />
-            Simple, Transparent Pricing
-          </div>
-          <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            One Platform. Every Feature. Simple Tiers.
+        <div className="mx-auto max-w-2xl">
+          <h2 className="font-landing text-4xl font-semibold tracking-tight text-sl-ink sm:text-5xl">
+            One platform, every feature, three tiers.
           </h2>
-          <p className="mt-4 text-lg text-white">
-            All tiers include the full platform — same features, same support. The only difference is student capacity and the per‑student yearly price, which drops as your school grows.
+          <p className="mt-4 text-lg leading-relaxed text-sl-neutral">
+            All tiers include the full platform — same features, same support. The only difference is student capacity, and the per&#8209;student yearly price drops as your school grows.
           </p>
         </div>
 
@@ -191,17 +187,17 @@ export default function PricingTiersSection() {
                 key={key}
                 type="button"
                 onClick={() => setExpandedTier(key)}
-                className={`rounded-2xl border px-3 py-3 transition-all ${
+                className={`rounded-sm border px-3 py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-focus ${
                   active
-                    ? 'border-emerald-300 bg-white/15 shadow-lg'
-                    : 'border-white/15 bg-white/5 hover:bg-white/10'
+                    ? 'border-sl-accent bg-sl-accentSoft'
+                    : 'border-sl-rule bg-sl-paper hover:border-sl-accent'
                 }`}
               >
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-200">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sl-neutral">
                   {tier.tierLabel}
                 </div>
-                <div className="mt-1 text-xl font-bold text-white">{tier.price}</div>
-                <div className="text-[11px] text-emerald-100/80">/ student / year</div>
+                <div className="mt-1 font-landing text-xl font-semibold text-sl-ink">{tier.price}</div>
+                <div className="text-[11px] text-sl-neutral">/ student / year</div>
               </button>
             );
           })}
@@ -215,18 +211,18 @@ export default function PricingTiersSection() {
               animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
               exit={{ opacity: 0, y: -18, scale: 0.985, filter: 'blur(8px)' }}
               transition={panelTransition}
-              className="rounded-[2rem] border border-slate-200 bg-white/90 backdrop-blur-md p-6 shadow-xl sm:p-8"
+              className="rounded-sm border border-sl-rule bg-sl-paper2 p-6 sm:p-8"
             >
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.28, delay: 0.06 }}
-                className="border-b border-slate-100 pb-6"
+                className="border-b border-sl-rule pb-6"
               >
                 <div className="flex items-center gap-3">
-                  <h3 className="text-3xl font-bold text-slate-900">{selectedTier.name}</h3>
+                  <h3 className="font-landing text-3xl font-semibold text-sl-ink">{selectedTier.name}</h3>
                 </div>
-                <p className="mt-3 max-w-2xl text-slate-600">{selectedTier.subtitle}</p>
+                <p className="mt-3 max-w-2xl text-sl-neutral">{selectedTier.subtitle}</p>
               </motion.div>
 
               <div className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -236,11 +232,11 @@ export default function PricingTiersSection() {
                     initial={{ opacity: 0, y: 18 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.28, delay: 0.1 + index * 0.05 }}
-                    className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4"
+                    className="rounded-sm border border-sl-rule bg-sl-paper p-4"
                   >
-                    <item.icon className="mb-3 h-5 w-5 text-emerald-700" />
-                    <div className="text-xl font-bold text-slate-900">{item.value}</div>
-                    <div className="text-sm text-slate-500">{item.label}</div>
+                    <item.icon className="mb-3 h-5 w-5 text-sl-accent" />
+                    <div className="font-landing text-xl font-semibold text-sl-ink">{item.value}</div>
+                    <div className="text-sm text-sl-neutral">{item.label}</div>
                   </motion.div>
                 ))}
               </div>
@@ -255,13 +251,13 @@ export default function PricingTiersSection() {
               animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
               exit={{ opacity: 0, y: -18, scale: 0.985, filter: 'blur(8px)' }}
               transition={{ ...panelTransition, delay: 0.03 }}
-              className="flex h-full flex-col rounded-[2rem] border border-emerald-800/40 bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-900 p-6 text-white shadow-2xl sm:p-8"
+              className="flex h-full flex-col rounded-sm border border-sl-ink bg-sl-ink p-6 text-sl-paper sm:p-8"
             >
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.24, delay: 0.08 }}
-                className="text-sm uppercase tracking-[0.2em] text-emerald-200"
+                className="text-sm uppercase tracking-[0.2em] text-sl-paper/60"
               >
                 What this controls
               </motion.p>
@@ -269,11 +265,11 @@ export default function PricingTiersSection() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.28, delay: 0.12 }}
-                className="mt-3 text-2xl font-bold"
+                className="mt-3 font-landing text-2xl font-semibold"
               >
                 {selectedTier.name} rules applied across your school
               </motion.h3>
-              <div className="mt-6 space-y-3 text-sm text-emerald-100/90">
+              <div className="mt-6 space-y-3 text-sm text-sl-paper/85">
                 {summaryLines.map((line, index) => (
                   <motion.p
                     key={line}
@@ -290,9 +286,9 @@ export default function PricingTiersSection() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.28, delay: 0.34 }}
-                className="mt-8 rounded-2xl border border-emerald-300/20 bg-white/5 p-4 backdrop-blur-sm"
+                className="mt-8 rounded-sm border border-sl-paper/15 bg-sl-paper/5 p-4"
               >
-                <p className="text-sm text-emerald-100">Already have an account? You’ll go straight to payment. New user? You’ll create your account first.</p>
+                <p className="text-sm text-sl-paper/85">Already have an account? You&rsquo;ll go straight to payment. New user? You&rsquo;ll create your account first.</p>
               </motion.div>
 
               <motion.div
@@ -301,27 +297,27 @@ export default function PricingTiersSection() {
                 transition={{ duration: 0.32, delay: 0.4 }}
                 className="mt-auto pt-8"
               >
-                <div className="mb-4 rounded-3xl border border-emerald-300/20 bg-gradient-to-br from-white/10 to-emerald-300/5 p-5 backdrop-blur-sm">
+                <div className="mb-4 rounded-sm border border-sl-paper/15 bg-sl-paper/5 p-5">
                   <div className="flex items-center justify-between">
-                    <div className="text-xs uppercase tracking-[0.22em] text-emerald-200">
-                      {selectedTier.tierLabel} · Per Student / Year
+                    <div className="text-xs uppercase tracking-[0.22em] text-sl-paper/60">
+                      {selectedTier.tierLabel} · Per student / year
                     </div>
-                    <Badge className="bg-emerald-400/20 text-emerald-100 border border-emerald-300/30 text-[10px]">
+                    <Badge className="bg-sl-accent2/20 text-sl-paper border border-sl-paper/20 text-[10px] rounded-sm">
                       Tiered pricing
                     </Badge>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <div className="text-4xl font-bold text-emerald-50">{selectedTier.price}</div>
-                    <div className="text-sm text-emerald-200">per student, per year</div>
+                    <div className="font-landing text-4xl font-semibold text-sl-paper">{selectedTier.price}</div>
+                    <div className="text-sm text-sl-paper/70">per student, per year</div>
                   </div>
                   <div className="mt-4">
-                    <div className="text-sm text-emerald-100 mb-3">
-                      Billed yearly. The per‑student rate drops automatically at each higher tier — you pay less per student as your school grows.
+                    <div className="text-sm text-sl-paper/85 mb-3">
+                      Billed yearly. The per&#8209;student rate drops automatically at each higher tier — you pay less per student as your school grows.
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-2 text-sm font-medium text-white">
+                      <div className="inline-flex items-center gap-2 rounded-sm border border-sl-paper/15 bg-sl-paper/10 px-3 py-2 text-sm font-medium text-sl-paper">
                         <Monitor className="h-4 w-4" />
-                        Web App
+                        Web app
                       </div>
                     </div>
                   </div>
@@ -329,7 +325,7 @@ export default function PricingTiersSection() {
 
                 <Button
                   type="button"
-                  className="h-14 text-base w-full rounded-full bg-white text-emerald-950 font-semibold hover:bg-emerald-50 shadow-lg transition-all"
+                  className="h-14 text-base w-full rounded-sm bg-sl-paper text-sl-ink font-semibold hover:bg-sl-accentSoft transition-colors focus-visible:ring-sl-focus"
                   onClick={async () => {
                     await handleCheckout(selectedTier.priceId, expandedTier);
                   }}
@@ -352,27 +348,27 @@ export default function PricingTiersSection() {
           </AnimatePresence>
         </div>
 
-        <div className="mt-20">
-          <div className="mb-10 text-center">
-            <h3 className="text-3xl font-bold text-white">How the tier system works in practice</h3>
-            <p className="mx-auto mt-3 max-w-2xl text-white">
-              Every school gets the same full platform. Tiers only change how many students you can host and your per‑student yearly rate.
+        <div className="mt-20 border-t border-sl-rule pt-16">
+          <div className="mb-10 max-w-2xl">
+            <h3 className="font-landing text-3xl font-semibold text-sl-ink">How the tier system works in practice</h3>
+            <p className="mt-3 text-sl-neutral">
+              Every school gets the same full platform. Tiers only change how many students you can host and your per&#8209;student yearly rate.
             </p>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-px overflow-hidden rounded-sm border border-sl-rule bg-sl-rule md:grid-cols-2 lg:grid-cols-3">
             {SYSTEM_RULES.map((rule, i) => (
-              <motion.div 
-                key={rule.title} 
+              <motion.div
+                key={rule.title}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="rounded-2xl border border-slate-200 bg-white/70 backdrop-blur-sm p-6 shadow-sm hover:shadow-md transition-shadow"
+                transition={{ duration: 0.4, delay: i * 0.06 }}
+                className="bg-sl-paper p-6"
               >
-                <rule.icon className="mb-4 h-6 w-6 text-emerald-600" />
-                <h4 className="mb-2 text-lg font-semibold text-slate-900">{rule.title}</h4>
-                <p className="text-sm leading-relaxed text-slate-600">{rule.description}</p>
+                <rule.icon className="mb-4 h-5 w-5 text-sl-accent" />
+                <h4 className="mb-2 font-landing text-lg font-semibold text-sl-ink">{rule.title}</h4>
+                <p className="text-sm leading-relaxed text-sl-neutral">{rule.description}</p>
               </motion.div>
             ))}
           </div>
