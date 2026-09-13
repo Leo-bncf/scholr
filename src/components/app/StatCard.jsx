@@ -19,9 +19,9 @@ import React from 'react';
 export default function StatCard({ label, value, trend, hint }) {
   return (
     <div className="px-4 py-3.5">
-      <p className="cobalt-label m-0">{label}</p>
+      <p className="scholr-label m-0">{label}</p>
       <p
-        className="cobalt-num m-0 mt-1 leading-none"
+        className="scholr-num m-0 mt-1 leading-none"
         style={{
           fontFamily: 'var(--font-display)',
           fontSize: '1.85rem',

@@ -144,8 +144,8 @@ function Alert({ alert }) {
               type="button"
               onClick={() => setExpanded(e => !e)}
               aria-expanded={expanded}
-              className="cobalt-focus mt-2 inline-flex items-center gap-1 text-xs"
-              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--cobalt)' }}
+              className="scholr-focus mt-2 inline-flex items-center gap-1 text-xs"
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--brand)' }}
             >
               {expanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
               {expanded ? 'Hide affected items' : 'Show affected items'}
@@ -168,9 +168,9 @@ function Alert({ alert }) {
 
       <Link
         to={createPageUrl(alert.link)}
-        className="cobalt-focus shrink-0 inline-flex items-center gap-1.5 text-xs font-medium whitespace-nowrap"
+        className="scholr-focus shrink-0 inline-flex items-center gap-1.5 text-xs font-medium whitespace-nowrap"
         style={{
-          color: 'var(--cobalt)',
+          color: 'var(--brand)',
           border: '1px solid var(--rule)',
           borderRadius: 'var(--radius-control)',
           padding: '0.3rem 0.6rem',
@@ -191,7 +191,7 @@ export default function OperationalAlerts({ data }) {
 
   if (alerts.length === 0) {
     return (
-      <div className="cobalt-panel px-4 py-3.5 flex items-center gap-3 flex-wrap">
+      <div className="scholr-panel px-4 py-3.5 flex items-center gap-3 flex-wrap">
         <StatusChip tone="good">Clear</StatusChip>
         <p className="m-0 text-sm" style={{ color: 'var(--body)' }}>
           Nothing needs attention — enrolments, attendance, billing and the timetable all check out.
@@ -201,12 +201,12 @@ export default function OperationalAlerts({ data }) {
   }
 
   return (
-    <div className="cobalt-panel overflow-hidden">
+    <div className="scholr-panel overflow-hidden">
       <header
         className="flex items-center gap-2 px-4 py-2.5 flex-wrap"
         style={{ borderBottom: '1px solid var(--rule-soft)' }}
       >
-        <h2 className="cobalt-label m-0">Needs attention</h2>
+        <h2 className="scholr-label m-0">Needs attention</h2>
         <span className="ml-auto flex items-center gap-2">
           {critCount > 0 && <StatusChip tone="crit">{critCount} critical</StatusChip>}
           {warnCount > 0 && <StatusChip tone="warn">{warnCount} warning{warnCount > 1 ? 's' : ''}</StatusChip>}

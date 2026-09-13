@@ -23,14 +23,14 @@ const QUICK_ACTIONS = [
 export default function QuickActionsHub() {
   return (
     <div
-      className="cobalt-grid"
+      className="scholr-grid"
       style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(11rem, 100%), 1fr))' }}
     >
       {QUICK_ACTIONS.map(({ label, sub, link }) => (
         <Link
           key={label}
           to={createPageUrl(link)}
-          className="group cobalt-focus px-4 py-3.5 flex items-center gap-2"
+          className="group scholr-focus px-4 py-3.5 flex items-center gap-2"
           style={{ textDecoration: 'none' }}
         >
           <span className="min-w-0">
@@ -39,7 +39,7 @@ export default function QuickActionsHub() {
           </span>
           <ArrowRight
             className="w-4 h-4 ml-auto shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-            style={{ color: 'var(--cobalt)' }}
+            style={{ color: 'var(--brand)' }}
           />
         </Link>
       ))}

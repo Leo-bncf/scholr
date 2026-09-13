@@ -34,7 +34,7 @@ export default function AssignmentCompletionChart({ data }) {
                   {row.name}
                 </span>
                 <span
-                  className="ml-auto text-sm cobalt-num shrink-0"
+                  className="ml-auto text-sm scholr-num shrink-0"
                   style={{ fontFamily: 'var(--font-mono)', color: 'var(--body)' }}
                 >
                   {row.completionRate}%
@@ -43,7 +43,7 @@ export default function AssignmentCompletionChart({ data }) {
               <Meter value={row.completionRate} />
             </div>
           ))}
-          <p className="cobalt-label m-0 mt-1">Submitted ÷ expected, per class</p>
+          <p className="scholr-label m-0 mt-1">Submitted ÷ expected, per class</p>
         </div>
       )}
     </Panel>

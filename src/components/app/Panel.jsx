@@ -9,19 +9,19 @@ import React from 'react';
  */
 export function Panel({ title, action, dark = false, children, className = '' }) {
   return (
-    <section className={`${dark ? 'cobalt-band' : 'cobalt-panel'} ${className}`}>
+    <section className={`${dark ? 'scholr-band' : 'scholr-panel'} ${className}`}>
       {title && (
         <header
           className={`flex items-center gap-3 ${dark ? 'px-5 pt-4 pb-3' : 'px-4 py-2.5'}`}
           style={dark ? undefined : { borderBottom: '1px solid var(--rule-soft)' }}
         >
-          <h2 className="cobalt-label m-0" style={dark ? { color: 'var(--cobalt)' } : undefined}>
+          <h2 className="scholr-label m-0" style={dark ? { color: 'var(--brand)' } : undefined}>
             {title}
           </h2>
           {action && <div className="ml-auto">{action}</div>}
         </header>
       )}
-      {/* Rows inside a band are full-bleed (see cobalt.css), so the band's own
+      {/* Rows inside a band are full-bleed (see scholr-theme.css), so the band's own
           horizontal padding lives here rather than on the section. */}
       <div className={dark ? 'px-5 pb-4' : ''}>{children}</div>
     </section>
@@ -48,7 +48,7 @@ export function PanelRow({ name, detail, value, children }) {
       )}
       {(value || children) && (
         <span
-          className="ml-auto shrink-0 flex items-center gap-2 text-sm cobalt-num whitespace-nowrap"
+          className="ml-auto shrink-0 flex items-center gap-2 text-sm scholr-num whitespace-nowrap"
           style={{ fontFamily: children ? undefined : 'var(--font-mono)', color: 'var(--body)' }}
         >
           {children ?? value}
@@ -67,7 +67,7 @@ export function PanelRowLink({ as: As = 'button', children, ...props }) {
   return (
     <As
       {...props}
-      className={`panel-row-link cobalt-focus block w-full text-left ${props.className || ''}`}
+      className={`panel-row-link scholr-focus block w-full text-left ${props.className || ''}`}
       style={{
         background: 'transparent',
         border: 'none',

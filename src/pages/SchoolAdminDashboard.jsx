@@ -23,7 +23,7 @@ function Section({ title, note, children }) {
   return (
     <section>
       <div className="flex items-baseline gap-3 mb-3">
-        <h2 className="cobalt-label m-0">{title}</h2>
+        <h2 className="scholr-label m-0">{title}</h2>
         {note && <p className="m-0 text-xs" style={{ color: 'var(--faint)' }}>{note}</p>}
       </div>
       {children}
@@ -53,7 +53,7 @@ export default function SchoolAdminDashboard() {
 
   if (isError || !data) {
     return (
-      <div className="cobalt-page min-h-screen flex items-center justify-center p-6">
+      <div className="scholr-page min-h-screen flex items-center justify-center p-6">
         <div>
           <p className="m-0 font-medium" style={{ color: 'var(--ink)' }}>Couldn't load the dashboard.</p>
           <p className="m-0 mt-1 text-sm" style={{ color: 'var(--muted)' }}>
@@ -69,7 +69,7 @@ export default function SchoolAdminDashboard() {
   const statusKey = school?.status || 'onboarding';
 
   return (
-    <div className="cobalt-page min-h-screen">
+    <div className="scholr-page min-h-screen">
       <AppSidebar
         links={SCHOOL_ADMIN_SIDEBAR_LINKS}
         role="school_admin"
@@ -84,10 +84,10 @@ export default function SchoolAdminDashboard() {
 
           <header className="flex items-start gap-3">
             <div className="min-w-0">
-              <p className="cobalt-label m-0">
+              <p className="scholr-label m-0">
                 {school?.name} · {shortLabel} · {today}
               </p>
-              <h1 className="cobalt-h1 m-0 mt-1.5 text-2xl md:text-3xl">Operations</h1>
+              <h1 className="scholr-h1 m-0 mt-1.5 text-2xl md:text-3xl">Operations</h1>
             </div>
             <span className="ml-auto shrink-0 mt-1">
               <StatusChip tone={STATUS_TONE[statusKey] || 'mute'}>{statusKey}</StatusChip>

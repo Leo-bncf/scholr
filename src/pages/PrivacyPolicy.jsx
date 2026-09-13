@@ -1,16 +1,13 @@
 import React from 'react';
-import PublicNavbar from '@/components/public/PublicNavbar';
-import PublicFooter from '@/components/public/PublicFooter';
+import PublicShell from '@/components/public/PublicShell';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-white">
-      <PublicNavbar />
-
-      <section className="pt-32 pb-20">
+    <PublicShell>
+      <section className="legal-prose py-14 md:py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link to={createPageUrl('Landing')} className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-700 mb-8">
             <ArrowLeft className="w-4 h-4" />
@@ -39,7 +36,7 @@ export default function PrivacyPolicy() {
                 <p><span className="font-medium text-slate-800">Data Controller:</span> The Chief Executive Officer of Scholr SAS</p>
                 <p><span className="font-medium text-slate-800">Data Protection Officer (DPO):</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
                 <p><span className="font-medium text-slate-800">General privacy contact:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
-                <p><span className="font-medium text-slate-800">Website:</span> <a href="https://www.scholr.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">www.scholr.com</a></p>
+                <p><span className="font-medium text-slate-800">Website:</span> <a href="https://scholr.pro" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">scholr.pro</a></p>
               </div>
             </section>
 
@@ -259,7 +256,7 @@ export default function PrivacyPolicy() {
                 <p><span className="font-medium text-slate-800">By email:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
                 <p><span className="font-medium text-slate-800">DPO:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
                 <p><span className="font-medium text-slate-800">By post:</span> Scholr SAS — Data Protection, [Registered office address], France</p>
-                <p><span className="font-medium text-slate-800">Website:</span> <a href="https://www.scholr.com/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">www.scholr.com/privacy</a></p>
+                <p><span className="font-medium text-slate-800">Website:</span> <a href="https://scholr.pro/PrivacyPolicy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">scholr.pro/PrivacyPolicy</a></p>
               </div>
             </section>
 
@@ -273,7 +270,6 @@ export default function PrivacyPolicy() {
         </div>
       </section>
 
-      <PublicFooter />
-    </div>
+    </PublicShell>
   );
 }

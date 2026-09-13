@@ -37,7 +37,7 @@ export default function NoSchool() {
 
   if (checkingInvitations) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center scholr-page">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-3" />
           <p className="text-slate-500 text-sm">Checking for invitations...</p>
@@ -48,7 +48,7 @@ export default function NoSchool() {
 
   if (pendingInvitations.length > 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-violet-50 px-4">
+      <div className="min-h-screen flex items-center justify-center scholr-page px-4">
         <div className="text-center max-w-md bg-white rounded-2xl border border-slate-200 p-8 shadow-xl">
           <div className="w-16 h-16 rounded-2xl bg-indigo-100 flex items-center justify-center mx-auto mb-6">
             <Mail className="w-8 h-8 text-indigo-600" />
@@ -78,7 +78,7 @@ export default function NoSchool() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
+    <div className="min-h-screen flex items-center justify-center scholr-page px-4">
       <div className="text-center max-w-md">
         <div className="w-16 h-16 rounded-2xl bg-amber-50 flex items-center justify-center mx-auto mb-6">
           <Building2 className="w-8 h-8 text-amber-600" />

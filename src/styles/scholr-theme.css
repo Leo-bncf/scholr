@@ -1,0 +1,270 @@
+/* ---------------------------------------------------------------------------
+   Scholr — the design tokens
+   ---------------------------------------------------------------------------
+   Hallmark's modern-minimal genre, in Scholr's own colours: the deep green of
+   the logo mark, with its gold dot as a rare second accent.
+
+   Engineered paper rather than #fff, a green-leaning charcoal rather than
+   #000, and exactly ONE accent that should never cover more than ~5% of a
+   viewport. Structure comes from 1px hairlines, not from stacked cards with
+   shadows.
+
+   Every colour in the product must reference a token from this file. An inline
+   hex or a bare Tailwind colour class bypasses the theme and is the thing that
+   makes a redesign drift back to where it started. Note that
+   `tailwind.config.js` remaps the whole indigo and blue palettes to green, so
+   a stray `bg-blue-600` renders green — convenient, but it means Tailwind
+   colour classes carry no reliable meaning here. Use the tokens.
+
+   Two of Hallmark's page-level signatures are deliberately absent: the
+   code-block hero and the ⌘K palette. Both are dev-tool marketing devices; a
+   teacher taking a register is not their audience.
+--------------------------------------------------------------------------- */
+
+/* Self-hosted, so no third-party request on page load. */
+@import '@fontsource-variable/space-grotesk';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+
+:root {
+  --paper:        oklch(98.6% 0.005 170);
+  --surface:      oklch(100% 0 0);
+  --surface-sunk: oklch(97% 0.006 170);
+  --ink:          oklch(23% 0.022 172);
+  --body:         oklch(34% 0.018 172);
+  --muted:        oklch(55% 0.014 172);
+  --faint:        oklch(68% 0.012 172);
+  --rule:         oklch(91% 0.008 170);
+  --rule-soft:    oklch(94.5% 0.006 170);
+
+  /* The mark's green. Dark enough to carry white text at a small size, which
+     is what makes it usable as a button fill and not just a link colour. */
+  --brand:       oklch(45% 0.09 168);
+  --brand-sf:    oklch(96% 0.025 168);
+  --brand-ink:   oklch(100% 0 0);
+
+  /* The gold dot on the logo. A second accent, and a strict budget: one per
+     screen, on the single thing that is genuinely the point. Never a status,
+     never a series colour, never a background. */
+  --gold:         oklch(78% 0.14 78);
+  --gold-ink:     oklch(25% 0.05 78);
+
+  --graphite:     oklch(19% 0.022 170);
+  --graphite-ink: oklch(93% 0.01 168);
+  --graphite-mut: oklch(70% 0.014 170);
+  --graphite-rule:oklch(30% 0.026 170);
+
+  /* Status is a RESERVED palette: good / warning / critical. Never reused as a
+     decorative or "series" colour, and never the only signal — a status always
+     ships with its word. */
+  /* `good` sits at 150 while the accent sits at 168 — far enough apart that a
+     green brand and a green "healthy" chip don't read as the same thing, and
+     the chip always carries its word anyway. */
+  --good:    oklch(55% 0.14 150);  --good-sf: oklch(96% 0.035 150);
+  --warn:    oklch(62% 0.14 72);   --warn-sf: oklch(96.5% 0.045 72);
+  --crit:    oklch(54% 0.18 25);   --crit-sf: oklch(96% 0.035 25);
+
+  --radius-control: 6px;   /* buttons, inputs — "drawn with a ruler" */
+  --radius-surface: 10px;  /* panels, bands */
+
+  --font-display: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* --- the dark palette, chosen rather than inverted --------------------- */
+  --d-paper:        oklch(16.5% 0.016 170);
+  --d-surface:      oklch(20.5% 0.018 170);
+  --d-sunk:         oklch(18.5% 0.017 170);
+  --d-ink:          oklch(95% 0.008 168);
+  --d-body:         oklch(84% 0.01 168);
+  --d-muted:        oklch(66% 0.013 170);
+  --d-faint:        oklch(54% 0.013 170);
+  --d-rule:         oklch(29% 0.018 170);
+  --d-rule-soft:    oklch(25% 0.017 170);
+  /* The 45% green is a fill colour for paper; on a dark ground it has to step
+     up to stay legible as text. */
+  --d-brand:       oklch(72% 0.13 168);
+  --d-brand-sf:    oklch(27% 0.05 168);
+  --d-brand-ink:   oklch(14% 0.02 170);
+  --d-gold:         oklch(80% 0.13 78);
+  --d-gold-ink:     oklch(20% 0.04 78);
+  --d-graphite:     oklch(12.5% 0.014 170);
+  --d-graphite-rule:oklch(25% 0.02 170);
+  --d-good: oklch(72% 0.14 150); --d-good-sf: oklch(26% 0.04 150);
+  --d-warn: oklch(78% 0.13 72);  --d-warn-sf: oklch(28% 0.04 72);
+  --d-crit: oklch(70% 0.15 25);  --d-crit-sf: oklch(28% 0.04 25);
+}
+
+/* Three states, not two: an explicit choice stamps data-theme, and the default
+   "system" setting stamps nothing — so both have to be handled.
+
+   The dark VALUES are declared once above as --d-* and the two selectors below
+   only alias them. Writing the palette out twice is how the two states silently
+   drift apart; this way a wrong colour is impossible and only the alias list is
+   repeated, which is mechanical enough to eyeball. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --paper: var(--d-paper);        --surface: var(--d-surface);
+    --surface-sunk: var(--d-sunk);  --ink: var(--d-ink);
+    --body: var(--d-body);          --muted: var(--d-muted);
+    --faint: var(--d-faint);        --rule: var(--d-rule);
+    --rule-soft: var(--d-rule-soft);
+    --brand: var(--d-brand);      --brand-sf: var(--d-brand-sf);
+    --brand-ink: var(--d-brand-ink);
+    --gold: var(--d-gold);          --gold-ink: var(--d-gold-ink);
+    --graphite: var(--d-graphite);  --graphite-rule: var(--d-graphite-rule);
+    --good: var(--d-good);          --good-sf: var(--d-good-sf);
+    --warn: var(--d-warn);          --warn-sf: var(--d-warn-sf);
+    --crit: var(--d-crit);          --crit-sf: var(--d-crit-sf);
+  }
+}
+:root[data-theme='dark'] {
+  --paper: var(--d-paper);        --surface: var(--d-surface);
+  --surface-sunk: var(--d-sunk);  --ink: var(--d-ink);
+  --body: var(--d-body);          --muted: var(--d-muted);
+  --faint: var(--d-faint);        --rule: var(--d-rule);
+  --rule-soft: var(--d-rule-soft);
+  --brand: var(--d-brand);      --brand-sf: var(--d-brand-sf);
+  --brand-ink: var(--d-brand-ink);
+  --gold: var(--d-gold);          --gold-ink: var(--d-gold-ink);
+  --graphite: var(--d-graphite);  --graphite-rule: var(--d-graphite-rule);
+  --good: var(--d-good);          --good-sf: var(--d-good-sf);
+  --warn: var(--d-warn);          --warn-sf: var(--d-warn-sf);
+  --crit: var(--d-crit);          --crit-sf: var(--d-crit-sf);
+}
+
+/* --- shared dashboard primitives ---------------------------------------- */
+
+.scholr-page { background: var(--paper); color: var(--body); font-family: var(--font-sans); }
+
+.scholr-h1 {
+  font-family: var(--font-display); font-weight: 600; font-style: normal;
+  letter-spacing: -0.03em; color: var(--ink);
+  /* Long words in a display size must break rather than force a scrollbar. */
+  overflow-wrap: anywhere; min-width: 0; text-wrap: balance;
+}
+
+/* The machine-readout voice: mono, uppercase, tracked. Labels and meta only —
+   never body copy. */
+.scholr-label {
+  font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.07em;
+  text-transform: uppercase; color: var(--muted); font-weight: 500;
+}
+
+.scholr-num { font-variant-numeric: tabular-nums; }
+
+.scholr-panel {
+  background: var(--surface); border: 1px solid var(--rule);
+  border-radius: var(--radius-surface);
+}
+
+/* Cobalt's one dark beat per page: light → dark → light.
+
+   The band rebinds the surface tokens for everything nested inside it, so a
+   Panel row, a StatusChip or a stat tile resolves against graphite without
+   needing a dark-mode variant of its own. Components that reference tokens get
+   this for free; components that hardcode `text-slate-900` do not, which is the
+   practical reason for the "always use a token" rule above. */
+.scholr-band {
+  background: var(--graphite); color: var(--graphite-ink);
+  border: 1px solid var(--graphite-rule);
+  border-radius: var(--radius-surface);
+
+  --surface:   var(--graphite);
+  --ink:       var(--graphite-ink);
+  --body:      var(--graphite-ink);
+  --muted:     var(--graphite-mut);
+  --faint:     var(--graphite-mut);
+  --rule:      var(--graphite-rule);
+  --rule-soft: var(--graphite-rule);
+  /* The 45% green is a fill colour for paper, not a text colour on a
+     19%-lightness ground; inside the band it steps up to what dark mode uses. */
+  --brand:    oklch(72% 0.13 168);
+  --brand-sf: oklch(29% 0.055 168);
+}
+
+/* shadcn's Tabs, re-skinned: a strip of plain text over a hairline, with the
+   active tab marked by a 2px accent underline instead of a filled pill. The
+   attribute selector outranks the utility classes the component ships with,
+   so this holds without !important. */
+.scholr-tabs {
+  background: transparent; border-bottom: 1px solid var(--rule); border-radius: 0;
+  padding: 0; height: auto; gap: 0.15rem; flex-wrap: wrap; justify-content: flex-start;
+}
+.scholr-tabs [role='tab'] {
+  background: transparent; color: var(--muted); box-shadow: none;
+  border-radius: 0; border-bottom: 2px solid transparent;
+  padding: 0.45rem 0.7rem; font-size: 0.82rem; font-weight: 500;
+}
+.scholr-tabs [role='tab']:hover { color: var(--ink); }
+.scholr-tabs [role='tab'][data-state='active'] {
+  background: transparent; color: var(--ink); box-shadow: none;
+  border-bottom-color: var(--brand);
+}
+
+/* A term/description pair: a mono label in a fixed column, prose beside it.
+   Below ~34rem the label column would leave the description about eleven
+   characters wide, so the pair stacks instead. */
+.scholr-deflist {
+  display: grid;
+  grid-template-columns: minmax(7rem, 10rem) 1fr;
+  column-gap: 1.5rem;
+  row-gap: 0.25rem;
+}
+@media (max-width: 34rem) {
+  .scholr-deflist { grid-template-columns: 1fr; row-gap: 0.35rem; }
+}
+
+/* Long-form legal pages.
+   These carry ~110 Tailwind slate classes each and the words are legal text
+   nobody should be reformatting by hand, so the page is retoned from the
+   outside: a descendant selector (0,1,1) outranks a utility class (0,1,0)
+   without a single edit to the copy. */
+.legal-prose { color: var(--body); }
+.legal-prose h1 { font-family: var(--font-display); letter-spacing: -0.03em; color: var(--ink); }
+.legal-prose h2,
+.legal-prose h3,
+.legal-prose h4 { color: var(--ink); }
+.legal-prose p,
+.legal-prose li,
+.legal-prose td,
+.legal-prose th { color: var(--body); }
+.legal-prose .text-slate-500,
+.legal-prose .text-slate-400 { color: var(--muted); }
+.legal-prose .bg-slate-50 { background: var(--surface-sunk); }
+.legal-prose .bg-white { background: var(--surface); }
+.legal-prose .border-slate-200,
+.legal-prose .border-slate-100 { border-color: var(--rule); }
+.legal-prose a { color: var(--brand); }
+
+/* A grid whose dividers are the 1px gap showing through a rule-coloured
+   backdrop. Cells paint their own surface on top. This is how a row of tiles
+   keeps correct hairlines at every wrap point without nth-child arithmetic. */
+.scholr-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-surface);
+  overflow: hidden;
+}
+.scholr-grid > * { background: var(--surface); }
+.scholr-grid > a:hover { background: var(--surface-sunk); }
+
+/* A band already pads itself, so its rows sit flush to that padding instead of
+   indenting a second time. This is why PanelRow carries a class at all. */
+.scholr-band .panel-row,
+.scholr-band .panel-empty { padding-left: 0; padding-right: 0; }
+
+/* The last hairline in a list is the panel's own border drawn twice. Matched at
+   any depth, because lists are often wrapped in a scroll container. */
+.scholr-panel .panel-row:last-child,
+.scholr-band  .panel-row:last-child,
+.scholr-panel .panel-row-link:last-child .panel-row,
+.scholr-band  .panel-row-link:last-child .panel-row { border-bottom: none; }
+
+/* A row that navigates has to look like it does. */
+.panel-row-link:hover .panel-row { background: var(--surface-sunk); }
+.scholr-band .panel-row-link:hover .panel-row { background: var(--graphite-rule); }
+
+.scholr-focus:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }

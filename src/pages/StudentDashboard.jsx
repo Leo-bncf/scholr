@@ -53,20 +53,20 @@ export default function StudentDashboard() {
 
   return (
     <RoleGuard allowedRoles={['student', 'school_admin', 'super_admin', 'admin']}>
-      <div className="cobalt-page min-h-screen">
+      <div className="scholr-page min-h-screen">
         <AppSidebar links={studentLinks} role="student" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         <main className="ml-0 md:ml-64 p-4 md:p-8">
           <div className="max-w-6xl mx-auto">
             <header className="mb-6 md:mb-8">
-              <p className="cobalt-label m-0">{format(new Date(), 'EEEE d MMMM yyyy')}</p>
-              <h1 className="cobalt-h1 m-0 mt-1.5 text-2xl md:text-3xl">
+              <p className="scholr-label m-0">{format(new Date(), 'EEEE d MMMM yyyy')}</p>
+              <h1 className="scholr-h1 m-0 mt-1.5 text-2xl md:text-3xl">
                 Welcome back, {user?.full_name?.split(' ')[0] || 'Student'}
               </h1>
             </header>
 
             {isLoading ? (
               <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--cobalt)' }} />
+                <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--brand)' }} />
               </div>
             ) : (
               <div className="flex flex-col gap-5 md:gap-6">

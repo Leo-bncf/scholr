@@ -67,6 +67,7 @@ import Messages from './pages/Messages';
 import NoSchool from './pages/NoSchool';
 import ParentDashboard from './pages/ParentDashboard';
 import PasswordReset from './pages/PasswordReset';
+import Pricing from './pages/Pricing';
 
 import SchoolAdminAttendance from './pages/SchoolAdminAttendance';
 import SchoolAdminBilling from './pages/SchoolAdminBilling';
@@ -121,6 +122,7 @@ export const PAGES = {
     "NoSchool": NoSchool,
     "ParentDashboard": ParentDashboard,
     "PasswordReset": PasswordReset,
+    "Pricing": Pricing,
 
     "SchoolAdminAttendance": SchoolAdminAttendance,
     "SchoolAdminBilling": SchoolAdminBilling,

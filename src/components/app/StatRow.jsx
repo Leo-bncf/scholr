@@ -15,7 +15,7 @@ import React from 'react';
 export default function StatRow({ children, min = '9rem' }) {
   return (
     <div
-      className="cobalt-grid"
+      className="scholr-grid"
       style={{
         // minmax(min(x, 100%), 1fr) rather than minmax(x, 1fr): the bare form
         // refuses to shrink below x and pushes the page into horizontal scroll

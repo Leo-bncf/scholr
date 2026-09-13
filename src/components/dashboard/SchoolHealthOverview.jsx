@@ -15,8 +15,8 @@ function PanelLink({ to, children }) {
   return (
     <Link
       to={createPageUrl(to)}
-      className="cobalt-focus inline-flex items-center gap-1 text-xs"
-      style={{ color: 'var(--cobalt)', textDecoration: 'none' }}
+      className="scholr-focus inline-flex items-center gap-1 text-xs"
+      style={{ color: 'var(--brand)', textDecoration: 'none' }}
     >
       {children} <ArrowRight className="w-3 h-3" />
     </Link>
@@ -45,7 +45,7 @@ function MetricRow({ label, value, suffix = '%', tone, statusWord, meterValue, n
         <span className="text-sm" style={{ color: 'var(--body)' }}>{label}</span>
         {statusWord && <StatusChip tone={tone}>{statusWord}</StatusChip>}
         <span
-          className="ml-auto text-sm cobalt-num"
+          className="ml-auto text-sm scholr-num"
           style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink)' }}
         >
           {value}{suffix}
@@ -81,9 +81,9 @@ function MemberBreakdown({ members }) {
             <div key={item.label}>
               <div className="flex items-baseline gap-2 mb-1">
                 <span className="text-sm" style={{ color: 'var(--body)' }}>{item.label}</span>
-                <span className="ml-auto text-xs cobalt-num" style={{ color: 'var(--muted)' }}>{pct}%</span>
+                <span className="ml-auto text-xs scholr-num" style={{ color: 'var(--muted)' }}>{pct}%</span>
                 <span
-                  className="text-sm cobalt-num w-10 text-right"
+                  className="text-sm scholr-num w-10 text-right"
                   style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink)' }}
                 >
                   {item.count}
@@ -95,7 +95,7 @@ function MemberBreakdown({ members }) {
             </div>
           );
         })}
-        <p className="cobalt-label m-0">{total} active members</p>
+        <p className="scholr-label m-0">{total} active members</p>
       </div>
     </Panel>
   );
@@ -122,13 +122,13 @@ function ActivitySignals({ attendanceRate, missingWorkRate, messagingVolume }) {
         <div className="flex items-baseline gap-3 py-2.5">
           <span className="text-sm" style={{ color: 'var(--body)' }}>Messages</span>
           <span
-            className="ml-auto text-sm cobalt-num"
+            className="ml-auto text-sm scholr-num"
             style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink)' }}
           >
             {messagingVolume}
           </span>
         </div>
-        <p className="cobalt-label m-0 pb-3">Rolling 30 days</p>
+        <p className="scholr-label m-0 pb-3">Rolling 30 days</p>
       </div>
     </Panel>
   );
@@ -173,7 +173,7 @@ function ClassCoverage({ classes }) {
             tone={rateTone(studentPct, { good: 100, warn: 80 })}
             statusWord={studentPct === 100 ? 'Complete' : 'Gaps'}
           />
-          <p className="cobalt-label m-0 py-3">
+          <p className="scholr-label m-0 py-3">
             {totalClasses} classes · {avgStudentsPerClass} students each on average
           </p>
         </div>
@@ -217,7 +217,7 @@ function ReportingWindows({ upcomingTerms }) {
                     <StatusChip tone={tone}>{daysLeft <= 14 ? 'Due soon' : 'Approaching'}</StatusChip>
                   )}
                   <span
-                    className="text-sm cobalt-num whitespace-nowrap"
+                    className="text-sm scholr-num whitespace-nowrap"
                     style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink)' }}
                   >
                     {daysLeft}d

@@ -14,7 +14,7 @@ import * as classesData from '@/data/classes';
  * inside a card, which buried the one row that matters (what's on now).
  *
  * Every colour here is a token, which is what lets the same component sit on
- * paper or inside `.cobalt-band` without a dark variant.
+ * paper or inside `.scholr-band` without a dark variant.
  */
 export default function TodaySchedule({ schoolId, userId, userRole }) {
   const today = getDay(new Date()); // 0=Sunday, 1=Monday, etc.
@@ -52,7 +52,7 @@ export default function TodaySchedule({ schoolId, userId, userRole }) {
   if (isLoading) {
     return (
       <div className="flex justify-center py-8">
-        <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--cobalt)' }} />
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--brand)' }} />
       </div>
     );
   }
@@ -93,7 +93,7 @@ export default function TodaySchedule({ schoolId, userId, userRole }) {
             }}
           >
             <span
-              className="cobalt-num text-xs whitespace-nowrap"
+              className="scholr-num text-xs whitespace-nowrap"
               style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
             >
               {entry.start_time}
@@ -104,7 +104,7 @@ export default function TodaySchedule({ schoolId, userId, userRole }) {
             <span
               aria-hidden="true"
               className="self-stretch"
-              style={{ background: isNow ? 'var(--cobalt)' : 'transparent', borderRadius: '2px' }}
+              style={{ background: isNow ? 'var(--brand)' : 'transparent', borderRadius: '2px' }}
             />
 
             <span className="min-w-0">
@@ -123,9 +123,9 @@ export default function TodaySchedule({ schoolId, userId, userRole }) {
 
             {(isNow || isNext) && (
               <span
-                className="cobalt-label"
+                className="scholr-label"
                 style={{
-                  color: isNow ? 'var(--cobalt)' : 'var(--muted)',
+                  color: isNow ? 'var(--brand)' : 'var(--muted)',
                   fontSize: '0.6rem',
                 }}
               >

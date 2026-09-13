@@ -1,16 +1,13 @@
 import React from 'react';
-import PublicNavbar from '@/components/public/PublicNavbar';
-import PublicFooter from '@/components/public/PublicFooter';
+import PublicShell from '@/components/public/PublicShell';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
 export default function TermsOfService() {
   return (
-    <div className="min-h-screen bg-white">
-      <PublicNavbar />
-
-      <section className="pt-32 pb-20">
+    <PublicShell>
+      <section className="legal-prose py-14 md:py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link to={createPageUrl('Landing')} className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-700 mb-8">
             <ArrowLeft className="w-4 h-4" />
@@ -39,7 +36,7 @@ export default function TermsOfService() {
                 <p><span className="font-medium text-slate-800">VAT number:</span> To be completed</p>
                 <p><span className="font-medium text-slate-800">Contact email:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
                 <p><span className="font-medium text-slate-800">Support email:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
-                <p><span className="font-medium text-slate-800">Website:</span> <a href="https://www.scholr.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">www.scholr.com</a></p>
+                <p><span className="font-medium text-slate-800">Website:</span> <a href="https://scholr.pro" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">scholr.pro</a></p>
               </div>
             </section>
 
@@ -159,7 +156,7 @@ export default function TermsOfService() {
             {/* Section 8 */}
             <section>
               <h2 className="text-xl font-bold text-slate-900 mb-4">8. Data Protection and Privacy</h2>
-              <p className="mb-3">The collection and processing of personal data by Scholr in connection with the Service is governed by the Scholr Privacy Policy, which forms an integral part of these Terms and is available at <a href="https://www.scholr.com/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">www.scholr.com/privacy</a>.</p>
+              <p className="mb-3">The collection and processing of personal data by Scholr in connection with the Service is governed by the Scholr Privacy Policy, which forms an integral part of these Terms and is available at <a href="https://scholr.pro/PrivacyPolicy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">scholr.pro/PrivacyPolicy</a>.</p>
               <p className="mb-3">Scholr processes personal data as a data processor on behalf of schools, which act as data controllers, in accordance with Article 28 of the GDPR. The data processing agreement applicable to institutional clients is incorporated into the MSA.</p>
               <p>Users acknowledge that by using the Service, certain personal data will be collected and processed as described in the Privacy Policy. Users are encouraged to read the Privacy Policy carefully.</p>
             </section>
@@ -274,7 +271,7 @@ export default function TermsOfService() {
                 <p><span className="font-medium text-slate-800">Technical support:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
                 <p><span className="font-medium text-slate-800">Legal &amp; compliance:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
                 <p><span className="font-medium text-slate-800">By post:</span> Scholr SAS — Legal Department, [Registered office address], France</p>
-                <p><span className="font-medium text-slate-800">Website:</span> <a href="https://www.scholr.com/terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">www.scholr.com/terms</a></p>
+                <p><span className="font-medium text-slate-800">Website:</span> <a href="https://scholr.pro/TermsOfService" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">scholr.pro/TermsOfService</a></p>
               </div>
             </section>
 
@@ -288,7 +285,6 @@ export default function TermsOfService() {
         </div>
       </section>
 
-      <PublicFooter />
-    </div>
+    </PublicShell>
   );
 }

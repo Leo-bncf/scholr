@@ -65,19 +65,19 @@ export default function SuperAdminDashboard() {
   return (
     <>
       <SuperAdminShell activeItem="overview" currentUser={currentUser}>
-        <div className="cobalt-page max-w-6xl mx-auto flex flex-col gap-5 md:gap-6" style={{ background: 'transparent' }}>
+        <div className="scholr-page max-w-6xl mx-auto flex flex-col gap-5 md:gap-6" style={{ background: 'transparent' }}>
           <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div className="min-w-0">
-              <p className="cobalt-label m-0">Every school, every tenant</p>
-              <h1 className="cobalt-h1 m-0 mt-1.5 text-2xl md:text-3xl">Platform</h1>
+              <p className="scholr-label m-0">Every school, every tenant</p>
+              <h1 className="scholr-h1 m-0 mt-1.5 text-2xl md:text-3xl">Platform</h1>
             </div>
             <button
               type="button"
               onClick={() => setCreateDialogOpen(true)}
-              className="cobalt-focus inline-flex items-center gap-2 self-start sm:self-auto shrink-0 text-sm font-medium"
+              className="scholr-focus inline-flex items-center gap-2 self-start sm:self-auto shrink-0 text-sm font-medium"
               style={{
-                background: 'var(--cobalt)',
-                color: 'var(--cobalt-ink)',
+                background: 'var(--brand)',
+                color: 'var(--brand-ink)',
                 borderRadius: 'var(--radius-control)',
                 padding: '0.5rem 0.85rem',
               }}
@@ -122,8 +122,8 @@ export default function SuperAdminDashboard() {
               action={
                 <Link
                   to={createPageUrl('SuperAdminSchools')}
-                  className="cobalt-focus inline-flex items-center gap-1 text-xs"
-                  style={{ color: 'var(--cobalt)' }}
+                  className="scholr-focus inline-flex items-center gap-1 text-xs"
+                  style={{ color: 'var(--brand)' }}
                 >
                   View all <ArrowRight className="w-3 h-3" />
                 </Link>
@@ -157,7 +157,7 @@ export default function SuperAdminDashboard() {
                       <div className="flex items-baseline gap-3">
                         <span className="text-sm" style={{ color: 'var(--ink)' }}>{item.label}</span>
                         <span
-                          className="ml-auto text-sm cobalt-num"
+                          className="ml-auto text-sm scholr-num"
                           style={{ fontFamily: 'var(--font-mono)', color: 'var(--body)' }}
                         >
                           {item.value}

@@ -42,14 +42,14 @@ export default function ParentDashboard() {
 
   return (
     <RoleGuard allowedRoles={['parent', 'super_admin', 'admin']}>
-      <div className="cobalt-page min-h-screen">
+      <div className="scholr-page min-h-screen">
         <AppSidebar links={sidebarLinks} role="parent" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
 
         <main className="ml-0 md:ml-64 p-4 md:p-8">
           <div className="max-w-6xl mx-auto flex flex-col gap-5 md:gap-6">
             <header>
-              <p className="cobalt-label m-0">{school?.name}</p>
-              <h1 className="cobalt-h1 m-0 mt-1.5 text-2xl md:text-3xl">Family portal</h1>
+              <p className="scholr-label m-0">{school?.name}</p>
+              <h1 className="scholr-h1 m-0 mt-1.5 text-2xl md:text-3xl">Family portal</h1>
             </header>
 
             <ChildSelector
@@ -61,7 +61,7 @@ export default function ParentDashboard() {
 
             {selectedChildId ? (
               <Tabs defaultValue="home" className="flex flex-col gap-5 md:gap-6">
-                <TabsList className="cobalt-tabs w-full overflow-x-auto">
+                <TabsList className="scholr-tabs w-full overflow-x-auto">
                   {TABS.map(t => (
                     <TabsTrigger key={t.value} value={t.value}>{t.label}</TabsTrigger>
                   ))}

@@ -9,7 +9,7 @@ import React from 'react';
  * hidden from assistive tech rather than given a redundant ARIA label.
  */
 const TONES = {
-  accent: 'var(--cobalt)',
+  accent: 'var(--brand)',
   good: 'var(--good)',
   warn: 'var(--warn)',
   crit: 'var(--crit)',

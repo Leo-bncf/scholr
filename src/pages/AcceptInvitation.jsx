@@ -158,7 +158,7 @@ export default function AcceptInvitation() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center p-4">
+      <div className="min-h-screen scholr-page flex items-center justify-center p-4">
         <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
       </div>
     );
@@ -166,7 +166,7 @@ export default function AcceptInvitation() {
 
   if (error && !invitation) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center p-4">
+      <div className="min-h-screen scholr-page flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardContent className="pt-6">
             <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 mx-auto mb-4">
@@ -184,7 +184,7 @@ export default function AcceptInvitation() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen scholr-page flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         {step === 'review' && (
           <>
@@ -196,7 +196,7 @@ export default function AcceptInvitation() {
                 <CheckCircle className="w-6 h-6 text-indigo-600" />
               </div>
 
-              <div className="space-y-4 bg-slate-50 p-4 rounded-lg">
+              <div className="space-y-4 scholr-page p-4 rounded-lg">
                 <div>
                   <p className="text-xs font-semibold text-slate-600 uppercase">School</p>
                   <p className="text-lg font-semibold text-slate-900 mt-1">{invitation?.metadata?.school_name || 'School'}</p>

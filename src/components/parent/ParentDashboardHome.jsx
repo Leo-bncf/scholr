@@ -166,7 +166,7 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
               <div
                 key={msg.id}
                 className="panel-row flex items-start gap-3 px-4 py-3"
-                style={{ borderBottom: '1px solid var(--rule-soft)', borderLeft: '3px solid var(--cobalt)' }}
+                style={{ borderBottom: '1px solid var(--rule-soft)', borderLeft: '3px solid var(--brand)' }}
               >
                 <div className="min-w-0 flex-1">
                   <p className="m-0 text-sm font-medium" style={{ color: 'var(--ink)' }}>{msg.subject}</p>
@@ -178,13 +178,13 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
                   type="button"
                   onClick={() => acknowledgeMutation.mutate(msg)}
                   disabled={acknowledgeMutation.isPending}
-                  className="cobalt-focus shrink-0 inline-flex items-center gap-1.5 text-xs font-medium"
+                  className="scholr-focus shrink-0 inline-flex items-center gap-1.5 text-xs font-medium"
                   style={{
                     border: '1px solid var(--rule)',
                     borderRadius: 'var(--radius-control)',
                     padding: '0.3rem 0.6rem',
                     background: 'var(--surface)',
-                    color: 'var(--cobalt)',
+                    color: 'var(--brand)',
                     cursor: acknowledgeMutation.isPending ? 'wait' : 'pointer',
                   }}
                 >

@@ -23,12 +23,12 @@ export default function OnboardingChecklist({ schoolId, onDismiss, showWizard })
   const { steps, completedCount, totalCount, progressPct, nextIncomplete } = data;
 
   return (
-    <section className="cobalt-panel overflow-hidden">
+    <section className="scholr-panel overflow-hidden">
       <header className="px-4 pt-3.5 pb-3" style={{ borderBottom: '1px solid var(--rule-soft)' }}>
         <div className="flex items-center gap-3">
-          <h2 className="cobalt-label m-0">Setting up</h2>
+          <h2 className="scholr-label m-0">Setting up</h2>
           <span
-            className="ml-auto text-sm cobalt-num"
+            className="ml-auto text-sm scholr-num"
             style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink)' }}
           >
             {completedCount}/{totalCount}
@@ -38,7 +38,7 @@ export default function OnboardingChecklist({ schoolId, onDismiss, showWizard })
             onClick={() => setCollapsed(c => !c)}
             aria-expanded={!collapsed}
             aria-label={collapsed ? 'Show setup steps' : 'Hide setup steps'}
-            className="cobalt-focus"
+            className="scholr-focus"
             style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--muted)' }}
           >
             <ChevronRight className={`w-4 h-4 transition-transform ${collapsed ? '' : 'rotate-90'}`} />
@@ -48,7 +48,7 @@ export default function OnboardingChecklist({ schoolId, onDismiss, showWizard })
               type="button"
               onClick={onDismiss}
               aria-label="Dismiss the setup checklist"
-              className="cobalt-focus"
+              className="scholr-focus"
               style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--faint)' }}
             >
               <X className="w-4 h-4" />
@@ -80,7 +80,7 @@ export default function OnboardingChecklist({ schoolId, onDismiss, showWizard })
                   </span>
                   <span className="block text-xs mt-0.5" style={{ color: 'var(--muted)' }}>{step.detail}</span>
                 </span>
-                <span className="cobalt-label ml-auto shrink-0" style={{ color: step.completed ? 'var(--good)' : 'var(--cobalt)' }}>
+                <span className="scholr-label ml-auto shrink-0" style={{ color: step.completed ? 'var(--good)' : 'var(--brand)' }}>
                   {step.completed ? 'Done' : 'To do'}
                 </span>
               </div>
@@ -96,7 +96,7 @@ export default function OnboardingChecklist({ schoolId, onDismiss, showWizard })
                 key={step.id}
                 type="button"
                 onClick={() => navigate(`/${step.page}`)}
-                className="panel-row-link cobalt-focus block w-full text-left"
+                className="panel-row-link scholr-focus block w-full text-left"
                 style={{ background: 'transparent', border: 'none', padding: 0, font: 'inherit', cursor: 'pointer' }}
               >
                 {body}
@@ -119,7 +119,7 @@ export default function OnboardingChecklist({ schoolId, onDismiss, showWizard })
               <button
                 type="button"
                 onClick={showWizard}
-                className="cobalt-focus text-xs font-medium"
+                className="scholr-focus text-xs font-medium"
                 style={{
                   border: '1px solid var(--rule)',
                   borderRadius: 'var(--radius-control)',
@@ -135,13 +135,13 @@ export default function OnboardingChecklist({ schoolId, onDismiss, showWizard })
             <button
               type="button"
               onClick={() => navigate(`/${nextIncomplete.page}`)}
-              className="cobalt-focus inline-flex items-center gap-1 text-xs font-medium"
+              className="scholr-focus inline-flex items-center gap-1 text-xs font-medium"
               style={{
                 border: 'none',
                 borderRadius: 'var(--radius-control)',
                 padding: '0.35rem 0.65rem',
-                background: 'var(--cobalt)',
-                color: 'var(--cobalt-ink)',
+                background: 'var(--brand)',
+                color: 'var(--brand-ink)',
                 cursor: 'pointer',
               }}
             >

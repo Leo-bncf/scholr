@@ -1,22 +1,55 @@
 import React, { useState } from 'react';
-import PublicNavbar from '@/components/public/PublicNavbar';
-import PublicFooter from '@/components/public/PublicFooter';
+import PublicShell, { Section } from '@/components/public/PublicShell';
 import * as demoRequests from '@/data/demoRequests';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { CheckCircle, Calendar, Loader2 } from 'lucide-react';
+import { CheckCircle2, Loader2 } from 'lucide-react';
+
+/**
+ * The demo request form — the one page on the public site with a job to do.
+ *
+ * Kept deliberately plain. Every field is a reason for someone to stop filling
+ * it in, so only school name, a name and an email are required; the rest just
+ * makes the first call better.
+ */
+
+const SIZES = [
+  ['small_under_200', 'Under 200 students'],
+  ['medium_200_500', '200–500'],
+  ['large_500_1000', '500–1,000'],
+  ['xlarge_over_1000', 'Over 1,000'],
+];
+
+const fieldStyle = {
+  width: '100%',
+  marginTop: '0.4rem',
+  padding: '0.5rem 0.65rem',
+  fontSize: '0.9rem',
+  fontFamily: 'inherit',
+  color: 'var(--ink)',
+  background: 'var(--surface)',
+  border: '1px solid var(--rule)',
+  borderRadius: 'var(--radius-control)',
+};
+
+function Field({ label, hint, children }) {
+  return (
+    <label className="block">
+      <span className="scholr-label">{label}</span>
+      {children}
+      {hint && <span className="block mt-1 text-xs" style={{ color: 'var(--faint)' }}>{hint}</span>}
+    </label>
+  );
+}
 
 export default function Demo() {
   const [form, setForm] = useState({
-    school_name: '', contact_name: '', email: '', phone: '', country: '', school_size: '', message: ''
+    school_name: '', contact_name: '', email: '', phone: '', country: '',
+    school_size: '', message: '',
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState(null);
+
+  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,126 +59,128 @@ export default function Demo() {
       await demoRequests.create(form);
       setSubmitted(true);
     } catch (err) {
-      // The old code awaited the create with no catch, so a failed submission
-      // silently showed the success screen and the lead was lost.
+      // The original awaited create() with no catch, so a failed submission
+      // showed the thank-you screen anyway and the lead was simply lost.
       console.error('Demo request failed', err);
-      setError("We couldn't send your request. Please try again, or email us directly.");
+      setError("We couldn't send that. Please try again, or email hello@scholr.pro directly.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <PublicNavbar />
-      
-      <section className="pt-32 pb-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-            <div className="pt-4">
-              <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
-                See Scholr in action
-              </h1>
-              <p className="mt-4 text-lg text-slate-500 leading-relaxed">
-                Schedule a 30-minute personalized demo. We'll walk you through how Scholr can transform your IB school's workflows.
-              </p>
-              
-              <div className="mt-10 space-y-6">
-                {[
-                  { icon: '🎯', title: 'Tailored to your school', desc: 'We customize the demo based on your school size, programme, and challenges.' },
-                  { icon: '⏱️', title: '30 minutes, no commitment', desc: 'A focused walkthrough of the features most relevant to you.' },
-                  { icon: '💬', title: 'Q&A with our team', desc: 'Ask anything about pricing, implementation, migration, or security.' },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-4">
-                    <span className="text-2xl">{item.icon}</span>
-                    <div>
-                      <h3 className="font-semibold text-slate-900">{item.title}</h3>
-                      <p className="text-sm text-slate-500">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+    <PublicShell>
+      <Section>
+        <div
+          className="grid gap-10 lg:gap-14 items-start"
+          style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(19rem, 100%), 1fr))' }}
+        >
+          <div>
+            <p className="scholr-label m-0">Demo</p>
+            <h1 className="scholr-h1 m-0 mt-2 text-3xl md:text-4xl" style={{ maxWidth: '15ch' }}>
+              Thirty minutes, your curriculum
+            </h1>
+            <p className="m-0 mt-4 text-base leading-relaxed" style={{ color: 'var(--muted)', maxWidth: '46ch' }}>
+              Bring a timetable and a mark scheme. We'll show you how they land in Scholr and skip
+              everything that doesn't apply to your school.
+            </p>
 
-            <div className="bg-slate-50 rounded-2xl border border-slate-100 p-8">
-              {submitted ? (
-                <div className="text-center py-12">
-                  <CheckCircle className="w-16 h-16 text-emerald-500 mx-auto mb-4" />
-                  <h2 className="text-2xl font-bold text-slate-900 mb-2">Thank you!</h2>
-                  <p className="text-slate-500">We'll be in touch within 24 hours to schedule your demo.</p>
+            <div className="mt-8" style={{ maxWidth: '34rem' }}>
+              {[
+                ['No slide deck', 'We open the product and use your structures, not a canned demo school.'],
+                ['No commitment', "If it isn't a fit we'll say so — a school on the wrong platform is bad for both of us."],
+                ['Straight answers', 'Pricing, migration, security, what is not built yet. Ask anything.'],
+              ].map(([t, d]) => (
+                <div key={t} className="py-3.5" style={{ borderTop: '1px solid var(--rule)' }}>
+                  <h2 className="m-0 text-base font-medium" style={{ color: 'var(--ink)' }}>{t}</h2>
+                  <p className="m-0 mt-1 text-sm leading-relaxed" style={{ color: 'var(--muted)' }}>{d}</p>
                 </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Calendar className="w-5 h-5 text-indigo-600" />
-                    <h2 className="text-lg font-bold text-slate-900">Book Your Demo</h2>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-slate-700 text-sm">School Name *</Label>
-                      <Input required value={form.school_name} onChange={e => setForm({...form, school_name: e.target.value})} className="mt-1.5" />
-                    </div>
-                    <div>
-                      <Label className="text-slate-700 text-sm">Your Name *</Label>
-                      <Input required value={form.contact_name} onChange={e => setForm({...form, contact_name: e.target.value})} className="mt-1.5" />
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <Label className="text-slate-700 text-sm">Email *</Label>
-                    <Input type="email" required value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="mt-1.5" />
-                  </div>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-slate-700 text-sm">Phone</Label>
-                      <Input value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} className="mt-1.5" />
-                    </div>
-                    <div>
-                      <Label className="text-slate-700 text-sm">Country</Label>
-                      <Input value={form.country} onChange={e => setForm({...form, country: e.target.value})} className="mt-1.5" />
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <Label className="text-slate-700 text-sm">School Size</Label>
-                    <Select value={form.school_size} onValueChange={v => setForm({...form, school_size: v})}>
-                      <SelectTrigger className="mt-1.5">
-                        <SelectValue placeholder="Select size" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="small_under_200">Under 200 students</SelectItem>
-                        <SelectItem value="medium_200_500">200-500 students</SelectItem>
-                        <SelectItem value="large_500_1000">500-1,000 students</SelectItem>
-                        <SelectItem value="xlarge_over_1000">Over 1,000 students</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <Label className="text-slate-700 text-sm">Message</Label>
-                    <Textarea value={form.message} onChange={e => setForm({...form, message: e.target.value})} placeholder="Tell us about your school and what you're looking for..." className="mt-1.5" rows={3} />
-                  </div>
-                  
-                  {error && (
-                    <p role="alert" className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-                      {error}
-                    </p>
-                  )}
-
-                  <Button type="submit" disabled={loading} className="w-full bg-indigo-600 hover:bg-indigo-700 rounded-xl h-11">
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                    Request Demo
-                  </Button>
-                </form>
-              )}
+              ))}
             </div>
           </div>
-        </div>
-      </section>
 
-      <PublicFooter />
-    </div>
+          <div className="scholr-panel p-6">
+            {submitted ? (
+              <div className="py-10 text-center">
+                <CheckCircle2 className="w-9 h-9 mx-auto" style={{ color: 'var(--good)' }} />
+                <h2 className="scholr-h1 m-0 mt-4 text-xl">Got it</h2>
+                <p className="m-0 mt-2 text-sm" style={{ color: 'var(--muted)' }}>
+                  We'll be in touch within one working day to find a time.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(11rem, 100%), 1fr))' }}>
+                  <Field label="School *">
+                    <input required value={form.school_name} onChange={set('school_name')} style={fieldStyle} className="scholr-focus" />
+                  </Field>
+                  <Field label="Your name *">
+                    <input required value={form.contact_name} onChange={set('contact_name')} style={fieldStyle} className="scholr-focus" />
+                  </Field>
+                </div>
+
+                <Field label="Email *">
+                  <input type="email" required value={form.email} onChange={set('email')} style={fieldStyle} className="scholr-focus" />
+                </Field>
+
+                <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(11rem, 100%), 1fr))' }}>
+                  <Field label="Country">
+                    <input value={form.country} onChange={set('country')} style={fieldStyle} className="scholr-focus" />
+                  </Field>
+                  <Field label="Phone">
+                    <input value={form.phone} onChange={set('phone')} style={fieldStyle} className="scholr-focus" />
+                  </Field>
+                </div>
+
+                {/* No curriculum field: `demo_requests` has no column for it, and
+                    a schema change does not belong in a redesign. The hint below
+                    asks for it in prose instead. */}
+                <Field label="Roll">
+                  <select value={form.school_size} onChange={set('school_size')} style={fieldStyle} className="scholr-focus">
+                    <option value="">—</option>
+                    {SIZES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                  </select>
+                </Field>
+
+                <Field label="Anything else" hint="Which curriculum you run, what you're using now, or what's going wrong with it.">
+                  <textarea rows={3} value={form.message} onChange={set('message')} style={{ ...fieldStyle, resize: 'vertical' }} className="scholr-focus" />
+                </Field>
+
+                {error && (
+                  <p
+                    role="alert"
+                    className="m-0 px-3 py-2 text-sm"
+                    style={{
+                      background: 'var(--crit-sf)', color: 'var(--crit)',
+                      border: '1px solid var(--crit)', borderRadius: 'var(--radius-control)',
+                    }}
+                  >
+                    {error}
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="scholr-focus inline-flex items-center justify-center gap-2 text-sm font-medium"
+                  style={{
+                    background: 'var(--brand)', color: 'var(--brand-ink)', border: 'none',
+                    padding: '0.65rem 1rem', borderRadius: 'var(--radius-control)',
+                    cursor: loading ? 'wait' : 'pointer',
+                  }}
+                >
+                  {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                  Request a demo
+                </button>
+
+                <p className="m-0 text-xs" style={{ color: 'var(--faint)' }}>
+                  We use these details to arrange the demo and nothing else.
+                </p>
+              </form>
+            )}
+          </div>
+        </div>
+      </Section>
+    </PublicShell>
   );
 }
