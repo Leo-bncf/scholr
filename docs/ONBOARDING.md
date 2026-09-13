@@ -184,3 +184,27 @@ run from a dirty or out-of-date checkout**. That's not about who's allowed —
 it's because a deploy from a stale fork once wiped features off the sibling
 project. Pull, commit, push, then deploy. `ALLOW_DIRTY_DEPLOY=1` overrides it
 if you really mean to publish unpushed work.
+
+## Test logins
+
+There is one super admin and one account per role in a seeded demo school.
+
+```bash
+# create or promote a super admin (bypasses tenancy on every school)
+SUPER_PASSWORD='...' ssh leo@scholr-prod 'sudo -E bash -s' < scripts/grant-super-admin.sh -- you@example.com
+
+# (re)create Demo International School with one login per role
+SEED_PASSWORD='...' ssh leo@scholr-prod 'sudo -E bash -s' < scripts/seed-dev-school.sh
+
+# tear it all down again
+ssh leo@scholr-prod 'sudo bash -s' < scripts/seed-dev-school.sh -- --reset
+```
+
+Both scripts refuse to run without a password in the environment — the repo is
+public and these are real logins on the live system. The current ones live in
+`.local/CREDENTIALS.md`, which is gitignored; ask Leo for them through a
+password manager rather than over chat.
+
+`scripts/grant-super-admin.sh` prints the full list of super admins when it
+finishes. Read it. That role reads and writes every school's data, so the list
+should be short and every name on it should be someone you can name.

@@ -39,3 +39,6 @@ graphify-out/
 
 # Hallmark project memory — committed on purpose: the next design run reads it
 # to avoid repeating a macrostructure. Nothing secret in it.
+
+# Local credentials written by the seed and super-admin scripts. Never committed.
+.local/
