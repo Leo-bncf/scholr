@@ -19,6 +19,8 @@ const PORT = 5178;
 const SHOTS = [
   { name: 'teacher-dashboard', width: 1320, height: 840 },
   { name: 'coordinator-cohort', width: 1320, height: 840 },
+  { name: 'parent-portal', width: 1320, height: 840 },
+  { name: 'admin-operations', width: 1320, height: 840 },
 ];
 
 const vite = spawn('npx', ['vite', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' });

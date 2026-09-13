@@ -29,6 +29,10 @@ import TodaySchedule from '@/components/timetable/TodaySchedule';
 
 const SCHOOL = 'sch', USER = 'usr';
 
+// The school in these captures is invented. It must stay invented: naming a
+// real school on a marketing page implies they are a customer, which is the
+// same class of fabrication as a made-up testimonial.
+
 // Pin the clock so "now" always falls inside a lesson and the shots are
 // byte-identical between runs.
 const RealDate = Date;
@@ -50,6 +54,8 @@ qc.setQueryData(['today-schedule', SCHOOL, USER, getDay(new Date())], [
 const NAV = {
   teacher: ['Dashboard', 'My classes', 'Gradebook', 'Attendance', 'Assignments', 'Messages', 'Reports'],
   coordinator: ['Dashboard', 'Cohorts', 'Predicted grades', 'IB Core', 'Subjects', 'Reports'],
+  parent: ['Overview', 'Grades', 'Attendance', 'Assignments', 'Messages', 'Reports'],
+  admin: ['Operations', 'Users', 'Classes', 'Timetable', 'Attendance', 'Billing', 'Audit log'],
 };
 
 function Chrome({ nav, school, who, children }) {
@@ -83,7 +89,7 @@ function Chrome({ nav, school, who, children }) {
 
 function TeacherShot() {
   return (
-    <Chrome nav={NAV.teacher} school="St Columba's College" who="Aoife Ní Bhriain · Teacher">
+    <Chrome nav={NAV.teacher} school="Rathmore International" who="Aoife Ní Bhriain · Teacher">
       <header>
         <p className="scholr-label" style={{ margin: 0 }}>{format(new Date(), 'EEEE d MMMM')}</p>
         <h1 className="scholr-h1" style={{ margin: '.4rem 0 0', fontSize: '1.7rem' }}>Good morning, Aoife</h1>
@@ -116,7 +122,7 @@ function TeacherShot() {
 function CoordinatorShot() {
   const bar = (pct) => <span style={{ display: 'block', width: '6rem' }}><Meter value={pct} height={4} /></span>;
   return (
-    <Chrome nav={NAV.coordinator} school="St Columba's College" who="Cormac Doyle · DP coordinator">
+    <Chrome nav={NAV.coordinator} school="Rathmore International" who="Cormac Doyle · DP coordinator">
       <header>
         <p className="scholr-label" style={{ margin: 0 }}>Diploma Programme · DP2</p>
         <h1 className="scholr-h1" style={{ margin: '.4rem 0 0', fontSize: '1.7rem' }}>Cohort</h1>
@@ -148,7 +154,76 @@ function CoordinatorShot() {
   );
 }
 
-const SHOTS = { 'teacher-dashboard': TeacherShot, 'coordinator-cohort': CoordinatorShot };
+function ParentShot() {
+  return (
+    <Chrome nav={NAV.parent} school="Rathmore International" who="Parent · two children">
+      <header>
+        <p className="scholr-label" style={{ margin: 0 }}>Viewing · Niamh, DP1</p>
+        <h1 className="scholr-h1" style={{ margin: '.4rem 0 0', fontSize: '1.7rem' }}>Family portal</h1>
+      </header>
+      <StatRow>
+        <StatCard label="Attendance" value="96%" hint="this term" />
+        <StatCard label="Due this week" value={4} />
+        <StatCard label="Released grades" value={11} hint="visible to families" />
+        <StatCard label="Unread" value={1} hint="from her tutor" />
+      </StatRow>
+      <Panel title="Grades released" dark>
+        <PanelRow name="Mathematics HL — Paper 2 mock" detail="18 Sept" value="6 / 7" />
+        <PanelRow name="Biology HL — Cell respiration" detail="12 Sept" value="5 / 7" />
+        <PanelRow name="English A SL — Comparative essay" detail="9 Sept" value="6 / 7" />
+      </Panel>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.1rem' }}>
+        <Panel title="Attendance">
+          <PanelRow name="Tuesday 2 Sept" detail="period 4"><StatusChip tone="warn">Late</StatusChip></PanelRow>
+          <PanelRow name="Friday 22 Aug" detail="authorised"><StatusChip tone="info">Absent</StatusChip></PanelRow>
+        </Panel>
+        <Panel title="Coming up">
+          <PanelRow name="TOK essay draft" detail="English A" value="in 3 days" />
+          <PanelRow name="Parents' evening" detail="whole school" value="24 Sept" />
+        </Panel>
+      </div>
+    </Chrome>
+  );
+}
+
+function AdminShot() {
+  return (
+    <Chrome nav={NAV.admin} school="Rathmore International" who="Operations">
+      <header>
+        <p className="scholr-label" style={{ margin: 0 }}>Monday 14 September · IB</p>
+        <h1 className="scholr-h1" style={{ margin: '.4rem 0 0', fontSize: '1.7rem' }}>Operations</h1>
+      </header>
+      <Panel title="Needs attention" dark>
+        <PanelRow name="2 classes without a teacher" detail="Physics SL, Spanish B"><StatusChip tone="crit">Critical</StatusChip></PanelRow>
+        <PanelRow name="Attendance at 87%" detail="last 30 days"><StatusChip tone="warn">Warning</StatusChip></PanelRow>
+        <PanelRow name="4 students not enrolled" detail="no class yet"><StatusChip tone="warn">Warning</StatusChip></PanelRow>
+      </Panel>
+      <StatRow>
+        <StatCard label="Students" value={741} hint="active enrolments" />
+        <StatCard label="Teachers & staff" value={96} />
+        <StatCard label="Parents" value={131} hint="linked accounts" />
+        <StatCard label="Classes" value={54} hint="this academic year" />
+      </StatRow>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.1rem' }}>
+        <Panel title="Class coverage">
+          <PanelRow name="Teacher assigned" detail="50 of 54"><StatusChip tone="warn">Gaps</StatusChip></PanelRow>
+          <PanelRow name="Has students" detail="48 of 54"><StatusChip tone="warn">Gaps</StatusChip></PanelRow>
+        </Panel>
+        <Panel title="Reporting windows">
+          <PanelRow name="Autumn term ends" detail="22 Sept"><StatusChip tone="crit">Due soon</StatusChip></PanelRow>
+          <PanelRow name="Spring term ends" detail="11 Jan" value="120d" />
+        </Panel>
+      </div>
+    </Chrome>
+  );
+}
+
+const SHOTS = {
+  'teacher-dashboard': TeacherShot,
+  'coordinator-cohort': CoordinatorShot,
+  'parent-portal': ParentShot,
+  'admin-operations': AdminShot,
+};
 const which = new URLSearchParams(location.search).get('shot') || 'teacher-dashboard';
 const Shot = SHOTS[which] || TeacherShot;
 

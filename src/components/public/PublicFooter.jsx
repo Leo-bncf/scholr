@@ -2,64 +2,60 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 /**
- * Footer.
+ * Ft5 · Statement.
  *
- * Only links that resolve. The old one advertised About Us and Careers, which
- * were never routes — on a page whose whole job is to look like a company that
- * will still exist in five years, a 404 in the footer is expensive.
+ * One display sentence closes the page; the wordmark, a short link row and the
+ * copyright sit beneath in muted small type.
+ *
+ * What this replaces: four columns of links headed Product / Company / Legal,
+ * with a copyright tail. That shape (Ft3) is one of the named AI fingerprints —
+ * genre-blind, identical on a bakery and a B2B platform, and a catalogue of a
+ * sitemap the site doesn't have. Scholr has eight public pages; it does not
+ * need a directory, it needs a closing line.
  */
-const COLUMNS = [
-  { title: 'Product', links: [['Features', '/Features'], ['Pricing', '/Pricing'], ['Security', '/Security'], ['Book a demo', '/BookDemo']] },
-  { title: 'Company', links: [['Contact', '/Contact']] },
-  { title: 'Legal', links: [['Privacy policy', '/PrivacyPolicy'], ['Terms of service', '/TermsOfService']] },
+const LINKS = [
+  ['Platform', '/Features'],
+  ['Pricing', '/Pricing'],
+  ['Security', '/Security'],
+  ['Contact', '/Contact'],
+  ['Privacy', '/PrivacyPolicy'],
+  ['Terms', '/TermsOfService'],
 ];
 
 export default function PublicFooter() {
   return (
-    <footer className="scholr-band" style={{ borderRadius: 0, borderLeft: 'none', borderRight: 'none', borderBottom: 'none' }}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14">
-        <div className="grid gap-10" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(13rem, 100%), 1fr))' }}>
-          <div className="max-w-xs">
-            <Link to="/" className="scholr-focus flex items-center gap-2.5" style={{ textDecoration: 'none' }}>
-              <img src="/brand/scholr-mark.png" alt="" width="26" height="26" style={{ borderRadius: '6px' }} />
-              <span
-                className="text-lg"
-                style={{ fontFamily: 'var(--font-display)', fontWeight: 600, color: 'var(--ink)' }}
-              >
-                Scholr
-              </span>
-            </Link>
-            <p className="mt-3 m-0 text-sm leading-relaxed" style={{ color: 'var(--muted)' }}>
-              School management for international schools — one platform across IB, IGCSE, A-Level and US curricula.
-            </p>
-          </div>
-
-          {COLUMNS.map(col => (
-            <div key={col.title}>
-              <h2 className="scholr-label m-0">{col.title}</h2>
-              <ul className="m-0 mt-3 p-0 list-none flex flex-col gap-2">
-                {col.links.map(([label, to]) => (
-                  <li key={to + label}>
-                    <Link
-                      to={to}
-                      className="scholr-focus text-sm"
-                      style={{ color: 'var(--body)', textDecoration: 'none' }}
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
+    <footer style={{ borderTop: '1px solid var(--rule)', background: 'var(--surface)' }}>
+      <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '4rem 1.5rem 2.5rem' }}>
         <p
-          className="m-0 mt-12 pt-6 text-xs"
-          style={{ borderTop: '1px solid var(--rule)', color: 'var(--muted)' }}
+          className="pub-display"
+          style={{ margin: 0, fontSize: 'clamp(1.6rem, 4vw, 2.6rem)', maxWidth: '18ch' }}
         >
-          © {new Date().getFullYear()} Scholr
+          Built in Ireland for schools that teach more than one thing.
         </p>
+
+        <div
+          style={{
+            display: 'flex', gap: '1.6rem', flexWrap: 'wrap', alignItems: 'baseline',
+            marginTop: '3rem', paddingTop: '1.2rem', borderTop: '1px solid var(--rule-soft)',
+          }}
+        >
+          <Link to="/" className="scholr-focus" style={{ display: 'flex', alignItems: 'center', gap: '.5rem', textDecoration: 'none', flex: 'none' }}>
+            <span style={{ width: 20, height: 20, borderRadius: 6, background: 'var(--brand)', position: 'relative', display: 'block' }}>
+              <span style={{ position: 'absolute', top: 3, right: 3, width: 5, height: 5, borderRadius: '50%', background: 'var(--gold)' }} />
+            </span>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 620, fontSize: '.95rem', letterSpacing: '-.03em', color: 'var(--ink)' }}>Scholr</span>
+          </Link>
+
+          {LINKS.map(([label, to]) => (
+            <Link key={to} to={to} className="scholr-focus" style={{ fontSize: '.85rem', color: 'var(--muted)', textDecoration: 'none' }}>
+              {label}
+            </Link>
+          ))}
+
+          <span className="scholr-label" style={{ marginLeft: 'auto', color: 'var(--faint)' }}>
+            © {new Date().getFullYear()} Scholr
+          </span>
+        </div>
       </div>
     </footer>
   );

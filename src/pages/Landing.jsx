@@ -1,85 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PublicShell, { Section, CTA, RuledList } from '@/components/public/PublicShell';
+import { Bench, StickyCTA } from '@/components/public/Workbench';
 import ConsentModal from '@/components/public/ConsentModal';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
 import { isAuthenticated } from '@/data/session';
-import { ArrowRight } from 'lucide-react';
+
+/* eslint-disable react/no-unescaped-entities */
 
 /**
- * The landing page.
+ * Macrostructure 05 · Workbench.
  *
- * The version before this was broken in production — every section below the
- * hero set `text-white` over a background that only painted the top, so five
- * thousand pixels of copy rendered white on white.
+ * The captures are the page. Four screens in sequence — a teacher's morning, a
+ * coordinator's cohort, a family's view, a school's operations — each with a
+ * short caption and an annotation, separated by gap and frame rather than by
+ * rules or coloured bands. The ask arrives as a sticky bar after the third,
+ * once there is enough context for it to mean anything.
  *
- * The version after that was legible and looked machine-made: everything
- * centred, three cards with circular avatar initials, a strip of round numbers
- * that were a pattern rather than a fact, and one structural idea (a rounded
- * card with a soft shadow) repeated down the page. This one is left-aligned,
- * asymmetric, and its sections are built out of rules and indents instead.
- *
- * There are no testimonials, because there are no customers to quote yet.
+ * Workbench specifies small, functional headings: the page doesn't shout,
+ * because the software is doing the talking. That is the opposite of the three
+ * previous attempts, all of which opened on a large marketing headline and
+ * then explained the product in prose.
  */
-
-function Hero() {
-  const signIn = async () => {
-    if (await isAuthenticated()) window.location.href = '/AppHome';
-    else window.location.href = `/Login?next=${encodeURIComponent('/AppHome')}`;
-  };
-
-  return (
-    <section className="pub-wash pub-ruled" style={{ overflow: 'hidden', paddingBottom: '3.5rem' }}>
-      <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '2.5rem 1.5rem 0' }}>
-        <div className="hero-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 30rem) minmax(0, 1fr)', gap: '2.5rem', alignItems: 'center' }}>
-          <div>
-            <p className="scholr-label" style={{ margin: 0, color: 'var(--brand)' }}>
-              Made in Ireland · for international schools
-            </p>
-            <h1 className="pub-display" style={{ margin: '1rem 0 0', fontSize: 'clamp(2.3rem, 5.4vw, 3.6rem)' }}>
-              Every curriculum your school runs, in one place.
-            </h1>
-            <p className="pub-lede" style={{ margin: '1.1rem 0 0', maxWidth: '40ch' }}>
-              IB, IGCSE, A-Level and US frameworks, each behaving the way it actually works — over one
-              set of records. Timetables, gradebooks, attendance, reports, and a portal families
-              understand.
-            </p>
-            <div style={{ display: 'flex', gap: '.7rem', marginTop: '1.8rem', flexWrap: 'wrap' }}>
-              <CTA to="/BookDemo">Book a demo <ArrowRight className="w-4 h-4" /></CTA>
-              <button type="button" onClick={signIn} className="pub-btn pub-btn-line pub-btn-lg scholr-focus">
-                Sign in
-              </button>
-            </div>
-            <p className="scholr-label" style={{ margin: '1.2rem 0 0', color: 'var(--faint)' }}>
-              Thirty minutes · your timetable · no slide deck
-            </p>
-          </div>
-
-          {/* The product, oversized and running off the right edge. A screenshot
-              sitting neatly inside its column looks like a stock photo of
-              software; one that overflows looks like a window onto it. */}
-          <div className="hero-shot" style={{ position: 'relative', minWidth: 0 }}>
-            <img
-              src="/marketing/teacher-dashboard.png"
-              width="1320" height="840"
-              alt="A teacher's dashboard in Scholr: today's timetable with the current period marked, work waiting to be graded, and what is coming up."
-              className="pub-shot"
-              style={{ width: 'min(62rem, 148%)', maxWidth: 'none' }}
-              loading="eager"
-            />
-          </div>
-        </div>
-      </div>
-
-      <style>{`
-        @media (max-width: 62rem) {
-          .hero-grid { grid-template-columns: 1fr !important; }
-          .hero-shot img { width: 100% !important; }
-        }
-      `}</style>
-    </section>
-  );
-}
 
 const CURRICULA = [
   ['IB', 'DP, MYP and PYP. The 1–7 scale, predicted grades with their history, and CAS, EE and TOK as modules rather than a folder of uploads.'],
@@ -88,82 +30,42 @@ const CURRICULA = [
   ['US / AP', 'GPA, letter grades and credits, with reporting that comes out looking like a transcript.'],
 ];
 
-const ROLES = [
-  ['Teachers', 'The class in front of them. Register, stream, gradebook, and what is on next — four minutes between periods is the whole design brief.'],
-  ['Students', 'Today, what is due, and the marks their teachers have actually released. Nothing they are not meant to see yet.'],
-  ['Parents', 'Their own children only, and a line to the teacher that follows the school’s messaging policy.'],
-  ['Coordinators', 'The cohort: predicted grades with the trend behind them, IB Core progress, and who is behind on what.'],
-  ['Admins', 'Users, terms, policies, timetable, billing, and an audit log of everything that mattered.'],
-  ['Heads', 'The school on one page — attendance, missing work, and the handful of things that need a decision.'],
-];
+function Masthead() {
+  const signIn = async () => {
+    if (await isAuthenticated()) window.location.href = '/AppHome';
+    else window.location.href = `/Login?next=${encodeURIComponent('/AppHome')}`;
+  };
 
-function Proof() {
   return (
-    <Section
-      eyebrow="How it holds up"
-      title="The parts a procurement committee asks about"
-      lede="Every line here is something you can check rather than a badge we bought."
-    >
-      <div className="proof-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(21rem, 100%), 1fr))', gap: '0 3rem' }}>
-        {[
-          ['One school cannot read another', 'Separation is a row-level security policy in Postgres, not a filter in the interface. There is no request a signed-in user can craft that returns another school’s rows.', 'Enforced per query'],
-          ['A grade is invisible until released', 'Marks stay with the teacher until published, separately to students and to families. Pastoral notes marked staff-only override both and never leave the staff room.', 'Two flags, checked in the policy'],
-          ['Access follows the class', 'A teacher who takes over a class sees its history; one who leaves it stops seeing anything, including work they graded themselves.', 'Not authorship'],
-          ['Isolation is covered by tests', 'The suite asserts the negative cases — that a classmate cannot read another student’s grades, and that a teacher outside a class sees nothing.', 'Failures, not just successes'],
-        ].map(([h, body, proof]) => (
-          <div key={h} style={{ padding: '1.2rem 0', borderTop: '1px solid var(--rule)' }}>
-            <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.02rem', letterSpacing: '-0.02em', color: 'var(--ink)' }}>{h}</h3>
-            <p style={{ margin: '.55rem 0 0', fontSize: '.94rem', lineHeight: 1.55, color: 'var(--muted)', maxWidth: '46ch' }}>{body}</p>
-            <p className="scholr-label" style={{ margin: '.7rem 0 0', color: 'var(--brand)' }}>{proof}</p>
-          </div>
-        ))}
-      </div>
-      <p style={{ margin: '1.8rem 0 0', fontSize: '.95rem' }}>
-        <Link to="/Security" className="scholr-focus" style={{ color: 'var(--brand)' }}>
-          How isolation actually works →
-        </Link>
-      </p>
-    </Section>
-  );
-}
-
-function Close() {
-  return (
-    <Section>
-      <div
-        className="pub-ruled"
-        style={{
-          borderRadius: 'var(--radius-large)',
-          border: '1px solid var(--rule)',
-          background: 'radial-gradient(70% 140% at 8% -30%, var(--wash) 0%, transparent 70%), var(--surface)',
-          padding: '2.6rem 2rem',
-          boxShadow: 'var(--lift-sm)',
-          overflow: 'hidden',
-        }}
-      >
-        <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-          <div style={{ minWidth: 0 }}>
-            <p className="scholr-label" style={{ margin: 0, color: 'var(--brand)' }}>Next</p>
-            <h2 className="pub-display" style={{ margin: '.6rem 0 0', fontSize: 'clamp(1.6rem, 3.4vw, 2.2rem)', maxWidth: '16ch' }}>
-              Bring a timetable and a mark scheme
-            </h2>
-            <p className="pub-lede" style={{ margin: '.8rem 0 0', maxWidth: '42ch', color: 'var(--muted)' }}>
-              We’ll show you the parts that apply to your curriculum and skip everything else. If it
-              isn’t a fit we’ll say so.
-            </p>
-          </div>
-          <div style={{ marginLeft: 'auto', display: 'flex', gap: '.7rem', flexWrap: 'wrap' }}>
-            <CTA to="/BookDemo">Book a demo <ArrowRight className="w-4 h-4" /></CTA>
-            <CTA to="/Contact" tone="line">Email us instead</CTA>
-          </div>
+    <section className="pub-wash" style={{ paddingTop: '1.5rem', paddingBottom: '3rem' }}>
+      <div style={{ maxWidth: '76rem', margin: '0 auto', padding: '0 1.5rem' }}>
+        <p className="scholr-label" style={{ margin: 0, color: 'var(--brand)' }}>
+          Dublin · school management for international schools
+        </p>
+        <h1
+          className="pub-display"
+          style={{ margin: '.9rem 0 0', fontSize: 'clamp(1.7rem, 3.4vw, 2.5rem)', maxWidth: '24ch' }}
+        >
+          Four curricula. Six roles. One set of records.
+        </h1>
+        <p className="pub-lede" style={{ margin: '1rem 0 0', maxWidth: '52ch', color: 'var(--muted)' }}>
+          Below is the software, screen by screen, as four different people at the same school use it
+          on the same Monday morning.
+        </p>
+        <div style={{ display: 'flex', gap: '.7rem', marginTop: '1.6rem', flexWrap: 'wrap' }}>
+          <CTA to="/BookDemo">Book a demo</CTA>
+          <button type="button" onClick={signIn} className="pub-btn pub-btn-line pub-btn-lg scholr-focus">
+            Sign in
+          </button>
         </div>
       </div>
-    </Section>
+    </section>
   );
 }
 
 export default function Landing() {
   const [showConsent, setShowConsent] = useState(false);
+  const thirdBench = useRef(null);
 
   useEffect(() => {
     try {
@@ -177,29 +79,73 @@ export default function Landing() {
 
   return (
     <PublicShell>
-      <Hero />
+      <Masthead />
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(3.5rem, 7vw, 6rem)', paddingBottom: '4rem' }}>
+        <Bench
+          n="08:30"
+          caption="Aoife has four minutes before period one"
+          note="So the register, the room and what's on next are the page — not a homepage she has to navigate out of."
+          src="/marketing/teacher-dashboard.png"
+          alt="A teacher's dashboard: today's timetable with the current period marked, twenty-three pieces of work waiting to be graded, and the term's deadlines."
+          annotations={[{ text: 'the current period, marked', top: '30%', right: '1.25rem' }]}
+          eager
+        />
+
+        <Bench
+          n="11:15"
+          caption="Cormac is signing his name to 44 predicted grades in October"
+          note="Predictions carry the trend behind them, so a number he disagrees with can be argued with rather than just overwritten."
+          src="/marketing/coordinator-cohort.png"
+          alt="A coordinator's cohort view: predicted mean against target per subject, Extended Essay progress across the year group, and the students who need a conversation."
+          annotations={[{ text: 'the trend behind the number', top: '73%', right: '1.25rem' }]}
+        />
+
+        <div ref={thirdBench}>
+          <Bench
+            n="16:40"
+            caption="A parent wants to know how her daughter is doing, without ringing the office"
+            note="She sees her own two children and nothing else, and only the marks a teacher has chosen to release."
+            src="/marketing/parent-portal.png"
+            alt="The family portal: attendance for the term, grades released by teachers, and what is due this week for one named child."
+            annotations={[{ text: 'released by the teacher, not automatic', top: '76%', right: '1.25rem' }]}
+          />
+        </div>
+
+        <Bench
+          n="17:05"
+          caption="And someone has to notice the two classes with no teacher on them"
+          note="Attendance, enrolment gaps, billing and the timetable are checked continuously; the page shows what is actually broken."
+          src="/marketing/admin-operations.png"
+          alt="The operations page: two classes without a teacher flagged critical, attendance at 87% flagged as a warning, and the term's reporting deadline nine days out."
+          annotations={[{ text: 'ranked, not an inbox', top: '62%', right: '1.25rem' }]}
+        />
+      </div>
 
       <Section
         eyebrow="Curricula"
-        title="The framework changes what the software does, not just what it’s called"
-        lede="A school picks its curriculum at setup and everything that doesn’t apply disappears — an IGCSE school never sees a CAS tab, and an IB school is never asked for a GPA."
+        title="The framework changes what the software does"
+        lede="Not just what it's called. A school picks its curriculum at setup and everything that doesn't apply disappears — an IGCSE school never sees a CAS tab, and an IB school is never asked for a GPA."
         tint
       >
         <RuledList items={CURRICULA} />
       </Section>
 
       <Section
-        eyebrow="Roles"
-        title="Six people who never open the same page"
-        lede="A teacher between periods and a head of school on a Sunday night are not looking for the same thing, so nobody gets a general-purpose dashboard with everything on it."
+        eyebrow="What holds"
+        title="One school cannot read another"
+        lede="Separation is a row-level security policy in Postgres rather than a filter in the interface, so it holds for the API and for exports too — not only for the screens we remembered to guard."
       >
-        <RuledList items={ROLES} termWidth="9rem" />
+        <p style={{ margin: 0, fontSize: '.95rem' }}>
+          <Link to="/Security" className="scholr-focus" style={{ color: 'var(--brand)' }}>
+            How isolation works, and what we haven't done yet →
+          </Link>
+        </p>
       </Section>
 
-      <Proof />
       <PricingTiersSection />
-      <Close />
 
+      <StickyCTA afterRef={thirdBench} suppressed={showConsent} />
       <ConsentModal isOpen={showConsent} onClose={() => setShowConsent(false)} />
     </PublicShell>
   );

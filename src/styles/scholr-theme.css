@@ -1,3 +1,13 @@
+/* Hallmark · macrostructure: Workbench · genre: modern-minimal
+ * theme: custom (vibe: "Irish green, institutional, bright, product-led"
+ *   · paper oklch(98.8% 0.007 120) · accent oklch(45% 0.115 152) chromatic-green
+ *   · display Bricolage Grotesque · body Instrument Sans · mono Geist Mono)
+ * axes: light paper · grotesk-sans display · chromatic-green accent
+ * nav: N10 floating-on-scroll morph · footer: Ft5 Statement
+ * enrichment: none beyond the real product captures — Workbench's images ARE the content
+ * tone: utilitarian · audience: heads of school, IB coordinators, IT directors
+ * pre-emit critique: P4 H4 E4 S5 R4 V4
+ */
 /* ---------------------------------------------------------------------------
    Scholr — the design tokens
    ---------------------------------------------------------------------------
@@ -34,7 +44,10 @@
 
 :root {
   --paper:        oklch(98.8% 0.007 120);
-  --surface:      oklch(100% 0 0);
+  /* Never oklch(100% 0 0). Pure white reads flat and synthetic; the surface
+     is tinted a trace toward the anchor hue so paper and card belong to the
+     same world. (anti-patterns.md § Pure black, pure white) */
+  --surface:      oklch(99.6% 0.004 120);
   --surface-sunk: oklch(97% 0.012 130);
   --wash:         oklch(96.2% 0.028 152);
   --wash-warm:    oklch(96.8% 0.032 92);
@@ -50,7 +63,7 @@
      it usable as a button fill and not just a link colour. */
   --brand:       oklch(45% 0.115 152);
   --brand-sf:    oklch(95% 0.04 152);
-  --brand-ink:   oklch(100% 0 0);
+  --brand-ink:   oklch(99% 0.006 152);
 
   /* The gold dot on the logo, and the second half of the tricolour. It is the
      call-to-action colour, and it appears nowhere else — not as a status, not
@@ -83,6 +96,22 @@
   --good:    oklch(55% 0.14 150);  --good-sf: oklch(96% 0.035 150);
   --warn:    oklch(62% 0.14 72);   --warn-sf: oklch(96.5% 0.045 72);
   --crit:    oklch(54% 0.18 25);   --crit-sf: oklch(96% 0.035 25);
+
+  /* 4-pt spacing scale. Arbitrary `padding: 17px` is a tell; every gap in the
+     public layer resolves to one of these. */
+  --space-3xs: 0.25rem; --space-2xs: 0.5rem;  --space-xs: 0.75rem;
+  --space-sm:  1rem;    --space-md:  1.5rem;  --space-lg: 2rem;
+  --space-xl:  3rem;    --space-2xl: 4rem;    --space-3xl: 6rem;
+
+  /* Gate 48: every colour in the build references a token. These are the
+     translucent overlays the public layer needs — declared here rather than
+     improvised inline at the point of use. */
+  --rule-hair:    oklch(45% 0.115 152 / 0.045);
+  --glass:        color-mix(in oklab, var(--surface) 84%, transparent);
+  --glass-strong: color-mix(in oklab, var(--surface) 92%, transparent);
+  --sheen:        oklch(100% 0 0 / 0.5);
+  --gold-glow:    oklch(64% 0.16 60 / 0.5);
+  --tint-edge:    oklch(45% 0.115 152 / 0.18);
 
   --radius-control: 10px;  /* buttons, inputs */
   --radius-surface: 16px;  /* panels */
@@ -219,7 +248,7 @@
   --faint:     var(--graphite-mut);
   --rule:      var(--graphite-rule);
   --rule-soft: var(--graphite-rule);
-  --surface-sunk: oklch(45% 0.115 152 / 0.08);
+  --surface-sunk: var(--rule-hair);
 }
 
 /* shadcn's Tabs, re-skinned: a strip of plain text over a hairline, with the
@@ -308,6 +337,10 @@
 
 .scholr-focus:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 
+/* Gate 34: `clip`, not `hidden` — `hidden` on a scroll container silently
+   breaks `position: sticky` on every descendant, which would kill the nav. */
+html, body { overflow-x: clip; }
+
 /* --- public site ---------------------------------------------------------
    These live in the token layer rather than in a page, because the hero, the
    nav and the closing block appear on more than one route and had already
@@ -327,7 +360,7 @@
 .pub-ruled { position: relative; }
 .pub-ruled::before {
   content: ""; position: absolute; inset: 0; pointer-events: none;
-  background-image: repeating-linear-gradient(90deg, transparent 0, transparent calc(100%/6 - 1px), oklch(45% 0.115 152 / 0.045) calc(100%/6));
+  background-image: repeating-linear-gradient(90deg, transparent 0, transparent calc(100%/6 - 1px), var(--rule-hair) calc(100%/6));
 }
 .pub-ruled > * { position: relative; }
 
@@ -335,8 +368,8 @@
   display: flex; align-items: center; gap: 1.4rem;
   padding: 0.5rem 0.6rem 0.5rem 1rem;
   border-radius: var(--radius-pill);
-  background: color-mix(in oklab, var(--surface) 84%, transparent);
-  border: 1px solid color-mix(in oklab, var(--surface) 90%, var(--rule));
+  background: var(--glass);
+  border: 1px solid var(--rule-soft);
   backdrop-filter: blur(14px);
   box-shadow: var(--lift-sm);
 }
@@ -352,9 +385,14 @@
 /* The gold sits on the one action that matters and nowhere else. */
 .pub-btn-gold {
   background: var(--gold); color: var(--gold-ink);
-  box-shadow: 0 1px 0 oklch(100% 0 0 / 0.5) inset, 0 8px 18px -8px oklch(64% 0.16 60 / 0.5);
+  box-shadow: 0 1px 0 var(--sheen) inset, 0 8px 18px -8px var(--gold-glow);
 }
 .pub-btn-gold:hover { filter: brightness(1.04); }
+.pub-btn:active { transform: translateY(1px); }
+.pub-btn:disabled, .pub-btn[aria-disabled='true'] {
+  opacity: .5; cursor: not-allowed; transform: none; filter: none;
+}
+.pub-btn { transition: filter var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out); }
 .pub-btn-line { border-color: var(--rule); color: var(--ink); background: color-mix(in oklab, var(--surface) 70%, transparent); }
 .pub-btn-line:hover { border-color: var(--muted); }
 
@@ -372,4 +410,63 @@
   border: 1px solid var(--rule);
   box-shadow: var(--lift-lg);
   display: block; width: 100%; height: auto;
+}
+
+/* Motion primitives. Three named easings, three durations — never the browser
+   default `ease`, never overshoot on UI state. */
+:root {
+  --ease-out:    cubic-bezier(.16, 1, .3, 1);
+  --ease-in:     cubic-bezier(.5, 0, .75, 0);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  --dur-fast: 140ms;
+  --dur-base: 240ms;
+  --dur-slow: 420ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0ms; --dur-base: 0ms; --dur-slow: 120ms; }
+  .bench-cta { transition: opacity var(--dur-slow) linear !important; }
+}
+
+/* An annotation pinned to a product capture. Sits on the paper, not on the
+   screenshot, so it never obscures the thing it is pointing at. */
+.bench-note {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: .64rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--brand);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  padding: .3rem .6rem;
+  box-shadow: var(--lift-sm);
+  white-space: nowrap;
+}
+@media (max-width: 60rem) { .bench-note { display: none; } }
+
+/* Workbench's sticky ask. Full-width bar on a phone, an inset pill above. */
+.bench-cta {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  z-index: 40;
+  width: min(34rem, calc(100% - 2rem));
+  margin-left: calc(min(34rem, calc(100% - 2rem)) / -2);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .6rem .6rem .6rem 1.1rem;
+  border-radius: var(--radius-pill);
+  background: var(--glass-strong);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--rule);
+  box-shadow: var(--lift-md);
+  transition: transform var(--dur-slow) var(--ease-out), visibility 0s linear var(--dur-slow);
+}
+.bench-cta[aria-hidden='false'] { transition-delay: 0s, 0s; }
+@media (max-width: 34rem) {
+  .bench-cta p { display: none; }
+  .bench-cta { justify-content: center; padding: .5rem; }
+  .bench-cta a { margin-left: 0 !important; width: 100%; justify-content: center; min-height: 44px; }
 }

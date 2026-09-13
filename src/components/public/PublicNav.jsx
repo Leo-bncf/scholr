@@ -42,12 +42,10 @@ export default function PublicNav() {
 
   return (
     <div style={{ position: 'sticky', top: 0, zIndex: 50 }}>
-      <div
-        style={{
-          padding: stuck ? '0.6rem 1rem' : '1rem 1rem 0.4rem',
-          transition: 'padding .45s cubic-bezier(.16,1,.3,1)',
-        }}
-      >
+      {/* Gate 14: never animate padding — it's a layout property and every
+          frame costs a reflow. The bar keeps a fixed box and the inner pill
+          slides up into it on `transform`. */}
+      <div style={{ padding: 'var(--space-2xs) var(--space-sm)' }}>
         <nav
           className={stuck ? 'pub-nav' : ''}
           style={{
@@ -56,8 +54,11 @@ export default function PublicNav() {
             display: 'flex',
             alignItems: 'center',
             gap: '1.4rem',
-            padding: stuck ? undefined : '0.5rem 0.6rem 0.5rem 0.4rem',
-            transition: 'background .45s cubic-bezier(.16,1,.3,1), box-shadow .45s cubic-bezier(.16,1,.3,1), border-color .45s',
+            padding: stuck ? undefined : 'var(--space-2xs) var(--space-2xs) var(--space-2xs) var(--space-3xs)',
+            transform: stuck ? 'translateY(0)' : 'translateY(2px)',
+            transition:
+              'background var(--dur-slow) var(--ease-out), box-shadow var(--dur-slow) var(--ease-out), '
+              + 'border-color var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out)',
             border: stuck ? undefined : '1px solid transparent',
             borderRadius: 'var(--radius-pill)',
           }}

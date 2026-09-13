@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PublicNav from './PublicNav';
 import PublicFooter from './PublicFooter';
 
@@ -7,6 +7,21 @@ import PublicFooter from './PublicFooter';
  * own nav and footer, which is how the two navbars diverged.
  */
 export default function PublicShell({ children }) {
+  // The public site is light, deliberately and in both senses: the product
+  // captures on it are light, and a light screenshot floating on a dark page
+  // looks like a mistake rather than a choice. The app keeps its dark mode —
+  // this only pins the marketing pages, and puts the flag back on the way out
+  // so a signed-in user's preference survives the round trip.
+  useEffect(() => {
+    const root = document.documentElement;
+    const previous = root.dataset.theme;
+    root.dataset.theme = 'light';
+    return () => {
+      if (previous === undefined) delete root.dataset.theme;
+      else root.dataset.theme = previous;
+    };
+  }, []);
+
   return (
     <div className="scholr-page min-h-screen flex flex-col">
       <PublicNav />
