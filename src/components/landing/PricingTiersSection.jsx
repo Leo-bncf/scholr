@@ -117,8 +117,8 @@ export default function PricingTiersSection() {
                   background: 'var(--brand)',
                   color: 'var(--brand-ink)',
                   border: 'none',
-                  padding: '0.55rem 0.9rem',
-                  borderRadius: 'var(--radius-control)',
+                  padding: '0.6rem 0.9rem',
+                  borderRadius: 'var(--radius-pill)',
                   cursor: loadingTier ? 'wait' : 'pointer',
                   opacity: loadingTier && loadingTier !== tier.id ? 0.5 : 1,
                 }}

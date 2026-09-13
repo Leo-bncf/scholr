@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import PublicShell, { Section, CTA, Claim } from '@/components/public/PublicShell';
+import PublicShell, { Section, CTA, RuledList } from '@/components/public/PublicShell';
 import ConsentModal from '@/components/public/ConsentModal';
-import WeekGrid from '@/components/public/WeekGrid';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
 import { isAuthenticated } from '@/data/session';
 import { ArrowRight } from 'lucide-react';
@@ -10,200 +9,118 @@ import { ArrowRight } from 'lucide-react';
 /**
  * The landing page.
  *
- * The previous version was broken in production: every section below the hero
- * set `text-white`, but the animated background only painted the top of the
- * page, so roughly five thousand pixels of copy rendered white on white and
- * was simply invisible. It also opened with a 145vh parallax of the word
- * "Scholr" in 18rem type before saying anything about the product.
+ * The version before this was broken in production — every section below the
+ * hero set `text-white` over a background that only painted the top, so five
+ * thousand pixels of copy rendered white on white.
  *
- * What replaced it: the artefact this audience actually reads — a timetable —
- * and claims that carry their evidence with them. No animated background, no
- * parallax, no marquee. A head of school evaluating where to put their entire
- * academic record is not persuaded by motion.
+ * The version after that was legible and looked machine-made: everything
+ * centred, three cards with circular avatar initials, a strip of round numbers
+ * that were a pattern rather than a fact, and one structural idea (a rounded
+ * card with a soft shadow) repeated down the page. This one is left-aligned,
+ * asymmetric, and its sections are built out of rules and indents instead.
+ *
+ * There are no testimonials, because there are no customers to quote yet.
  */
 
 function Hero() {
   const signIn = async () => {
-    if (await isAuthenticated()) {
-      window.location.href = '/AppHome';
-    } else {
-      window.location.href = `/Login?next=${encodeURIComponent('/AppHome')}`;
-    }
+    if (await isAuthenticated()) window.location.href = '/AppHome';
+    else window.location.href = `/Login?next=${encodeURIComponent('/AppHome')}`;
   };
 
   return (
-    <section className="pt-14 pb-12 md:pt-20 md:pb-16">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="grid gap-10 lg:gap-14 items-center" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(20rem, 100%), 1fr))' }}>
+    <section className="pub-wash pub-ruled" style={{ overflow: 'hidden', paddingBottom: '3.5rem' }}>
+      <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '2.5rem 1.5rem 0' }}>
+        <div className="hero-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 30rem) minmax(0, 1fr)', gap: '2.5rem', alignItems: 'center' }}>
           <div>
-            <p className="scholr-label m-0">For international schools</p>
-            <h1 className="scholr-h1 m-0 mt-3 text-4xl md:text-5xl lg:text-[3.4rem]" style={{ lineHeight: 1.06 }}>
-              One system for a school that runs more than one curriculum.
-            </h1>
-            <p className="m-0 mt-5 text-lg leading-relaxed" style={{ color: 'var(--muted)', maxWidth: '38ch' }}>
-              Timetables, gradebooks, attendance, reports and the parent portal — with IB, IGCSE,
-              A-Level and US frameworks each behaving the way they actually work.
+            <p className="scholr-label" style={{ margin: 0, color: 'var(--brand)' }}>
+              Made in Ireland · for international schools
             </p>
-
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <h1 className="pub-display" style={{ margin: '1rem 0 0', fontSize: 'clamp(2.3rem, 5.4vw, 3.6rem)' }}>
+              Every curriculum your school runs, in one place.
+            </h1>
+            <p className="pub-lede" style={{ margin: '1.1rem 0 0', maxWidth: '40ch' }}>
+              IB, IGCSE, A-Level and US frameworks, each behaving the way it actually works — over one
+              set of records. Timetables, gradebooks, attendance, reports, and a portal families
+              understand.
+            </p>
+            <div style={{ display: 'flex', gap: '.7rem', marginTop: '1.8rem', flexWrap: 'wrap' }}>
               <CTA to="/BookDemo">Book a demo <ArrowRight className="w-4 h-4" /></CTA>
-              <button
-                type="button"
-                onClick={signIn}
-                className="scholr-focus inline-flex items-center gap-2 text-sm font-medium"
-                style={{
-                  background: 'transparent',
-                  color: 'var(--body)',
-                  border: '1px solid var(--rule)',
-                  padding: '0.6rem 1.05rem',
-                  borderRadius: 'var(--radius-control)',
-                  cursor: 'pointer',
-                }}
-              >
+              <button type="button" onClick={signIn} className="pub-btn pub-btn-line pub-btn-lg scholr-focus">
                 Sign in
               </button>
             </div>
-
-            <p className="m-0 mt-5 text-sm" style={{ color: 'var(--faint)' }}>
-              Priced per student, per year. No setup fee.
+            <p className="scholr-label" style={{ margin: '1.2rem 0 0', color: 'var(--faint)' }}>
+              Thirty minutes · your timetable · no slide deck
             </p>
           </div>
 
-          <WeekGrid />
+          {/* The product, oversized and running off the right edge. A screenshot
+              sitting neatly inside its column looks like a stock photo of
+              software; one that overflows looks like a window onto it. */}
+          <div className="hero-shot" style={{ position: 'relative', minWidth: 0 }}>
+            <img
+              src="/marketing/teacher-dashboard.png"
+              width="1320" height="840"
+              alt="A teacher's dashboard in Scholr: today's timetable with the current period marked, work waiting to be graded, and what is coming up."
+              className="pub-shot"
+              style={{ width: 'min(62rem, 148%)', maxWidth: 'none' }}
+              loading="eager"
+            />
+          </div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 62rem) {
+          .hero-grid { grid-template-columns: 1fr !important; }
+          .hero-shot img { width: 100% !important; }
+        }
+      `}</style>
     </section>
   );
 }
 
-/**
- * The curricula, stated plainly.
- *
- * This is the single claim the whole product rests on, so it gets the page's
- * one dark band rather than a row of logos we don't have permission to use.
- */
-function Curricula() {
-  const rows = [
-    ['IB', 'DP, MYP and PYP. 1–7 grading, predicted grades, and CAS, EE and TOK as first-class modules.'],
-    ['IGCSE / GCSE', 'A*–G and 9–1 scales, tiered entry, and coursework tracked against the syllabus.'],
-    ['A-Level', 'AS and A2 units, UMS-style aggregation, and predicted grades for UCAS.'],
-    ['US / AP', 'GPA, letter grades and credits, with transcript-shaped reporting.'],
-  ];
+const CURRICULA = [
+  ['IB', 'DP, MYP and PYP. The 1–7 scale, predicted grades with their history, and CAS, EE and TOK as modules rather than a folder of uploads.'],
+  ['IGCSE / GCSE', 'A*–G and 9–1, tiered entry, and coursework tracked against the syllabus rather than against a generic assignment.'],
+  ['A-Level', 'AS and A2 units, UMS-style aggregation, and predicted grades in the shape UCAS wants them.'],
+  ['US / AP', 'GPA, letter grades and credits, with reporting that comes out looking like a transcript.'],
+];
 
-  return (
-    <section className="py-14 md:py-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="scholr-band px-5 py-6 md:px-8 md:py-9">
-          <p className="scholr-label m-0" style={{ color: 'var(--brand)' }}>Curricula</p>
-          <h2 className="scholr-h1 m-0 mt-2 text-2xl md:text-3xl" style={{ maxWidth: '24ch' }}>
-            The framework changes what the software does, not just what it's called.
-          </h2>
-          <p className="m-0 mt-3 text-sm leading-relaxed" style={{ color: 'var(--muted)', maxWidth: '62ch' }}>
-            A school picks its curriculum at setup. Tools that don't apply are hidden rather than
-            greyed out — an IGCSE school never sees a CAS tab, and an IB school never sees a GPA.
-          </p>
+const ROLES = [
+  ['Teachers', 'The class in front of them. Register, stream, gradebook, and what is on next — four minutes between periods is the whole design brief.'],
+  ['Students', 'Today, what is due, and the marks their teachers have actually released. Nothing they are not meant to see yet.'],
+  ['Parents', 'Their own children only, and a line to the teacher that follows the school’s messaging policy.'],
+  ['Coordinators', 'The cohort: predicted grades with the trend behind them, IB Core progress, and who is behind on what.'],
+  ['Admins', 'Users, terms, policies, timetable, billing, and an audit log of everything that mattered.'],
+  ['Heads', 'The school on one page — attendance, missing work, and the handful of things that need a decision.'],
+];
 
-          <div className="mt-7">
-            {rows.map(([name, desc]) => (
-              <div
-                key={name}
-                className="scholr-deflist py-3.5"
-                style={{ borderTop: '1px solid var(--rule)' }}
-              >
-                <span
-                  className="text-sm font-medium"
-                  style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink)' }}
-                >
-                  {name}
-                </span>
-                <span className="text-sm leading-relaxed" style={{ color: 'var(--muted)' }}>{desc}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/** What each role opens the app to do. Six roles, one line each. */
-function Roles() {
-  const roles = [
-    ['Students', 'Today’s timetable, what’s due, and the grades their teachers have released.'],
-    ['Teachers', 'One workspace per class: stream, assignments, gradebook, register.'],
-    ['Parents', 'Their own children only — grades, attendance, and a line to the teacher.'],
-    ['Coordinators', 'Cohort-level oversight, predicted grades, and the IB Core.'],
-    ['Admins', 'Users, terms, policies, timetable, billing, audit log.'],
-    ['Heads', 'The school in one page: attendance, missing work, and what needs a decision.'],
-  ];
-
-  return (
-    <Section
-      eyebrow="Roles"
-      title="Six people, six different pages"
-      lead="Nobody gets a general-purpose dashboard with everything on it. Each role gets the page that answers the question they opened the laptop to answer."
-    >
-      <div
-        className="grid"
-        style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(17rem, 100%), 1fr))', columnGap: '2.5rem' }}
-      >
-        {roles.map(([name, line]) => (
-          <div key={name} className="py-4" style={{ borderTop: '1px solid var(--rule)' }}>
-            <h3 className="m-0 text-base font-medium" style={{ color: 'var(--ink)' }}>{name}</h3>
-            <p className="m-0 mt-1.5 text-sm leading-relaxed" style={{ color: 'var(--muted)' }}>{line}</p>
-          </div>
-        ))}
-      </div>
-    </Section>
-  );
-}
-
-/** Claims that carry their evidence. */
 function Proof() {
   return (
     <Section
       eyebrow="How it holds up"
       title="The parts a procurement committee asks about"
-      lead="Every line here is something you can check, not a badge."
+      lede="Every line here is something you can check rather than a badge we bought."
     >
-      <div
-        className="grid"
-        style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(20rem, 100%), 1fr))', columnGap: '2.5rem' }}
-      >
-        <Claim
-          title="One school cannot read another"
-          proof="Enforced in Postgres row-level security"
-          >
-          Separation is a database policy, not a filter in the interface. A user's own token decides
-          which rows exist for them, so there is no request they can craft that returns another
-          school's data.
-        </Claim>
-        <Claim
-          title="A grade is invisible until a teacher publishes it"
-          proof="Checked in the policy, not the screen"
-        >
-          Students and families see a mark when the teacher releases it, and pastoral notes marked
-          staff-only never reach either, whatever the release flags say.
-        </Claim>
-        <Claim
-          title="Parents see their own children"
-          proof="Linked accounts, verified per request"
-        >
-          A parent account is tied to specific students. Another family's child is not hidden from
-          the page — it is not in the response.
-        </Claim>
-        <Claim
-          title="Sensitive actions leave a trail"
-          proof="Account, role and grade changes are logged"
-        >
-          Who changed what, and when. It is the first thing a school asks for after an incident and
-          the last thing anyone thinks to build.
-        </Claim>
+      <div className="proof-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(21rem, 100%), 1fr))', gap: '0 3rem' }}>
+        {[
+          ['One school cannot read another', 'Separation is a row-level security policy in Postgres, not a filter in the interface. There is no request a signed-in user can craft that returns another school’s rows.', 'Enforced per query'],
+          ['A grade is invisible until released', 'Marks stay with the teacher until published, separately to students and to families. Pastoral notes marked staff-only override both and never leave the staff room.', 'Two flags, checked in the policy'],
+          ['Access follows the class', 'A teacher who takes over a class sees its history; one who leaves it stops seeing anything, including work they graded themselves.', 'Not authorship'],
+          ['Isolation is covered by tests', 'The suite asserts the negative cases — that a classmate cannot read another student’s grades, and that a teacher outside a class sees nothing.', 'Failures, not just successes'],
+        ].map(([h, body, proof]) => (
+          <div key={h} style={{ padding: '1.2rem 0', borderTop: '1px solid var(--rule)' }}>
+            <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.02rem', letterSpacing: '-0.02em', color: 'var(--ink)' }}>{h}</h3>
+            <p style={{ margin: '.55rem 0 0', fontSize: '.94rem', lineHeight: 1.55, color: 'var(--muted)', maxWidth: '46ch' }}>{body}</p>
+            <p className="scholr-label" style={{ margin: '.7rem 0 0', color: 'var(--brand)' }}>{proof}</p>
+          </div>
+        ))}
       </div>
-
-      <p className="m-0 mt-8 text-sm">
+      <p style={{ margin: '1.8rem 0 0', fontSize: '.95rem' }}>
         <Link to="/Security" className="scholr-focus" style={{ color: 'var(--brand)' }}>
-          Read how isolation actually works →
+          How isolation actually works →
         </Link>
       </p>
     </Section>
@@ -213,16 +130,32 @@ function Proof() {
 function Close() {
   return (
     <Section>
-      <div className="scholr-panel px-6 py-10 md:px-10 md:py-12 text-center">
-        <h2 className="scholr-h1 m-0 text-2xl md:text-3xl" style={{ maxWidth: '20ch', marginInline: 'auto' }}>
-          See it against your own timetable
-        </h2>
-        <p className="m-0 mt-3 text-base" style={{ color: 'var(--muted)', maxWidth: '46ch', marginInline: 'auto' }}>
-          Thirty minutes, your curriculum, your questions. We'll show you the parts that matter to
-          your school and skip the rest.
-        </p>
-        <div className="mt-7 flex justify-center">
-          <CTA to="/BookDemo">Book a demo <ArrowRight className="w-4 h-4" /></CTA>
+      <div
+        className="pub-ruled"
+        style={{
+          borderRadius: 'var(--radius-large)',
+          border: '1px solid var(--rule)',
+          background: 'radial-gradient(70% 140% at 8% -30%, var(--wash) 0%, transparent 70%), var(--surface)',
+          padding: '2.6rem 2rem',
+          boxShadow: 'var(--lift-sm)',
+          overflow: 'hidden',
+        }}
+      >
+        <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+          <div style={{ minWidth: 0 }}>
+            <p className="scholr-label" style={{ margin: 0, color: 'var(--brand)' }}>Next</p>
+            <h2 className="pub-display" style={{ margin: '.6rem 0 0', fontSize: 'clamp(1.6rem, 3.4vw, 2.2rem)', maxWidth: '16ch' }}>
+              Bring a timetable and a mark scheme
+            </h2>
+            <p className="pub-lede" style={{ margin: '.8rem 0 0', maxWidth: '42ch', color: 'var(--muted)' }}>
+              We’ll show you the parts that apply to your curriculum and skip everything else. If it
+              isn’t a fit we’ll say so.
+            </p>
+          </div>
+          <div style={{ marginLeft: 'auto', display: 'flex', gap: '.7rem', flexWrap: 'wrap' }}>
+            <CTA to="/BookDemo">Book a demo <ArrowRight className="w-4 h-4" /></CTA>
+            <CTA to="/Contact" tone="line">Email us instead</CTA>
+          </div>
         </div>
       </div>
     </Section>
@@ -233,9 +166,6 @@ export default function Landing() {
   const [showConsent, setShowConsent] = useState(false);
 
   useEffect(() => {
-    // Shown only until a choice is recorded. Reading localStorage can throw in
-    // a locked-down browser, so a failure means "ask again" rather than
-    // "silently assume consent".
     try {
       // Either answer counts as answered — declining used to store nothing, so
       // the notice came back on every visit.
@@ -248,11 +178,28 @@ export default function Landing() {
   return (
     <PublicShell>
       <Hero />
-      <Curricula />
-      <Roles />
+
+      <Section
+        eyebrow="Curricula"
+        title="The framework changes what the software does, not just what it’s called"
+        lede="A school picks its curriculum at setup and everything that doesn’t apply disappears — an IGCSE school never sees a CAS tab, and an IB school is never asked for a GPA."
+        tint
+      >
+        <RuledList items={CURRICULA} />
+      </Section>
+
+      <Section
+        eyebrow="Roles"
+        title="Six people who never open the same page"
+        lede="A teacher between periods and a head of school on a Sunday night are not looking for the same thing, so nobody gets a general-purpose dashboard with everything on it."
+      >
+        <RuledList items={ROLES} termWidth="9rem" />
+      </Section>
+
       <Proof />
       <PricingTiersSection />
       <Close />
+
       <ConsentModal isOpen={showConsent} onClose={() => setShowConsent(false)} />
     </PublicShell>
   );

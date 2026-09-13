@@ -21,38 +21,58 @@
    teacher taking a register is not their audience.
 --------------------------------------------------------------------------- */
 
-/* Self-hosted, so no third-party request on page load. */
-@import '@fontsource-variable/space-grotesk';
-@import '@fontsource-variable/inter';
-@import '@fontsource-variable/jetbrains-mono';
+/* Self-hosted, so no third-party request on page load.
+
+   Bricolage Grotesque for display: it has real quirks — the flared stems, the
+   tight apertures — which is the point. Inter and Space Grotesk are the two
+   faces every generated page reaches for, and a page set in them announces
+   that nobody chose anything. Instrument Sans carries the body: quiet, a
+   little narrow, gets out of the way. Geist Mono for data and labels. */
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/instrument-sans';
+@import '@fontsource-variable/geist-mono';
 
 :root {
-  --paper:        oklch(98.6% 0.005 170);
+  --paper:        oklch(98.8% 0.007 120);
   --surface:      oklch(100% 0 0);
-  --surface-sunk: oklch(97% 0.006 170);
-  --ink:          oklch(23% 0.022 172);
-  --body:         oklch(34% 0.018 172);
-  --muted:        oklch(55% 0.014 172);
-  --faint:        oklch(68% 0.012 172);
-  --rule:         oklch(91% 0.008 170);
-  --rule-soft:    oklch(94.5% 0.006 170);
+  --surface-sunk: oklch(97% 0.012 130);
+  --wash:         oklch(96.2% 0.028 152);
+  --wash-warm:    oklch(96.8% 0.032 92);
+  --ink:          oklch(21% 0.032 152);
+  --body:         oklch(41% 0.024 150);
+  --muted:        oklch(57% 0.018 148);
+  --faint:        oklch(68% 0.014 145);
+  --rule:         oklch(90.5% 0.014 130);
+  --rule-soft:    oklch(94% 0.011 130);
 
-  /* The mark's green. Dark enough to carry white text at a small size, which
-     is what makes it usable as a button fill and not just a link colour. */
-  --brand:       oklch(45% 0.09 168);
-  --brand-sf:    oklch(96% 0.025 168);
+  /* The mark's green, moved from a cold 168 teal to a growing, yellow-leaning
+     152. Dark enough to carry white text at a small size, which is what makes
+     it usable as a button fill and not just a link colour. */
+  --brand:       oklch(45% 0.115 152);
+  --brand-sf:    oklch(95% 0.04 152);
   --brand-ink:   oklch(100% 0 0);
 
-  /* The gold dot on the logo. A second accent, and a strict budget: one per
-     screen, on the single thing that is genuinely the point. Never a status,
-     never a series colour, never a background. */
-  --gold:         oklch(78% 0.14 78);
-  --gold-ink:     oklch(25% 0.05 78);
+  /* The gold dot on the logo, and the second half of the tricolour. It is the
+     call-to-action colour, and it appears nowhere else — not as a status, not
+     as a series colour, not as a background wash. */
+  --gold:         oklch(81% 0.145 78);
+  --gold-deep:    oklch(64% 0.16 60);
+  --gold-ink:     oklch(28% 0.07 70);
 
-  --graphite:     oklch(19% 0.022 170);
-  --graphite-ink: oklch(93% 0.01 168);
-  --graphite-mut: oklch(70% 0.014 170);
-  --graphite-rule:oklch(30% 0.026 170);
+  /* The emphasis surface. It used to be graphite: one dark band per page for
+     rhythm. On a bright product a dark slab fights everything around it, so
+     emphasis is now a mint tint — same job, same once-per-page budget. */
+  --graphite:     var(--brand-sf);
+  --graphite-ink: var(--ink);
+  --graphite-mut: var(--muted);
+  --graphite-rule:oklch(45% 0.115 152 / 0.16);
+
+  /* Depth. On a light ground contrast can't do it, so shadows carry the hue of
+     the surface they fall on — grey shadows on a green-tinted paper read as
+     dirt. */
+  --lift-sm: 0 1px 2px oklch(30% 0.07 152 / 0.05), 0 6px 16px -8px oklch(30% 0.07 152 / 0.13);
+  --lift-md: 0 2px 6px oklch(30% 0.07 152 / 0.07), 0 18px 40px -18px oklch(30% 0.07 152 / 0.22);
+  --lift-lg: 0 3px 10px oklch(28% 0.07 152 / 0.09), 0 46px 90px -34px oklch(26% 0.07 152 / 0.40);
 
   /* Status is a RESERVED palette: good / warning / critical. Never reused as a
      decorative or "series" colour, and never the only signal — a status always
@@ -64,32 +84,37 @@
   --warn:    oklch(62% 0.14 72);   --warn-sf: oklch(96.5% 0.045 72);
   --crit:    oklch(54% 0.18 25);   --crit-sf: oklch(96% 0.035 25);
 
-  --radius-control: 6px;   /* buttons, inputs — "drawn with a ruler" */
-  --radius-surface: 10px;  /* panels, bands */
+  --radius-control: 10px;  /* buttons, inputs */
+  --radius-surface: 16px;  /* panels */
+  --radius-large:   24px;  /* the big surfaces: hero shot, closing block */
+  --radius-pill:    999px; /* nav, primary buttons */
 
-  --font-display: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-sans:    'Inter Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-mono:    'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    'Geist Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* --- the dark palette, chosen rather than inverted --------------------- */
-  --d-paper:        oklch(16.5% 0.016 170);
-  --d-surface:      oklch(20.5% 0.018 170);
-  --d-sunk:         oklch(18.5% 0.017 170);
-  --d-ink:          oklch(95% 0.008 168);
-  --d-body:         oklch(84% 0.01 168);
-  --d-muted:        oklch(66% 0.013 170);
-  --d-faint:        oklch(54% 0.013 170);
-  --d-rule:         oklch(29% 0.018 170);
-  --d-rule-soft:    oklch(25% 0.017 170);
+  --d-paper:        oklch(15.5% 0.02 152);
+  --d-surface:      oklch(20% 0.022 152);
+  --d-sunk:         oklch(18% 0.021 152);
+  --d-wash:         oklch(24% 0.035 152);
+  --d-wash-warm:    oklch(24% 0.03 92);
+  --d-ink:          oklch(96% 0.01 130);
+  --d-body:         oklch(83% 0.014 135);
+  --d-muted:        oklch(65% 0.016 140);
+  --d-faint:        oklch(53% 0.016 140);
+  --d-rule:         oklch(29% 0.024 148);
+  --d-rule-soft:    oklch(25% 0.022 148);
   /* The 45% green is a fill colour for paper; on a dark ground it has to step
      up to stay legible as text. */
-  --d-brand:       oklch(72% 0.13 168);
-  --d-brand-sf:    oklch(27% 0.05 168);
-  --d-brand-ink:   oklch(14% 0.02 170);
-  --d-gold:         oklch(80% 0.13 78);
-  --d-gold-ink:     oklch(20% 0.04 78);
-  --d-graphite:     oklch(12.5% 0.014 170);
-  --d-graphite-rule:oklch(25% 0.02 170);
+  --d-brand:        oklch(74% 0.14 152);
+  --d-brand-sf:     oklch(27% 0.055 152);
+  --d-brand-ink:    oklch(14% 0.025 152);
+  --d-gold:         oklch(82% 0.14 78);
+  --d-gold-deep:    oklch(74% 0.15 68);
+  --d-gold-ink:     oklch(20% 0.05 70);
+  --d-graphite:     oklch(24% 0.05 152);
+  --d-graphite-rule:oklch(36% 0.06 152);
   --d-good: oklch(72% 0.14 150); --d-good-sf: oklch(26% 0.04 150);
   --d-warn: oklch(78% 0.13 72);  --d-warn-sf: oklch(28% 0.04 72);
   --d-crit: oklch(70% 0.15 25);  --d-crit-sf: oklch(28% 0.04 25);
@@ -116,6 +141,18 @@
     --good: var(--d-good);          --good-sf: var(--d-good-sf);
     --warn: var(--d-warn);          --warn-sf: var(--d-warn-sf);
     --crit: var(--d-crit);          --crit-sf: var(--d-crit-sf);
+  --wash: var(--d-wash);          --wash-warm: var(--d-wash-warm);
+  --gold-deep: var(--d-gold-deep);
+  --graphite-ink: var(--d-ink);   --graphite-mut: var(--d-muted);
+  --lift-sm: 0 1px 2px oklch(0% 0 0 / 0.3), 0 6px 16px -8px oklch(0% 0 0 / 0.45);
+  --lift-md: 0 2px 6px oklch(0% 0 0 / 0.35), 0 18px 40px -18px oklch(0% 0 0 / 0.55);
+  --lift-lg: 0 3px 10px oklch(0% 0 0 / 0.4), 0 46px 90px -34px oklch(0% 0 0 / 0.7);
+    --wash: var(--d-wash);          --wash-warm: var(--d-wash-warm);
+    --gold-deep: var(--d-gold-deep);
+    --graphite-ink: var(--d-ink);   --graphite-mut: var(--d-muted);
+    --lift-sm: 0 1px 2px oklch(0% 0 0 / 0.3), 0 6px 16px -8px oklch(0% 0 0 / 0.45);
+    --lift-md: 0 2px 6px oklch(0% 0 0 / 0.35), 0 18px 40px -18px oklch(0% 0 0 / 0.55);
+    --lift-lg: 0 3px 10px oklch(0% 0 0 / 0.4), 0 46px 90px -34px oklch(0% 0 0 / 0.7);
   }
 }
 :root[data-theme='dark'] {
@@ -158,13 +195,18 @@
   border-radius: var(--radius-surface);
 }
 
-/* Cobalt's one dark beat per page: light → dark → light.
+/* The one emphasis surface per page.
 
-   The band rebinds the surface tokens for everything nested inside it, so a
-   Panel row, a StatusChip or a stat tile resolves against graphite without
-   needing a dark-mode variant of its own. Components that reference tokens get
-   this for free; components that hardcode `text-slate-900` do not, which is the
-   practical reason for the "always use a token" rule above. */
+   This used to be a graphite slab — one dark beat for rhythm. On a bright
+   product a dark block fights everything around it, so emphasis is now a mint
+   tint at the same once-per-page budget: still the first thing your eye lands
+   on, no longer a hole punched in the page.
+
+   It rebinds the surface tokens for its subtree, so a Panel row, a StatusChip
+   or a stat tile resolves against the tint without needing a variant of its
+   own. Components built on tokens get that free; components that hardcode
+   `text-slate-900` do not, which is the practical reason for the "always use a
+   token" rule above. */
 .scholr-band {
   background: var(--graphite); color: var(--graphite-ink);
   border: 1px solid var(--graphite-rule);
@@ -177,10 +219,7 @@
   --faint:     var(--graphite-mut);
   --rule:      var(--graphite-rule);
   --rule-soft: var(--graphite-rule);
-  /* The 45% green is a fill colour for paper, not a text colour on a
-     19%-lightness ground; inside the band it steps up to what dark mode uses. */
-  --brand:    oklch(72% 0.13 168);
-  --brand-sf: oklch(29% 0.055 168);
+  --surface-sunk: oklch(45% 0.115 152 / 0.08);
 }
 
 /* shadcn's Tabs, re-skinned: a strip of plain text over a hairline, with the
@@ -268,3 +307,69 @@
 .scholr-band .panel-row-link:hover .panel-row { background: var(--graphite-rule); }
 
 .scholr-focus:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+/* --- public site ---------------------------------------------------------
+   These live in the token layer rather than in a page, because the hero, the
+   nav and the closing block appear on more than one route and had already
+   drifted apart once. */
+
+/* The hero ground: two light sources, not a gradient sweep. A cool green wash
+   from the upper left and a warm one from the right, so the field has a
+   direction instead of a direction-less fade. */
+.pub-wash {
+  background:
+    radial-gradient(90% 70% at 14% -10%, var(--wash) 0%, transparent 58%),
+    radial-gradient(70% 55% at 92% 2%, var(--wash-warm) 0%, transparent 62%),
+    var(--paper);
+}
+/* Six ruled columns — a school week plus the period gutter. The texture is the
+   thing the product is built on, not an ornament. */
+.pub-ruled { position: relative; }
+.pub-ruled::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: repeating-linear-gradient(90deg, transparent 0, transparent calc(100%/6 - 1px), oklch(45% 0.115 152 / 0.045) calc(100%/6));
+}
+.pub-ruled > * { position: relative; }
+
+.pub-nav {
+  display: flex; align-items: center; gap: 1.4rem;
+  padding: 0.5rem 0.6rem 0.5rem 1rem;
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--surface) 84%, transparent);
+  border: 1px solid color-mix(in oklab, var(--surface) 90%, var(--rule));
+  backdrop-filter: blur(14px);
+  box-shadow: var(--lift-sm);
+}
+
+.pub-btn {
+  font-family: var(--font-sans); font-weight: 550; font-size: 0.88rem;
+  border-radius: var(--radius-pill); padding: 0.5rem 1.05rem;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  border: 1px solid transparent; white-space: nowrap; cursor: pointer;
+  text-decoration: none;
+}
+.pub-btn-lg { padding: 0.7rem 1.35rem; font-size: 0.95rem; }
+/* The gold sits on the one action that matters and nowhere else. */
+.pub-btn-gold {
+  background: var(--gold); color: var(--gold-ink);
+  box-shadow: 0 1px 0 oklch(100% 0 0 / 0.5) inset, 0 8px 18px -8px oklch(64% 0.16 60 / 0.5);
+}
+.pub-btn-gold:hover { filter: brightness(1.04); }
+.pub-btn-line { border-color: var(--rule); color: var(--ink); background: color-mix(in oklab, var(--surface) 70%, transparent); }
+.pub-btn-line:hover { border-color: var(--muted); }
+
+/* Display type wants to be big and tight; the body face wants to stay small.
+   The gap between them is most of the personality. */
+.pub-display {
+  font-family: var(--font-display); font-weight: 600;
+  letter-spacing: -0.038em; line-height: 1.03; color: var(--ink);
+  text-wrap: balance; overflow-wrap: anywhere;
+}
+.pub-lede { font-size: 1.08rem; line-height: 1.55; color: var(--body); }
+
+.pub-shot {
+  border-radius: var(--radius-large);
+  border: 1px solid var(--rule);
+  box-shadow: var(--lift-lg);
+  display: block; width: 100%; height: auto;
+}

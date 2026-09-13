@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import PublicShell, { Section, CTA, Claim } from '@/components/public/PublicShell';
+import PublicShell, { Section, CTA, RuledList } from '@/components/public/PublicShell';
 import StatusChip from '@/components/app/StatusChip';
 import { ArrowRight } from 'lucide-react';
 
@@ -58,33 +58,26 @@ export default function Security() {
       </Section>
 
       <Section eyebrow="What holds" title="Four things, each checkable">
-        <div
-          className="grid"
-          style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(20rem, 100%), 1fr))', columnGap: '2.5rem' }}
-        >
-          <Claim title="One school cannot read another" proof="Row-level security, enforced per query">
-            Tenant separation is a database policy. There is no request a signed-in user can craft
-            that returns another school's rows.
-          </Claim>
-          <Claim title="A grade is invisible until released" proof="Two flags, students and families, separately">
-            Marks are private to the teacher until published. Behaviour notes marked staff-only
-            override both flags and never reach a student or a parent.
-          </Claim>
-          <Claim title="Access follows the class" proof="Not authorship">
-            A teacher who takes over a class sees its history. A teacher who leaves it stops seeing
-            anything — including work they graded themselves.
-          </Claim>
-          <Claim title="Isolation is covered by tests" proof="Negative cases asserted, not just positive ones">
-            The suite checks that a classmate cannot read another student's grades and that a
-            teacher outside a class sees nothing — the failures, not only the successes.
-          </Claim>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(21rem, 100%), 1fr))', gap: '0 3rem' }}>
+          {[
+            ['One school cannot read another', 'Tenant separation is a database policy. There is no request a signed-in user can craft that returns another school\u2019s rows.', 'Row-level security, per query'],
+            ['A grade is invisible until released', 'Marks are private to the teacher until published. Behaviour notes marked staff-only override both flags and never reach a student or a parent.', 'Students and families, separately'],
+            ['Access follows the class', 'A teacher who takes over a class sees its history. A teacher who leaves it stops seeing anything \u2014 including work they graded themselves.', 'Not authorship'],
+            ['Isolation is covered by tests', 'The suite checks that a classmate cannot read another student\u2019s grades and that a teacher outside a class sees nothing.', 'Negative cases asserted'],
+          ].map(([h, body, proof]) => (
+            <div key={h} style={{ padding: '1.2rem 0', borderTop: '1px solid var(--rule)' }}>
+              <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.02rem', letterSpacing: '-0.02em', color: 'var(--ink)' }}>{h}</h3>
+              <p style={{ margin: '.55rem 0 0', fontSize: '.94rem', lineHeight: 1.55, color: 'var(--muted)', maxWidth: '46ch' }}>{body}</p>
+              <p className="scholr-label" style={{ margin: '.7rem 0 0', color: 'var(--brand)' }}>{proof}</p>
+            </div>
+          ))}
         </div>
       </Section>
 
       {/* The dark beat: the mechanism, in order. Numbered because this genuinely
           is a sequence — each step depends on the one above it. */}
       <Section>
-        <div className="scholr-band px-5 py-7 md:px-9 md:py-10">
+        <div className="scholr-band pub-ruled" style={{ padding: '2rem 1.8rem', borderRadius: 'var(--radius-large)' }}>
           <p className="scholr-label m-0" style={{ color: 'var(--brand)' }}>How isolation works</p>
           <h2 className="scholr-h1 m-0 mt-2 text-2xl md:text-3xl" style={{ maxWidth: '22ch' }}>
             Four steps, and the order matters
@@ -115,19 +108,8 @@ export default function Security() {
       </Section>
 
       <Section eyebrow="Roles" title="Who sees what" lead="Six roles, and each one is a rule in the database rather than a setting in the interface.">
-        <div style={{ maxWidth: '46rem' }}>
-          {ROLES.map(([role, sees]) => (
-            <div
-              key={role}
-              className="scholr-deflist py-3"
-              style={{ borderTop: '1px solid var(--rule)' }}
-            >
-              <span className="text-sm font-medium" style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink)' }}>
-                {role}
-              </span>
-              <span className="text-sm leading-relaxed" style={{ color: 'var(--muted)' }}>{sees}</span>
-            </div>
-          ))}
+        <div style={{ maxWidth: '52rem' }}>
+          <RuledList items={ROLES} termWidth="10rem" />
         </div>
       </Section>
 

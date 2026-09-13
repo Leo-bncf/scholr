@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { isAuthenticated, redirectToLogin } from '@/data/session';
@@ -6,16 +6,15 @@ import { isAuthenticated, redirectToLogin } from '@/data/session';
 /**
  * The public site's one navigation bar.
  *
- * There used to be two — a pill-shaped floating one on the landing page and a
- * plain one everywhere else — and they listed different links. Between them
- * they pointed at /Pricing, /About and /Careers, none of which are routes, so
- * a visitor clicking Pricing in the header landed on a 404.
+ * There used to be two — a floating pill on the landing page and a plain bar
+ * everywhere else — listing different links, and between them they pointed at
+ * /Pricing, /About and /Careers, none of which were routes.
  *
  * Every link here resolves to a page that exists. That is a rule, not a
  * coincidence: adding a link means adding the route in the same commit.
  */
 const LINKS = [
-  { label: 'Features', to: '/Features' },
+  { label: 'Platform', to: '/Features' },
   { label: 'Pricing', to: '/Pricing' },
   { label: 'Security', to: '/Security' },
   { label: 'Contact', to: '/Contact' },
@@ -23,128 +22,107 @@ const LINKS = [
 
 export default function PublicNav() {
   const [open, setOpen] = useState(false);
+  const [stuck, setStuck] = useState(false);
   const { pathname } = useLocation();
 
+  // The bar sits flush at the top of the page and only lifts into a floating
+  // pill once you have scrolled past the hero's first line. A pill that is
+  // already floating at scroll position zero has nothing to float above.
+  useEffect(() => {
+    const onScroll = () => setStuck(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   const signIn = async () => {
-    if (await isAuthenticated()) {
-      window.location.href = '/AppHome';
-    } else {
-      redirectToLogin('/AppHome');
-    }
+    if (await isAuthenticated()) window.location.href = '/AppHome';
+    else redirectToLogin('/AppHome');
   };
 
   return (
-    <header
-      className="sticky top-0 z-50"
-      style={{
-        background: 'color-mix(in oklab, var(--paper) 86%, transparent)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid var(--rule)',
-      }}
-    >
-      <nav className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center gap-6 h-16">
-        <Link to="/" className="scholr-focus flex items-center gap-2.5 shrink-0" style={{ textDecoration: 'none' }}>
-          <img src="/brand/scholr-mark.png" alt="" width="28" height="28" style={{ borderRadius: '7px' }} />
-          <span
-            className="text-lg"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--ink)' }}
-          >
-            Scholr
-          </span>
-        </Link>
+    <div style={{ position: 'sticky', top: 0, zIndex: 50 }}>
+      <div
+        style={{
+          padding: stuck ? '0.6rem 1rem' : '1rem 1rem 0.4rem',
+          transition: 'padding .45s cubic-bezier(.16,1,.3,1)',
+        }}
+      >
+        <nav
+          className={stuck ? 'pub-nav' : ''}
+          style={{
+            maxWidth: '72rem',
+            margin: '0 auto',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1.4rem',
+            padding: stuck ? undefined : '0.5rem 0.6rem 0.5rem 0.4rem',
+            transition: 'background .45s cubic-bezier(.16,1,.3,1), box-shadow .45s cubic-bezier(.16,1,.3,1), border-color .45s',
+            border: stuck ? undefined : '1px solid transparent',
+            borderRadius: 'var(--radius-pill)',
+          }}
+        >
+          <Link to="/" className="scholr-focus" style={{ display: 'flex', alignItems: 'center', gap: '.55rem', textDecoration: 'none', flex: 'none' }}>
+            <span style={{ width: 26, height: 26, borderRadius: 8, background: 'var(--brand)', position: 'relative', display: 'block' }}>
+              <span style={{ position: 'absolute', top: 4, right: 4, width: 7, height: 7, borderRadius: '50%', background: 'var(--gold)' }} />
+            </span>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 650, fontSize: '1.05rem', letterSpacing: '-0.035em', color: 'var(--ink)' }}>
+              Scholr
+            </span>
+          </Link>
 
-        <div className="hidden md:flex items-center gap-1 ml-2">
-          {LINKS.map(l => {
-            const active = pathname === l.to;
-            return (
+          <div className="hidden md:flex" style={{ gap: '1.3rem' }}>
+            {LINKS.map(l => (
               <Link
                 key={l.to}
                 to={l.to}
-                className="scholr-focus text-sm px-3 py-1.5"
+                className="scholr-focus"
                 style={{
+                  fontSize: '.89rem',
                   textDecoration: 'none',
-                  color: active ? 'var(--ink)' : 'var(--muted)',
-                  borderRadius: 'var(--radius-control)',
+                  color: pathname === l.to ? 'var(--ink)' : 'var(--body)',
+                  borderBottom: pathname === l.to ? '1.5px solid var(--brand)' : '1.5px solid transparent',
+                  paddingBottom: 1,
                 }}
               >
                 {l.label}
               </Link>
-            );
-          })}
-        </div>
+            ))}
+          </div>
 
-        <div className="hidden md:flex items-center gap-3 ml-auto">
+          <div className="hidden md:flex" style={{ marginLeft: 'auto', alignItems: 'center', gap: '.9rem' }}>
+            <button type="button" onClick={signIn} className="scholr-focus" style={{ background: 'none', border: 'none', font: 'inherit', fontSize: '.89rem', color: 'var(--body)', cursor: 'pointer' }}>
+              Sign in
+            </button>
+            <Link to="/BookDemo" className="pub-btn pub-btn-gold scholr-focus">Book a demo</Link>
+          </div>
+
           <button
             type="button"
-            onClick={signIn}
-            className="scholr-focus text-sm"
-            style={{ background: 'none', border: 'none', color: 'var(--body)', cursor: 'pointer' }}
+            onClick={() => setOpen(o => !o)}
+            aria-expanded={open}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            className="md:hidden scholr-focus"
+            style={{ marginLeft: 'auto', background: 'none', border: 'none', color: 'var(--ink)', cursor: 'pointer', padding: '.25rem' }}
           >
-            Sign in
+            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
-          <Link
-            to="/BookDemo"
-            className="scholr-focus text-sm font-medium"
-            style={{
-              background: 'var(--brand)',
-              color: 'var(--brand-ink)',
-              padding: '0.5rem 0.9rem',
-              borderRadius: 'var(--radius-control)',
-              textDecoration: 'none',
-            }}
-          >
-            Book a demo
-          </Link>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setOpen(o => !o)}
-          aria-expanded={open}
-          aria-label={open ? 'Close menu' : 'Open menu'}
-          className="scholr-focus md:hidden ml-auto"
-          style={{ background: 'none', border: 'none', color: 'var(--body)', cursor: 'pointer', padding: '0.25rem' }}
-        >
-          {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
-      </nav>
+        </nav>
+      </div>
 
       {open && (
-        <div className="md:hidden px-4 pb-4 flex flex-col" style={{ borderTop: '1px solid var(--rule-soft)' }}>
+        <div className="md:hidden" style={{ margin: '0 1rem', padding: '0.5rem 1rem 1rem', background: 'var(--surface)', border: '1px solid var(--rule)', borderRadius: 'var(--radius-surface)', boxShadow: 'var(--lift-md)' }}>
           {LINKS.map(l => (
-            <Link
-              key={l.to}
-              to={l.to}
-              onClick={() => setOpen(false)}
-              className="scholr-focus py-2.5 text-sm"
-              style={{ textDecoration: 'none', color: 'var(--body)', borderBottom: '1px solid var(--rule-soft)' }}
-            >
+            <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="scholr-focus" style={{ display: 'block', padding: '.6rem 0', fontSize: '.95rem', color: 'var(--body)', textDecoration: 'none', borderBottom: '1px solid var(--rule-soft)' }}>
               {l.label}
             </Link>
           ))}
-          <div className="flex items-center gap-3 pt-3">
-            <button
-              type="button"
-              onClick={signIn}
-              className="scholr-focus text-sm"
-              style={{ background: 'none', border: 'none', color: 'var(--body)', cursor: 'pointer' }}
-            >
-              Sign in
-            </button>
-            <Link
-              to="/BookDemo"
-              onClick={() => setOpen(false)}
-              className="scholr-focus text-sm font-medium ml-auto"
-              style={{
-                background: 'var(--brand)', color: 'var(--brand-ink)',
-                padding: '0.5rem 0.9rem', borderRadius: 'var(--radius-control)', textDecoration: 'none',
-              }}
-            >
-              Book a demo
-            </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '.8rem', paddingTop: '.9rem' }}>
+            <button type="button" onClick={signIn} className="scholr-focus" style={{ background: 'none', border: 'none', font: 'inherit', fontSize: '.9rem', color: 'var(--body)', cursor: 'pointer' }}>Sign in</button>
+            <Link to="/BookDemo" onClick={() => setOpen(false)} className="pub-btn pub-btn-gold scholr-focus" style={{ marginLeft: 'auto' }}>Book a demo</Link>
           </div>
         </div>
       )}
-    </header>
+    </div>
   );
 }
