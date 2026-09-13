@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Seo from '@/components/public/Seo';
 import PublicShell, { Section } from '@/components/public/PublicShell';
 import * as demoRequests from '@/data/demoRequests';
 import { CheckCircle2, Loader2 } from 'lucide-react';
@@ -62,7 +63,7 @@ export default function Demo() {
       // The original awaited create() with no catch, so a failed submission
       // showed the thank-you screen anyway and the lead was simply lost.
       console.error('Demo request failed', err);
-      setError("We couldn't send that. Please try again, or email hello@scholr.pro directly.");
+      setError("We couldn't send that. Please try again, or email contact@scholr.pro directly.");
     } finally {
       setLoading(false);
     }
@@ -70,6 +71,11 @@ export default function Demo() {
 
   return (
     <PublicShell>
+      <Seo
+        title="Book a demo"
+        description="Thirty minutes against your own timetable and mark scheme, with one of the two people who build it. No slide deck and no sales team."
+        canonical="/BookDemo"
+      />
       <Section>
         <div
           className="grid gap-10 lg:gap-14 items-start"

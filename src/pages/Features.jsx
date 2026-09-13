@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Seo from '@/components/public/Seo';
 import PublicShell, { Section, CTA } from '@/components/public/PublicShell';
 import StatusChip from '@/components/app/StatusChip';
 import Meter from '@/components/app/Meter';
@@ -183,6 +184,11 @@ const FEATURES = [
 export default function Features() {
   return (
     <PublicShell>
+      <Seo
+        title="Platform"
+        description="What Scholr does, screen by screen: role-specific dashboards, assignments end to end, multi-framework gradebooks, the family portal and the IB Core."
+        canonical="/Features"
+      />
       <Section>
         <p className="scholr-label m-0">Features</p>
         <h1 className="scholr-h1 m-0 mt-2 text-3xl md:text-4xl" style={{ maxWidth: '20ch' }}>

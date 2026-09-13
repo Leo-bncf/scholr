@@ -351,6 +351,8 @@
 .scholr-focus:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 
 /* One property per hover, never a stack of four. */
+.out-link { transition: background-color var(--dur-short) var(--ease-out); }
+.out-link:hover { background: color-mix(in oklab, var(--brand) 4%, transparent); }
 .ruled-row { transition: background-color var(--dur-short) var(--ease-out); }
 .ruled-row:hover { background: color-mix(in oklab, var(--brand) 4%, transparent); }
 .pub-shot { transition: transform var(--dur-long) var(--ease-out); }

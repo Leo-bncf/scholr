@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import PublicShell, { Section, CTA } from '@/components/public/PublicShell';
+import PublicShell, { Section, CTA, RuledList } from '@/components/public/PublicShell';
+import Seo from '@/components/public/Seo';
 import { ArrowRight } from 'lucide-react';
 
 /**
@@ -14,11 +15,28 @@ import { ArrowRight } from 'lucide-react';
  *
  * One address that works beats three that don't.
  */
-const EMAIL = 'hello@scholr.pro';
+const EMAIL = 'contact@scholr.pro';
+
+/**
+ * What to send where. One address, but a school arrives with one of about four
+ * errands, and saying so up front saves a round trip asking which team handles
+ * what — the answer being that there are no teams.
+ */
+const ERRANDS = [
+  ['Evaluating Scholr', 'Tell us your curricula and roll and we will send a price and a demo slot in the same reply.'],
+  ['Security or procurement', 'Questionnaires, data-processing agreements and sub-processor lists. Send the document rather than asking whether you may.'],
+  ['Already a customer', 'Same address. There is no separate support queue and no ticket portal to log into.'],
+  ['Data protection', 'Access, correction and deletion requests. The privacy policy sets out the full process and the statutory deadline.'],
+];
 
 export default function Contact() {
   return (
     <PublicShell>
+      <Seo
+        title="Contact"
+        description="One address, read by the two people who build Scholr: contact@scholr.pro. Evaluations, security questionnaires, procurement paperwork and data-protection requests."
+        canonical="/Contact"
+      />
       <Section>
         <p className="scholr-label m-0">Contact</p>
         <h1 className="scholr-h1 m-0 mt-2 text-3xl md:text-4xl" style={{ maxWidth: '16ch' }}>
@@ -47,11 +65,16 @@ export default function Contact() {
               {EMAIL}
             </a>
           </p>
-          <p className="m-0 mt-3 text-sm" style={{ color: 'var(--muted)' }}>
-            Security questionnaires, data-processing agreements and procurement paperwork are
-            welcome — send them straight here rather than asking whether you may.
+          <p className="m-0 mt-3 text-sm" style={{ color: 'var(--muted)', lineHeight: 'var(--lh-body)' }}>
+            One address, read by the two people who build it. We aim to reply within one working
+            day; if something needs a lawyer or a migration plan it may take longer, and we will
+            say so rather than going quiet.
           </p>
         </div>
+      </Section>
+
+      <Section eyebrow="What to send" title="Four things schools usually write about" tint>
+        <RuledList items={ERRANDS} termWidth="14rem" />
       </Section>
 
       <Section>

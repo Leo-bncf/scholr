@@ -18,7 +18,7 @@ const LINKS = [
   { label: 'Curricula', to: '/ib-school-management-software' },
   { label: 'Pricing', to: '/Pricing' },
   { label: 'Security', to: '/Security' },
-  { label: 'Questions', to: '/FAQ' },
+  { label: 'Timetabling', to: '/Schedual' },
 ];
 
 export default function PublicNav() {

@@ -34,8 +34,8 @@ export default function TermsOfService() {
                 <p><span className="font-medium text-slate-800">Registered office:</span> To be completed — France</p>
                 <p><span className="font-medium text-slate-800">SIREN:</span> To be completed</p>
                 <p><span className="font-medium text-slate-800">VAT number:</span> To be completed</p>
-                <p><span className="font-medium text-slate-800">Contact email:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
-                <p><span className="font-medium text-slate-800">Support email:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
+                <p><span className="font-medium text-slate-800">Contact email:</span> <a href="mailto:contact@scholr.pro" className="text-blue-600 hover:underline">contact@scholr.pro</a></p>
+                <p><span className="font-medium text-slate-800">Support email:</span> <a href="mailto:contact@scholr.pro" className="text-blue-600 hover:underline">contact@scholr.pro</a></p>
                 <p><span className="font-medium text-slate-800">Website:</span> <a href="https://scholr.pro" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">scholr.pro</a></p>
               </div>
             </section>
@@ -232,10 +232,10 @@ export default function TermsOfService() {
               <p className="mb-4">These Terms are governed by and construed in accordance with French law, to the exclusion of any conflict of law principles.</p>
 
               <h3 className="font-semibold text-slate-800 mb-2">14.2 Amicable resolution</h3>
-              <p className="mb-4">In the event of a dispute arising out of or in connection with these Terms, the parties agree to first attempt to resolve the dispute amicably by contacting Scholr at <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a>. The parties shall endeavour to reach an amicable resolution within thirty (30) days of the dispute being raised.</p>
+              <p className="mb-4">In the event of a dispute arising out of or in connection with these Terms, the parties agree to first attempt to resolve the dispute amicably by contacting Scholr at <a href="mailto:contact@scholr.pro" className="text-blue-600 hover:underline">contact@scholr.pro</a>. The parties shall endeavour to reach an amicable resolution within thirty (30) days of the dispute being raised.</p>
 
               <h3 className="font-semibold text-slate-800 mb-2">14.3 Mediation</h3>
-              <p className="mb-4">If an amicable resolution cannot be reached, and for Users who qualify as consumers under French law, the User may have recourse to an approved consumer mediator in accordance with Articles L. 611-1 et seq. of the French Consumer Code. Details of the applicable mediator are available on request from <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a>.</p>
+              <p className="mb-4">If an amicable resolution cannot be reached, and for Users who qualify as consumers under French law, the User may have recourse to an approved consumer mediator in accordance with Articles L. 611-1 et seq. of the French Consumer Code. Details of the applicable mediator are available on request from <a href="mailto:contact@scholr.pro" className="text-blue-600 hover:underline">contact@scholr.pro</a>.</p>
 
               <h3 className="font-semibold text-slate-800 mb-2">14.4 Jurisdiction</h3>
               <p>In the absence of an amicable resolution or successful mediation, any dispute relating to these Terms shall be subject to the exclusive jurisdiction of the competent courts of France. For disputes involving professional clients (schools), the courts of the jurisdiction of Scholr's registered office shall have exclusive jurisdiction.</p>
@@ -267,9 +267,9 @@ export default function TermsOfService() {
               <h2 className="text-xl font-bold text-slate-900 mb-4">17. Contact Information</h2>
               <p className="mb-3">For any questions, complaints, or requests relating to these Terms of Service, please contact us:</p>
               <div className="bg-slate-50 rounded-lg p-5 space-y-2">
-                <p><span className="font-medium text-slate-800">General enquiries:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
-                <p><span className="font-medium text-slate-800">Technical support:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
-                <p><span className="font-medium text-slate-800">Legal &amp; compliance:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
+                <p><span className="font-medium text-slate-800">General enquiries:</span> <a href="mailto:contact@scholr.pro" className="text-blue-600 hover:underline">contact@scholr.pro</a></p>
+                <p><span className="font-medium text-slate-800">Technical support:</span> <a href="mailto:contact@scholr.pro" className="text-blue-600 hover:underline">contact@scholr.pro</a></p>
+                <p><span className="font-medium text-slate-800">Legal &amp; compliance:</span> <a href="mailto:contact@scholr.pro" className="text-blue-600 hover:underline">contact@scholr.pro</a></p>
                 <p><span className="font-medium text-slate-800">By post:</span> Scholr SAS — Legal Department, [Registered office address], France</p>
                 <p><span className="font-medium text-slate-800">Website:</span> <a href="https://scholr.pro/TermsOfService" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">scholr.pro/TermsOfService</a></p>
               </div>
