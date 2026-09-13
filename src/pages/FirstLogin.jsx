@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import useLightTheme from '@/components/public/useLightTheme';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,6 +17,10 @@ import { getCurrentUser, isAuthenticated, updateMyProfile } from '@/data/session
  * Guides user through profile completion, password setup, and welcomes them
  */
 export default function FirstLogin() {
+  // Signed-out screens are light, like the rest of the entry experience.
+  // The multi-step logic here is untouched — only the ground it sits on.
+  useLightTheme();
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 

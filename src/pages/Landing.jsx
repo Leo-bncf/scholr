@@ -39,21 +39,21 @@ function Masthead() {
   return (
     <section className="pub-wash" style={{ paddingTop: '1.5rem', paddingBottom: '3rem' }}>
       <div style={{ maxWidth: '76rem', margin: '0 auto', padding: '0 1.5rem' }}>
-        <p className="scholr-label" style={{ margin: 0, color: 'var(--brand)' }}>
+        <p className="scholr-label reveal" style={{ margin: 0, color: 'var(--brand)', '--i': 0 }}>
           Dublin · school management software
         </p>
         <h1
-          className="pub-display"
-          style={{ margin: 'var(--space-xs) 0 0', fontSize: 'var(--text-3xl)', maxWidth: '22ch' }}
+          className="pub-display reveal"
+          style={{ margin: 'var(--space-xs) 0 0', fontSize: 'var(--text-3xl)', maxWidth: '22ch', '--i': 1 }}
         >
           Your school teaches more than one curriculum. Your software should know that.
         </h1>
-        <p className="pub-lede" style={{ margin: 'var(--space-sm) 0 0', maxWidth: '54ch', color: 'var(--muted)' }}>
+        <p className="pub-lede reveal" style={{ margin: 'var(--space-sm) 0 0', maxWidth: '54ch', color: 'var(--muted)', '--i': 2 }}>
           Scholr runs IB, IGCSE, A-Level and US programmes side by side in one school, on one set of
           records — different grading scales, different reporting, different rules about who sees
           what. Here is what that looks like on screen.
         </p>
-        <div style={{ display: 'flex', gap: '.7rem', marginTop: '1.6rem', flexWrap: 'wrap' }}>
+        <div className="reveal" style={{ display: 'flex', gap: 'var(--space-2xs)', marginTop: 'var(--space-md)', flexWrap: 'wrap', '--i': 3 }}>
           <CTA to="/BookDemo">Book a demo</CTA>
           <button type="button" onClick={signIn} className="pub-btn pub-btn-line pub-btn-lg scholr-focus">
             Sign in

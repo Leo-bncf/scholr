@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PublicShell, { Section, CTA } from '@/components/public/PublicShell';
 import Seo from '@/components/public/Seo';
@@ -38,6 +38,37 @@ const GROUPS = [
   },
 ];
 
+/**
+ * One question.
+ *
+ * A button and a grid rather than <details>/<summary>: the native element
+ * cannot animate open, because it toggles `display` on the content. This keeps
+ * the same keyboard behaviour and the same aria contract, and adds the only
+ * thing <details> can't do.
+ */
+function Question({ q, a }) {
+  const [open, setOpen] = useState(false);
+  const id = React.useId();
+
+  return (
+    <div className="faq-item" data-open={open}>
+      <button
+        type="button"
+        className="faq-q scholr-focus"
+        aria-expanded={open}
+        aria-controls={id}
+        onClick={() => setOpen(o => !o)}
+      >
+        {q}
+        <span className="faq-mark" aria-hidden="true" />
+      </button>
+      <div className="faq-a" id={id} role="region" hidden={undefined}>
+        <div><p>{a}</p></div>
+      </div>
+    </div>
+  );
+}
+
 export default function FAQ() {
   return (
     <PublicShell>
@@ -60,26 +91,7 @@ export default function FAQ() {
       {GROUPS.map((g, gi) => (
         <Section key={g.heading} eyebrow={gi === 0 ? 'Answers' : undefined} title={g.heading} tint={gi % 2 === 1}>
           <div style={{ maxWidth: '62ch' }}>
-            {g.items.map(([q, a]) => (
-              <details
-                key={q}
-                style={{ borderTop: '1px solid var(--rule)', padding: 'var(--space-xs) 0' }}
-              >
-                <summary
-                  className="scholr-focus"
-                  style={{
-                    cursor: 'pointer', listStyle: 'none', fontFamily: 'var(--font-display)',
-                    fontWeight: 600, fontSize: 'var(--text-base)', letterSpacing: '-0.02em',
-                    color: 'var(--ink)',
-                  }}
-                >
-                  {q}
-                </summary>
-                <p style={{ margin: 'var(--space-2xs) 0 var(--space-3xs)', fontSize: 'var(--text-sm)', lineHeight: 'var(--lh-body)', color: 'var(--muted)' }}>
-                  {a}
-                </p>
-              </details>
-            ))}
+            {g.items.map(([q, a]) => <Question key={q} q={q} a={a} />)}
           </div>
         </Section>
       ))}

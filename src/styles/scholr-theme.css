@@ -350,6 +350,12 @@
 
 .scholr-focus:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 
+/* One property per hover, never a stack of four. */
+.ruled-row { transition: background-color var(--dur-short) var(--ease-out); }
+.ruled-row:hover { background: color-mix(in oklab, var(--brand) 4%, transparent); }
+.pub-shot { transition: transform var(--dur-long) var(--ease-out); }
+figure:hover > .pub-shot { transform: translateY(-3px); }
+
 /* Gate 34: `clip`, not `hidden` — `hidden` on a scroll container silently
    breaks `position: sticky` on every descendant, which would kill the nav. */
 html, body { overflow-x: clip; }
@@ -401,11 +407,18 @@ html, body { overflow-x: clip; }
   box-shadow: 0 1px 0 var(--sheen) inset, 0 8px 18px -8px var(--gold-glow);
 }
 .pub-btn-gold:hover { filter: brightness(1.04); }
-.pub-btn:active { transform: translateY(1px); }
+.pub-btn:hover { transform: translateY(-1px); }
+.pub-btn:active { transform: translateY(0); transition-duration: var(--dur-micro); }
 .pub-btn:disabled, .pub-btn[aria-disabled='true'] {
   opacity: .5; cursor: not-allowed; transform: none; filter: none;
 }
-.pub-btn { transition: filter var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out); }
+.pub-btn {
+  transition:
+    filter var(--dur-short) var(--ease-out),
+    transform var(--dur-short) var(--ease-out),
+    border-color var(--dur-short) var(--ease-out),
+    background-color var(--dur-short) var(--ease-out);
+}
 .pub-btn-line { border-color: var(--rule); color: var(--ink); background: color-mix(in oklab, var(--surface) 70%, transparent); }
 .pub-btn-line:hover { border-color: var(--muted); }
 
@@ -425,19 +438,45 @@ html, body { overflow-x: clip; }
   display: block; width: 100%; height: auto;
 }
 
-/* Motion primitives. Three named easings, three durations — never the browser
-   default `ease`, never overshoot on UI state. */
+/* --- motion ---------------------------------------------------------------
+   Three easings, three durations, and one orchestrated sequence per page.
+   Elements entering slow into place; elements leaving accelerate away and take
+   about three-quarters of the time. Only transform and opacity are animated —
+   everything else triggers layout. */
 :root {
-  --ease-out:    cubic-bezier(.16, 1, .3, 1);
-  --ease-in:     cubic-bezier(.5, 0, .75, 0);
-  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
-  --dur-fast: 140ms;
-  --dur-base: 240ms;
-  --dur-slow: 420ms;
+  --ease-out:    cubic-bezier(.16, 1, .3, 1);   /* entering */
+  --ease-in:     cubic-bezier(.7, 0, .84, 0);   /* leaving  */
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);  /* toggles  */
+  --dur-micro: 120ms;  /* press, tick, colour shift */
+  --dur-short: 220ms;  /* hover, tooltip, menu      */
+  --dur-long:  420ms;  /* reveal, drawer, accordion */
 }
+
+/* The page-load sequence. Stagger comes from --i on the element, set in the
+   markup by DOM order, so the browser owns the timing rather than a JS loop.
+   Capped at six steps (~300ms) — past about half a second a page feels slow to
+   settle rather than composed. */
+.reveal {
+  opacity: 0;
+  transform: translateY(9px);
+  animation: reveal var(--dur-long) var(--ease-out) forwards;
+  animation-delay: calc(var(--i, 0) * 55ms);
+}
+@keyframes reveal { to { opacity: 1; transform: none; } }
+
+/* Scroll-revealed blocks. The class is added by IntersectionObserver; the
+   element is visible without it, so a failed observer can never hide content. */
+.rise { transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out); }
+.rise[data-rise='pending'] { opacity: 0; transform: translateY(14px); }
+
 @media (prefers-reduced-motion: reduce) {
-  :root { --dur-fast: 0ms; --dur-base: 0ms; --dur-slow: 120ms; }
-  .bench-cta { transition: opacity var(--dur-slow) linear !important; }
+  *, *::before, *::after {
+    animation-duration: 150ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 150ms !important;
+  }
+  .reveal { transform: none; animation-delay: 0ms; }
+  .rise[data-rise='pending'] { transform: none; }
 }
 
 /* Workbench rhythm. `wide` runs the capture full measure; the aside layouts
@@ -461,6 +500,32 @@ html, body { overflow-x: clip; }
     grid-template-areas: 'head' 'shot';
   }
 }
+
+/* Accordion. Animates grid-template-rows 0fr → 1fr rather than height, so the
+   panel can size to its own content and still transition — height:auto has
+   never been animatable and every workaround measures the DOM. */
+.faq-item { border-top: 1px solid var(--rule); }
+.faq-q {
+  display: flex; align-items: baseline; gap: var(--space-sm);
+  width: 100%; padding: var(--space-sm) 0; cursor: pointer;
+  background: none; border: none; text-align: left; font: inherit;
+  font-family: var(--font-display); font-weight: 600; font-size: var(--text-base);
+  letter-spacing: -0.02em; color: var(--ink);
+}
+.faq-mark {
+  margin-left: auto; flex: none; width: 1.1em; height: 1.1em; position: relative;
+  transition: transform var(--dur-short) var(--ease-in-out);
+}
+.faq-mark::before, .faq-mark::after {
+  content: ''; position: absolute; inset: 50% 0 auto 0; height: 1.5px;
+  background: var(--brand); border-radius: 1px;
+}
+.faq-mark::after { transition: transform var(--dur-short) var(--ease-in-out); transform: rotate(90deg); }
+.faq-item[data-open='true'] .faq-mark::after { transform: rotate(0deg); }
+.faq-a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--dur-long) var(--ease-in-out); }
+.faq-item[data-open='true'] .faq-a { grid-template-rows: 1fr; }
+.faq-a > div { overflow: hidden; }
+.faq-a p { margin: 0 0 var(--space-sm); font-size: var(--text-sm); line-height: var(--lh-body); color: var(--muted); }
 
 /* An annotation pinned to a product capture. Sits on the paper, not on the
    screenshot, so it never obscures the thing it is pointing at. */
@@ -497,7 +562,7 @@ html, body { overflow-x: clip; }
   backdrop-filter: blur(14px);
   border: 1px solid var(--rule);
   box-shadow: var(--lift-md);
-  transition: transform var(--dur-slow) var(--ease-out), visibility 0s linear var(--dur-slow);
+  transition: transform var(--dur-long) var(--ease-out), visibility 0s linear var(--dur-long);
 }
 .bench-cta[aria-hidden='false'] { transition-delay: 0s, 0s; }
 @media (max-width: 34rem) {

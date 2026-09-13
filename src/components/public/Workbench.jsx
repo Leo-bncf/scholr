@@ -73,7 +73,7 @@ export function Bench({ n, caption, note, src, alt, annotations = [], eager = fa
           alignSelf: aside ? 'center' : undefined,
           opacity: shown ? 1 : 0,
           transform: shown ? 'none' : 'translateY(6px)',
-          transition: 'opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out)',
+          transition: 'opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out)',
         }}
       >
         <span

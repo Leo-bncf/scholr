@@ -1,4 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import Rise from './Rise';
+import useLightTheme from './useLightTheme';
 import PublicNav from './PublicNav';
 import PublicFooter from './PublicFooter';
 
@@ -7,20 +9,7 @@ import PublicFooter from './PublicFooter';
  * own nav and footer, which is how the two navbars diverged.
  */
 export default function PublicShell({ children }) {
-  // The public site is light, deliberately and in both senses: the product
-  // captures on it are light, and a light screenshot floating on a dark page
-  // looks like a mistake rather than a choice. The app keeps its dark mode —
-  // this only pins the marketing pages, and puts the flag back on the way out
-  // so a signed-in user's preference survives the round trip.
-  useEffect(() => {
-    const root = document.documentElement;
-    const previous = root.dataset.theme;
-    root.dataset.theme = 'light';
-    return () => {
-      if (previous === undefined) delete root.dataset.theme;
-      else root.dataset.theme = previous;
-    };
-  }, []);
+  useLightTheme();
 
   return (
     <div className="scholr-page min-h-screen flex flex-col">
@@ -58,7 +47,7 @@ export function Section({ eyebrow, title, lede, children, tint = false, classNam
     >
       <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '0 1.5rem' }}>
         {(eyebrow || title || lede) && (
-          <header style={{ maxWidth: '36rem', marginBottom: '2rem' }}>
+          <Rise as="header" style={{ maxWidth: '36rem', marginBottom: 'var(--space-lg)' }}>
             {eyebrow && <p className="scholr-label" style={{ margin: 0 }}>{eyebrow}</p>}
             {title && (
               <h2 className="pub-display" style={{ margin: '.6rem 0 0', fontSize: 'clamp(1.6rem, 3.2vw, 2.15rem)' }}>
@@ -66,7 +55,7 @@ export function Section({ eyebrow, title, lede, children, tint = false, classNam
               </h2>
             )}
             {lede && <p className="pub-lede" style={{ margin: '.85rem 0 0', color: 'var(--muted)' }}>{lede}</p>}
-          </header>
+          </Rise>
         )}
         {children}
       </div>

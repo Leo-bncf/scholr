@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, CheckCircle, AlertCircle, Lock } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
+import { AuthCard, AuthField, AuthError, AuthNote, AuthSubmit } from '@/components/public/AuthCard';
 import { requestPasswordReset } from '@/data/session';
 
 /**
- * Password reset page
- * User arrives with reset token from email
- * Allows secure password recovery
+ * Password reset.
+ *
+ * Four steps in one component: ask for the address, confirm it was sent, take
+ * the new password, confirm it changed. It sits in the same split shell as
+ * sign-in — it is linked directly from there, and a user who follows "forgot
+ * your password?" should not feel like they have left the product.
  */
 export default function PasswordReset() {
   const [searchParams] = useSearchParams();
@@ -81,193 +80,128 @@ export default function PasswordReset() {
     }
   };
 
+  const TITLES = {
+    request: 'Reset your password',
+    sent: 'Check your email',
+    reset: 'Choose a new password',
+    success: 'Password changed',
+  };
+  const SUBTITLES = {
+    request: "Enter the address you sign in with and we'll send you a link.",
+    sent: null,
+    reset: 'At least eight characters. Pick something you have not used elsewhere.',
+    success: null,
+  };
+
   return (
-    <div className="min-h-screen scholr-page flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        {step === 'request' && (
-          <>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 justify-center">
-                <Lock className="w-5 h-5" />
-                Reset Password
-              </CardTitle>
-              <p className="text-sm text-slate-600 text-center mt-2">
-                Enter your email and we'll send you a reset link
-              </p>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleRequestReset} className="space-y-4">
-                <div>
-                  <Label className="text-sm font-semibold mb-1 block">Email Address</Label>
-                  <Input
-                    type="email"
-                    placeholder="your@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={loading}
-                  />
-                </div>
+    <AuthCard title={TITLES[step]} subtitle={SUBTITLES[step]}>
+      {step === 'request' && (
+        <form onSubmit={handleRequestReset} className="flex flex-col gap-4">
+          <AuthField id="reset-email" label="Email">
+            <input
+              id="reset-email"
+              type="email"
+              autoComplete="username"
+              placeholder="you@school.org"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+            />
+          </AuthField>
 
-                {error && (
-                  <Alert className="bg-red-50 border-red-200">
-                    <AlertCircle className="w-4 h-4 text-red-600" />
-                    <AlertDescription className="text-red-800 ml-3 text-sm">
-                      {error}
-                    </AlertDescription>
-                  </Alert>
-                )}
+          {error && <AuthError>{error}</AuthError>}
 
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-indigo-600 hover:bg-indigo-700"
-                >
-                  {loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
-                  Send Reset Email
-                </Button>
+          <AuthSubmit busy={loading}>Send the link</AuthSubmit>
 
-                <p className="text-xs text-slate-600 text-center">
-                  Remember your password?{' '}
-                  <button
-                    type="button"
-                    onClick={() => navigate('/')}
-                    className="text-indigo-600 hover:text-indigo-700 font-semibold"
-                  >
-                    Back to Login
-                  </button>
-                </p>
-              </form>
-            </CardContent>
-          </>
-        )}
+          <p className="m-0 text-center text-sm">
+            <button
+              type="button"
+              onClick={() => navigate('/Login')}
+              className="scholr-focus"
+              style={{ background: 'none', border: 'none', font: 'inherit', color: 'var(--brand)', cursor: 'pointer' }}
+            >
+              Back to sign in
+            </button>
+          </p>
+        </form>
+      )}
 
-        {step === 'sent' && (
-          <>
-            <CardHeader>
-              <CardTitle className="text-center">Check Your Email</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 mx-auto">
-                <CheckCircle className="w-6 h-6 text-blue-600" />
-              </div>
+      {step === 'sent' && (
+        <div className="flex flex-col gap-4">
+          <p className="m-0 text-sm" style={{ color: 'var(--body)', lineHeight: 'var(--lh-body)' }}>
+            If <strong style={{ color: 'var(--ink)' }}>{email}</strong> has an account, a reset link is
+            on its way. It expires in an hour.
+          </p>
+          <AuthNote>
+            Nothing arrived? Check spam, then send another — links are single-use, so an old one in
+            your inbox will not work.
+          </AuthNote>
+          <button
+            type="button"
+            onClick={() => setStep('request')}
+            className="pub-btn pub-btn-line scholr-focus w-full justify-center"
+          >
+            Send another
+          </button>
+          <p className="m-0 text-center text-sm">
+            <button
+              type="button"
+              onClick={() => navigate('/Login')}
+              className="scholr-focus"
+              style={{ background: 'none', border: 'none', font: 'inherit', color: 'var(--brand)', cursor: 'pointer' }}
+            >
+              Back to sign in
+            </button>
+          </p>
+        </div>
+      )}
 
-              <div className="text-center space-y-2">
-                <p className="text-sm text-slate-700">
-                  We've sent a password reset email to:
-                </p>
-                <p className="font-semibold text-slate-900">{email}</p>
-                <p className="text-xs text-slate-600 mt-2">
-                  Click the link in the email to reset your password. The link expires in 1 hour.
-                </p>
-              </div>
+      {step === 'reset' && (
+        <form onSubmit={handleResetPassword} className="flex flex-col gap-4">
+          <AuthField id="new-password" label="New password">
+            <input
+              id="new-password"
+              type="password"
+              autoComplete="new-password"
+              placeholder="At least 8 characters"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isProcessing}
+            />
+          </AuthField>
 
-              <Alert className="bg-amber-50 border-amber-200">
-                <AlertDescription className="text-amber-800 text-sm">
-                  Don't see the email? Check your spam folder or request a new link.
-                </AlertDescription>
-              </Alert>
+          <AuthField id="confirm-password" label="Confirm it">
+            <input
+              id="confirm-password"
+              type="password"
+              autoComplete="new-password"
+              value={passwordConfirm}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
+              disabled={isProcessing}
+            />
+          </AuthField>
 
-              <Button
-                onClick={() => setStep('request')}
-                variant="outline"
-                className="w-full"
-              >
-                Send Another Email
-              </Button>
+          {error && <AuthError>{error}</AuthError>}
 
-              <p className="text-xs text-slate-600 text-center">
-                <button
-                  onClick={() => navigate('/')}
-                  className="text-indigo-600 hover:text-indigo-700 font-semibold"
-                >
-                  Back to Login
-                </button>
-              </p>
-            </CardContent>
-          </>
-        )}
+          <AuthSubmit busy={isProcessing}>Change my password</AuthSubmit>
+        </form>
+      )}
 
-        {step === 'reset' && (
-          <>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 justify-center">
-                <Lock className="w-5 h-5" />
-                Create New Password
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleResetPassword} className="space-y-4">
-                <div>
-                  <Label className="text-sm font-semibold mb-1 block">New Password</Label>
-                  <Input
-                    type="password"
-                    placeholder="At least 8 characters"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    disabled={isProcessing}
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-sm font-semibold mb-1 block">Confirm Password</Label>
-                  <Input
-                    type="password"
-                    placeholder="Confirm password"
-                    value={passwordConfirm}
-                    onChange={(e) => setPasswordConfirm(e.target.value)}
-                    disabled={isProcessing}
-                  />
-                </div>
-
-                {error && (
-                  <Alert className="bg-red-50 border-red-200">
-                    <AlertCircle className="w-4 h-4 text-red-600" />
-                    <AlertDescription className="text-red-800 ml-3 text-sm">
-                      {error}
-                    </AlertDescription>
-                  </Alert>
-                )}
-
-                <Button
-                  type="submit"
-                  disabled={isProcessing}
-                  className="w-full bg-indigo-600 hover:bg-indigo-700"
-                >
-                  {isProcessing && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
-                  Reset Password
-                </Button>
-              </form>
-            </CardContent>
-          </>
-        )}
-
-        {step === 'success' && (
-          <>
-            <CardHeader>
-              <CardTitle className="text-center">Password Reset Complete</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 mx-auto">
-                <CheckCircle className="w-8 h-8 text-emerald-600" />
-              </div>
-
-              <div className="text-center space-y-2">
-                <p className="text-slate-900 font-semibold">Your password has been reset!</p>
-                <p className="text-sm text-slate-600">
-                  You can now log in with your new password.
-                </p>
-              </div>
-
-              <Button
-                onClick={() => navigate('/')}
-                className="w-full bg-indigo-600 hover:bg-indigo-700"
-              >
-                Back to Login
-              </Button>
-            </CardContent>
-          </>
-        )}
-      </Card>
-    </div>
+      {step === 'success' && (
+        <div className="flex flex-col gap-4">
+          <p className="m-0 flex items-center gap-2 text-sm" style={{ color: 'var(--good)' }}>
+            <CheckCircle className="w-4 h-4" />
+            Done — your password has been changed.
+          </p>
+          <button
+            type="button"
+            onClick={() => navigate('/Login')}
+            className="pub-btn pub-btn-gold scholr-focus w-full justify-center"
+          >
+            Sign in
+          </button>
+        </div>
+      )}
+    </AuthCard>
   );
 }

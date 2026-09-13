@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import useLightTheme from '@/components/public/useLightTheme';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,6 +17,10 @@ import * as fns from '@/data/functions';
  * Shows school/role context and prompts to accept or create account
  */
 export default function AcceptInvitation() {
+  // Signed-out screens are light, like the rest of the entry experience.
+  // The multi-step logic here is untouched — only the ground it sits on.
+  useLightTheme();
+
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 

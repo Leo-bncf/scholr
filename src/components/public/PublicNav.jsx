@@ -58,8 +58,8 @@ export default function PublicNav() {
             padding: stuck ? undefined : 'var(--space-2xs) var(--space-2xs) var(--space-2xs) var(--space-3xs)',
             transform: stuck ? 'translateY(0)' : 'translateY(2px)',
             transition:
-              'background var(--dur-slow) var(--ease-out), box-shadow var(--dur-slow) var(--ease-out), '
-              + 'border-color var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out)',
+              'background var(--dur-long) var(--ease-out), box-shadow var(--dur-long) var(--ease-out), '
+              + 'border-color var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out)',
             border: stuck ? undefined : '1px solid transparent',
             borderRadius: 'var(--radius-pill)',
           }}

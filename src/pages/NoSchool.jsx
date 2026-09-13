@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import useLightTheme from '@/components/public/useLightTheme';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Building2, Mail, Loader2 } from 'lucide-react';
@@ -7,6 +8,10 @@ import * as userInvitationsData from '@/data/userInvitations';
 import { getCurrentUser, signOut } from '@/data/session';
 
 export default function NoSchool() {
+  // Signed-out screens are light, like the rest of the entry experience.
+  // The multi-step logic here is untouched — only the ground it sits on.
+  useLightTheme();
+
   const [checkingInvitations, setCheckingInvitations] = useState(true);
   const [pendingInvitations, setPendingInvitations] = useState([]);
 
