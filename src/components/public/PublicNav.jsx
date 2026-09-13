@@ -15,9 +15,10 @@ import { isAuthenticated, redirectToLogin } from '@/data/session';
  */
 const LINKS = [
   { label: 'Platform', to: '/Features' },
+  { label: 'Curricula', to: '/ib-school-management-software' },
   { label: 'Pricing', to: '/Pricing' },
   { label: 'Security', to: '/Security' },
-  { label: 'Contact', to: '/Contact' },
+  { label: 'Questions', to: '/FAQ' },
 ];
 
 export default function PublicNav() {

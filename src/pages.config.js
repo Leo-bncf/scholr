@@ -68,6 +68,13 @@ import NoSchool from './pages/NoSchool';
 import ParentDashboard from './pages/ParentDashboard';
 import PasswordReset from './pages/PasswordReset';
 import Pricing from './pages/Pricing';
+import About from './pages/About';
+import FAQ from './pages/FAQ';
+import Schedual from './pages/Schedual';
+import IbCurriculum from './pages/curriculum/IbCurriculum';
+import IgcseCurriculum from './pages/curriculum/IgcseCurriculum';
+import ALevelCurriculum from './pages/curriculum/ALevelCurriculum';
+import UsCurriculum from './pages/curriculum/UsCurriculum';
 
 import SchoolAdminAttendance from './pages/SchoolAdminAttendance';
 import SchoolAdminBilling from './pages/SchoolAdminBilling';
@@ -123,6 +130,16 @@ export const PAGES = {
     "ParentDashboard": ParentDashboard,
     "PasswordReset": PasswordReset,
     "Pricing": Pricing,
+    "About": About,
+    "FAQ": FAQ,
+    "Schedual": Schedual,
+    // Slug-shaped routes: these are the pages a head of department searches for
+    // by name, so the URL says what the page is about rather than which React
+    // component renders it.
+    "ib-school-management-software": IbCurriculum,
+    "igcse-school-management-software": IgcseCurriculum,
+    "a-level-school-management-software": ALevelCurriculum,
+    "us-school-management-software": UsCurriculum,
 
     "SchoolAdminAttendance": SchoolAdminAttendance,
     "SchoolAdminBilling": SchoolAdminBilling,

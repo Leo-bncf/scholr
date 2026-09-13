@@ -8,7 +8,13 @@ import NotificationBell from '@/components/notifications/NotificationBell';
 // children), which meant the lead-capture form registered as 'Demo' could never
 // win — every "Book a demo" button landed on the sandbox role-picker instead.
 // The form is 'BookDemo' now; the two names can no longer collide.
-const publicPages = ['Landing', 'Features', 'Pricing', 'Security', 'Contact', 'BookDemo', 'AcceptInvitation', 'FirstLogin', 'PasswordReset', 'Login'];
+const publicPages = [
+  'Landing', 'Features', 'Pricing', 'Security', 'Contact', 'BookDemo',
+  'About', 'FAQ', 'Schedual',
+  'ib-school-management-software', 'igcse-school-management-software',
+  'a-level-school-management-software', 'us-school-management-software',
+  'AcceptInvitation', 'FirstLogin', 'PasswordReset', 'Login',
+];
 const fullScreenPages = ['ClassWorkspace', 'AssignmentDetail', 'SubmissionReview', 'ClassGradebook', 'Messages', 'SchoolOnboarding'];
 const adminPages = ['SuperAdminProduction'];
 

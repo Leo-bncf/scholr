@@ -17,9 +17,18 @@ const LINKS = [
   ['Platform', '/Features'],
   ['Pricing', '/Pricing'],
   ['Security', '/Security'],
+  ['Questions', '/FAQ'],
+  ['About', '/About'],
   ['Contact', '/Contact'],
   ['Privacy', '/PrivacyPolicy'],
   ['Terms', '/TermsOfService'],
+];
+
+const CURRICULA = [
+  ['IB', '/ib-school-management-software'],
+  ['IGCSE', '/igcse-school-management-software'],
+  ['A-Level', '/a-level-school-management-software'],
+  ['US / AP', '/us-school-management-software'],
 ];
 
 export default function PublicFooter() {
@@ -33,10 +42,42 @@ export default function PublicFooter() {
           Made in Ireland, for schools that run more than one curriculum.
         </p>
 
+        {/* Curricula and the sister product, above the credit line. Not a
+            four-column sitemap — two short rows that each say something. */}
+        <div style={{ display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap', marginTop: 'var(--space-xl)' }}>
+          <div>
+            <p className="scholr-label" style={{ margin: 0 }}>By curriculum</p>
+            <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap', marginTop: 'var(--space-2xs)' }}>
+              {CURRICULA.map(([label, to]) => (
+                <Link key={to} to={to} className="scholr-focus" style={{ fontSize: 'var(--text-sm)', color: 'var(--body)', textDecoration: 'none' }}>
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div style={{ marginLeft: 'auto' }}>
+            <p className="scholr-label" style={{ margin: 0 }}>Also from us</p>
+            <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap', marginTop: 'var(--space-2xs)' }}>
+              <Link to="/Schedual" className="scholr-focus" style={{ fontSize: 'var(--text-sm)', color: 'var(--body)', textDecoration: 'none' }}>
+                Schedual — timetabling
+              </Link>
+              <a
+                href="https://schedual-pro.com"
+                target="_blank"
+                rel="noopener"
+                className="scholr-focus"
+                style={{ fontSize: 'var(--text-sm)', color: 'var(--brand)', textDecoration: 'none' }}
+              >
+                schedual-pro.com ↗
+              </a>
+            </div>
+          </div>
+        </div>
+
         <div
           style={{
-            display: 'flex', gap: '1.6rem', flexWrap: 'wrap', alignItems: 'baseline',
-            marginTop: '3rem', paddingTop: '1.2rem', borderTop: '1px solid var(--rule-soft)',
+            display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap', alignItems: 'baseline',
+            marginTop: 'var(--space-lg)', paddingTop: 'var(--space-xs)', borderTop: '1px solid var(--rule-soft)',
           }}
         >
           <Link to="/" className="scholr-focus" style={{ display: 'flex', alignItems: 'center', gap: '.5rem', textDecoration: 'none', flex: 'none' }}>
