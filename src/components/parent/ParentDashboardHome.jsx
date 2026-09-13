@@ -1,26 +1,14 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { format, isAfter, addDays } from 'date-fns';
-import { Clock, BarChart3, CalendarX, CheckCircle, Bell } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { format, isAfter, addDays, differenceInCalendarDays } from 'date-fns';
+import { CheckCircle } from 'lucide-react';
+import StatusChip from '@/components/app/StatusChip';
+import { Panel, PanelRow, PanelEmpty } from '@/components/app/Panel';
 import * as classesData from '@/data/classes';
 import * as assignmentsData from '@/data/assignments';
 import * as gradebookData from '@/data/gradebook';
 import * as attendanceData from '@/data/attendance';
 import * as messagesData from '@/data/messages';
-
-function SectionHeader({ icon: Icon, title, color }) {
-  return (
-    <div className={`flex items-center gap-2 px-4 py-3 border-b border-slate-100 bg-${color}-50 rounded-t-md`}>
-      <Icon className={`w-4 h-4 text-${color}-600`} />
-      <h3 className={`text-sm font-bold uppercase tracking-wide text-${color}-900`}>{title}</h3>
-    </div>
-  );
-}
-
-function EmptyRow({ text }) {
-  return <p className="px-4 py-6 text-xs text-slate-400 text-center">{text}</p>;
-}
 
 export default function ParentDashboardHome({ schoolId, studentId, parentUserId }) {
   const queryClient = useQueryClient();
@@ -105,123 +93,120 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
   const unreadMessages = messages.filter(m => !m.read_by?.includes(parentUserId));
   const readMessages = messages.filter(m => m.read_by?.includes(parentUserId));
 
-  const urgencyColor = (dueDate) => {
-    const diff = (new Date(dueDate) - now) / (1000 * 60 * 60 * 24);
-    if (diff <= 2) return 'bg-red-100 text-red-700';
-    if (diff <= 7) return 'bg-amber-100 text-amber-700';
-    return 'bg-slate-100 text-slate-600';
+  // Only imminence gets a status colour. A deadline three weeks out is not a
+  // warning, and colouring it one teaches parents to ignore the colour.
+  const dueTone = (dueDate) => {
+    const days = differenceInCalendarDays(new Date(dueDate), now);
+    if (days <= 2) return 'crit';
+    if (days <= 7) return 'warn';
+    return 'mute';
   };
 
-  const ibGradeColor = (g) => g >= 6 ? 'text-emerald-600' : g >= 4 ? 'text-amber-600' : 'text-red-600';
-
-  const attendanceStatusColor = { absent: 'bg-red-100 text-red-700', late: 'bg-amber-100 text-amber-700', excused: 'bg-blue-100 text-blue-700' };
+  const ATTENDANCE_TONE = { absent: 'crit', late: 'warn', excused: 'info' };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6">
 
-      {/* Upcoming Deadlines */}
-      <div className="bg-white rounded-md border border-slate-200 shadow-sm">
-        <SectionHeader icon={Clock} title="Upcoming Deadlines" color="amber" />
-        {assignments.length === 0
-          ? <EmptyRow text="No upcoming deadlines" />
-          : <div className="divide-y divide-slate-50">
-              {assignments.slice(0, 6).map(a => (
-                <div key={a.id} className="flex items-center justify-between px-4 py-3 gap-3">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-slate-800 truncate">{a.title}</p>
-                    <p className="text-xs text-slate-400 mt-0.5 capitalize">{a.type?.replace(/_/g, ' ')}</p>
-                  </div>
-                  <span className={`text-xs font-semibold px-2 py-1 rounded-full flex-shrink-0 ${urgencyColor(a.due_date)}`}>
-                    {format(new Date(a.due_date), 'MMM d')}
-                  </span>
-                </div>
-              ))}
-            </div>
-        }
-      </div>
+      <Panel title="Coming up">
+        {assignments.length === 0 ? (
+          <PanelEmpty>Nothing due in the near future.</PanelEmpty>
+        ) : (
+          assignments.slice(0, 6).map(a => (
+            <PanelRow key={a.id} name={a.title} detail={a.type?.replace(/_/g, ' ')}>
+              <StatusChip tone={dueTone(a.due_date)}>{format(new Date(a.due_date), 'd MMM')}</StatusChip>
+            </PanelRow>
+          ))
+        )}
+      </Panel>
 
-      {/* Recent Grade Releases */}
-      <div className="bg-white rounded-md border border-slate-200 shadow-sm">
-        <SectionHeader icon={BarChart3} title="Recent Grade Releases" color="emerald" />
-        {grades.length === 0
-          ? <EmptyRow text="No grades released yet" />
-          : <div className="divide-y divide-slate-50">
-              {grades.map(g => (
-                <div key={g.id} className="flex items-center justify-between px-4 py-3 gap-3">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-slate-800 truncate">{g.title}</p>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      {g.score != null && g.max_score ? `${g.score} / ${g.max_score}` : ''}
-                      {g.created_at ? ` · ${format(new Date(g.created_at), 'MMM d')}` : ''}
-                    </p>
-                  </div>
-                  {g.ib_grade != null && (
-                    <span className={`text-lg font-bold flex-shrink-0 ${ibGradeColor(g.ib_grade)}`}>{g.ib_grade}</span>
-                  )}
-                  {g.percentage != null && g.ib_grade == null && (
-                    <span className="text-sm font-semibold text-slate-700 flex-shrink-0">{g.percentage}%</span>
-                  )}
-                </div>
-              ))}
-            </div>
-        }
-      </div>
+      <Panel title="Grades released">
+        {grades.length === 0 ? (
+          <PanelEmpty>
+            Nothing released yet. Teachers choose when a grade becomes visible to families.
+          </PanelEmpty>
+        ) : (
+          grades.map(g => (
+            <PanelRow
+              key={g.id}
+              name={g.title}
+              detail={[
+                g.score != null && g.max_score ? `${g.score}/${g.max_score}` : null,
+                g.created_at ? format(new Date(g.created_at), 'd MMM') : null,
+              ].filter(Boolean).join(' · ')}
+              // Deliberately uncoloured. A grade is a result, not an alert, and
+              // the reserved palette is for things that need acting on.
+              value={
+                g.ib_grade != null ? `${g.ib_grade}/7`
+                  : g.percentage != null ? `${g.percentage}%`
+                  : '—'
+              }
+            />
+          ))
+        )}
+      </Panel>
 
-      {/* Attendance Notifications */}
-      <div className="bg-white rounded-md border border-slate-200 shadow-sm">
-        <SectionHeader icon={CalendarX} title="Attendance Notifications" color="rose" />
-        {attendance.length === 0
-          ? <EmptyRow text="No attendance issues in the last 30 days" />
-          : <div className="divide-y divide-slate-50">
-              {attendance.map(a => (
-                <div key={a.id} className="flex items-center justify-between px-4 py-3 gap-3">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-slate-800">{format(new Date(a.date), 'EEEE, MMM d')}</p>
-                    {a.note && <p className="text-xs text-slate-400 mt-0.5 truncate">{a.note}</p>}
-                  </div>
-                  <span className={`text-xs font-semibold px-2 py-1 rounded-full capitalize flex-shrink-0 ${attendanceStatusColor[a.status] || 'bg-slate-100 text-slate-600'}`}>
-                    {a.status}
-                  </span>
-                </div>
-              ))}
-            </div>
-        }
-      </div>
+      <Panel title="Attendance">
+        {attendance.length === 0 ? (
+          <PanelEmpty>No absences or lates in the last 30 days.</PanelEmpty>
+        ) : (
+          attendance.map(a => (
+            <PanelRow key={a.id} name={format(new Date(a.date), 'EEEE d MMM')} detail={a.note || undefined}>
+              <StatusChip tone={ATTENDANCE_TONE[a.status] || 'mute'}>{a.status}</StatusChip>
+            </PanelRow>
+          ))
+        )}
+      </Panel>
 
-      {/* Messages — Acknowledge */}
-      <div className="bg-white rounded-md border border-slate-200 shadow-sm">
-        <SectionHeader icon={Bell} title={`Messages ${unreadMessages.length > 0 ? `(${unreadMessages.length} unread)` : ''}`} color="indigo" />
-        {messages.length === 0
-          ? <EmptyRow text="No messages" />
-          : <div className="divide-y divide-slate-50 max-h-80 overflow-y-auto">
-              {unreadMessages.map(msg => (
-                <div key={msg.id} className="px-4 py-3 bg-indigo-50/50">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-slate-800 truncate">{msg.subject}</p>
-                      <p className="text-xs text-slate-500 mt-0.5">{msg.sender_name} · {format(new Date(msg.created_at), 'MMM d')}</p>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="text-xs flex-shrink-0 border-indigo-200 text-indigo-700 hover:bg-indigo-50"
-                      onClick={() => acknowledgeMutation.mutate(msg)}
-                      disabled={acknowledgeMutation.isPending}
-                    >
-                      <CheckCircle className="w-3 h-3 mr-1" /> Acknowledge
-                    </Button>
-                  </div>
+      <Panel title={unreadMessages.length > 0 ? `Messages · ${unreadMessages.length} unread` : 'Messages'}>
+        {messages.length === 0 ? (
+          <PanelEmpty>No messages from the school yet.</PanelEmpty>
+        ) : (
+          <div className="max-h-80 overflow-y-auto">
+            {unreadMessages.map(msg => (
+              <div
+                key={msg.id}
+                className="panel-row flex items-start gap-3 px-4 py-3"
+                style={{ borderBottom: '1px solid var(--rule-soft)', borderLeft: '3px solid var(--cobalt)' }}
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="m-0 text-sm font-medium" style={{ color: 'var(--ink)' }}>{msg.subject}</p>
+                  <p className="m-0 mt-0.5 text-xs" style={{ color: 'var(--muted)' }}>
+                    {msg.sender_name} · {format(new Date(msg.created_at), 'd MMM')}
+                  </p>
                 </div>
-              ))}
-              {readMessages.map(msg => (
-                <div key={msg.id} className="px-4 py-3 opacity-60">
-                  <p className="text-sm text-slate-600 truncate">{msg.subject}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">{msg.sender_name} · {format(new Date(msg.created_at), 'MMM d')}</p>
-                </div>
-              ))}
-            </div>
-        }
-      </div>
+                <button
+                  type="button"
+                  onClick={() => acknowledgeMutation.mutate(msg)}
+                  disabled={acknowledgeMutation.isPending}
+                  className="cobalt-focus shrink-0 inline-flex items-center gap-1.5 text-xs font-medium"
+                  style={{
+                    border: '1px solid var(--rule)',
+                    borderRadius: 'var(--radius-control)',
+                    padding: '0.3rem 0.6rem',
+                    background: 'var(--surface)',
+                    color: 'var(--cobalt)',
+                    cursor: acknowledgeMutation.isPending ? 'wait' : 'pointer',
+                  }}
+                >
+                  <CheckCircle className="w-3 h-3" /> Acknowledge
+                </button>
+              </div>
+            ))}
+            {readMessages.map(msg => (
+              <div
+                key={msg.id}
+                className="panel-row px-4 py-3"
+                style={{ borderBottom: '1px solid var(--rule-soft)', opacity: 0.6 }}
+              >
+                <p className="m-0 text-sm" style={{ color: 'var(--body)' }}>{msg.subject}</p>
+                <p className="m-0 mt-0.5 text-xs" style={{ color: 'var(--muted)' }}>
+                  {msg.sender_name} · {format(new Date(msg.created_at), 'd MMM')}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </Panel>
 
     </div>
   );

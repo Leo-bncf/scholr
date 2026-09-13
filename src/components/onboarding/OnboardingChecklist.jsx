@@ -1,23 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboardingStatus } from './useOnboardingStatus';
-import { Progress } from '@/components/ui/progress';
-import { Button } from '@/components/ui/button';
-import {
-  CheckCircle2, Circle, ChevronRight, Sparkles, X,
-  Calendar, Clock, BookOpen, Layers, UserCheck, Mail, GraduationCap
-} from 'lucide-react';
+import { ChevronRight, X } from 'lucide-react';
+import Meter from '@/components/app/Meter';
 
-const ICON_MAP = {
-  calendar: Calendar,
-  clock: Clock,
-  book: BookOpen,
-  layers: Layers,
-  'user-check': UserCheck,
-  mail: Mail,
-  'graduation-cap': GraduationCap,
-};
-
+/**
+ * Setup progress.
+ *
+ * Disappears once complete (`isComplete` short-circuits above), which is why
+ * it can afford to sit at the top of the dashboard: it is temporary by
+ * construction. Completed steps stay visible but recede — the count only means
+ * something if you can see what's behind it.
+ */
 export default function OnboardingChecklist({ schoolId, onDismiss, showWizard }) {
   const navigate = useNavigate();
   const { data, isLoading } = useOnboardingStatus(schoolId);
@@ -29,94 +23,133 @@ export default function OnboardingChecklist({ schoolId, onDismiss, showWizard })
   const { steps, completedCount, totalCount, progressPct, nextIncomplete } = data;
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-      {/* Header */}
-      <div className="px-5 py-4 bg-gradient-to-r from-indigo-50 to-white border-b border-slate-100">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-indigo-600" />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-slate-900">School Setup Checklist</p>
-              <p className="text-xs text-slate-500">{completedCount} of {totalCount} steps complete</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-black text-indigo-600">{progressPct}%</span>
+    <section className="cobalt-panel overflow-hidden">
+      <header className="px-4 pt-3.5 pb-3" style={{ borderBottom: '1px solid var(--rule-soft)' }}>
+        <div className="flex items-center gap-3">
+          <h2 className="cobalt-label m-0">Setting up</h2>
+          <span
+            className="ml-auto text-sm cobalt-num"
+            style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink)' }}
+          >
+            {completedCount}/{totalCount}
+          </span>
+          <button
+            type="button"
+            onClick={() => setCollapsed(c => !c)}
+            aria-expanded={!collapsed}
+            aria-label={collapsed ? 'Show setup steps' : 'Hide setup steps'}
+            className="cobalt-focus"
+            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--muted)' }}
+          >
+            <ChevronRight className={`w-4 h-4 transition-transform ${collapsed ? '' : 'rotate-90'}`} />
+          </button>
+          {onDismiss && (
             <button
-              onClick={() => setCollapsed(c => !c)}
-              className="text-slate-400 hover:text-slate-600 transition-colors"
+              type="button"
+              onClick={onDismiss}
+              aria-label="Dismiss the setup checklist"
+              className="cobalt-focus"
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--faint)' }}
             >
-              <ChevronRight className={`w-4 h-4 transition-transform ${collapsed ? '' : 'rotate-90'}`} />
+              <X className="w-4 h-4" />
             </button>
-            {onDismiss && (
-              <button onClick={onDismiss} className="text-slate-300 hover:text-slate-500 transition-colors">
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
+          )}
         </div>
-        <Progress value={progressPct} className="h-1.5 mt-3" indicatorClassName="bg-indigo-500" />
-      </div>
+        <div className="mt-2.5">
+          <Meter value={progressPct} height={4} />
+        </div>
+      </header>
 
       {!collapsed && (
-        <div className="divide-y divide-slate-50">
+        <div>
           {steps.map((step) => {
-            const Icon = ICON_MAP[step.icon] || Circle;
-            return (
+            const body = (
               <div
-                key={step.id}
-                className={`flex items-center gap-3 px-5 py-3 transition-colors ${
-                  step.completed ? 'opacity-60' : 'hover:bg-slate-50 cursor-pointer'
-                }`}
-                onClick={() => !step.completed && navigate(`/${step.page}`)}
+                className="panel-row flex items-baseline gap-3 px-4 py-2.5"
+                style={{ borderBottom: '1px solid var(--rule-soft)', opacity: step.completed ? 0.5 : 1 }}
               >
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
-                  step.completed ? 'bg-emerald-100' : 'bg-slate-100'
-                }`}>
-                  {step.completed
-                    ? <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    : <Icon className="w-3.5 h-3.5 text-slate-500" />
-                  }
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-semibold ${step.completed ? 'text-slate-400 line-through' : 'text-slate-800'}`}>
+                <span className="min-w-0">
+                  <span
+                    className="block text-sm font-medium"
+                    style={{
+                      color: 'var(--ink)',
+                      textDecoration: step.completed ? 'line-through' : 'none',
+                    }}
+                  >
                     {step.label}
-                  </p>
-                  <p className="text-xs text-slate-400 truncate">{step.detail}</p>
-                </div>
-                {!step.completed && (
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
-                )}
+                  </span>
+                  <span className="block text-xs mt-0.5" style={{ color: 'var(--muted)' }}>{step.detail}</span>
+                </span>
+                <span className="cobalt-label ml-auto shrink-0" style={{ color: step.completed ? 'var(--good)' : 'var(--cobalt)' }}>
+                  {step.completed ? 'Done' : 'To do'}
+                </span>
               </div>
+            );
+
+            // A completed step isn't a link: there is nothing left to do on it,
+            // and a control that looks clickable but isn't is worse than plain
+            // text.
+            return step.completed ? (
+              <div key={step.id}>{body}</div>
+            ) : (
+              <button
+                key={step.id}
+                type="button"
+                onClick={() => navigate(`/${step.page}`)}
+                className="panel-row-link cobalt-focus block w-full text-left"
+                style={{ background: 'transparent', border: 'none', padding: 0, font: 'inherit', cursor: 'pointer' }}
+              >
+                {body}
+              </button>
             );
           })}
         </div>
       )}
 
-      {/* CTA footer */}
       {!collapsed && nextIncomplete && (
-        <div className="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-3">
-          <p className="text-xs text-slate-500">
-            Next: <span className="font-semibold text-slate-700">{nextIncomplete.label}</span>
+        <footer
+          className="px-4 py-3 flex items-center gap-3 flex-wrap"
+          style={{ background: 'var(--surface-sunk)', borderTop: '1px solid var(--rule-soft)' }}
+        >
+          <p className="m-0 text-xs" style={{ color: 'var(--muted)' }}>
+            Next: <span style={{ color: 'var(--ink)' }}>{nextIncomplete.label}</span>
           </p>
-          <div className="flex gap-2">
+          <span className="ml-auto flex items-center gap-2">
             {showWizard && (
-              <Button size="sm" variant="outline" onClick={showWizard} className="text-xs h-7 px-3">
-                Open Wizard
-              </Button>
+              <button
+                type="button"
+                onClick={showWizard}
+                className="cobalt-focus text-xs font-medium"
+                style={{
+                  border: '1px solid var(--rule)',
+                  borderRadius: 'var(--radius-control)',
+                  padding: '0.3rem 0.6rem',
+                  background: 'var(--surface)',
+                  color: 'var(--body)',
+                  cursor: 'pointer',
+                }}
+              >
+                Open wizard
+              </button>
             )}
-            <Button
-              size="sm"
-              className="bg-indigo-600 hover:bg-indigo-700 text-xs h-7 px-3"
+            <button
+              type="button"
               onClick={() => navigate(`/${nextIncomplete.page}`)}
+              className="cobalt-focus inline-flex items-center gap-1 text-xs font-medium"
+              style={{
+                border: 'none',
+                borderRadius: 'var(--radius-control)',
+                padding: '0.35rem 0.65rem',
+                background: 'var(--cobalt)',
+                color: 'var(--cobalt-ink)',
+                cursor: 'pointer',
+              }}
             >
-              Continue Setup <ChevronRight className="w-3 h-3 ml-1" />
-            </Button>
-          </div>
-        </div>
+              Continue <ChevronRight className="w-3 h-3" />
+            </button>
+          </span>
+        </footer>
       )}
-    </div>
+    </section>
   );
 }

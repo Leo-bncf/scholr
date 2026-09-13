@@ -1,0 +1,201 @@
+/* ---------------------------------------------------------------------------
+   Cobalt — the dashboard design tokens
+   ---------------------------------------------------------------------------
+   Hallmark's modern-minimal / Cobalt theme, adapted for application surfaces.
+
+   Cool engineered paper rather than #fff, cool charcoal ink rather than #000,
+   and exactly ONE accent that should never cover more than ~5% of a viewport.
+   Structure comes from 1px hairlines, not from stacked cards with shadows.
+
+   Every colour in a dashboard must reference a token from this file. An inline
+   hex or a bare Tailwind colour class bypasses the theme and is the thing that
+   makes a redesign drift back to where it started.
+
+   Two Cobalt page-level signatures are deliberately absent: the code-block hero
+   and the ⌘K palette. Both are dev-tool marketing devices; a teacher taking a
+   register is not their audience.
+--------------------------------------------------------------------------- */
+
+/* Self-hosted, so no third-party request on page load. */
+@import '@fontsource-variable/space-grotesk';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+
+:root {
+  --paper:        oklch(98.5% 0.004 250);
+  --surface:      oklch(100% 0 0);
+  --surface-sunk: oklch(97% 0.004 252);
+  --ink:          oklch(24% 0.02 258);
+  --body:         oklch(34% 0.018 257);
+  --muted:        oklch(55% 0.014 256);
+  --faint:        oklch(68% 0.012 256);
+  --rule:         oklch(91% 0.006 254);
+  --rule-soft:    oklch(94.5% 0.005 254);
+
+  --cobalt:       oklch(58% 0.20 256);
+  --cobalt-sf:    oklch(96% 0.03 256);
+  --cobalt-ink:   oklch(100% 0 0);
+
+  --graphite:     oklch(20% 0.016 260);
+  --graphite-ink: oklch(92% 0.008 254);
+  --graphite-mut: oklch(70% 0.012 256);
+  --graphite-rule:oklch(32% 0.02 260);
+
+  /* Status is a RESERVED palette: good / warning / critical. Never reused as a
+     decorative or "series" colour, and never the only signal — a status always
+     ships with its word. */
+  --good:    oklch(58% 0.13 155);  --good-sf: oklch(96% 0.03 155);
+  --warn:    oklch(64% 0.14 75);   --warn-sf: oklch(96.5% 0.04 75);
+  --crit:    oklch(56% 0.17 25);   --crit-sf: oklch(96% 0.03 25);
+
+  --radius-control: 6px;   /* buttons, inputs — "drawn with a ruler" */
+  --radius-surface: 10px;  /* panels, bands */
+
+  --font-display: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Three states, not two: an explicit choice stamps data-theme, and the default
+   "system" setting stamps nothing — so both have to be handled. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --paper:        oklch(17% 0.014 260);
+    --surface:      oklch(21% 0.016 260);
+    --surface-sunk: oklch(19% 0.015 260);
+    --ink:          oklch(95% 0.006 254);
+    --body:         oklch(84% 0.008 254);
+    --muted:        oklch(66% 0.012 256);
+    --faint:        oklch(54% 0.012 256);
+    --rule:         oklch(30% 0.014 258);
+    --rule-soft:    oklch(26% 0.014 258);
+    --cobalt:       oklch(70% 0.16 256);
+    --cobalt-sf:    oklch(28% 0.05 256);
+    --cobalt-ink:   oklch(15% 0.01 260);
+    --graphite:     oklch(13% 0.012 260);
+    --graphite-rule:oklch(26% 0.016 260);
+    --good: oklch(70% 0.13 155); --good-sf: oklch(27% 0.04 155);
+    --warn: oklch(76% 0.13 75);  --warn-sf: oklch(28% 0.04 75);
+    --crit: oklch(70% 0.15 25);  --crit-sf: oklch(28% 0.04 25);
+  }
+}
+:root[data-theme='dark'] {
+  --paper:        oklch(17% 0.014 260);
+  --surface:      oklch(21% 0.016 260);
+  --surface-sunk: oklch(19% 0.015 260);
+  --ink:          oklch(95% 0.006 254);
+  --body:         oklch(84% 0.008 254);
+  --muted:        oklch(66% 0.012 256);
+  --faint:        oklch(54% 0.012 256);
+  --rule:         oklch(30% 0.014 258);
+  --rule-soft:    oklch(26% 0.014 258);
+  --cobalt:       oklch(70% 0.16 256);
+  --cobalt-sf:    oklch(28% 0.05 256);
+  --cobalt-ink:   oklch(15% 0.01 260);
+  --graphite:     oklch(13% 0.012 260);
+  --graphite-rule:oklch(26% 0.016 260);
+  --good: oklch(70% 0.13 155); --good-sf: oklch(27% 0.04 155);
+  --warn: oklch(76% 0.13 75);  --warn-sf: oklch(28% 0.04 75);
+  --crit: oklch(70% 0.15 25);  --crit-sf: oklch(28% 0.04 25);
+}
+
+/* --- shared dashboard primitives ---------------------------------------- */
+
+.cobalt-page { background: var(--paper); color: var(--body); font-family: var(--font-sans); }
+
+.cobalt-h1 {
+  font-family: var(--font-display); font-weight: 600; font-style: normal;
+  letter-spacing: -0.03em; color: var(--ink);
+  /* Long words in a display size must break rather than force a scrollbar. */
+  overflow-wrap: anywhere; min-width: 0; text-wrap: balance;
+}
+
+/* The machine-readout voice: mono, uppercase, tracked. Labels and meta only —
+   never body copy. */
+.cobalt-label {
+  font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.07em;
+  text-transform: uppercase; color: var(--muted); font-weight: 500;
+}
+
+.cobalt-num { font-variant-numeric: tabular-nums; }
+
+.cobalt-panel {
+  background: var(--surface); border: 1px solid var(--rule);
+  border-radius: var(--radius-surface);
+}
+
+/* Cobalt's one dark beat per page: light → dark → light.
+
+   The band rebinds the surface tokens for everything nested inside it, so a
+   Panel row, a StatusChip or a stat tile resolves against graphite without
+   needing a dark-mode variant of its own. Components that reference tokens get
+   this for free; components that hardcode `text-slate-900` do not, which is the
+   practical reason for the "always use a token" rule above. */
+.cobalt-band {
+  background: var(--graphite); color: var(--graphite-ink);
+  border: 1px solid var(--graphite-rule);
+  border-radius: var(--radius-surface);
+
+  --surface:   var(--graphite);
+  --ink:       var(--graphite-ink);
+  --body:      var(--graphite-ink);
+  --muted:     var(--graphite-mut);
+  --faint:     var(--graphite-mut);
+  --rule:      var(--graphite-rule);
+  --rule-soft: var(--graphite-rule);
+  /* The 58% cobalt is a text colour for paper, not for a 20%-lightness ground;
+     inside the band it steps up to the same value dark mode uses. */
+  --cobalt:    oklch(70% 0.16 256);
+  --cobalt-sf: oklch(30% 0.06 256);
+}
+
+/* shadcn's Tabs, re-skinned: a strip of plain text over a hairline, with the
+   active tab marked by a 2px cobalt underline instead of a filled pill. The
+   attribute selector outranks the utility classes the component ships with,
+   so this holds without !important. */
+.cobalt-tabs {
+  background: transparent; border-bottom: 1px solid var(--rule); border-radius: 0;
+  padding: 0; height: auto; gap: 0.15rem; flex-wrap: wrap; justify-content: flex-start;
+}
+.cobalt-tabs [role='tab'] {
+  background: transparent; color: var(--muted); box-shadow: none;
+  border-radius: 0; border-bottom: 2px solid transparent;
+  padding: 0.45rem 0.7rem; font-size: 0.82rem; font-weight: 500;
+}
+.cobalt-tabs [role='tab']:hover { color: var(--ink); }
+.cobalt-tabs [role='tab'][data-state='active'] {
+  background: transparent; color: var(--ink); box-shadow: none;
+  border-bottom-color: var(--cobalt);
+}
+
+/* A grid whose dividers are the 1px gap showing through a rule-coloured
+   backdrop. Cells paint their own surface on top. This is how a row of tiles
+   keeps correct hairlines at every wrap point without nth-child arithmetic. */
+.cobalt-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-surface);
+  overflow: hidden;
+}
+.cobalt-grid > * { background: var(--surface); }
+.cobalt-grid > a:hover { background: var(--surface-sunk); }
+
+/* A band already pads itself, so its rows sit flush to that padding instead of
+   indenting a second time. This is why PanelRow carries a class at all. */
+.cobalt-band .panel-row,
+.cobalt-band .panel-empty { padding-left: 0; padding-right: 0; }
+
+/* The last hairline in a list is the panel's own border drawn twice. Matched at
+   any depth, because lists are often wrapped in a scroll container. */
+.cobalt-panel .panel-row:last-child,
+.cobalt-band  .panel-row:last-child,
+.cobalt-panel .panel-row-link:last-child .panel-row,
+.cobalt-band  .panel-row-link:last-child .panel-row { border-bottom: none; }
+
+/* A row that navigates has to look like it does. */
+.panel-row-link:hover .panel-row { background: var(--surface-sunk); }
+.cobalt-band .panel-row-link:hover .panel-row { background: var(--graphite-rule); }
+
+.cobalt-focus:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
