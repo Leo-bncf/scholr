@@ -16,7 +16,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
  * 1600 px and was sliced in half by `overflow-x: clip` at 1280 — the width
  * most people actually use.
  */
-export function Bench({ n, caption, note, src, alt, annotations = [], eager = false }) {
+export function Bench({ n, caption, note, src, alt, annotations = [], eager = false, layout = 'wide' }) {
   const ref = useRef(null);
 
   // Visible by default, and only hidden if we are certain we can reveal it
@@ -44,15 +44,33 @@ export function Bench({ n, caption, note, src, alt, annotations = [], eager = fa
     return () => { io.disconnect(); clearTimeout(failsafe); };
   }, []);
 
+  // Three rhythms, so four captures in a row don't read as a contact sheet.
+  // `wide` opens and closes the sequence; the two `aside` layouts sit the
+  // caption beside a smaller frame and mirror each other.
+  const aside = layout === 'left' || layout === 'right';
+
   return (
-    <section ref={ref} style={{ padding: '0 1.5rem', margin: '0 auto', maxWidth: '76rem' }}>
+    <section
+      ref={ref}
+      className={
+        aside ? `bench bench--aside${layout === 'right' ? ' bench--right' : ''}` : 'bench'
+      }
+      style={{
+        padding: '0 var(--space-md)',
+        margin: '0 auto',
+        maxWidth: layout === 'wide' ? '76rem' : '70rem',
+      }}
+    >
       <div
         /* Gate 54 (auto-fail): a label and a heading in the same wrapper must
-           resolve to a single column. The number sits ABOVE the caption, never
+           resolve to a single column. The role sits ABOVE the caption, never
            beside it — tag-left/heading-right is the templated-editorial tell. */
+        className="bench__head"
         style={{
           display: 'flex', flexDirection: 'column', gap: 'var(--space-3xs)',
           marginBottom: 'var(--space-sm)',
+          gridArea: aside ? 'head' : undefined,
+          alignSelf: aside ? 'center' : undefined,
           opacity: shown ? 1 : 0,
           transform: shown ? 'none' : 'translateY(6px)',
           transition: 'opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out)',
@@ -64,17 +82,17 @@ export function Bench({ n, caption, note, src, alt, annotations = [], eager = fa
         >
           {n}
         </span>
-        <h2 className="pub-display" style={{ margin: 0, fontSize: 'clamp(1.15rem, 2.1vw, 1.45rem)', letterSpacing: '-0.028em', maxWidth: '30ch' }}>
+        <h2 className="pub-display" style={{ margin: 0, fontSize: 'var(--text-xl)', letterSpacing: '-0.028em', maxWidth: '26ch' }}>
           {caption}
         </h2>
         {note && (
-          <p style={{ margin: 'var(--space-3xs) 0 0', fontSize: '.92rem', color: 'var(--muted)', maxWidth: '52ch' }}>
+          <p style={{ margin: 'var(--space-2xs) 0 0', fontSize: 'var(--text-sm)', lineHeight: 'var(--lh-body)', color: 'var(--muted)', maxWidth: '50ch' }}>
             {note}
           </p>
         )}
       </div>
 
-      <figure style={{ margin: 0, position: 'relative' }}>
+      <figure style={{ margin: 0, position: 'relative', gridArea: aside ? 'shot' : undefined, minWidth: 0 }}>
         <img
           src={src}
           alt={alt}

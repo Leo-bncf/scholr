@@ -30,7 +30,7 @@ export default function PublicFooter() {
           className="pub-display"
           style={{ margin: 0, fontSize: 'clamp(1.6rem, 4vw, 2.6rem)', maxWidth: '18ch' }}
         >
-          Built in Ireland for schools that teach more than one thing.
+          Made in Ireland, for schools that run more than one curriculum.
         </p>
 
         <div

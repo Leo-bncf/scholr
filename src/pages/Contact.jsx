@@ -25,7 +25,7 @@ export default function Contact() {
           Talk to the people who build it
         </h1>
         <p className="m-0 mt-4 text-lg leading-relaxed" style={{ color: 'var(--muted)', maxWidth: '50ch' }}>
-          Scholr is a small team. Whoever answers will know the answer.
+          Two people build Scholr. Whoever replies wrote the part you are asking about.
         </p>
 
         <div className="mt-9 scholr-panel px-6 py-7" style={{ maxWidth: '34rem' }}>
@@ -48,8 +48,8 @@ export default function Contact() {
             </a>
           </p>
           <p className="m-0 mt-3 text-sm" style={{ color: 'var(--muted)' }}>
-            We reply within one working day. Security questionnaires and procurement paperwork are
-            welcome — send them straight here.
+            Security questionnaires, data-processing agreements and procurement paperwork are
+            welcome — send them straight here rather than asking whether you may.
           </p>
         </div>
       </Section>

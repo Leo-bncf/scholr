@@ -40,17 +40,18 @@ function Masthead() {
     <section className="pub-wash" style={{ paddingTop: '1.5rem', paddingBottom: '3rem' }}>
       <div style={{ maxWidth: '76rem', margin: '0 auto', padding: '0 1.5rem' }}>
         <p className="scholr-label" style={{ margin: 0, color: 'var(--brand)' }}>
-          Dublin · school management for international schools
+          Dublin · school management software
         </p>
         <h1
           className="pub-display"
-          style={{ margin: '.9rem 0 0', fontSize: 'clamp(1.7rem, 3.4vw, 2.5rem)', maxWidth: '24ch' }}
+          style={{ margin: 'var(--space-xs) 0 0', fontSize: 'var(--text-3xl)', maxWidth: '22ch' }}
         >
-          Four curricula. Six roles. One set of records.
+          Your school teaches more than one curriculum. Your software should know that.
         </h1>
-        <p className="pub-lede" style={{ margin: '1rem 0 0', maxWidth: '52ch', color: 'var(--muted)' }}>
-          Below is the software, screen by screen, as four different people at the same school use it
-          on the same Monday morning.
+        <p className="pub-lede" style={{ margin: 'var(--space-sm) 0 0', maxWidth: '54ch', color: 'var(--muted)' }}>
+          Scholr runs IB, IGCSE, A-Level and US programmes side by side in one school, on one set of
+          records — different grading scales, different reporting, different rules about who sees
+          what. Here is what that looks like on screen.
         </p>
         <div style={{ display: 'flex', gap: '.7rem', marginTop: '1.6rem', flexWrap: 'wrap' }}>
           <CTA to="/BookDemo">Book a demo</CTA>
@@ -83,9 +84,9 @@ export default function Landing() {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(3.5rem, 7vw, 6rem)', paddingBottom: '4rem' }}>
         <Bench
-          n="08:30"
-          caption="Aoife has four minutes before period one"
-          note="So the register, the room and what's on next are the page — not a homepage she has to navigate out of."
+          n="Teacher"
+          caption="The period you are about to teach, not a homepage"
+          note="A teacher gets a few minutes between lessons. The dashboard opens on today's timetable with the current period marked, the room, and the work waiting to be marked — no navigating to find it."
           src="/marketing/teacher-dashboard.png"
           alt="A teacher's dashboard: today's timetable with the current period marked, twenty-three pieces of work waiting to be graded, and the term's deadlines."
           annotations={[{ text: 'the current period, marked', top: '30%', right: '1.25rem' }]}
@@ -93,29 +94,31 @@ export default function Landing() {
         />
 
         <Bench
-          n="11:15"
-          caption="Cormac is signing his name to 44 predicted grades in October"
-          note="Predictions carry the trend behind them, so a number he disagrees with can be argued with rather than just overwritten."
+          n="Coordinator"
+          caption="Predicted grades with the trend behind them"
+          note="A coordinator signs off predictions for the whole cohort. Each one shows its history and its target, so a number you disagree with can be questioned rather than simply overwritten — and Extended Essay progress is tracked per student, not per spreadsheet."
           src="/marketing/coordinator-cohort.png"
           alt="A coordinator's cohort view: predicted mean against target per subject, Extended Essay progress across the year group, and the students who need a conversation."
           annotations={[{ text: 'the trend behind the number', top: '73%', right: '1.25rem' }]}
+          layout="left"
         />
 
         <div ref={thirdBench}>
           <Bench
-            n="16:40"
-            caption="A parent wants to know how her daughter is doing, without ringing the office"
-            note="She sees her own two children and nothing else, and only the marks a teacher has chosen to release."
+            n="Family"
+            caption="A parent's own children, and only what has been released"
+            note="Parents are linked to specific students and see nothing outside that link. Marks appear when the teacher publishes them; attendance visibility is a school-level setting; notes marked staff-only never leave the staff room."
             src="/marketing/parent-portal.png"
             alt="The family portal: attendance for the term, grades released by teachers, and what is due this week for one named child."
             annotations={[{ text: 'released by the teacher, not automatic', top: '76%', right: '1.25rem' }]}
+            layout="right"
           />
         </div>
 
         <Bench
-          n="17:05"
-          caption="And someone has to notice the two classes with no teacher on them"
-          note="Attendance, enrolment gaps, billing and the timetable are checked continuously; the page shows what is actually broken."
+          n="Operations"
+          caption="What is broken this morning, in order"
+          note="Classes with no teacher assigned, students enrolled in nothing, attendance drifting, a reporting deadline approaching. The page is a ranked list of things that need a decision, not a wall of charts."
           src="/marketing/admin-operations.png"
           alt="The operations page: two classes without a teacher flagged critical, attendance at 87% flagged as a warning, and the term's reporting deadline nine days out."
           annotations={[{ text: 'ranked, not an inbox', top: '62%', right: '1.25rem' }]}
@@ -124,8 +127,8 @@ export default function Landing() {
 
       <Section
         eyebrow="Curricula"
-        title="The framework changes what the software does"
-        lede="Not just what it's called. A school picks its curriculum at setup and everything that doesn't apply disappears — an IGCSE school never sees a CAS tab, and an IB school is never asked for a GPA."
+        title="Four frameworks, each behaving the way it actually works"
+        lede="Not four labels on the same gradebook. A school sets its programmes once; the grading scales, the reporting shape and the vocabulary follow, and anything that doesn't apply is hidden rather than greyed out. An IGCSE school never sees a CAS tab; an IB school is never asked for a GPA."
         tint
       >
         <RuledList items={CURRICULA} />
@@ -134,7 +137,7 @@ export default function Landing() {
       <Section
         eyebrow="What holds"
         title="One school cannot read another"
-        lede="Separation is a row-level security policy in Postgres rather than a filter in the interface, so it holds for the API and for exports too — not only for the screens we remembered to guard."
+        lede="Separation is a row-level security policy in the database, not a filter in the interface — so it holds for anything that reaches the data, not only for the screens we remembered to guard. The same page lists what we have not built yet, because you are going to ask."
       >
         <p style={{ margin: 0, fontSize: '.95rem' }}>
           <Link to="/Security" className="scholr-focus" style={{ color: 'var(--brand)' }}>

@@ -186,10 +186,10 @@ export default function Features() {
       <Section>
         <p className="scholr-label m-0">Features</p>
         <h1 className="scholr-h1 m-0 mt-2 text-3xl md:text-4xl" style={{ maxWidth: '20ch' }}>
-          Built around how an international school actually runs
+What the software does, in the words a school would use
         </h1>
         <p className="m-0 mt-4 text-lg leading-relaxed" style={{ color: 'var(--muted)', maxWidth: '54ch' }}>
-          Four curricula, six roles, and one set of records underneath all of it.
+No feature list padded to look longer. If something is not built yet, it is on the security page under "what we haven't done".
         </p>
       </Section>
 

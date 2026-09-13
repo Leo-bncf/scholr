@@ -81,15 +81,16 @@ export default function Demo() {
               Thirty minutes, your curriculum
             </h1>
             <p className="m-0 mt-4 text-base leading-relaxed" style={{ color: 'var(--muted)', maxWidth: '46ch' }}>
-              Bring a timetable and a mark scheme. We'll show you how they land in Scholr and skip
-              everything that doesn't apply to your school.
+              Send a timetable and a mark scheme in advance and we will set them up before the
+              call, so you are looking at your own subjects and your own grading rather than a demo
+              school.
             </p>
 
             <div className="mt-8" style={{ maxWidth: '34rem' }}>
               {[
-                ['No slide deck', 'We open the product and use your structures, not a canned demo school.'],
-                ['No commitment', "If it isn't a fit we'll say so — a school on the wrong platform is bad for both of us."],
-                ['Straight answers', 'Pricing, migration, security, what is not built yet. Ask anything.'],
+                ['Who you will be talking to', 'One of the two people who build it. There is no sales team to hand you on to.'],
+                ['What we will cover', 'Your curricula and how they map, what migration from your current system involves, and the price for your roll.'],
+                ['What we will not do', 'Claim something is finished when it is not. The security page already lists what is missing; the call is the same.'],
               ].map(([t, d]) => (
                 <div key={t} className="py-3.5" style={{ borderTop: '1px solid var(--rule)' }}>
                   <h2 className="m-0 text-base font-medium" style={{ color: 'var(--ink)' }}>{t}</h2>

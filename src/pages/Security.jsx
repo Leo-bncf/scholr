@@ -107,7 +107,7 @@ export default function Security() {
         </div>
       </Section>
 
-      <Section eyebrow="Roles" title="Who sees what" lead="Six roles, and each one is a rule in the database rather than a setting in the interface.">
+      <Section eyebrow="Roles" title="Who sees what" lede="Six roles, and each one is a rule in the database rather than a setting in the interface.">
         <div style={{ maxWidth: '52rem' }}>
           <RuledList items={ROLES} termWidth="10rem" />
         </div>
@@ -116,7 +116,7 @@ export default function Security() {
       <Section
         eyebrow="Not yet"
         title="What we haven't done"
-        lead="Every vendor's security page lists what they have. This is the other half, because you are going to ask anyway and the answer is better coming from us."
+        lede="Every vendor's security page lists what they have. This is the other half, because you are going to ask anyway and the answer is better coming from us."
       >
         <div style={{ maxWidth: '46rem' }}>
           {ROADMAP.map(([title, state, desc]) => (

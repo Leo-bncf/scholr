@@ -22,16 +22,39 @@ const TIERS = [
   { id: 'tier3', name: 'Tier 3', cap: 'No student cap',      capNum: 'Unlimited', price: '13.99', priceId: 'price_enterprise' },
 ];
 
+/**
+ * What a school actually gets. Every line here is a thing the software does
+ * today.
+ *
+ * Removed, because they were not true:
+ *   · "PDF and Excel export" — exportReportPDF is not ported; it throws.
+ *     It goes back on this list the day the function is deployed.
+ *   · "Priority support" — there is no support tier, and inventing one on a
+ *     pricing page is the kind of claim a school's procurement team will hold
+ *     you to.
+ */
 const INCLUDED = [
-  'Every feature, on every tier — nothing is gated behind a higher plan',
-  'IB Core: CAS, EE and TOK tracking',
-  'Multi-curricular gradebooks and predicted grades',
-  'Parent and student portals',
-  'Timetable, attendance and behaviour',
-  'PDF and Excel export',
-  'Unlimited admin accounts',
-  'Priority support',
+  'Every feature on every tier — nothing is held back for a higher plan',
+  'IB Core: CAS, the Extended Essay and TOK, each with its own deadlines and sign-off',
+  'Gradebooks for IB 1–7, A*–G, 9–1 and GPA, with predicted grades and their history',
+  'A family portal scoped to a parent’s own children, showing only released marks',
+  'Daily timetable, attendance registers and behaviour records',
+  'Unlimited staff and admin accounts — you pay per student, not per seat',
+  'Migration from your current system as part of onboarding',
 ];
+
+/**
+ * Self-serve checkout is off until Stripe is configured on the server.
+ *
+ * The keys are not set on production, so createCheckoutSession returns a 503
+ * and the buyer hits a dead end at the exact moment they decided to pay. Until
+ * they are set, the tier action starts a conversation instead — which is what
+ * happens anyway for a school buying software with a purchase order.
+ *
+ * Flip this to true once STRIPE_SECRET_KEY is live; startCheckout below is
+ * intact and tested.
+ */
+const CHECKOUT_ENABLED = false;
 
 export default function PricingTiersSection() {
   const [loadingTier, setLoadingTier] = useState(null);
@@ -73,8 +96,8 @@ export default function PricingTiersSection() {
   return (
     <Section
       eyebrow="Pricing"
-      title="Priced per student, per year"
-      lead="The tier sets how many students your school can host. The rate per student falls as the tier rises. Everything else is identical."
+      title="One rate, per student, per year"
+      lede="The tier is a capacity band, not a feature set. Every school gets the whole platform; the only thing that changes is how many students you can host and what each one costs."
     >
       <div
         className="scholr-grid"
@@ -108,6 +131,7 @@ export default function PricingTiersSection() {
               >
                 {tier.cap}
               </p>
+              {CHECKOUT_ENABLED ? (
               <button
                 type="button"
                 onClick={() => startCheckout(tier)}
@@ -126,6 +150,14 @@ export default function PricingTiersSection() {
                 {loadingTier === tier.id && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                 Choose {tier.name}
               </button>
+              ) : (
+                <a
+                  href="/BookDemo"
+                  className="pub-btn pub-btn-line scholr-focus mt-4 w-full justify-center"
+                >
+                  Talk to us about {tier.name}
+                </a>
+              )}
             </div>
           </div>
         ))}
@@ -165,7 +197,8 @@ export default function PricingTiersSection() {
       </div>
 
       <p className="m-0 mt-6 text-xs" style={{ color: 'var(--faint)' }}>
-        Billed yearly. Prices in euro, excluding VAT where applicable.
+        Billed yearly, in euro, excluding VAT. Staff, admin and parent accounts are free and
+        uncounted — the figure is enrolled students at the point the year is billed.
       </p>
     </Section>
   );

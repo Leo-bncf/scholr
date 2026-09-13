@@ -39,7 +39,15 @@ export default function PublicShell({ children }) {
  * the most reliable tell of a template, and it makes long copy harder to read
  * — the eye loses the left edge on every line.
  */
-export function Section({ eyebrow, title, lede, children, tint = false, className = '' }) {
+export function Section({ eyebrow, title, lede, children, tint = false, className = '', ...rest }) {
+  // A `lead=` typo silently dropped the pricing section's whole explanatory
+  // sentence for weeks — the prop just wasn't read, and nothing complained.
+  // Unknown props are now loud in development.
+  if (import.meta.env.DEV && Object.keys(rest).length) {
+    // eslint-disable-next-line no-console
+    console.warn(`<Section> got unknown prop(s): ${Object.keys(rest).join(', ')} — did you mean "lede"?`);
+  }
+
   return (
     <section
       className={className}
