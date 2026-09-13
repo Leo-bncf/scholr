@@ -26,7 +26,17 @@ const COLUMNS = 'id, school_name, contact_name, email, phone, country, school_si
  * not: leads are readable by super admins alone.
  */
 export function create(request) {
-  return none(supabase.from('demo_requests').insert(request), 'demoRequests.create');
+  // Drop empty strings rather than sending them.
+  //
+  // An untouched <select> or <input> yields '', and `school_size` has a check
+  // constraint that accepts NULL or one of four values — '' is none of those,
+  // so a visitor who didn't pick a roll size got a 400 and lost the lead. An
+  // absent key means "not answered"; an empty string means "answered with
+  // nothing", and the database is right to reject the second.
+  const clean = Object.fromEntries(
+    Object.entries(request).filter(([, v]) => v !== '' && v !== undefined),
+  );
+  return none(supabase.from('demo_requests').insert(clean), 'demoRequests.create');
 }
 
 /** Super admin only — RLS returns nothing for anyone else. */
