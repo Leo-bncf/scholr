@@ -57,7 +57,7 @@ import Contact from './pages/Contact';
 import CoordinatorDashboard from './pages/CoordinatorDashboard';
 import CoordinatorIBCore from './pages/CoordinatorIBCore';
 import CoordinatorPredictedGrades from './pages/CoordinatorPredictedGrades';
-import Demo from './pages/Demo';
+import BookDemo from './pages/BookDemo';
 import DemoShowcase from './pages/DemoShowcase';
 import Features from './pages/Features';
 import FirstLogin from './pages/FirstLogin';
@@ -112,7 +112,7 @@ export const PAGES = {
     "CoordinatorDashboard": CoordinatorDashboard,
     "CoordinatorIBCore": CoordinatorIBCore,
     "CoordinatorPredictedGrades": CoordinatorPredictedGrades,
-    "Demo": Demo,
+    "BookDemo": BookDemo,
     "DemoShowcase": DemoShowcase,
     "Features": Features,
     "FirstLogin": FirstLogin,

@@ -64,7 +64,7 @@ export default function Contact() {
             </p>
           </div>
           <span className="ml-auto shrink-0">
-            <CTA to="/Demo">Book a demo <ArrowRight className="w-4 h-4" /></CTA>
+            <CTA to="/BookDemo">Book a demo <ArrowRight className="w-4 h-4" /></CTA>
           </span>
         </div>
         <p className="m-0 mt-4 text-sm">

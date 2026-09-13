@@ -3,7 +3,12 @@ import { UserProvider, useUser } from '@/components/auth/UserContext';
 import { PlanProvider } from '@/components/plan/PlanProvider';
 import NotificationBell from '@/components/notifications/NotificationBell';
 
-const publicPages = ['Landing', 'Features', 'Pricing', 'Security', 'Contact', 'Demo', 'AcceptInvitation', 'FirstLogin', 'PasswordReset', 'Login'];
+// React Router v6 matches paths case-INSENSITIVELY by default, so 'Demo' and
+// 'demo' are the same route. The interactive sandbox owns /demo (and its
+// children), which meant the lead-capture form registered as 'Demo' could never
+// win — every "Book a demo" button landed on the sandbox role-picker instead.
+// The form is 'BookDemo' now; the two names can no longer collide.
+const publicPages = ['Landing', 'Features', 'Pricing', 'Security', 'Contact', 'BookDemo', 'AcceptInvitation', 'FirstLogin', 'PasswordReset', 'Login'];
 const fullScreenPages = ['ClassWorkspace', 'AssignmentDetail', 'SubmissionReview', 'ClassGradebook', 'Messages', 'SchoolOnboarding'];
 const adminPages = ['SuperAdminProduction'];
 

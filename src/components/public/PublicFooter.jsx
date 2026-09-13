@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
  * will still exist in five years, a 404 in the footer is expensive.
  */
 const COLUMNS = [
-  { title: 'Product', links: [['Features', '/Features'], ['Pricing', '/Pricing'], ['Security', '/Security'], ['Book a demo', '/Demo']] },
+  { title: 'Product', links: [['Features', '/Features'], ['Pricing', '/Pricing'], ['Security', '/Security'], ['Book a demo', '/BookDemo']] },
   { title: 'Company', links: [['Contact', '/Contact']] },
   { title: 'Legal', links: [['Privacy policy', '/PrivacyPolicy'], ['Terms of service', '/TermsOfService']] },
 ];

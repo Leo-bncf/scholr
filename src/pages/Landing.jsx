@@ -46,7 +46,7 @@ function Hero() {
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <CTA to="/Demo">Book a demo <ArrowRight className="w-4 h-4" /></CTA>
+              <CTA to="/BookDemo">Book a demo <ArrowRight className="w-4 h-4" /></CTA>
               <button
                 type="button"
                 onClick={signIn}
@@ -222,7 +222,7 @@ function Close() {
           your school and skip the rest.
         </p>
         <div className="mt-7 flex justify-center">
-          <CTA to="/Demo">Book a demo <ArrowRight className="w-4 h-4" /></CTA>
+          <CTA to="/BookDemo">Book a demo <ArrowRight className="w-4 h-4" /></CTA>
         </div>
       </div>
     </Section>

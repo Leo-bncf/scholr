@@ -83,7 +83,7 @@ export default function PublicNav() {
             Sign in
           </button>
           <Link
-            to="/Demo"
+            to="/BookDemo"
             className="scholr-focus text-sm font-medium"
             style={{
               background: 'var(--brand)',
@@ -132,7 +132,7 @@ export default function PublicNav() {
               Sign in
             </button>
             <Link
-              to="/Demo"
+              to="/BookDemo"
               onClick={() => setOpen(false)}
               className="scholr-focus text-sm font-medium ml-auto"
               style={{
