@@ -1,0 +1,12 @@
+{
+  "name": "Scholr",
+  "short_name": "Scholr",
+  "description": "School management for international schools.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f2f5ef",
+  "theme_color": "#0f5a46",
+  "icons": [
+    { "src": "/brand/scholr-mark.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
