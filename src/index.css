@@ -210,11 +210,11 @@
 }
 @keyframes mkt-bloom-drift-a {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(16px, -14px) scale(1.05); }
+  50%      { transform: translate(26px, -20px) scale(1.08); }
 }
 @keyframes mkt-bloom-drift-b {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(-18px, 12px) scale(0.96); }
+  50%      { transform: translate(-28px, 18px) scale(0.94); }
 }
 .mkt-bloom-a {
   animation:

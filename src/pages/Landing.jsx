@@ -62,12 +62,7 @@ function HeroSection() {
       <div
         aria-hidden="true"
         className="pointer-events-none absolute right-0 top-16 hidden h-[34rem] w-[60vw] overflow-hidden rounded-l-[3rem] bg-[var(--mkt-paper-2)] lg:block"
-      >
-        {/* Two low-opacity blooms, confined to this wash — fade in once on
-            load, then drift a few px on a slow, restrained loop. */}
-        <div className="mkt-bloom-a absolute -top-16 right-10 h-72 w-72 rounded-full bg-[var(--mkt-accent)] opacity-[0.12] blur-3xl" />
-        <div className="mkt-bloom-b absolute bottom-0 left-10 h-64 w-64 rounded-full bg-[var(--mkt-accent)] opacity-[0.09] blur-3xl" />
-      </div>
+      />
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
           <div className="lg:col-span-4">
@@ -381,7 +376,17 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[var(--mkt-paper)] font-[var(--mkt-font-body)]">
+    <div className="relative min-h-screen bg-[var(--mkt-paper)] font-[var(--mkt-font-body)]">
+      {/* Two blooms framing the nav at the top of the page — visible at every
+          width (not gated behind a breakpoint), fading in once on load and
+          drifting a few px on a slow, restrained loop. Sits in normal
+          document flow (not fixed) so it scrolls away with the hero rather
+          than bleeding into later sections. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[28rem] overflow-hidden">
+        <div className="mkt-bloom-a absolute -top-24 left-[8%] h-80 w-80 rounded-full bg-[var(--mkt-accent)] opacity-[0.32] blur-3xl sm:h-96 sm:w-96" />
+        <div className="mkt-bloom-b absolute -top-16 right-[8%] h-72 w-72 rounded-full bg-[var(--mkt-accent)] opacity-[0.26] blur-3xl sm:h-[26rem] sm:w-[26rem]" />
+      </div>
+
       <div className="fixed top-4 left-0 right-0 z-50 px-4 flex justify-center sm:top-6">
         <DetachedNavbar />
       </div>
