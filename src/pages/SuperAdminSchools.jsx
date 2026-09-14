@@ -1,15 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { ChevronRight, Edit2, Loader2, Plus, School, Search, Trash2 } from 'lucide-react';
+import { createPageUrl } from '@/utils';
+import { Edit2, Loader2, Plus, Trash2 } from 'lucide-react';
 import CreateSchoolDialog from '@/components/admin/CreateSchoolDialog';
 import SchoolOnboardingProgress from '@/components/admin/SchoolOnboardingProgress';
 import SchoolQuickEdit from '@/components/admin/SchoolQuickEdit';
 import SuperAdminLoadingState from '@/components/admin/super-admin/SuperAdminLoadingState';
-import SuperAdminPageHeader from '@/components/admin/super-admin/SuperAdminPageHeader';
 import SuperAdminPagination from '@/components/admin/super-admin/SuperAdminPagination';
 import SuperAdminShell from '@/components/admin/super-admin/SuperAdminShell';
 import { useSuperAdminAccess } from '@/components/hooks/useSuperAdminAccess';
+import { Group, GroupEmpty } from '@/components/app/AppShell';
+import StatusChip from '@/components/app/StatusChip';
+import DataTable from '@/components/app/DataTable';
+import { Field, FilterBar, SearchField, SelectField } from '@/components/app/Field';
 import * as schoolsData from '@/data/schools';
 import {
   usePaginatedItems,
@@ -17,14 +20,37 @@ import {
 } from '@/components/hooks/useSuperAdminData';
 import {
   getBillingStatusMeta,
+  getPlanMeta,
   getSchoolStatusMeta,
 } from '@/components/admin/super-admin/superAdminConfig';
 
 const PAGE_SIZE = 12;
 
-const STATUS_FILTERS = ['all', 'active', 'onboarding', 'suspended'];
-const BILLING_FILTERS = ['all', 'trial', 'active', 'past_due'];
+const STATUS_OPTIONS = [
+  { value: 'all', label: 'Any status' },
+  { value: 'active', label: 'Active' },
+  { value: 'onboarding', label: 'Onboarding' },
+  { value: 'suspended', label: 'Suspended' },
+];
 
+const BILLING_OPTIONS = [
+  { value: 'all', label: 'Any billing' },
+  { value: 'trial', label: 'Trial' },
+  { value: 'active', label: 'Paid' },
+  { value: 'past_due', label: 'Past due' },
+];
+
+const day = (value) =>
+  value ? new Date(value).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : null;
+
+/**
+ * Every school on the platform.
+ *
+ * The list is a table rather than a stack of cards: the job here is comparing
+ * schools against each other — who is stuck in onboarding, who is past due —
+ * and that is what a table is for. Editing a school expands its row in place
+ * instead of opening a dialog, so you keep your position in the list.
+ */
 export default function SuperAdminSchools() {
   const navigate = useNavigate();
   const { currentUser, isChecking } = useSuperAdminAccess(navigate);
@@ -54,18 +80,13 @@ export default function SuperAdminSchools() {
   };
 
   const filteredSchools = useMemo(() => {
-    let filtered = schools;
-    if (searchQuery) {
-      filtered = filtered.filter(
-        (school) =>
-          school.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          school.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          school.city?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-    if (filterStatus !== 'all') filtered = filtered.filter((school) => school.status === filterStatus);
-    if (filterBilling !== 'all') filtered = filtered.filter((school) => school.billing_status === filterBilling);
-    return filtered;
+    const q = searchQuery.trim().toLowerCase();
+    return schools.filter((school) => {
+      if (filterStatus !== 'all' && school.status !== filterStatus) return false;
+      if (filterBilling !== 'all' && school.billing_status !== filterBilling) return false;
+      if (!q) return true;
+      return [school.name, school.email, school.city].filter(Boolean).some((v) => v.toLowerCase().includes(q));
+    });
   }, [filterBilling, filterStatus, schools, searchQuery]);
 
   useEffect(() => {
@@ -74,182 +95,139 @@ export default function SuperAdminSchools() {
 
   const { paginatedItems, totalItems, totalPages, page: safePage } = usePaginatedItems(filteredSchools, PAGE_SIZE, page);
 
-  if (isChecking || isLoading) {
-    return <SuperAdminLoadingState />;
-  }
+  if (isChecking || isLoading) return <SuperAdminLoadingState />;
+  if (!currentUser) return null;
 
-  if (!currentUser) {
-    return null;
-  }
+  const iconBtn = {
+    padding: '.3rem', borderRadius: 'var(--radius-control)', border: 'none',
+    background: 'transparent', color: 'var(--faint)', cursor: 'pointer', lineHeight: 0,
+  };
+
+  const columns = [
+    {
+      key: 'name',
+      header: 'School',
+      render: (school) => (
+        <span style={{ display: 'block' }}>
+          <span style={{ display: 'block', color: 'var(--ink)' }}>{school.name}</span>
+          <span style={{ display: 'block', fontSize: '.76rem', color: 'var(--muted)' }}>
+            {[school.city, school.country].filter(Boolean).join(', ') || 'No location on file'}
+          </span>
+        </span>
+      ),
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      render: (school) => {
+        const meta = getSchoolStatusMeta(school.status);
+        return <StatusChip tone={meta.tone}>{meta.label}</StatusChip>;
+      },
+    },
+    {
+      key: 'billing',
+      header: 'Billing',
+      render: (school) => {
+        const meta = getBillingStatusMeta(school.billing_status);
+        return <StatusChip tone={meta.tone}>{meta.label}</StatusChip>;
+      },
+    },
+    { key: 'plan', header: 'Plan', render: (school) => getPlanMeta(school.plan).label },
+    {
+      key: 'setup',
+      header: 'Setup',
+      width: '9rem',
+      render: (school) => (
+        <SchoolOnboardingProgress schoolId={school.id} summary={onboardingBySchool[school.id]} />
+      ),
+    },
+    {
+      key: 'created',
+      header: 'Created',
+      render: (school) => day(school.created_at) || '—',
+    },
+    {
+      key: 'actions',
+      header: '',
+      width: '5rem',
+      render: (school) => (
+        <span style={{ display: 'flex', gap: '.15rem', justifyContent: 'flex-end' }}>
+          <button
+            type="button"
+            className="scholr-focus"
+            style={iconBtn}
+            aria-label={`Edit ${school.name}`}
+            onClick={(e) => { e.stopPropagation(); setEditingSchoolId(school.id); }}
+          >
+            <Edit2 className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            className="scholr-focus"
+            style={iconBtn}
+            aria-label={`Delete ${school.name}`}
+            disabled={deletingSchoolId === school.id}
+            onClick={(e) => { e.stopPropagation(); handleDeleteSchool(school); }}
+          >
+            {deletingSchoolId === school.id
+              ? <Loader2 className="w-4 h-4 animate-spin" />
+              : <Trash2 className="w-4 h-4" />}
+          </button>
+        </span>
+      ),
+    },
+  ];
+
+  const editing = paginatedItems.find((s) => s.id === editingSchoolId);
 
   return (
     <>
-      <SuperAdminShell activeItem="schools" currentUser={currentUser}>
-        <SuperAdminPageHeader
-          title="School Management"
-          subtitle={`${schools.length} total schools`}
-          actions={
-            <Button
-              onClick={() => setCreateDialogOpen(true)}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 shadow-sm"
-            >
-              <Plus className="w-4 h-4" />
-              New School
-            </Button>
-          }
-        />
-
-        <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-4 mb-5 space-y-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search by name, email, or city..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+      <SuperAdminShell
+        activeItem="schools"
+        currentUser={currentUser}
+        title="Schools"
+        eyebrow={`${schools.length} on the platform`}
+        actions={
+          <button
+            type="button"
+            onClick={() => setCreateDialogOpen(true)}
+            className="pub-btn pub-btn-gold scholr-focus"
+          >
+            <Plus className="w-4 h-4" />
+            New school
+          </button>
+        }
+      >
+        <Group title={`Schools · ${totalItems}`}>
+          <div className="px-4 pt-3.5">
+            <FilterBar>
+              <Field label="Find" htmlFor="schools-search">
+                <SearchField
+                  id="schools-search"
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  placeholder="Name, email or city"
+                />
+              </Field>
+              <Field label="Status" htmlFor="schools-status">
+                <SelectField id="schools-status" value={filterStatus} onChange={setFilterStatus} label="Status" options={STATUS_OPTIONS} />
+              </Field>
+              <Field label="Billing" htmlFor="schools-billing">
+                <SelectField id="schools-billing" value={filterBilling} onChange={setFilterBilling} label="Billing" options={BILLING_OPTIONS} />
+              </Field>
+            </FilterBar>
           </div>
 
-          <div className="flex flex-wrap gap-4">
-            <div>
-              <p className="text-xs text-slate-500 mb-1 font-medium">Status</p>
-              <div className="flex gap-1">
-                {STATUS_FILTERS.map((status) => (
-                  <button
-                    key={status}
-                    onClick={() => setFilterStatus(status)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors capitalize ${
-                      filterStatus === status
-                        ? 'bg-indigo-600 text-white'
-                        : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                    }`}
-                  >
-                    {status === 'all' ? 'All' : status}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="text-xs text-slate-500 mb-1 font-medium">Billing</p>
-              <div className="flex gap-1">
-                {BILLING_FILTERS.map((billing) => (
-                  <button
-                    key={billing}
-                    onClick={() => setFilterBilling(billing)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors capitalize ${
-                      filterBilling === billing
-                        ? 'bg-indigo-600 text-white'
-                        : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                    }`}
-                  >
-                    {billing === 'all' ? 'All Billing' : billing === 'past_due' ? 'Past Due' : billing}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden">
-          <div className="px-5 py-3 border-b border-slate-200">
-            <span className="text-sm text-slate-500">
-              Showing <strong className="text-slate-900">{totalItems}</strong> matching schools
-            </span>
-          </div>
-
-          {paginatedItems.length === 0 ? (
-            <div className="text-center py-16 text-slate-500">
-              <School className="w-10 h-10 mx-auto mb-3 opacity-30" />
-              <p className="text-sm">No schools found</p>
-            </div>
+          {schools.length === 0 ? (
+            <GroupEmpty>No schools yet. Create the first one with the button above.</GroupEmpty>
           ) : (
-            <div className="divide-y divide-slate-100">
-              {paginatedItems.map((school) => {
-                const isEditing = editingSchoolId === school.id;
-
-                return (
-                  <div key={school.id} className={`p-5 transition-colors ${isEditing ? 'bg-slate-50' : 'hover:bg-slate-50'}`}>
-                    {isEditing ? (
-                      <SchoolQuickEdit
-                        school={school}
-                        onUpdated={handleSchoolUpdated}
-                        onCancel={() => setEditingSchoolId(null)}
-                      />
-                    ) : (
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap mb-2">
-                            <h3 className="text-base font-semibold text-slate-900">{school.name}</h3>
-                            {school.status && (
-                              <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${getSchoolStatusMeta(school.status, 'dark').color}`}>
-                                {getSchoolStatusMeta(school.status, 'dark').label}
-                              </span>
-                            )}
-                            {school.billing_status && (
-                              <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${getBillingStatusMeta(school.billing_status, 'dark').color}`}>
-                                {getBillingStatusMeta(school.billing_status, 'dark').label}
-                              </span>
-                            )}
-                          </div>
-
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs mb-3">
-                            <div>
-                              <p className="text-slate-500">Location</p>
-                              <p className="text-slate-700 font-medium">{school.city || 'N/A'}, {school.country || 'N/A'}</p>
-                            </div>
-                            <div>
-                              <p className="text-slate-500">Plan</p>
-                              <p className="text-slate-700 font-medium capitalize">{school.plan || 'Starter'}</p>
-                            </div>
-                            <div>
-                              <p className="text-slate-500">Created</p>
-                              <p className="text-slate-700 font-medium">
-                                {new Date(school.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                              </p>
-                            </div>
-                            <div>
-                              <p className="text-slate-500">Trial End</p>
-                              <p className="text-slate-700 font-medium">
-                                {school.trial_end_date ? new Date(school.trial_end_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : 'N/A'}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="pt-3 border-t border-slate-100">
-                            <SchoolOnboardingProgress schoolId={school.id} summary={onboardingBySchool[school.id]} />
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                           <button
-                             onClick={() => setEditingSchoolId(school.id)}
-                             className="p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-                           >
-                             <Edit2 className="w-4 h-4" />
-                           </button>
-                           <button
-                             onClick={() => handleDeleteSchool(school)}
-                             disabled={deletingSchoolId === school.id}
-                             className="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-40"
-                           >
-                             {deletingSchoolId === school.id
-                               ? <Loader2 className="w-4 h-4 animate-spin" />
-                               : <Trash2 className="w-4 h-4" />}
-                           </button>
-                           <button
-                             onClick={() => navigate(`/SuperAdminSchoolDetail/${school.id}`)}
-                             className="p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-                           >
-                             <ChevronRight className="w-5 h-5" />
-                           </button>
-                         </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+            <DataTable
+              columns={columns}
+              rows={paginatedItems}
+              rowKey={(school) => school.id}
+              onRowClick={(school) => navigate(`${createPageUrl('SuperAdminSchoolDetail')}/${school.id}`)}
+              empty="No school matches those filters."
+            />
           )}
 
           <SuperAdminPagination
@@ -259,7 +237,19 @@ export default function SuperAdminSchools() {
             pageSize={PAGE_SIZE}
             onPageChange={setPage}
           />
-        </div>
+        </Group>
+
+        {editing && (
+          <Group title={`Editing · ${editing.name}`}>
+            <div className="px-4 py-3.5">
+              <SchoolQuickEdit
+                school={editing}
+                onUpdated={handleSchoolUpdated}
+                onCancel={() => setEditingSchoolId(null)}
+              />
+            </div>
+          </Group>
+        )}
       </SuperAdminShell>
 
       <CreateSchoolDialog
