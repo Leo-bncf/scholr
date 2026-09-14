@@ -7,7 +7,8 @@
  * against pages.config.js at build time — a URL here with no route fails the
  * script rather than shipping a 404 to a crawler.
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { execSync } from 'node:child_process';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 
 const PUBLIC_ROUTES = [
   ['/', 1.0],
@@ -79,4 +80,18 @@ writeFileSync('public/robots.txt',
     '',
   ].join('\n'));
 
-console.log(`  wrote public/sitemap.xml (${PUBLIC_ROUTES.length} urls) and public/robots.txt`);
+// Stamp the commit being built, so a deploy can tell whether it is about to
+// replace something newer than itself. See scripts/deploy.sh.
+let commit = 'unknown';
+let committedAt = null;
+try {
+  commit = execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
+  committedAt = execSync('git log -1 --format=%cI', { encoding: 'utf8' }).trim();
+} catch {
+  // Not a git checkout — the deploy guard degrades to a warning rather than
+  // blocking someone building from a tarball.
+}
+mkdirSync('public', { recursive: true });
+writeFileSync('public/build-info.json', JSON.stringify({ commit, committedAt, builtAt: new Date().toISOString() }, null, 2) + '\n');
+
+console.log(`  wrote public/sitemap.xml (${PUBLIC_ROUTES.length} urls), robots.txt and build-info.json`);

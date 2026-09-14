@@ -57,6 +57,42 @@ if [ -d .git ] && [ "${ALLOW_DIRTY_DEPLOY:-}" != "1" ]; then
   fi
 fi
 
+# ── Refuse to publish something older than what is already live ─────────────
+#
+# The existing guard checks your checkout against ITS OWN origin branch. That
+# is not enough: on 14 September a build from main — up to date with
+# origin/main, so the guard passed — was published over a newer deploy from a
+# feature branch, and the whole redesign disappeared from the live site for two
+# hours. Nobody did anything wrong; the guard simply wasn't asking the right
+# question.
+#
+# The right question is "is the commit I am about to publish an ancestor of the
+# one already deployed?" If it is, this is a step backwards.
+#
+# Override with ALLOW_ROLLBACK=1 when you genuinely mean to roll back.
+if [ -d .git ] && [ "${ALLOW_ROLLBACK:-}" != "1" ]; then
+  live_commit=$(curl -s -m 15 https://scholr.pro/build-info.json 2>/dev/null \
+    | sed -n 's/.*"commit"[[:space:]]*:[[:space:]]*"\([a-f0-9]*\)".*/\1/p' | head -1)
+  here=$(git rev-parse HEAD)
+
+  if [ -n "$live_commit" ] && [ "$live_commit" != "unknown" ] && [ "$live_commit" != "$here" ]; then
+    if git cat-file -e "$live_commit^{commit}" 2>/dev/null; then
+      if git merge-base --is-ancestor "$here" "$live_commit"; then
+        echo "Refusing to deploy: the live site is already running a NEWER commit." >&2
+        echo "  live:  $live_commit  $(git log -1 --format='%an — %s' "$live_commit" 2>/dev/null)" >&2
+        echo "  yours: $here  $(git log -1 --format='%an — %s' "$here")" >&2
+        echo >&2
+        echo "Publishing now would roll the site back. Pull first:" >&2
+        echo "    git pull --rebase origin \$(git rev-parse --abbrev-ref HEAD)" >&2
+        echo "Or re-run with ALLOW_ROLLBACK=1 if a rollback is what you want." >&2
+        exit 1
+      fi
+    else
+      echo "Note: the live commit $live_commit isn't in this checkout — fetch to compare properly." >&2
+    fi
+  fi
+fi
+
 # `npm run build` already chains sitemap generation, `vite build`, and
 # prerender (Puppeteer crawls the built dist and bakes each route's rendered
 # content into dist/<route>/index.html — without it every route serves the
