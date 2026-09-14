@@ -38,6 +38,11 @@ function HeroSection() {
   const wordmarkY = useTransform(scrollY, [0, 220, 520], ["-35vh", "-65vh", "-95vh"]);
   const wordmarkOpacity = useTransform(scrollY, [0, 180, 420, 620], [0.92, 1, 0.55, 0]);
   const wordmarkScale = useTransform(scrollY, [0, 220, 520], [1.16, 1.08, 0.98]);
+  const wordmarkColor = useTransform(
+    scrollY,
+    [0, 260, 520],
+    ["rgba(255,255,255,0.36)", "rgba(20,20,20,0.65)", "rgba(0,0,0,0.94)"]
+  );
 
   const handleSignIn = async () => {
     if (await isAuthenticated()) {
@@ -53,9 +58,12 @@ function HeroSection() {
         className="pointer-events-none absolute inset-x-0 z-0 overflow-hidden"
         style={{ y: wordmarkY, opacity: wordmarkOpacity, scale: wordmarkScale }}
       >
-        <span className="block w-full text-center select-none text-[8.5rem] sm:text-[13rem] lg:text-[18rem] font-semibold tracking-[0.02em] text-[rgba(255,255,255,0.36)] leading-none whitespace-nowrap scale-x-[1.18] origin-center [text-shadow:0_2px_10px_rgba(255,255,255,0.10)]">
+        <motion.span
+          className="block w-full text-center select-none text-[8.5rem] sm:text-[13rem] lg:text-[18rem] font-semibold tracking-[0.02em] leading-none whitespace-nowrap scale-x-[1.18] origin-center [text-shadow:0_2px_10px_rgba(255,255,255,0.10)]"
+          style={{ color: wordmarkColor }}
+        >
           Scholr
-        </span>
+        </motion.span>
       </motion.div>
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div className="max-w-4xl mx-auto text-center pt-[70vh] lg:pt-[82vh]" style={{ opacity, y, scale }}>
