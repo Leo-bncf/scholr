@@ -49,6 +49,12 @@
 @import '@fontsource-variable/geist-mono';
 
 :root {
+  /* Tells the browser which palette the NATIVE parts belong to: scrollbars,
+     <select> popups, date pickers, autofill backgrounds, the canvas behind an
+     overscroll. Without it a dark-OS machine renders all of those dark on top
+     of our light page — which reads as "the dashboard is in night mode" even
+     though every one of our own surfaces is light. */
+  color-scheme: light;
   --paper:        oklch(98.8% 0.007 120);
   /* Never oklch(100% 0 0). Pure white reads flat and synthetic; the surface
      is tinted a trace toward the anchor hue so paper and card belong to the
@@ -194,42 +200,18 @@
   --d-crit: oklch(70% 0.15 25);  --d-crit-sf: oklch(28% 0.04 25);
 }
 
-/* Three states, not two: an explicit choice stamps data-theme, and the default
-   "system" setting stamps nothing — so both have to be handled.
-
-   The dark VALUES are declared once above as --d-* and the two selectors below
-   only alias them. Writing the palette out twice is how the two states silently
-   drift apart; this way a wrong colour is impossible and only the alias list is
-   repeated, which is mechanical enough to eyeball. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --paper: var(--d-paper);        --surface: var(--d-surface);
-    --surface-sunk: var(--d-sunk);  --ink: var(--d-ink);
-    --body: var(--d-body);          --muted: var(--d-muted);
-    --faint: var(--d-faint);        --rule: var(--d-rule);
-    --rule-soft: var(--d-rule-soft);
-    --brand: var(--d-brand);      --brand-sf: var(--d-brand-sf);
-    --brand-ink: var(--d-brand-ink);
-    --gold: var(--d-gold);          --gold-ink: var(--d-gold-ink);
-    --graphite: var(--d-graphite);  --graphite-rule: var(--d-graphite-rule);
-    --good: var(--d-good);          --good-sf: var(--d-good-sf);
-    --warn: var(--d-warn);          --warn-sf: var(--d-warn-sf);
-    --crit: var(--d-crit);          --crit-sf: var(--d-crit-sf);
-  --wash: var(--d-wash);          --wash-warm: var(--d-wash-warm);
-  --gold-deep: var(--d-gold-deep);
-  --graphite-ink: var(--d-ink);   --graphite-mut: var(--d-muted);
-  --lift-sm: 0 1px 2px oklch(0% 0 0 / 0.3), 0 6px 16px -8px oklch(0% 0 0 / 0.45);
-  --lift-md: 0 2px 6px oklch(0% 0 0 / 0.35), 0 18px 40px -18px oklch(0% 0 0 / 0.55);
-  --lift-lg: 0 3px 10px oklch(0% 0 0 / 0.4), 0 46px 90px -34px oklch(0% 0 0 / 0.7);
-    --wash: var(--d-wash);          --wash-warm: var(--d-wash-warm);
-    --gold-deep: var(--d-gold-deep);
-    --graphite-ink: var(--d-ink);   --graphite-mut: var(--d-muted);
-    --lift-sm: 0 1px 2px oklch(0% 0 0 / 0.3), 0 6px 16px -8px oklch(0% 0 0 / 0.45);
-    --lift-md: 0 2px 6px oklch(0% 0 0 / 0.35), 0 18px 40px -18px oklch(0% 0 0 / 0.55);
-    --lift-lg: 0 3px 10px oklch(0% 0 0 / 0.4), 0 46px 90px -34px oklch(0% 0 0 / 0.7);
-  }
-}
+/* Dark is a CHOICE, not an inference.
+   
+   This used to key off `prefers-color-scheme` as well, which meant anyone whose
+   laptop is set to dark got a dark product whether they wanted one or not —
+   and this product is designed light: the grouped lists, the soft lift, the
+   product screenshots on the marketing site are all built for paper.
+   
+   So dark applies only when someone picks it in Settings, which writes
+   `theme` to localStorage and stamps the root. The values live once as --d-*
+   above; this block only aliases them. */
 :root[data-theme='dark'] {
+  color-scheme: dark;
   --paper: var(--d-paper);        --surface: var(--d-surface);
   --surface-sunk: var(--d-sunk);  --ink: var(--d-ink);
   --body: var(--d-body);          --muted: var(--d-muted);

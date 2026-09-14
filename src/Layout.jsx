@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { applyTheme, getStoredTheme } from '@/lib/theme';
 import { UserProvider, useUser } from '@/components/auth/UserContext';
 import { PlanProvider } from '@/components/plan/PlanProvider';
 import NotificationBell from '@/components/notifications/NotificationBell';
@@ -42,11 +43,16 @@ function NotificationWrapper({ children }) {
 export default function Layout({ children, currentPageName }) {
   const isPublic = publicPages.includes(currentPageName);
   const isFullScreen = fullScreenPages.includes(currentPageName);
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const [theme, setTheme] = useState(getStoredTheme);
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-  }, [theme]);
+    // Public pages own their own palette via useLightTheme, and a parent
+    // effect runs AFTER its children — so applying here unconditionally would
+    // stamp dark back over a marketing page a moment after it pinned itself
+    // light. isPublic is in the deps so the app's choice is restored on the
+    // way back in.
+    if (!isPublic) applyTheme(theme);
+  }, [theme, isPublic]);
 
   if (isPublic) {
     return <>{children}</>;

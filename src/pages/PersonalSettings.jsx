@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { applyTheme, getStoredTheme } from '@/lib/theme';
 import { Moon, Sun, Save } from 'lucide-react';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
@@ -16,7 +17,7 @@ export default function PersonalSettings() {
   const [displayName, setDisplayName] = useState('');
   const [emailAssignments, setEmailAssignments] = useState(true);
   const [emailMessages, setEmailMessages] = useState(true);
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const [theme, setTheme] = useState(getStoredTheme);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -26,8 +27,7 @@ export default function PersonalSettings() {
   }, [user]);
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-    localStorage.setItem('theme', theme);
+    applyTheme(theme);
   }, [theme]);
 
   const sidebarLinks = role === 'student' ? getStudentSidebarLinks(curriculum) : getAppSidebarLinks(role);

@@ -96,14 +96,11 @@
      dark mode turned every Card, Button and Input slate-and-blue while the
      rest of the product stayed green. Now it mirrors the theme file's dark
      palette. */
-  /* Three states, matching src/styles/scholr-theme.css exactly:
-       · .dark              — the in-app toggle, written to localStorage
-       · prefers-color-scheme — the OS, unless the user chose light
-       · [data-theme=dark]  — an explicit choice
-     These used to be one selector (.dark) while the token layer used the other
-     two. The result was a page whose shadcn surfaces followed localStorage and
-     whose tokens followed the OS: a white body behind a dark page, and a
-     translucent sidebar compositing over it. */
+  /* Two selectors, matching src/styles/scholr-theme.css exactly:
+       · .dark             — the Settings toggle, written to localStorage
+       · [data-theme=dark] — the same choice, stamped on the root
+     The OS preference is deliberately NOT one of them: a dark laptop should
+     not decide that a product designed for paper renders dark. */
   .dark,
   :root[data-theme='dark'],
   :root[data-theme='dark'] * {
@@ -141,37 +138,6 @@
     --sidebar-ring: 162 55% 48%;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme='light']) {
-      --background: 133 41% 3%;
-      --foreground: 153 18% 93%;
-      --card: 135 28% 7%;
-      --card-foreground: 153 18% 93%;
-      --popover: 135 28% 7%;
-      --popover-foreground: 153 18% 93%;
-      --primary: 162 55% 48%;
-      --primary-foreground: 158 39% 5%;
-      --secondary: 158 32% 6%;
-      --secondary-foreground: 153 18% 93%;
-      --muted: 158 32% 6%;
-      --muted-foreground: 156 5% 56%;
-      --accent: 162 80% 10%;
-      --accent-foreground: 162 55% 48%;
-      --destructive: 3 78% 68%;
-      --destructive-foreground: 158 39% 5%;
-      --border: 157 15% 16%;
-      --input: 157 15% 16%;
-      --ring: 162 55% 48%;
-      --sidebar-background: 158 32% 6%;
-      --sidebar-foreground: 153 18% 93%;
-      --sidebar-primary: 162 55% 48%;
-      --sidebar-primary-foreground: 158 39% 5%;
-      --sidebar-accent: 162 80% 10%;
-      --sidebar-accent-foreground: 162 55% 48%;
-      --sidebar-border: 157 15% 16%;
-      --sidebar-ring: 162 55% 48%;
-    }
-  }
 }
 
 
