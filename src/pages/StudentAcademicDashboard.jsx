@@ -444,7 +444,7 @@ export default function StudentAcademicDashboard() {
     <RoleGuard allowedRoles={['student', 'school_admin', 'super_admin', 'admin']}>
       <div className="min-h-screen bg-slate-50">
         <AppSidebar links={studentLinks} role="student" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="ml-0 md:ml-64 p-4 md:p-8">
+        <main className="app-offset p-4 md:p-8">
           <div className="max-w-4xl mx-auto">
             <div className="mb-6">
               <h1 className="text-xl md:text-2xl font-bold text-slate-900">Academic Dashboard</h1>

@@ -206,7 +206,7 @@ export default function SchoolOnboardingFlow() {
     <RoleGuard allowedRoles={['school_admin', 'admin', 'super_admin']}>
       <div className="min-h-screen bg-slate-50">
         <AppSidebar links={SCHOOL_ADMIN_SIDEBAR_LINKS} role="school_admin" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="md:ml-64 min-h-screen p-6 max-w-7xl mx-auto space-y-6">
+        <main className="app-offset min-h-screen p-6 max-w-7xl mx-auto space-y-6">
           <div className="rounded-2xl bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-800 p-6 md:p-8 text-white shadow-lg">
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div className="max-w-2xl">

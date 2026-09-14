@@ -1,0 +1,110 @@
+/* Scholr design tokens — generated from src/styles/scholr-theme.css.
+ * Portable copy of the system: colour, type, space, radius, motion.
+ * Edit the theme file, not this one.
+ */
+:root {
+  --paper:        oklch(98.8% 0.007 120);
+  /* Never oklch(100% 0 0). Pure white reads flat and synthetic; the surface
+     is tinted a trace toward the anchor hue so paper and card belong to the
+     same world. (anti-patterns.md § Pure black, pure white) */
+  --surface:      oklch(99.6% 0.004 120);
+  --surface-sunk: oklch(97% 0.012 130);
+  --wash:         oklch(96.2% 0.028 152);
+  --wash-warm:    oklch(96.8% 0.032 92);
+  --ink:          oklch(21% 0.032 152);
+  --body:         oklch(41% 0.024 150);
+  --muted:        oklch(57% 0.018 148);
+  --faint:        oklch(68% 0.014 145);
+  --rule:         oklch(90.5% 0.014 130);
+  --rule-soft:    oklch(94% 0.011 130);
+
+  /* The mark's green, moved from a cold 168 teal to a growing, yellow-leaning
+     152. Dark enough to carry white text at a small size, which is what makes
+     it usable as a button fill and not just a link colour. */
+  --brand:       oklch(45% 0.115 152);
+  --brand-sf:    oklch(95% 0.04 152);
+  --brand-ink:   oklch(99% 0.006 152);
+
+  /* The gold dot on the logo, and the second half of the tricolour. It is the
+     call-to-action colour, and it appears nowhere else — not as a status, not
+     as a series colour, not as a background wash. */
+  --gold:         oklch(81% 0.145 78);
+  --gold-deep:    oklch(64% 0.16 60);
+  --gold-ink:     oklch(28% 0.07 70);
+
+  /* The emphasis surface. It used to be graphite: one dark band per page for
+     rhythm. On a bright product a dark slab fights everything around it, so
+     emphasis is now a mint tint — same job, same once-per-page budget. */
+  --graphite:     var(--brand-sf);
+  --graphite-ink: var(--ink);
+  --graphite-mut: var(--muted);
+  --graphite-rule:oklch(45% 0.115 152 / 0.16);
+
+  /* Depth. On a light ground contrast can't do it, so shadows carry the hue of
+     the surface they fall on — grey shadows on a green-tinted paper read as
+     dirt. */
+  --lift-sm: 0 1px 2px oklch(30% 0.07 152 / 0.05), 0 6px 16px -8px oklch(30% 0.07 152 / 0.13);
+  --lift-md: 0 2px 6px oklch(30% 0.07 152 / 0.07), 0 18px 40px -18px oklch(30% 0.07 152 / 0.22);
+  --lift-lg: 0 3px 10px oklch(28% 0.07 152 / 0.09), 0 46px 90px -34px oklch(26% 0.07 152 / 0.40);
+
+  /* Status is a RESERVED palette: good / warning / critical. Never reused as a
+     decorative or "series" colour, and never the only signal — a status always
+     ships with its word. */
+  /* `good` sits at 150 while the accent sits at 168 — far enough apart that a
+     green brand and a green "healthy" chip don't read as the same thing, and
+     the chip always carries its word anyway. */
+  --good:    oklch(55% 0.14 150);  --good-sf: oklch(96% 0.035 150);
+  --warn:    oklch(62% 0.14 72);   --warn-sf: oklch(96.5% 0.045 72);
+  --crit:    oklch(54% 0.18 25);   --crit-sf: oklch(96% 0.035 25);
+
+  /* 4-pt spacing scale. Arbitrary `padding: 17px` is a tell; every gap in the
+     public layer resolves to one of these. */
+  --space-3xs: 0.25rem; --space-2xs: 0.5rem;  --space-xs: 0.75rem;
+  --space-sm:  1rem;    --space-md:  1.5rem;  --space-lg: 2rem;
+  --space-xl:  3rem;    --space-2xl: 4rem;    --space-3xl: 6rem;
+
+  /* Gate 48: every colour in the build references a token. These are the
+     translucent overlays the public layer needs — declared here rather than
+     improvised inline at the point of use. */
+  --rule-hair:    oklch(45% 0.115 152 / 0.045);
+  --glass:        color-mix(in oklab, var(--surface) 84%, transparent);
+  --glass-strong: color-mix(in oklab, var(--surface) 92%, transparent);
+  --sheen:        oklch(100% 0 0 / 0.5);
+  --gold-glow:    oklch(64% 0.16 60 / 0.5);
+  --tint-edge:    oklch(45% 0.115 152 / 0.18);
+
+  --radius-control: 10px;  /* buttons, inputs */
+  --radius-surface: 16px;  /* panels */
+  --radius-large:   24px;  /* the big surfaces: hero shot, closing block */
+  --radius-pill:    999px; /* nav, primary buttons */
+
+  --font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    'Geist Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* --- the dark palette, chosen rather than inverted --------------------- */
+  --d-paper:        oklch(15.5% 0.02 152);
+  --d-surface:      oklch(20% 0.022 152);
+  --d-sunk:         oklch(18% 0.021 152);
+  --d-wash:         oklch(24% 0.035 152);
+  --d-wash-warm:    oklch(24% 0.03 92);
+  --d-ink:          oklch(96% 0.01 130);
+  --d-body:         oklch(83% 0.014 135);
+  --d-muted:        oklch(65% 0.016 140);
+  --d-faint:        oklch(53% 0.016 140);
+  --d-rule:         oklch(29% 0.024 148);
+  --d-rule-soft:    oklch(25% 0.022 148);
+  /* The 45% green is a fill colour for paper; on a dark ground it has to step
+     up to stay legible as text. */
+  --d-brand:        oklch(74% 0.14 152);
+  --d-brand-sf:     oklch(27% 0.055 152);
+  --d-brand-ink:    oklch(14% 0.025 152);
+  --d-gold:         oklch(82% 0.14 78);
+  --d-gold-deep:    oklch(74% 0.15 68);
+  --d-gold-ink:     oklch(20% 0.05 70);
+  --d-graphite:     oklch(24% 0.05 152);
+  --d-graphite-rule:oklch(36% 0.06 152);
+  --d-good: oklch(72% 0.14 150); --d-good-sf: oklch(26% 0.04 150);
+  --d-warn: oklch(78% 0.13 72);  --d-warn-sf: oklch(28% 0.04 72);
+  --d-crit: oklch(70% 0.15 25);  --d-crit-sf: oklch(28% 0.04 25);
+}

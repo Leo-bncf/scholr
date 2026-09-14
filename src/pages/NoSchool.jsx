@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import useLightTheme from '@/components/public/useLightTheme';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Building2, Mail, Loader2 } from 'lucide-react';
@@ -7,6 +8,10 @@ import * as userInvitationsData from '@/data/userInvitations';
 import { getCurrentUser, signOut } from '@/data/session';
 
 export default function NoSchool() {
+  // Signed-out screens are light, like the rest of the entry experience.
+  // The multi-step logic here is untouched — only the ground it sits on.
+  useLightTheme();
+
   const [checkingInvitations, setCheckingInvitations] = useState(true);
   const [pendingInvitations, setPendingInvitations] = useState([]);
 
@@ -37,7 +42,7 @@ export default function NoSchool() {
 
   if (checkingInvitations) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center scholr-page">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-3" />
           <p className="text-slate-500 text-sm">Checking for invitations...</p>
@@ -48,7 +53,7 @@ export default function NoSchool() {
 
   if (pendingInvitations.length > 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-violet-50 px-4">
+      <div className="min-h-screen flex items-center justify-center scholr-page px-4">
         <div className="text-center max-w-md bg-white rounded-2xl border border-slate-200 p-8 shadow-xl">
           <div className="w-16 h-16 rounded-2xl bg-indigo-100 flex items-center justify-center mx-auto mb-6">
             <Mail className="w-8 h-8 text-indigo-600" />
@@ -78,7 +83,7 @@ export default function NoSchool() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
+    <div className="min-h-screen flex items-center justify-center scholr-page px-4">
       <div className="text-center max-w-md">
         <div className="w-16 h-16 rounded-2xl bg-amber-50 flex items-center justify-center mx-auto mb-6">
           <Building2 className="w-8 h-8 text-amber-600" />

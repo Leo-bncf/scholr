@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { rows, maybeOne, one } from './_query';
+import { rows, maybeOne, one, raise } from './_query';
 
 /**
  * Platform administration: cross-school stats, the audit trail, and global
@@ -127,4 +127,18 @@ export function wherePlatformConfig(filters = {}, { limit } = {}) {
   }
   if (limit) q = q.limit(limit);
   return rows(q, 'admin.wherePlatformConfig');
+}
+
+/**
+ * Platform health for the super-admin console.
+ *
+ * A single RPC rather than a dozen queries: these metrics live in Postgres
+ * catalog views that no application role can select from, so they come through
+ * a SECURITY DEFINER function which checks the caller is a super admin before
+ * it reads anything. See supabase/migrations/0013_platform_health.sql.
+ */
+export async function platformHealth() {
+  const { data, error } = await supabase.rpc('platform_health');
+  if (error) raise(error, 'admin.platformHealth');
+  return data;
 }

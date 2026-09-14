@@ -1,52 +1,101 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+/**
+ * Ft5 · Statement.
+ *
+ * One display sentence closes the page; the wordmark, a short link row and the
+ * copyright sit beneath in muted small type.
+ *
+ * What this replaces: four columns of links headed Product / Company / Legal,
+ * with a copyright tail. That shape (Ft3) is one of the named AI fingerprints —
+ * genre-blind, identical on a bakery and a B2B platform, and a catalogue of a
+ * sitemap the site doesn't have. Scholr has eight public pages; it does not
+ * need a directory, it needs a closing line.
+ */
+const LINKS = [
+  ['Platform', '/Features'],
+  ['Pricing', '/Pricing'],
+  ['Security', '/Security'],
+  ['Questions', '/FAQ'],
+  ['About', '/About'],
+  ['Contact', '/Contact'],
+  ['Privacy', '/PrivacyPolicy'],
+  ['Terms', '/TermsOfService'],
+];
+
+const CURRICULA = [
+  ['IB', '/ib-school-management-software'],
+  ['IGCSE', '/igcse-school-management-software'],
+  ['A-Level', '/a-level-school-management-software'],
+  ['US / AP', '/us-school-management-software'],
+];
+
 export default function PublicFooter() {
   return (
-    <footer className="bg-emerald-950 py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
-          <div className="md:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <img
-                src="/brand/scholr-mark.png"
-                alt="Scholr"
-                className="w-8 h-8 rounded-lg object-cover"
-              />
-              <span className="text-xl font-bold text-white">Scholr</span>
-            </Link>
-            <p className="text-emerald-200 text-sm leading-relaxed">
-              The premier LMS designed exclusively for international schools, offering seamless curriculum integration and role-specific dashboards.
-            </p>
-          </div>
+    <footer style={{ borderTop: '1px solid var(--rule)', background: 'var(--surface)' }}>
+      <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '4rem 1.5rem 2.5rem' }}>
+        <p
+          className="pub-display"
+          style={{ margin: 0, fontSize: 'clamp(1.6rem, 4vw, 2.6rem)', maxWidth: '18ch' }}
+        >
+          Made in Ireland, for schools that run more than one curriculum.
+        </p>
+
+        {/* Curricula and the sister product, above the credit line. Not a
+            four-column sitemap — two short rows that each say something. */}
+        <div style={{ display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap', marginTop: 'var(--space-xl)' }}>
           <div>
-            <h4 className="text-white font-semibold mb-4">Product</h4>
-            <ul className="space-y-3">
-              <li><Link to="/Features" className="text-emerald-300 hover:text-white transition-colors text-sm">Features</Link></li>
-              <li><Link to="/Pricing" className="text-emerald-300 hover:text-white transition-colors text-sm">Pricing</Link></li>
-              <li><Link to="/Security" className="text-emerald-300 hover:text-white transition-colors text-sm">Security</Link></li>
-            </ul>
+            <p className="scholr-label" style={{ margin: 0 }}>By curriculum</p>
+            <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap', marginTop: 'var(--space-2xs)' }}>
+              {CURRICULA.map(([label, to]) => (
+                <Link key={to} to={to} className="scholr-focus" style={{ fontSize: 'var(--text-sm)', color: 'var(--body)', textDecoration: 'none' }}>
+                  {label}
+                </Link>
+              ))}
+            </div>
           </div>
-          <div>
-            <h4 className="text-white font-semibold mb-4">Company</h4>
-            <ul className="space-y-3">
-              <li><Link to="/About" className="text-emerald-300 hover:text-white transition-colors text-sm">About Us</Link></li>
-              <li><Link to="/Contact" className="text-emerald-300 hover:text-white transition-colors text-sm">Contact</Link></li>
-              <li><Link to="/Careers" className="text-emerald-300 hover:text-white transition-colors text-sm">Careers</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-white font-semibold mb-4">Legal</h4>
-            <ul className="space-y-3">
-              <li><Link to="/PrivacyPolicy" className="text-emerald-300 hover:text-white transition-colors text-sm">Privacy Policy</Link></li>
-              <li><Link to="/TermsOfService" className="text-emerald-300 hover:text-white transition-colors text-sm">Terms of Service</Link></li>
-            </ul>
+          <div style={{ marginLeft: 'auto' }}>
+            <p className="scholr-label" style={{ margin: 0 }}>Also from us</p>
+            <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap', marginTop: 'var(--space-2xs)' }}>
+              <Link to="/Schedual" className="scholr-focus" style={{ fontSize: 'var(--text-sm)', color: 'var(--body)', textDecoration: 'none' }}>
+                Schedual — timetabling
+              </Link>
+              <a
+                href="https://schedual-pro.com"
+                target="_blank"
+                rel="noopener"
+                className="scholr-focus"
+                style={{ fontSize: 'var(--text-sm)', color: 'var(--brand)', textDecoration: 'none' }}
+              >
+                schedual-pro.com ↗
+              </a>
+            </div>
           </div>
         </div>
-        <div className="border-t border-emerald-900 mt-16 pt-8 flex flex-col md:flex-row items-center justify-between">
-          <p className="text-emerald-400 text-sm">
-            © {new Date().getFullYear()} Scholr Inc. All rights reserved.
-          </p>
+
+        <div
+          style={{
+            display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap', alignItems: 'baseline',
+            marginTop: 'var(--space-lg)', paddingTop: 'var(--space-xs)', borderTop: '1px solid var(--rule-soft)',
+          }}
+        >
+          <Link to="/" className="scholr-focus" style={{ display: 'flex', alignItems: 'center', gap: '.5rem', textDecoration: 'none', flex: 'none' }}>
+            <span style={{ width: 20, height: 20, borderRadius: 6, background: 'var(--brand)', position: 'relative', display: 'block' }}>
+              <span style={{ position: 'absolute', top: 3, right: 3, width: 5, height: 5, borderRadius: '50%', background: 'var(--gold)' }} />
+            </span>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 620, fontSize: '.95rem', letterSpacing: '-.03em', color: 'var(--ink)' }}>Scholr</span>
+          </Link>
+
+          {LINKS.map(([label, to]) => (
+            <Link key={to} to={to} className="scholr-focus" style={{ fontSize: '.85rem', color: 'var(--muted)', textDecoration: 'none' }}>
+              {label}
+            </Link>
+          ))}
+
+          <span className="scholr-label" style={{ marginLeft: 'auto', color: 'var(--faint)' }}>
+            © {new Date().getFullYear()} Scholr
+          </span>
         </div>
       </div>
     </footer>

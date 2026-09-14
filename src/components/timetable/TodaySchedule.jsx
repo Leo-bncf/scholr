@@ -1,11 +1,21 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Badge } from '@/components/ui/badge';
-import { Loader2, Clock, MapPin, User } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { format, getDay } from 'date-fns';
 import * as scheduleEntriesData from '@/data/scheduleEntries';
 import * as classesData from '@/data/classes';
 
+/**
+ * The day, as a timeline.
+ *
+ * This is the thing a teacher or a student opens the dashboard to check, so it
+ * gets the page's one dark band and reads as a single column rather than a
+ * stack of bordered cards — the previous version nested a card per period
+ * inside a card, which buried the one row that matters (what's on now).
+ *
+ * Every colour here is a token, which is what lets the same component sit on
+ * paper or inside `.scholr-band` without a dark variant.
+ */
 export default function TodaySchedule({ schoolId, userId, userRole }) {
   const today = getDay(new Date()); // 0=Sunday, 1=Monday, etc.
 
@@ -24,12 +34,12 @@ export default function TodaySchedule({ schoolId, userId, userRole }) {
         const classes = await classesData.where({ school_id: schoolId, status: 'active' });
         const studentClasses = classes.filter(c => c.student_ids?.includes(userId));
         const studentClassIds = studentClasses.map(c => c.id);
-        return all.filter(e => studentClassIds.includes(e.class_id)).sort((a, b) => 
+        return all.filter(e => studentClassIds.includes(e.class_id)).sort((a, b) =>
           a.start_time.localeCompare(b.start_time)
         );
       } else if (userRole === 'teacher') {
         // Get teacher's schedule
-        return all.filter(e => e.teacher_id === userId).sort((a, b) => 
+        return all.filter(e => e.teacher_id === userId).sort((a, b) =>
           a.start_time.localeCompare(b.start_time)
         );
       }
@@ -39,95 +49,92 @@ export default function TodaySchedule({ schoolId, userId, userRole }) {
     enabled: !!schoolId && !!userId,
   });
 
-  const getCurrentOrNextClass = () => {
-    const now = format(new Date(), 'HH:mm');
-    const current = scheduleEntries.find(e => e.start_time <= now && e.end_time > now);
-    if (current) return { entry: current, status: 'current' };
-    
-    const next = scheduleEntries.find(e => e.start_time > now);
-    if (next) return { entry: next, status: 'next' };
-    
-    return null;
-  };
-
   if (isLoading) {
-    return <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>;
-  }
-
-  if (scheduleEntries.length === 0) {
     return (
-      <div className="text-center py-8 text-slate-400">
-        <Clock className="w-10 h-10 mx-auto mb-2 text-slate-300" />
-        <p className="text-sm">No classes scheduled for today</p>
+      <div className="flex justify-center py-8">
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--brand)' }} />
       </div>
     );
   }
 
-  const currentOrNext = getCurrentOrNextClass();
+  if (scheduleEntries.length === 0) {
+    return (
+      <p className="py-8 m-0 text-sm" style={{ color: 'var(--faint)' }}>
+        Nothing scheduled today.
+      </p>
+    );
+  }
+
+  const now = format(new Date(), 'HH:mm');
+  const currentIdx = scheduleEntries.findIndex(e => e.start_time <= now && e.end_time > now);
+  const nextIdx = currentIdx === -1 ? scheduleEntries.findIndex(e => e.start_time > now) : -1;
+  // Once the last period has finished there is no "rest of the day" to
+  // separate the past from, and dimming every row makes the whole panel look
+  // disabled. So the recede-what's-done treatment only applies mid-day.
+  const dayOver = currentIdx === -1 && nextIdx === -1;
 
   return (
-    <div className="space-y-4">
-      {currentOrNext && (
-        <div className={`rounded-xl border-2 p-4 ${
-          currentOrNext.status === 'current' 
-            ? 'bg-emerald-50 border-emerald-300' 
-            : 'bg-blue-50 border-blue-300'
-        }`}>
-          <Badge className={`mb-2 ${
-            currentOrNext.status === 'current'
-              ? 'bg-emerald-600 text-white border-0'
-              : 'bg-blue-600 text-white border-0'
-          }`}>
-            {currentOrNext.status === 'current' ? 'Now' : 'Next'}
-          </Badge>
-          <h3 className="font-bold text-lg text-slate-900 mb-2">{currentOrNext.entry.class_name}</h3>
-          <div className="space-y-1 text-sm">
-            <div className="flex items-center gap-2 text-slate-700">
-              <Clock className="w-4 h-4" />
-              <span>{currentOrNext.entry.start_time} - {currentOrNext.entry.end_time}</span>
-            </div>
-            {currentOrNext.entry.room_name && (
-              <div className="flex items-center gap-2 text-slate-700">
-                <MapPin className="w-4 h-4" />
-                <span>{currentOrNext.entry.room_name}</span>
-              </div>
-            )}
-            {currentOrNext.entry.teacher_name && userRole === 'student' && (
-              <div className="flex items-center gap-2 text-slate-700">
-                <User className="w-4 h-4" />
-                <span>{currentOrNext.entry.teacher_name}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+    <ol className="m-0 p-0 list-none">
+      {scheduleEntries.map((entry, i) => {
+        const isNow = i === currentIdx;
+        const isNext = i === nextIdx;
+        // Everything already finished recedes rather than disappearing — the
+        // day so far is context, not clutter.
+        const past = !dayOver && !isNow && !isNext && entry.end_time <= now;
 
-      <div>
-        <h4 className="font-semibold text-slate-900 mb-3">Today's Schedule</h4>
-        <div className="space-y-2">
-          {scheduleEntries.map(entry => (
-            <div key={entry.id} className="bg-white rounded-lg border border-slate-200 p-3">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <p className="font-medium text-slate-900">{entry.class_name}</p>
-                  <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {entry.start_time} - {entry.end_time}
-                    </span>
-                    {entry.room_name && (
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-3 h-3" />
-                        {entry.room_name}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+        return (
+          <li
+            key={entry.id}
+            className="grid items-baseline gap-x-3 py-2.5"
+            style={{
+              gridTemplateColumns: 'auto 3px minmax(0, 1fr) auto',
+              borderTop: i === 0 ? 'none' : '1px solid var(--rule-soft)',
+              opacity: past ? 0.55 : 1,
+            }}
+          >
+            <span
+              className="scholr-num text-xs whitespace-nowrap"
+              style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
+            >
+              {entry.start_time}
+            </span>
+
+            {/* The one accent mark: a 3px rule against the current period.
+                It is never the only signal — the "Now" chip carries the word. */}
+            <span
+              aria-hidden="true"
+              className="self-stretch"
+              style={{ background: isNow ? 'var(--brand)' : 'transparent', borderRadius: '2px' }}
+            />
+
+            <span className="min-w-0">
+              <span
+                className="block font-medium text-sm break-words"
+                style={{ color: 'var(--ink)' }}
+              >
+                {entry.class_name}
+              </span>
+              <span className="block text-xs mt-0.5" style={{ color: 'var(--muted)' }}>
+                {entry.start_time}–{entry.end_time}
+                {entry.room_name ? ` · ${entry.room_name}` : ''}
+                {entry.teacher_name && userRole === 'student' ? ` · ${entry.teacher_name}` : ''}
+              </span>
+            </span>
+
+            {(isNow || isNext) && (
+              <span
+                className="scholr-label"
+                style={{
+                  color: isNow ? 'var(--brand)' : 'var(--muted)',
+                  fontSize: '0.6rem',
+                }}
+              >
+                {isNow ? 'Now' : 'Next'}
+              </span>
+            )}
+          </li>
+        );
+      })}
+    </ol>
   );
 }

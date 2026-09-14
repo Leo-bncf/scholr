@@ -380,7 +380,7 @@ export default function UserDirectoryTab({ schoolId }) {
                     <tr key={m.id} className="hover:bg-slate-50 transition-colors group">
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 border ${rc.color}`}>
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 border role-chip`}>
                             {(m.user_name || m.user_email || '?')[0]?.toUpperCase()}
                           </div>
                           <div>
@@ -391,7 +391,7 @@ export default function UserDirectoryTab({ schoolId }) {
                       </td>
                       <td className="px-5 py-3 hidden sm:table-cell text-sm text-slate-500">{m.user_email}</td>
                       <td className="px-5 py-3">
-                        <Badge className={`${rc.color} border text-[11px] font-medium`}>{rc.label}</Badge>
+                        <Badge className={`role-chip border text-[11px] font-medium`}>{rc.label}</Badge>
                       </td>
                       <td className="px-5 py-3 hidden md:table-cell text-xs text-slate-500">
                         {m.grade_level

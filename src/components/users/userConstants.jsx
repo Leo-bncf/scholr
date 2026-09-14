@@ -1,9 +1,20 @@
+/**
+ * Roles are an identity, not a health state.
+ *
+ * These used to be five arbitrary hues — rose, amber, emerald, blue, violet —
+ * which is the multi-hue tell, and it also spent the reserved status palette
+ * on something that is never good or bad. A directory already has a Role
+ * column; you scan it by position, not by colour.
+ *
+ * So: one neutral chip, and the word does the work. `role-chip` is styled in
+ * the token layer.
+ */
 export const ROLE_CONFIG = {
-  school_admin:   { label: 'Admin',          color: 'bg-rose-50 text-rose-700 border-rose-200' },
-  ib_coordinator: { label: 'IB Coordinator', color: 'bg-amber-50 text-amber-700 border-amber-200' },
-  teacher:        { label: 'Teacher',        color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  student:        { label: 'Student',        color: 'bg-blue-50 text-blue-700 border-blue-200' },
-  parent:         { label: 'Parent',         color: 'bg-violet-50 text-violet-700 border-violet-200' },
+  school_admin:   { label: 'Admin' },
+  ib_coordinator: { label: 'IB Coordinator' },
+  teacher:        { label: 'Teacher' },
+  student:        { label: 'Student' },
+  parent:         { label: 'Parent' },
 };
 
 export const SIDEBAR_LINKS_ADMIN = [

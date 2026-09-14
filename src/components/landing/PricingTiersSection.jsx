@@ -1,383 +1,205 @@
-import React, { useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  CheckCircle2,
-  Zap,
-  School,
-  Users,
-  LifeBuoy,
-  ArrowRight,
-  Loader2,
-  Monitor,
-  Globe,
-} from 'lucide-react';
-import PricingTierSwitch from './PricingTierSwitch';
-import { getCurrentUser, redirectToLogin } from '@/data/session';
+import React, { useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { Section } from '@/components/public/PublicShell';
+import { getCurrentUser, isAuthenticated, redirectToLogin } from '@/data/session';
 import * as fns from '@/data/functions';
 
-const SHARED_FEATURES = [
-  'Full platform access — every feature included',
-  'Complete IB Core suite (CAS, EE, TOK)',
-  'Advanced multi-curricular gradebooks',
-  'Parent & student portals',
-  'Unlimited admin accounts',
-  'PDF & Excel export',
-  'Priority support',
+/**
+ * Pricing.
+ *
+ * The tiers differ in exactly one thing — how many students the school may
+ * host — and the per-student rate falls as capacity rises. Every feature is on
+ * every tier.
+ *
+ * So this is a price ladder plus ONE feature list, not three columns of
+ * identical ticks. Three identical lists invite the reader to hunt for the
+ * difference between them, which is the opposite of what the pricing model is
+ * trying to say.
+ */
+const TIERS = [
+  { id: 'tier1', name: 'Tier 1', cap: 'Up to 200 students',  capNum: '200',       price: '20.99', priceId: 'price_starter' },
+  { id: 'tier2', name: 'Tier 2', cap: 'Up to 600 students',  capNum: '600',       price: '16.99', priceId: 'price_growth' },
+  { id: 'tier3', name: 'Tier 3', cap: 'No student cap',      capNum: 'Unlimited', price: '13.99', priceId: 'price_enterprise' },
 ];
 
-const TIERS = {
-  tier1: {
-    name: 'Tier 1',
-    capacityLabel: 'Up to 200 Students',
-    tierLabel: 'Tier 1',
-    price: '€20.99',
-    priceId: 'price_starter',
-    subtitle: 'For smaller schools — full platform, capped at 200 students.',
-    rules: SHARED_FEATURES,
-    highlights: [
-      { icon: School, label: 'Student limit', value: '200' },
-    ],
-    featured: false,
-  },
-  tier2: {
-    name: 'Tier 2',
-    capacityLabel: 'Up to 600 Students',
-    tierLabel: 'Tier 2',
-    price: '€16.99',
-    priceId: 'price_growth',
-    subtitle: 'For growing schools — full platform, capped at 600 students.',
-    rules: SHARED_FEATURES,
-    highlights: [
-      { icon: School, label: 'Student limit', value: '600' },
-    ],
-    featured: true,
-  },
-  tier3: {
-    name: 'Tier 3',
-    capacityLabel: 'Unlimited Students',
-    tierLabel: 'Tier 3',
-    price: '€13.99',
-    priceId: 'price_enterprise',
-    subtitle: 'For large schools — full platform, no student cap.',
-    rules: SHARED_FEATURES,
-    highlights: [
-      { icon: School, label: 'Student limit', value: 'Unlimited' },
-    ],
-    featured: false,
-  },
-};
-
-const SYSTEM_RULES = [
-  {
-    icon: CheckCircle2,
-    title: 'Same features on every tier',
-    description: 'All schools get the full platform — no feature is gated behind a higher tier.',
-  },
-  {
-    icon: School,
-    title: 'Tiers = student capacity',
-    description: 'The only thing that changes between tiers is how many students your school can host.',
-  },
-  {
-    icon: Zap,
-    title: 'Lower rate as you grow',
-    description: 'The per‑student yearly price automatically drops at each higher tier.',
-  },
-  {
-    icon: Globe,
-    title: 'Full IB Core included',
-    description: 'CAS, EE and TOK tracking ship with every plan, from Tier 1 to Tier 3.',
-  },
-  {
-    icon: Users,
-    title: 'Unlimited admins, always',
-    description: 'Add as many school admin accounts as you need on any tier.',
-  },
-  {
-    icon: LifeBuoy,
-    title: 'Priority support included',
-    description: 'Every school gets priority support — no paywalled help desk.',
-  },
+/**
+ * What a school actually gets. Every line here is a thing the software does
+ * today.
+ *
+ * Removed, because they were not true:
+ *   · "PDF and Excel export" — exportReportPDF is not ported; it throws.
+ *     It goes back on this list the day the function is deployed.
+ *   · "Priority support" — there is no support tier, and inventing one on a
+ *     pricing page is the kind of claim a school's procurement team will hold
+ *     you to.
+ */
+const INCLUDED = [
+  'Every feature on every tier — nothing is held back for a higher plan',
+  'IB Core: CAS, the Extended Essay and TOK, each with its own deadlines and sign-off',
+  'Gradebooks for IB 1–7, A*–G, 9–1 and GPA, with predicted grades and their history',
+  'A family portal scoped to a parent’s own children, showing only released marks',
+  'Daily timetable, attendance registers and behaviour records',
+  'Unlimited staff and admin accounts — you pay per student, not per seat',
+  'Migration from your current system as part of onboarding',
 ];
 
-const panelTransition = {
-  duration: 0.42,
-  ease: [0.22, 1, 0.36, 1],
-};
+/**
+ * Self-serve checkout is off until Stripe is configured on the server.
+ *
+ * The keys are not set on production, so createCheckoutSession returns a 503
+ * and the buyer hits a dead end at the exact moment they decided to pay. Until
+ * they are set, the tier action starts a conversation instead — which is what
+ * happens anyway for a school buying software with a purchase order.
+ *
+ * Flip this to true once STRIPE_SECRET_KEY is live; startCheckout below is
+ * intact and tested.
+ */
+const CHECKOUT_ENABLED = false;
 
 export default function PricingTiersSection() {
-  const [expandedTier, setExpandedTier] = useState('tier2');
   const [loadingTier, setLoadingTier] = useState(null);
+  const [error, setError] = useState(null);
 
-  const tierOptions = useMemo(
-    () => Object.entries(TIERS).map(([value, tier]) => ({ value, label: tier.name })),
-    []
-  );
+  const startCheckout = async (tier) => {
+    setError(null);
 
-  const selectedTier = TIERS[expandedTier];
-  const summaryLines = [
-    'Every feature of scholr.pro is included — same platform on every tier.',
-    selectedTier.capacityLabel === 'Unlimited Students'
-      ? 'No cap on student enrollment.'
-      : `Student capacity is capped at ${selectedTier.capacityLabel.replace('Up to ', '')}.`,
-    'IB Core (CAS, EE, TOK), gradebooks, reports and parent portal are always on.',
-    'Unlimited admin accounts and priority support on all tiers.',
-    'Billed yearly. The per‑student rate decreases as your tier grows.',
-  ];
-
-  const handleCheckout = async (priceId, tierId) => {
-    if (window.self !== window.top) {
-      alert('Checkout works only from the published app, not inside the preview.');
-      return;
-    }
-
-    const isAuthenticated = await isAuthenticated();
-    if (!isAuthenticated) {
+    // The old version wrote `const isAuthenticated = await isAuthenticated()`,
+    // which shadows the import and throws a ReferenceError before it can do
+    // anything — every click on this button was dead.
+    if (!(await isAuthenticated())) {
       redirectToLogin(window.location.href);
       return;
     }
 
-    const user = await getCurrentUser();
-    setLoadingTier(tierId);
-
+    setLoadingTier(tier.id);
     try {
+      const user = await getCurrentUser();
       const response = await fns.invoke('createCheckoutSession', {
-        priceId,
-        tier: tierId,
+        priceId: tier.priceId,
+        tier: tier.id,
         userId: user.id,
         userEmail: user.email,
       });
-
       if (response?.url) {
         window.location.href = response.url;
         return;
       }
-    } catch (error) {
-      console.error('Checkout start failed:', error);
+      setError("Checkout didn't return a payment link. Please try again or contact us.");
+    } catch (err) {
+      console.error('Checkout start failed:', err);
+      setError("We couldn't start checkout. Please try again, or book a demo and we'll set it up with you.");
+    } finally {
+      setLoadingTier(null);
     }
-
-    alert('Unable to start checkout right now.');
-    setLoadingTier(null);
   };
 
   return (
-    <section id="pricing" className="relative overflow-hidden bg-transparent py-24">
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/70 backdrop-blur-sm px-4 py-2 text-sm font-semibold text-emerald-700 shadow-sm">
-            <Zap className="h-4 w-4 fill-current" />
-            Simple, Transparent Pricing
-          </div>
-          <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            One Platform. Every Feature. Simple Tiers.
-          </h2>
-          <p className="mt-4 text-lg text-white">
-            All tiers include the full platform — same features, same support. The only difference is student capacity and the per‑student yearly price, which drops as your school grows.
-          </p>
-        </div>
+    <Section
+      eyebrow="Pricing"
+      title="One rate, per student, per year"
+      lede="The tier is a capacity band, not a feature set. Every school gets the whole platform; the only thing that changes is how many students you can host and what each one costs."
+    >
+      <div
+        className="scholr-grid"
+        style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(15rem, 100%), 1fr))' }}
+      >
+        {TIERS.map(tier => (
+          <div key={tier.id} className="px-5 py-6 flex flex-col gap-4">
+            <div>
+              <p className="scholr-label m-0">{tier.name}</p>
+              <p
+                className="m-0 mt-2 scholr-num leading-none"
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '2.1rem',
+                  fontWeight: 600,
+                  letterSpacing: '-0.03em',
+                  color: 'var(--ink)',
+                }}
+              >
+                €{tier.price}
+              </p>
+              <p className="m-0 mt-1.5 text-xs" style={{ color: 'var(--muted)' }}>
+                per student, per year
+              </p>
+            </div>
 
-        <div className="mx-auto mt-10 max-w-3xl">
-          <PricingTierSwitch options={tierOptions} value={expandedTier} onChange={setExpandedTier} />
-        </div>
-
-        {/* Tier ladder — makes the decreasing per-student price obvious at a glance */}
-        <div className="mx-auto mt-6 max-w-3xl grid grid-cols-3 gap-3 text-center">
-          {Object.entries(TIERS).map(([key, tier]) => {
-            const active = key === expandedTier;
-            return (
+            <div className="mt-auto">
+              <p
+                className="m-0 pt-3 text-sm"
+                style={{ borderTop: '1px solid var(--rule-soft)', color: 'var(--body)' }}
+              >
+                {tier.cap}
+              </p>
+              {CHECKOUT_ENABLED ? (
               <button
-                key={key}
                 type="button"
-                onClick={() => setExpandedTier(key)}
-                className={`rounded-2xl border px-3 py-3 transition-all ${
-                  active
-                    ? 'border-emerald-300 bg-white/15 shadow-lg'
-                    : 'border-white/15 bg-white/5 hover:bg-white/10'
-                }`}
+                onClick={() => startCheckout(tier)}
+                disabled={loadingTier !== null}
+                className="scholr-focus mt-4 w-full inline-flex items-center justify-center gap-2 text-sm font-medium"
+                style={{
+                  background: 'var(--brand)',
+                  color: 'var(--brand-ink)',
+                  border: 'none',
+                  padding: '0.6rem 0.9rem',
+                  borderRadius: 'var(--radius-pill)',
+                  cursor: loadingTier ? 'wait' : 'pointer',
+                  opacity: loadingTier && loadingTier !== tier.id ? 0.5 : 1,
+                }}
               >
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-200">
-                  {tier.tierLabel}
-                </div>
-                <div className="mt-1 text-xl font-bold text-white">{tier.price}</div>
-                <div className="text-[11px] text-emerald-100/80">/ student / year</div>
+                {loadingTier === tier.id && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                Choose {tier.name}
               </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-stretch">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={expandedTier}
-              initial={{ opacity: 0, y: 28, scale: 0.985, filter: 'blur(10px)' }}
-              animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -18, scale: 0.985, filter: 'blur(8px)' }}
-              transition={panelTransition}
-              className="rounded-[2rem] border border-slate-200 bg-white/90 backdrop-blur-md p-6 shadow-xl sm:p-8"
-            >
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.28, delay: 0.06 }}
-                className="border-b border-slate-100 pb-6"
-              >
-                <div className="flex items-center gap-3">
-                  <h3 className="text-3xl font-bold text-slate-900">{selectedTier.name}</h3>
-                </div>
-                <p className="mt-3 max-w-2xl text-slate-600">{selectedTier.subtitle}</p>
-              </motion.div>
-
-              <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                {selectedTier.highlights.map((item, index) => (
-                  <motion.div
-                    key={item.label}
-                    initial={{ opacity: 0, y: 18 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.28, delay: 0.1 + index * 0.05 }}
-                    className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4"
-                  >
-                    <item.icon className="mb-3 h-5 w-5 text-emerald-700" />
-                    <div className="text-xl font-bold text-slate-900">{item.value}</div>
-                    <div className="text-sm text-slate-500">{item.label}</div>
-                  </motion.div>
-                ))}
-              </div>
-
-            </motion.div>
-          </AnimatePresence>
-
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={`${expandedTier}-summary`}
-              initial={{ opacity: 0, y: 28, scale: 0.985, filter: 'blur(10px)' }}
-              animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -18, scale: 0.985, filter: 'blur(8px)' }}
-              transition={{ ...panelTransition, delay: 0.03 }}
-              className="flex h-full flex-col rounded-[2rem] border border-emerald-800/40 bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-900 p-6 text-white shadow-2xl sm:p-8"
-            >
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.24, delay: 0.08 }}
-                className="text-sm uppercase tracking-[0.2em] text-emerald-200"
-              >
-                What this controls
-              </motion.p>
-              <motion.h3
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.28, delay: 0.12 }}
-                className="mt-3 text-2xl font-bold"
-              >
-                {selectedTier.name} rules applied across your school
-              </motion.h3>
-              <div className="mt-6 space-y-3 text-sm text-emerald-100/90">
-                {summaryLines.map((line, index) => (
-                  <motion.p
-                    key={line}
-                    initial={{ opacity: 0, x: 8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.24, delay: 0.16 + index * 0.05 }}
-                  >
-                    {line}
-                  </motion.p>
-                ))}
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.28, delay: 0.34 }}
-                className="mt-8 rounded-2xl border border-emerald-300/20 bg-white/5 p-4 backdrop-blur-sm"
-              >
-                <p className="text-sm text-emerald-100">Already have an account? You’ll go straight to payment. New user? You’ll create your account first.</p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.32, delay: 0.4 }}
-                className="mt-auto pt-8"
-              >
-                <div className="mb-4 rounded-3xl border border-emerald-300/20 bg-gradient-to-br from-white/10 to-emerald-300/5 p-5 backdrop-blur-sm">
-                  <div className="flex items-center justify-between">
-                    <div className="text-xs uppercase tracking-[0.22em] text-emerald-200">
-                      {selectedTier.tierLabel} · Per Student / Year
-                    </div>
-                    <Badge className="bg-emerald-400/20 text-emerald-100 border border-emerald-300/30 text-[10px]">
-                      Tiered pricing
-                    </Badge>
-                  </div>
-                  <div className="mt-2 flex items-baseline gap-2">
-                    <div className="text-4xl font-bold text-emerald-50">{selectedTier.price}</div>
-                    <div className="text-sm text-emerald-200">per student, per year</div>
-                  </div>
-                  <div className="mt-4">
-                    <div className="text-sm text-emerald-100 mb-3">
-                      Billed yearly. The per‑student rate drops automatically at each higher tier — you pay less per student as your school grows.
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-2 text-sm font-medium text-white">
-                        <Monitor className="h-4 w-4" />
-                        Web App
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <Button
-                  type="button"
-                  className="h-14 text-base w-full rounded-full bg-white text-emerald-950 font-semibold hover:bg-emerald-50 shadow-lg transition-all"
-                  onClick={async () => {
-                    await handleCheckout(selectedTier.priceId, expandedTier);
-                  }}
-                  disabled={loadingTier === expandedTier}
+              ) : (
+                <a
+                  href="/BookDemo"
+                  className="pub-btn pub-btn-line scholr-focus mt-4 w-full justify-center"
                 >
-                  {loadingTier === expandedTier ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Redirecting...
-                    </>
-                  ) : (
-                    <>
-                      <span>Choose {selectedTier.name} plan</span>
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </>
-                  )}
-                </Button>
-              </motion.div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        <div className="mt-20">
-          <div className="mb-10 text-center">
-            <h3 className="text-3xl font-bold text-white">How the tier system works in practice</h3>
-            <p className="mx-auto mt-3 max-w-2xl text-white">
-              Every school gets the same full platform. Tiers only change how many students you can host and your per‑student yearly rate.
-            </p>
+                  Talk to us about {tier.name}
+                </a>
+              )}
+            </div>
           </div>
-
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {SYSTEM_RULES.map((rule, i) => (
-              <motion.div 
-                key={rule.title} 
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="rounded-2xl border border-slate-200 bg-white/70 backdrop-blur-sm p-6 shadow-sm hover:shadow-md transition-shadow"
-              >
-                <rule.icon className="mb-4 h-6 w-6 text-emerald-600" />
-                <h4 className="mb-2 text-lg font-semibold text-slate-900">{rule.title}</h4>
-                <p className="text-sm leading-relaxed text-slate-600">{rule.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+        ))}
       </div>
-    </section>
+
+      {error && (
+        <p
+          role="alert"
+          className="m-0 mt-4 px-3 py-2 text-sm"
+          style={{
+            background: 'var(--crit-sf)',
+            color: 'var(--crit)',
+            border: '1px solid var(--crit)',
+            borderRadius: 'var(--radius-control)',
+          }}
+        >
+          {error}
+        </p>
+      )}
+
+      <div className="mt-8">
+        <h3 className="scholr-label m-0">Included on every tier</h3>
+        <ul
+          className="m-0 mt-3 p-0 list-none grid gap-x-8"
+          style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(19rem, 100%), 1fr))' }}
+        >
+          {INCLUDED.map(item => (
+            <li
+              key={item}
+              className="py-2.5 text-sm"
+              style={{ borderTop: '1px solid var(--rule-soft)', color: 'var(--body)' }}
+            >
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <p className="m-0 mt-6 text-xs" style={{ color: 'var(--faint)' }}>
+        Billed yearly, in euro, excluding VAT. Staff, admin and parent accounts are free and
+        uncounted — the figure is enrolled students at the point the year is billed.
+      </p>
+    </Section>
   );
 }

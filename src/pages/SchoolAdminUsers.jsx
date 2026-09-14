@@ -57,7 +57,7 @@ export default function SchoolAdminUsers() {
           schoolId={schoolId}
         />
 
-        <main className="md:ml-64 min-h-screen flex flex-col">
+        <main className="app-offset min-h-screen flex flex-col">
           <AdminTabNavigation
             tabs={TABS}
             activeTab={tab}

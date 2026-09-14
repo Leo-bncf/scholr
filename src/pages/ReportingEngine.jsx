@@ -175,7 +175,7 @@ export default function ReportingEngine() {
     <RoleGuard allowedRoles={['school_admin', 'ib_coordinator', 'admin', 'super_admin']}>
       <div className="min-h-screen bg-slate-50">
         <AppSidebar links={SCHOOL_ADMIN_SIDEBAR_LINKS} role="school_admin" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="md:ml-64 p-6 max-w-7xl mx-auto space-y-6">
+        <main className="app-offset p-6 max-w-7xl mx-auto space-y-6">
           <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-slate-900">Reporting Engine</h1>

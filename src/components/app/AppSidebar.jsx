@@ -1,82 +1,172 @@
-import React from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { LogOut } from 'lucide-react';
+import { LogOut, Search } from 'lucide-react';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import BellBoundary from '@/components/notifications/BellBoundary';
 import { signOut } from '@/data/session';
 
-export default function AppSidebar({ links, role, schoolName, userName, userId, schoolId }) {
-  const location = useLocation();
+const ROLE_LABELS = {
+  super_admin: 'Platform admin',
+  school_admin: 'School admin',
+  ib_coordinator: 'Coordinator',
+  teacher: 'Teacher',
+  student: 'Student',
+  parent: 'Parent',
+};
 
-  const roleLabels = {
-    super_admin: 'Platform Admin',
-    school_admin: 'School Admin',
-    ib_coordinator: 'IB Coordinator',
-    teacher: 'Teacher',
-    student: 'Student',
-    parent: 'Parent',
-  };
+/**
+ * The signed-in sidebar.
+ *
+ * Its ground is a step darker than the app's and the nav floats on it as a
+ * group, so the chrome and the content speak the same inset-list language.
+ * The shape is borrowed from Schedual, which solves this well.
+ *
+ * The search is not decoration: a school admin has fifteen destinations, and
+ * filtering beats scrolling. ⌘K focuses it from anywhere.
+ *
+ * Active detection is an exact path match, and only the FIRST match is marked.
+ * It used to be `pathname.includes(page)`, which lit up every SchoolAdmin*
+ * route at once; and when two links legitimately pointed at one page, three
+ * rows highlighted together.
+ */
+export default function AppSidebar({ links, role, schoolName, userName, userId, schoolId }) {
+  const { pathname } = useLocation();
+  const [query, setQuery] = useState('');
+  const searchRef = useRef(null);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        searchRef.current?.focus();
+        searchRef.current?.select();
+      }
+      if (e.key === 'Escape' && document.activeElement === searchRef.current) setQuery('');
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  const current = pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
+  const activePage = useMemo(() => {
+    const hit = links.find(l => createPageUrl(l.page).replace(/^\/+/, '').toLowerCase() === current);
+    return hit?.page;
+  }, [links, current]);
+
+  const shown = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return q ? links.filter(l => l.label.toLowerCase().includes(q)) : links;
+  }, [links, query]);
 
   return (
-    <aside className="hidden md:fixed md:left-0 md:top-0 md:bottom-0 md:w-64 bg-white text-slate-900 flex flex-col z-40 md:flex border-r border-slate-200">
-      <div className="p-3 md:p-5 border-b border-slate-200">
-        <div className="flex items-center justify-between gap-2">
-          <Link to={createPageUrl('Landing')} className="flex items-center gap-2 md:gap-2.5 flex-1 min-w-0 hover:opacity-90 transition-opacity cursor-pointer">
-            <img
-              src="/brand/scholr-mark.png"
-              alt="Scholr"
-              className="w-7 md:w-8 h-7 md:h-8 rounded-md shadow-sm object-cover flex-shrink-0"
-            />
-            <span style={{ fontFamily: "'Merriweather', serif" }} className="text-xl font-semibold truncate tracking-tight text-slate-900">Scholr</span>
-          </Link>
-          {userId && schoolId && (
-            <div className="hidden md:block">
-              <NotificationBell userId={userId} schoolId={schoolId} />
-            </div>
-          )}
-        </div>
-        {schoolName && (
-          <p className="text-xs text-slate-500 mt-2 truncate">{schoolName}</p>
+    <aside
+      className="hidden md:flex app-sidebar"
+      style={{
+        position: 'fixed', left: 0, top: 0, bottom: 0, width: '15.5rem', zIndex: 40,
+        flexDirection: 'column', gap: 'var(--space-2xs)',
+        padding: 'var(--space-2xs)', borderRight: '1px solid var(--rule)',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', padding: '.45rem .35rem .1rem' }}>
+        <Link
+          to={createPageUrl('AppHome')}
+          className="scholr-focus"
+          style={{ display: 'flex', alignItems: 'center', gap: '.55rem', minWidth: 0, flex: 1, textDecoration: 'none' }}
+        >
+          <span style={{ width: 26, height: 26, borderRadius: 8, background: 'var(--brand)', position: 'relative', flex: 'none' }}>
+            <span style={{ position: 'absolute', top: 4, right: 4, width: 7, height: 7, borderRadius: '50%', background: 'var(--gold)' }} />
+          </span>
+          <span
+            style={{
+              fontFamily: 'var(--font-display)', fontWeight: 650, fontSize: '1.02rem',
+              letterSpacing: '-.035em', color: 'var(--ink)',
+              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+            }}
+          >
+            Scholr
+          </span>
+        </Link>
+        {userId && schoolId && (
+          <BellBoundary><NotificationBell userId={userId} schoolId={schoolId} /></BellBoundary>
         )}
       </div>
 
-      <nav className="flex-1 overflow-y-auto p-2 md:p-3 space-y-0.5">
-        {links.map((link) => {
-          const isActive = location.pathname.includes(link.page.replace(/\s/g, ''));
-          return (
-            <Link
-              key={link.page}
-              to={createPageUrl(link.page)}
-              className={`flex items-center gap-2 md:gap-3 px-2.5 md:px-3.5 py-2 md:py-2.5 rounded-md text-xs md:text-sm font-medium transition-all duration-200 ${
-                isActive 
-                  ? 'bg-emerald-100 text-emerald-950 shadow-sm' 
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-              }`}
-            >
-              <link.icon className="w-4 md:w-4.5 h-4 md:h-4.5 shrink-0" />
-              <span className="hidden md:inline">{link.label}</span>
-            </Link>
-          );
-        })}
+      <div className="app-navsearch" style={{ padding: '0 .35rem' }}>
+        <Search className="app-navsearch__icon w-3.5 h-3.5" aria-hidden="true" />
+        <input
+          ref={searchRef}
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search"
+          aria-label="Filter navigation"
+        />
+        <kbd aria-hidden="true">⌘K</kbd>
+      </div>
+
+      <nav style={{ flex: 1, overflowY: 'auto', padding: '0 .35rem' }} aria-label="Main">
+        {schoolName && (
+          <p
+            className="scholr-label"
+            style={{ margin: '.5rem .25rem .4rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+          >
+            {schoolName}
+          </p>
+        )}
+        <div className="app-nav-group">
+          {shown.length === 0 ? (
+            <p style={{ margin: 0, padding: 'var(--space-md) .6rem', textAlign: 'center', fontSize: '.8rem', color: 'var(--faint)' }}>
+              Nothing matches “{query}”.
+            </p>
+          ) : (
+            shown.map((link) => (
+              <Link
+                key={link.page + link.label}
+                to={createPageUrl(link.page)}
+                className="app-nav-item scholr-focus"
+                aria-current={link.page === activePage ? 'page' : undefined}
+              >
+                <link.icon className="w-4 h-4 shrink-0" style={{ color: 'var(--muted)' }} />
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{link.label}</span>
+              </Link>
+            ))
+          )}
+        </div>
       </nav>
 
-      <div className="p-3 md:p-4 border-t border-slate-200">
-        <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
-          <div className="w-7 md:w-8 h-7 md:h-8 rounded-md bg-slate-100 flex items-center justify-center text-xs font-bold flex-shrink-0 border border-slate-200 text-slate-700">
-            {userName?.[0]?.toUpperCase() || '?'}
+      <div style={{ padding: '0 .35rem .1rem' }}>
+        <div className="app-nav-group" style={{ padding: '.4rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '.6rem', padding: '.15rem .2rem .45rem' }}>
+            <span
+              style={{
+                width: 28, height: 28, borderRadius: '50%', flex: 'none',
+                background: 'var(--brand-sf)', color: 'var(--brand)',
+                display: 'grid', placeItems: 'center',
+                fontSize: '.72rem', fontWeight: 600, fontFamily: 'var(--font-mono)',
+              }}
+            >
+              {userName?.[0]?.toUpperCase() || '?'}
+            </span>
+            <span style={{ minWidth: 0 }}>
+              <span style={{ display: 'block', fontSize: '.83rem', color: 'var(--ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {userName || 'Signed in'}
+              </span>
+              <span style={{ display: 'block', fontSize: '.71rem', color: 'var(--muted)' }}>
+                {ROLE_LABELS[role] || role}
+              </span>
+            </span>
           </div>
-          <div className="flex-1 min-w-0 hidden md:block">
-            <p className="text-xs md:text-sm font-medium truncate text-slate-900">{userName || 'User'}</p>
-            <p className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">{roleLabels[role] || role}</p>
-          </div>
+          <button
+            type="button"
+            onClick={() => signOut()}
+            className="app-nav-item scholr-focus"
+            style={{ width: '100%', cursor: 'pointer', background: 'none' }}
+          >
+            <LogOut className="w-4 h-4 shrink-0" style={{ color: 'var(--muted)' }} />
+            <span>Sign out</span>
+          </button>
         </div>
-        <button 
-          onClick={() => signOut()}
-          className="flex items-center gap-1.5 md:gap-2 w-full px-2.5 md:px-3 py-1.5 md:py-2 rounded-md text-xs text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors border border-transparent hover:border-slate-200"
-        >
-          <LogOut className="w-3.5 h-3.5 flex-shrink-0" />
-          <span className="hidden md:inline">Sign Out</span>
-        </button>
       </div>
     </aside>
   );

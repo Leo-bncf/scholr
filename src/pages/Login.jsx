@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, AlertCircle, Lock } from 'lucide-react';
+import { Loader2, Lock } from 'lucide-react';
+import { AuthCard, AuthField, AuthError, AuthSubmit } from '@/components/public/AuthCard';
 import { signInWithPassword, signInWithGoogle, isAuthenticated, getEnabledProviders } from '@/data/session';
 
 /**
@@ -87,91 +84,78 @@ export default function Login() {
 
   if (checking) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+      <div className="scholr-page min-h-screen flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--brand)' }} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <img src="/brand/scholr-mark.png" alt="" className="w-12 h-12 mx-auto mb-4 rounded-xl" />
-          <h1 className="text-2xl font-bold text-slate-900">Sign in to Scholr</h1>
-        </div>
+    <AuthCard title="Sign in" footnote="Scholr is invite-only. Ask your school administrator for access.">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <AuthField id="email" label="Email">
+          <input
+            id="email"
+            type="email"
+            autoComplete="username"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@school.org"
+          />
+        </AuthField>
 
-        <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
-          <div>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              autoComplete="username"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1.5"
-              placeholder="you@school.org"
-            />
-          </div>
+        <AuthField id="password" label="Password">
+          <input
+            id="password"
+            type="password"
+            autoComplete="current-password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </AuthField>
 
-          <div>
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1.5"
-            />
-          </div>
+        {error && <AuthError>{error}</AuthError>}
 
-          {error && (
-            <Alert className="border-red-200 bg-red-50">
-              <AlertCircle className="h-4 w-4 text-red-600" />
-              <AlertDescription className="text-red-800 text-sm">{error}</AlertDescription>
-            </Alert>
-          )}
+        <AuthSubmit busy={submitting}>
+          {submitting ? null : <Lock className="w-4 h-4" />}
+          {submitting ? 'Signing in…' : 'Sign in'}
+        </AuthSubmit>
 
-          <Button type="submit" disabled={submitting} className="w-full h-11">
-            {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Lock className="w-4 h-4 mr-2" />}
-            {submitting ? 'Signing in…' : 'Sign in'}
-          </Button>
+        {googleEnabled && (
+          <>
+            <div className="flex items-center gap-3">
+              <span className="h-px flex-1" style={{ background: 'var(--rule)' }} />
+              <span className="scholr-label">or</span>
+              <span className="h-px flex-1" style={{ background: 'var(--rule)' }} />
+            </div>
 
-          {googleEnabled && (
-            <>
-              <div className="flex items-center gap-3 pt-1">
-                <span className="h-px flex-1 bg-slate-200" />
-                <span className="text-xs uppercase tracking-wide text-slate-400">or</span>
-                <span className="h-px flex-1 bg-slate-200" />
-              </div>
+            <button
+              type="button"
+              onClick={handleGoogle}
+              className="scholr-focus w-full inline-flex items-center justify-center gap-2 text-sm font-medium"
+              style={{
+                background: 'var(--surface)',
+                color: 'var(--body)',
+                border: '1px solid var(--rule)',
+                padding: '0.65rem 1rem',
+                borderRadius: 'var(--radius-control)',
+                cursor: 'pointer',
+              }}
+            >
+              <GoogleMark />
+              Continue with Google
+            </button>
+          </>
+        )}
 
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleGoogle}
-                className="w-full h-11 gap-2"
-              >
-                <GoogleMark />
-                Continue with Google
-              </Button>
-            </>
-          )}
-
-          <div className="text-center pt-1">
-            <Link to="/PasswordReset" className="text-sm text-indigo-600 hover:underline">
-              Forgot your password?
-            </Link>
-          </div>
-        </form>
-
-        <p className="text-center text-xs text-slate-400 mt-6">
-          Scholr is invite-only. Ask your school administrator for access.
+        <p className="m-0 text-center text-sm">
+          <Link to="/PasswordReset" className="scholr-focus" style={{ color: 'var(--brand)' }}>
+            Forgot your password?
+          </Link>
         </p>
-      </div>
-    </div>
+      </form>
+    </AuthCard>
   );
 }

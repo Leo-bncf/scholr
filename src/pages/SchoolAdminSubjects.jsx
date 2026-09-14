@@ -109,7 +109,7 @@ export default function SchoolAdminSubjects() {
       <div className="min-h-screen bg-slate-50">
         <AppSidebar links={sidebarLinks} role="school_admin" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
 
-        <main className="md:ml-64 min-h-screen flex flex-col">
+        <main className="app-offset min-h-screen flex flex-col">
           <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10 shadow-sm">
             <div>
               <h1 className="text-base font-semibold text-slate-900">Subject Catalogue</h1>

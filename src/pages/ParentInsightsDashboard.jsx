@@ -133,7 +133,7 @@ export default function ParentInsightsDashboard() {
     <RoleGuard allowedRoles={['parent', 'super_admin', 'admin']}>
       <div className="min-h-screen bg-slate-50">
         <AppSidebar links={getAppSidebarLinks('parent')} role="parent" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="ml-0 md:ml-64 p-4 md:p-8">
+        <main className="app-offset p-4 md:p-8">
           <div className="max-w-7xl mx-auto space-y-6">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Parent Insights</h1>

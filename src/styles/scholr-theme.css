@@ -1,0 +1,864 @@
+/* Hallmark · macrostructure: Workbench · genre: modern-minimal
+ * theme: custom (vibe: "Irish green, institutional, bright, product-led"
+ *   · paper oklch(98.8% 0.007 120) · accent oklch(45% 0.115 152) chromatic-green
+ *   · display Bricolage Grotesque · body Instrument Sans · mono Geist Mono)
+ * axes: light paper · grotesk-sans display · chromatic-green accent
+ * nav: N10 floating-on-scroll morph · footer: Ft5 Statement
+ * enrichment: none beyond the real product captures — Workbench's images ARE the content
+ * tone: utilitarian · audience: heads of school, IB coordinators, IT directors
+ *
+ * app chrome: Apple-minimalist inside the Hallmark rules — grouped inset lists
+ *   on a tinted ground, translucent materials, a large title that collapses
+ *   into the toolbar, nested radii, lift instead of drop shadow. Hallmark
+ *   keeps the accent budget, the reserved status palette, the token rule and
+ *   the motion contract.
+ * pre-emit critique: P4 H5 E4 S5 R5 V4
+ */
+/* ---------------------------------------------------------------------------
+   Scholr — the design tokens
+   ---------------------------------------------------------------------------
+   Hallmark's modern-minimal genre, in Scholr's own colours: the deep green of
+   the logo mark, with its gold dot as a rare second accent.
+
+   Engineered paper rather than #fff, a green-leaning charcoal rather than
+   #000, and exactly ONE accent that should never cover more than ~5% of a
+   viewport. Structure comes from 1px hairlines, not from stacked cards with
+   shadows.
+
+   Every colour in the product must reference a token from this file. An inline
+   hex or a bare Tailwind colour class bypasses the theme and is the thing that
+   makes a redesign drift back to where it started. Note that
+   `tailwind.config.js` remaps the whole indigo and blue palettes to green, so
+   a stray `bg-blue-600` renders green — convenient, but it means Tailwind
+   colour classes carry no reliable meaning here. Use the tokens.
+
+   Two of Hallmark's page-level signatures are deliberately absent: the
+   code-block hero and the ⌘K palette. Both are dev-tool marketing devices; a
+   teacher taking a register is not their audience.
+--------------------------------------------------------------------------- */
+
+/* Self-hosted, so no third-party request on page load.
+
+   Bricolage Grotesque for display: it has real quirks — the flared stems, the
+   tight apertures — which is the point. Inter and Space Grotesk are the two
+   faces every generated page reaches for, and a page set in them announces
+   that nobody chose anything. Instrument Sans carries the body: quiet, a
+   little narrow, gets out of the way. Geist Mono for data and labels. */
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/instrument-sans';
+@import '@fontsource-variable/geist-mono';
+
+:root {
+  --paper:        oklch(98.8% 0.007 120);
+  /* Never oklch(100% 0 0). Pure white reads flat and synthetic; the surface
+     is tinted a trace toward the anchor hue so paper and card belong to the
+     same world. (anti-patterns.md § Pure black, pure white) */
+  --surface:      oklch(99.6% 0.004 120);
+  --surface-sunk: oklch(97% 0.012 130);
+  --wash:         oklch(96.2% 0.028 152);
+  --wash-warm:    oklch(96.8% 0.032 92);
+  --ink:          oklch(21% 0.032 152);
+  --body:         oklch(41% 0.024 150);
+  --muted:        oklch(57% 0.018 148);
+  --faint:        oklch(68% 0.014 145);
+  --rule:         oklch(90.5% 0.014 130);
+  --rule-soft:    oklch(94% 0.011 130);
+
+  /* The mark's green, moved from a cold 168 teal to a growing, yellow-leaning
+     152. Dark enough to carry white text at a small size, which is what makes
+     it usable as a button fill and not just a link colour. */
+  --brand:       oklch(45% 0.115 152);
+  --brand-sf:    oklch(95% 0.04 152);
+  --brand-ink:   oklch(99% 0.006 152);
+
+  /* The gold dot on the logo, and the second half of the tricolour. It is the
+     call-to-action colour, and it appears nowhere else — not as a status, not
+     as a series colour, not as a background wash. */
+  --gold:         oklch(81% 0.145 78);
+  --gold-deep:    oklch(64% 0.16 60);
+  --gold-ink:     oklch(28% 0.07 70);
+
+  /* The emphasis surface. It used to be graphite: one dark band per page for
+     rhythm. On a bright product a dark slab fights everything around it, so
+     emphasis is now a mint tint — same job, same once-per-page budget. */
+  --graphite:     var(--brand-sf);
+  --graphite-ink: var(--ink);
+  --graphite-mut: var(--muted);
+  --graphite-rule:oklch(45% 0.115 152 / 0.16);
+
+  /* Depth. On a light ground contrast can't do it, so shadows carry the hue of
+     the surface they fall on — grey shadows on a green-tinted paper read as
+     dirt. */
+  /* A lift, not a drop: a hairline that defines the edge, then a very soft,
+     very wide shadow at low opacity. A single dark blur reads as a sticker. */
+  --lift-sm:
+    0 0 0 0.5px oklch(28% 0.05 150 / 0.06),
+    0 1px 2px oklch(28% 0.05 150 / 0.04),
+    0 4px 12px -4px oklch(28% 0.05 150 / 0.06);
+  --lift-md:
+    0 0 0 0.5px oklch(28% 0.05 150 / 0.07),
+    0 2px 6px oklch(28% 0.05 150 / 0.05),
+    0 12px 32px -10px oklch(28% 0.05 150 / 0.12);
+  --lift-lg:
+    0 0 0 0.5px oklch(28% 0.05 150 / 0.08),
+    0 4px 12px oklch(28% 0.05 150 / 0.06),
+    0 40px 80px -28px oklch(26% 0.05 150 / 0.22);
+
+  /* Status is a RESERVED palette: good / warning / critical. Never reused as a
+     decorative or "series" colour, and never the only signal — a status always
+     ships with its word. */
+  /* `good` sits at 150 while the accent sits at 168 — far enough apart that a
+     green brand and a green "healthy" chip don't read as the same thing, and
+     the chip always carries its word anyway. */
+  --good:    oklch(55% 0.14 150);  --good-sf: oklch(96% 0.035 150);
+  --warn:    oklch(62% 0.14 72);   --warn-sf: oklch(96.5% 0.045 72);
+  --crit:    oklch(54% 0.18 25);   --crit-sf: oklch(96% 0.035 25);
+
+  /* Type scale. The gap between display and body is most of the personality,
+     so it is a real ratio, not a handful of clamps written at the point of use. */
+  --text-xs:   0.78rem;
+  --text-sm:   0.88rem;
+  --text-base: 1rem;
+  --text-lg:   1.12rem;
+  --text-xl:   clamp(1.2rem,  1.6vw, 1.4rem);
+  --text-2xl:  clamp(1.45rem, 2.4vw, 1.85rem);
+  --text-3xl:  clamp(1.8rem,  3.4vw, 2.6rem);
+  --text-4xl:  clamp(2.2rem,  5vw,   3.4rem);
+  --lh-display: 1.04;
+  --lh-body:    1.58;
+
+  /* 4-pt spacing scale. Arbitrary `padding: 17px` is a tell; every gap in the
+     public layer resolves to one of these. */
+  --space-3xs: 0.25rem; --space-2xs: 0.5rem;  --space-xs: 0.75rem;
+  --space-sm:  1rem;    --space-md:  1.5rem;  --space-lg: 2rem;
+  --space-xl:  3rem;    --space-2xl: 4rem;    --space-3xl: 6rem;
+
+  /* Gate 48: every colour in the build references a token. These are the
+     translucent overlays the public layer needs — declared here rather than
+     improvised inline at the point of use. */
+  --rule-hair:    oklch(45% 0.115 152 / 0.045);
+  --glass:        color-mix(in oklab, var(--surface) 84%, transparent);
+  --glass-strong: color-mix(in oklab, var(--surface) 92%, transparent);
+  --sheen:        oklch(100% 0 0 / 0.5);
+  --gold-glow:    oklch(64% 0.16 60 / 0.5);
+  --tint-edge:    oklch(45% 0.115 152 / 0.18);
+
+  /* Radii nest: an inner corner is the outer corner minus the padding between
+     them, or the two curves fight. --radius-inset is what a row highlight uses
+     inside a --radius-surface group with 6px of padding. */
+  /* The sidebar width lives here, not in a Tailwind class on 43 pages. It was
+     changed in the component and 38 pages kept `ml-64`, leaving a half-rem
+     seam beside the nav on every screen that isn't a dashboard. */
+  --sidebar-w: 15.5rem;
+
+  --radius-inset:   8px;   /* a highlighted row inside a group */
+  --radius-control: 10px;  /* buttons, inputs */
+  --radius-surface: 14px;  /* grouped lists, panels */
+  --radius-large:   20px;  /* the big surfaces */
+  --radius-pill:    999px;
+
+  /* Materials. Chrome is translucent and picks up what scrolls under it;
+     saturate() is what stops a blurred backdrop going grey and lifeless. */
+  --material:        color-mix(in oklab, var(--surface) 72%, transparent);
+  --material-blur:   saturate(180%) blur(20px);
+  --material-edge:   color-mix(in oklab, var(--ink) 8%, transparent);
+
+  --font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    'Geist Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* --- the dark palette, chosen rather than inverted --------------------- */
+  --d-paper:        oklch(15.5% 0.02 152);
+  --d-surface:      oklch(20% 0.022 152);
+  --d-sunk:         oklch(18% 0.021 152);
+  --d-wash:         oklch(24% 0.035 152);
+  --d-wash-warm:    oklch(24% 0.03 92);
+  --d-ink:          oklch(96% 0.01 130);
+  --d-body:         oklch(83% 0.014 135);
+  --d-muted:        oklch(65% 0.016 140);
+  --d-faint:        oklch(53% 0.016 140);
+  --d-rule:         oklch(29% 0.024 148);
+  --d-rule-soft:    oklch(25% 0.022 148);
+  /* The 45% green is a fill colour for paper; on a dark ground it has to step
+     up to stay legible as text. */
+  --d-brand:        oklch(74% 0.14 152);
+  --d-brand-sf:     oklch(27% 0.055 152);
+  --d-brand-ink:    oklch(14% 0.025 152);
+  --d-gold:         oklch(82% 0.14 78);
+  --d-gold-deep:    oklch(74% 0.15 68);
+  --d-gold-ink:     oklch(20% 0.05 70);
+  --d-graphite:     oklch(24% 0.05 152);
+  --d-graphite-rule:oklch(36% 0.06 152);
+  --d-good: oklch(72% 0.14 150); --d-good-sf: oklch(26% 0.04 150);
+  --d-warn: oklch(78% 0.13 72);  --d-warn-sf: oklch(28% 0.04 72);
+  --d-crit: oklch(70% 0.15 25);  --d-crit-sf: oklch(28% 0.04 25);
+}
+
+/* Three states, not two: an explicit choice stamps data-theme, and the default
+   "system" setting stamps nothing — so both have to be handled.
+
+   The dark VALUES are declared once above as --d-* and the two selectors below
+   only alias them. Writing the palette out twice is how the two states silently
+   drift apart; this way a wrong colour is impossible and only the alias list is
+   repeated, which is mechanical enough to eyeball. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --paper: var(--d-paper);        --surface: var(--d-surface);
+    --surface-sunk: var(--d-sunk);  --ink: var(--d-ink);
+    --body: var(--d-body);          --muted: var(--d-muted);
+    --faint: var(--d-faint);        --rule: var(--d-rule);
+    --rule-soft: var(--d-rule-soft);
+    --brand: var(--d-brand);      --brand-sf: var(--d-brand-sf);
+    --brand-ink: var(--d-brand-ink);
+    --gold: var(--d-gold);          --gold-ink: var(--d-gold-ink);
+    --graphite: var(--d-graphite);  --graphite-rule: var(--d-graphite-rule);
+    --good: var(--d-good);          --good-sf: var(--d-good-sf);
+    --warn: var(--d-warn);          --warn-sf: var(--d-warn-sf);
+    --crit: var(--d-crit);          --crit-sf: var(--d-crit-sf);
+  --wash: var(--d-wash);          --wash-warm: var(--d-wash-warm);
+  --gold-deep: var(--d-gold-deep);
+  --graphite-ink: var(--d-ink);   --graphite-mut: var(--d-muted);
+  --lift-sm: 0 1px 2px oklch(0% 0 0 / 0.3), 0 6px 16px -8px oklch(0% 0 0 / 0.45);
+  --lift-md: 0 2px 6px oklch(0% 0 0 / 0.35), 0 18px 40px -18px oklch(0% 0 0 / 0.55);
+  --lift-lg: 0 3px 10px oklch(0% 0 0 / 0.4), 0 46px 90px -34px oklch(0% 0 0 / 0.7);
+    --wash: var(--d-wash);          --wash-warm: var(--d-wash-warm);
+    --gold-deep: var(--d-gold-deep);
+    --graphite-ink: var(--d-ink);   --graphite-mut: var(--d-muted);
+    --lift-sm: 0 1px 2px oklch(0% 0 0 / 0.3), 0 6px 16px -8px oklch(0% 0 0 / 0.45);
+    --lift-md: 0 2px 6px oklch(0% 0 0 / 0.35), 0 18px 40px -18px oklch(0% 0 0 / 0.55);
+    --lift-lg: 0 3px 10px oklch(0% 0 0 / 0.4), 0 46px 90px -34px oklch(0% 0 0 / 0.7);
+  }
+}
+:root[data-theme='dark'] {
+  --paper: var(--d-paper);        --surface: var(--d-surface);
+  --surface-sunk: var(--d-sunk);  --ink: var(--d-ink);
+  --body: var(--d-body);          --muted: var(--d-muted);
+  --faint: var(--d-faint);        --rule: var(--d-rule);
+  --rule-soft: var(--d-rule-soft);
+  --brand: var(--d-brand);      --brand-sf: var(--d-brand-sf);
+  --brand-ink: var(--d-brand-ink);
+  --gold: var(--d-gold);          --gold-ink: var(--d-gold-ink);
+  --graphite: var(--d-graphite);  --graphite-rule: var(--d-graphite-rule);
+  --good: var(--d-good);          --good-sf: var(--d-good-sf);
+  --warn: var(--d-warn);          --warn-sf: var(--d-warn-sf);
+  --crit: var(--d-crit);          --crit-sf: var(--d-crit-sf);
+}
+
+/* --- shared dashboard primitives ---------------------------------------- */
+
+.scholr-page { background: var(--paper); color: var(--body); font-family: var(--font-sans); }
+
+.scholr-h1 {
+  font-family: var(--font-display); font-weight: 600; font-style: normal;
+  letter-spacing: -0.03em; color: var(--ink);
+  /* Long words in a display size must break rather than force a scrollbar. */
+  overflow-wrap: anywhere; min-width: 0; text-wrap: balance;
+}
+
+/* The machine-readout voice: mono, uppercase, tracked. Labels and meta only —
+   never body copy. */
+.scholr-label {
+  font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.07em;
+  text-transform: uppercase; color: var(--muted); font-weight: 500;
+}
+
+.scholr-num { font-variant-numeric: tabular-nums; }
+
+.scholr-panel {
+  background: var(--surface); border: 1px solid var(--rule);
+  border-radius: var(--radius-surface);
+}
+
+/* The one emphasis surface per page.
+
+   This used to be a graphite slab — one dark beat for rhythm. On a bright
+   product a dark block fights everything around it, so emphasis is now a mint
+   tint at the same once-per-page budget: still the first thing your eye lands
+   on, no longer a hole punched in the page.
+
+   It rebinds the surface tokens for its subtree, so a Panel row, a StatusChip
+   or a stat tile resolves against the tint without needing a variant of its
+   own. Components built on tokens get that free; components that hardcode
+   `text-slate-900` do not, which is the practical reason for the "always use a
+   token" rule above. */
+.scholr-band {
+  background: var(--graphite); color: var(--graphite-ink);
+  border: 1px solid var(--graphite-rule);
+  border-radius: var(--radius-surface);
+
+  --surface:   var(--graphite);
+  --ink:       var(--graphite-ink);
+  --body:      var(--graphite-ink);
+  --muted:     var(--graphite-mut);
+  --faint:     var(--graphite-mut);
+  --rule:      var(--graphite-rule);
+  --rule-soft: var(--graphite-rule);
+  --surface-sunk: var(--rule-hair);
+}
+
+/* shadcn's Tabs, re-skinned: a strip of plain text over a hairline, with the
+   active tab marked by a 2px accent underline instead of a filled pill. The
+   attribute selector outranks the utility classes the component ships with,
+   so this holds without !important. */
+.scholr-tabs {
+  background: transparent; border-bottom: 1px solid var(--rule); border-radius: 0;
+  padding: 0; height: auto; gap: 0.15rem; flex-wrap: wrap; justify-content: flex-start;
+}
+.scholr-tabs [role='tab'] {
+  background: transparent; color: var(--muted); box-shadow: none;
+  border-radius: 0; border-bottom: 2px solid transparent;
+  padding: 0.45rem 0.7rem; font-size: 0.82rem; font-weight: 500;
+}
+.scholr-tabs [role='tab']:hover { color: var(--ink); }
+.scholr-tabs [role='tab'][data-state='active'] {
+  background: transparent; color: var(--ink); box-shadow: none;
+  border-bottom-color: var(--brand);
+}
+
+/* A term/description pair: a mono label in a fixed column, prose beside it.
+   Below ~34rem the label column would leave the description about eleven
+   characters wide, so the pair stacks instead. */
+.scholr-deflist {
+  display: grid;
+  grid-template-columns: minmax(7rem, 10rem) 1fr;
+  column-gap: 1.5rem;
+  row-gap: 0.25rem;
+}
+@media (max-width: 34rem) {
+  .scholr-deflist { grid-template-columns: 1fr; row-gap: 0.35rem; }
+}
+
+/* Long-form legal pages.
+   These carry ~110 Tailwind slate classes each and the words are legal text
+   nobody should be reformatting by hand, so the page is retoned from the
+   outside: a descendant selector (0,1,1) outranks a utility class (0,1,0)
+   without a single edit to the copy. */
+.legal-prose { color: var(--body); }
+.legal-prose h1 { font-family: var(--font-display); letter-spacing: -0.03em; color: var(--ink); }
+.legal-prose h2,
+.legal-prose h3,
+.legal-prose h4 { color: var(--ink); }
+.legal-prose p,
+.legal-prose li,
+.legal-prose td,
+.legal-prose th { color: var(--body); }
+.legal-prose .text-slate-500,
+.legal-prose .text-slate-400 { color: var(--muted); }
+.legal-prose .bg-slate-50 { background: var(--surface-sunk); }
+.legal-prose .bg-white { background: var(--surface); }
+.legal-prose .border-slate-200,
+.legal-prose .border-slate-100 { border-color: var(--rule); }
+.legal-prose a { color: var(--brand); }
+
+/* A grid whose dividers are the 1px gap showing through a rule-coloured
+   backdrop. Cells paint their own surface on top — correct hairlines at every
+   wrap point, with no nth-child arithmetic.
+   
+   The catch, learned the hard way: the backdrop is visible wherever a cell
+   ISN'T. With `auto-fit` and six items the last row can be one cell wide, and
+   the remaining five cells of backdrop render as a grey slab. So every user of
+   this class must declare a column count that its item count divides into
+   exactly — see .app-cols-* below — rather than letting auto-fit decide. */
+.scholr-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-surface);
+  overflow: hidden;
+}
+.scholr-grid > * { background: var(--surface); }
+.scholr-grid > a { transition: background-color var(--dur-micro) var(--ease-out); }
+.scholr-grid > a:hover { background: color-mix(in oklab, var(--brand) 4%, transparent); }
+
+/* A band already pads itself, so its rows sit flush to that padding instead of
+   indenting a second time. This is why PanelRow carries a class at all. */
+.scholr-band .panel-row,
+.scholr-band .panel-empty { padding-left: 0; padding-right: 0; }
+
+/* The last hairline in a list is the panel's own border drawn twice. Matched at
+   any depth, because lists are often wrapped in a scroll container. */
+.scholr-panel .panel-row:last-child,
+.scholr-band  .panel-row:last-child,
+.scholr-panel .panel-row-link:last-child .panel-row,
+.scholr-band  .panel-row-link:last-child .panel-row { border-bottom: none; }
+
+/* A row that navigates has to look like it does. */
+.panel-row-link:hover .panel-row { background: var(--surface-sunk); }
+.scholr-band .panel-row-link:hover .panel-row { background: var(--graphite-rule); }
+
+.scholr-focus:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+/* One property per hover, never a stack of four. */
+.out-link { transition: background-color var(--dur-short) var(--ease-out); }
+.out-link:hover { background: color-mix(in oklab, var(--brand) 4%, transparent); }
+.ruled-row { transition: background-color var(--dur-short) var(--ease-out); }
+.ruled-row:hover { background: color-mix(in oklab, var(--brand) 4%, transparent); }
+.pub-shot { transition: transform var(--dur-long) var(--ease-out); }
+figure:hover > .pub-shot { transform: translateY(-3px); }
+
+/* Gate 34: `clip`, not `hidden` — `hidden` on a scroll container silently
+   breaks `position: sticky` on every descendant, which would kill the nav. */
+html, body { overflow-x: clip; }
+
+/* body MUST carry the ground colour, not just the page wrapper inside it.
+   `.scholr-page` sits on an inner div, so anything outside that div — the
+   strip behind a position:fixed sidebar, the overscroll area — fell back to
+   the browser's white. In dark mode that showed as a white block beside the
+   sidebar, and worse: the sidebar is a translucent material, so it composited
+   over white and rendered pale grey on a near-black page. */
+html { background: var(--paper); }
+body { background: var(--paper); color: var(--body); }
+
+/* --- public site ---------------------------------------------------------
+   These live in the token layer rather than in a page, because the hero, the
+   nav and the closing block appear on more than one route and had already
+   drifted apart once. */
+
+/* The hero ground: two light sources, not a gradient sweep. A cool green wash
+   from the upper left and a warm one from the right, so the field has a
+   direction instead of a direction-less fade. */
+.pub-wash {
+  background:
+    radial-gradient(90% 70% at 14% -10%, var(--wash) 0%, transparent 58%),
+    radial-gradient(70% 55% at 92% 2%, var(--wash-warm) 0%, transparent 62%),
+    var(--paper);
+}
+/* Six ruled columns — a school week plus the period gutter. The texture is the
+   thing the product is built on, not an ornament. */
+.pub-ruled { position: relative; }
+.pub-ruled::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: repeating-linear-gradient(90deg, transparent 0, transparent calc(100%/6 - 1px), var(--rule-hair) calc(100%/6));
+}
+.pub-ruled > * { position: relative; }
+
+.pub-nav {
+  display: flex; align-items: center; gap: 1.4rem;
+  padding: 0.5rem 0.6rem 0.5rem 1rem;
+  border-radius: var(--radius-pill);
+  background: var(--glass);
+  border: 1px solid var(--rule-soft);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--lift-sm);
+}
+
+.pub-btn {
+  font-family: var(--font-sans); font-weight: 550; font-size: 0.88rem;
+  border-radius: var(--radius-pill); padding: 0.5rem 1.05rem;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  border: 1px solid transparent; white-space: nowrap; cursor: pointer;
+  text-decoration: none;
+}
+.pub-btn-lg { padding: 0.7rem 1.35rem; font-size: 0.95rem; }
+/* The gold sits on the one action that matters and nowhere else. */
+.pub-btn-gold {
+  background: var(--gold); color: var(--gold-ink);
+  box-shadow: 0 1px 0 var(--sheen) inset, 0 8px 18px -8px var(--gold-glow);
+}
+.pub-btn-gold:hover { filter: brightness(1.04); }
+.pub-btn:hover { transform: translateY(-1px); }
+.pub-btn:active { transform: translateY(0); transition-duration: var(--dur-micro); }
+.pub-btn:disabled, .pub-btn[aria-disabled='true'] {
+  opacity: .5; cursor: not-allowed; transform: none; filter: none;
+}
+.pub-btn {
+  transition:
+    filter var(--dur-short) var(--ease-out),
+    transform var(--dur-short) var(--ease-out),
+    border-color var(--dur-short) var(--ease-out),
+    background-color var(--dur-short) var(--ease-out);
+}
+.pub-btn-line { border-color: var(--rule); color: var(--ink); background: color-mix(in oklab, var(--surface) 70%, transparent); }
+.pub-btn-line:hover { border-color: var(--muted); }
+
+/* Display type wants to be big and tight; the body face wants to stay small.
+   The gap between them is most of the personality. */
+.pub-display {
+  font-family: var(--font-display); font-weight: 600;
+  letter-spacing: -0.038em; line-height: 1.03; color: var(--ink);
+  text-wrap: balance; overflow-wrap: anywhere;
+}
+.pub-lede { font-size: 1.08rem; line-height: 1.55; color: var(--body); }
+
+.pub-shot {
+  border-radius: var(--radius-large);
+  border: 1px solid var(--rule);
+  box-shadow: var(--lift-lg);
+  display: block; width: 100%; height: auto;
+}
+
+/* --- motion ---------------------------------------------------------------
+   Three easings, three durations, and one orchestrated sequence per page.
+   Elements entering slow into place; elements leaving accelerate away and take
+   about three-quarters of the time. Only transform and opacity are animated —
+   everything else triggers layout. */
+:root {
+  --ease-out:    cubic-bezier(.16, 1, .3, 1);   /* entering */
+  --ease-in:     cubic-bezier(.7, 0, .84, 0);   /* leaving  */
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);  /* toggles  */
+  --dur-micro: 120ms;  /* press, tick, colour shift */
+  --dur-short: 220ms;  /* hover, tooltip, menu      */
+  --dur-long:  420ms;  /* reveal, drawer, accordion */
+}
+
+/* The page-load sequence. Stagger comes from --i on the element, set in the
+   markup by DOM order, so the browser owns the timing rather than a JS loop.
+   Capped at six steps (~300ms) — past about half a second a page feels slow to
+   settle rather than composed. */
+.reveal {
+  opacity: 0;
+  transform: translateY(9px);
+  animation: reveal var(--dur-long) var(--ease-out) forwards;
+  animation-delay: calc(var(--i, 0) * 55ms);
+}
+@keyframes reveal { to { opacity: 1; transform: none; } }
+
+/* Scroll-revealed blocks. The class is added by IntersectionObserver; the
+   element is visible without it, so a failed observer can never hide content. */
+.rise { transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out); }
+.rise[data-rise='pending'] { opacity: 0; transform: translateY(14px); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 150ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 150ms !important;
+  }
+  .reveal { transform: none; animation-delay: 0ms; }
+  .rise[data-rise='pending'] { transform: none; }
+}
+
+/* Workbench rhythm. `wide` runs the capture full measure; the aside layouts
+   sit the caption beside a smaller frame and mirror each other, so a sequence
+   of four doesn't read as a contact sheet.
+   minmax(0, …) on the image track, not a bare fraction — gate 50. */
+.bench--aside {
+  display: grid;
+  gap: 0 var(--space-xl);
+  align-items: center;
+  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  grid-template-areas: 'head shot';
+}
+.bench--aside.bench--right {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
+  grid-template-areas: 'shot head';
+}
+@media (max-width: 60rem) {
+  .bench--aside, .bench--aside.bench--right {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'head' 'shot';
+  }
+}
+
+/* Accordion. Animates grid-template-rows 0fr → 1fr rather than height, so the
+   panel can size to its own content and still transition — height:auto has
+   never been animatable and every workaround measures the DOM. */
+.faq-item { border-top: 1px solid var(--rule); }
+.faq-q {
+  display: flex; align-items: baseline; gap: var(--space-sm);
+  width: 100%; padding: var(--space-sm) 0; cursor: pointer;
+  background: none; border: none; text-align: left; font: inherit;
+  font-family: var(--font-display); font-weight: 600; font-size: var(--text-base);
+  letter-spacing: -0.02em; color: var(--ink);
+}
+.faq-mark {
+  margin-left: auto; flex: none; width: 1.1em; height: 1.1em; position: relative;
+  transition: transform var(--dur-short) var(--ease-in-out);
+}
+.faq-mark::before, .faq-mark::after {
+  content: ''; position: absolute; inset: 50% 0 auto 0; height: 1.5px;
+  background: var(--brand); border-radius: 1px;
+}
+.faq-mark::after { transition: transform var(--dur-short) var(--ease-in-out); transform: rotate(90deg); }
+.faq-item[data-open='true'] .faq-mark::after { transform: rotate(0deg); }
+.faq-a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--dur-long) var(--ease-in-out); }
+.faq-item[data-open='true'] .faq-a { grid-template-rows: 1fr; }
+.faq-a > div { overflow: hidden; }
+.faq-a p { margin: 0 0 var(--space-sm); font-size: var(--text-sm); line-height: var(--lh-body); color: var(--muted); }
+
+/* An annotation pinned to a product capture. Sits on the paper, not on the
+   screenshot, so it never obscures the thing it is pointing at. */
+.bench-note {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: .64rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--brand);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  padding: .3rem .6rem;
+  box-shadow: var(--lift-sm);
+  white-space: nowrap;
+}
+@media (max-width: 60rem) { .bench-note { display: none; } }
+
+/* Workbench's sticky ask. Full-width bar on a phone, an inset pill above. */
+.bench-cta {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  z-index: 40;
+  width: min(34rem, calc(100% - 2rem));
+  margin-left: calc(min(34rem, calc(100% - 2rem)) / -2);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .6rem .6rem .6rem 1.1rem;
+  border-radius: var(--radius-pill);
+  background: var(--glass-strong);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--rule);
+  box-shadow: var(--lift-md);
+  transition: transform var(--dur-long) var(--ease-out), visibility 0s linear var(--dur-long);
+}
+.bench-cta[aria-hidden='false'] { transition-delay: 0s, 0s; }
+@media (max-width: 34rem) {
+  .bench-cta p { display: none; }
+  .bench-cta { justify-content: center; padding: .5rem; }
+  .bench-cta a { margin-left: 0 !important; width: 100%; justify-content: center; min-height: 44px; }
+}
+
+/* --- app chrome -----------------------------------------------------------
+   The signed-in product. Grouped inset lists on a tinted ground, translucent
+   chrome, a title that starts large and collapses into the toolbar. */
+
+/* Translucent chrome. The fallback matters: without backdrop-filter support
+   the material must still be opaque, or the sidebar becomes see-through. */
+.app-material { background: var(--surface); }
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .app-material {
+    background: var(--material);
+    -webkit-backdrop-filter: var(--material-blur);
+    backdrop-filter: var(--material-blur);
+  }
+}
+
+/* The sidebar.
+   Its ground is a step darker than the app's, and the nav sits on it as a
+   floating group — the same inset-list idea as the content area, so the two
+   halves of the screen speak one language. Borrowed from Schedual, which
+   solves this well.
+
+   The selected row is a raised white card with an accent ring, not a filled
+   pill: at 14px a fill competes with the group it sits in, while a lift reads
+   as "this one is in front". */
+.app-sidebar { background: color-mix(in oklab, var(--paper) 82%, var(--rule)); width: var(--sidebar-w); }
+
+/* Every page beside the sidebar offsets by the same token.
+   margin, not padding: most of these pages also carry a Tailwind `p-8`, and a
+   utility class beats this rule in the cascade — the offset silently collapsed
+   to 2rem and the content slid under the nav. Margin has no such collision. */
+@media (min-width: 768px) { .app-offset { margin-left: var(--sidebar-w); } }
+.app-nav-group {
+  background: var(--surface);
+  border-radius: var(--radius-surface);
+  box-shadow: var(--lift-sm);
+  padding: 4px;
+}
+.app-nav-item {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .45rem .55rem; border-radius: var(--radius-inset);
+  font-size: .875rem; color: var(--body); text-decoration: none;
+  border: 1px solid transparent;
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out);
+}
+.app-nav-item + .app-nav-item { margin-top: 1px; }
+.app-nav-item:hover { background: color-mix(in oklab, var(--ink) 4%, transparent); color: var(--ink); }
+.app-nav-item[aria-current='page'] {
+  background: var(--surface); color: var(--ink); font-weight: 550;
+  border-color: color-mix(in oklab, var(--brand) 45%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--brand) 14%, transparent);
+}
+.app-nav-item[aria-current='page'] svg { color: var(--brand); }
+
+/* Nav search. Filtering fifteen destinations beats scrolling them. */
+.app-navsearch {
+  position: relative; display: flex; align-items: center;
+}
+.app-navsearch input {
+  width: 100%; height: 2.1rem; padding: 0 2.6rem 0 2rem;
+  font: inherit; font-size: .85rem; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--rule);
+  border-radius: var(--radius-control);
+  transition: border-color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+}
+.app-navsearch input::placeholder { color: var(--faint); }
+.app-navsearch input:focus-visible {
+  outline: none; border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand) 14%, transparent);
+}
+.app-navsearch .app-navsearch__icon { position: absolute; left: .6rem; color: var(--faint); pointer-events: none; }
+.app-navsearch kbd {
+  position: absolute; right: .4rem; font-family: var(--font-mono); font-size: .62rem;
+  color: var(--muted); background: color-mix(in oklab, var(--ink) 5%, transparent);
+  border: 1px solid var(--rule); border-radius: 5px; padding: .1rem .3rem;
+}
+
+/* A grouped inset list: one card, hairline rows, nothing nested inside it. */
+.app-group {
+  background: var(--surface);
+  border-radius: var(--radius-surface);
+  box-shadow: var(--lift-sm);
+  overflow: hidden;
+}
+.app-group > * + * { border-top: 1px solid var(--rule-soft); }
+.app-group-head {
+  display: flex; align-items: baseline; gap: .75rem;
+  padding: 0 .3rem .45rem;
+}
+
+/* One measure, used by the toolbar and by the content beneath it. Declaring
+   it twice by hand is how the toolbar's action button ended up 24px past the
+   right edge of everything below it. */
+.app-measure {
+  max-width: 68rem;
+  margin-inline: auto;
+  padding-inline: var(--space-md);
+  width: 100%;
+}
+
+/* The large title, and the compact one that replaces it in the toolbar. */
+.app-title {
+  font-family: var(--font-display); font-weight: 640;
+  font-size: clamp(1.6rem, 3vw, 2rem); letter-spacing: -0.035em;
+  line-height: 1.08; color: var(--ink); margin: 0;
+  overflow-wrap: anywhere; min-width: 0;
+}
+.app-toolbar-title {
+  font-family: var(--font-display); font-weight: 600; font-size: .95rem;
+  letter-spacing: -0.02em; color: var(--ink);
+  opacity: 0; transform: translateY(6px);
+  transition: opacity var(--dur-short) var(--ease-out), transform var(--dur-short) var(--ease-out);
+}
+.app-toolbar[data-collapsed='true'] .app-toolbar-title { opacity: 1; transform: none; }
+.app-toolbar { border-bottom: 1px solid transparent; transition: border-color var(--dur-short) var(--ease-out); }
+.app-toolbar[data-collapsed='true'] { border-bottom-color: var(--material-edge); }
+
+/* Segmented control. One pill slides; the labels never move. */
+/* Column counts that always fill. 6 items → 3/2/1; 4 items → 4/2/1. Anything
+   that leaves a partial last row exposes the grid backdrop. */
+.app-cols-6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.app-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 68rem) {
+  .app-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 46rem) {
+  .app-cols-6 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 30rem) {
+  .app-cols-6, .app-cols-4 { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* The stat strip is a group too: one card, hairline dividers, soft lift — not
+   a bordered grid sitting flat on the page. */
+.app-statrow, .scholr-page .scholr-grid {
+  border: none !important;
+  box-shadow: var(--lift-sm);
+  border-radius: var(--radius-surface) !important;
+  background: var(--rule-soft) !important;
+}
+
+.app-row { transition: background-color var(--dur-micro) var(--ease-out); }
+a.app-row:hover, button.app-row:hover { background: color-mix(in oklab, var(--ink) 4%, transparent); }
+
+.app-segmented {
+  display: inline-flex; padding: 2px; gap: 2px;
+  background: color-mix(in oklab, var(--ink) 6%, transparent);
+  border-radius: var(--radius-control);
+}
+.app-segment {
+  appearance: none; border: none; background: transparent; cursor: pointer;
+  font: inherit; font-size: .82rem; font-weight: 500; color: var(--muted);
+  padding: .3rem .7rem; border-radius: calc(var(--radius-control) - 3px);
+  transition: color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+}
+.app-segment:hover { color: var(--ink); }
+.app-segment[aria-selected='true'] {
+  background: var(--surface); color: var(--ink);
+  box-shadow: 0 0 0 0.5px oklch(28% 0.05 150 / 0.08), 0 1px 2px oklch(28% 0.05 150 / 0.08);
+}
+
+/* --- app retone -----------------------------------------------------------
+   There are ~4,600 hard-coded slate utilities across the pages that were
+   written before this token layer existed. Editing forty-eight files by hand
+   would be forty-eight chances to break a working screen, so the ground rules
+   are applied from the outside instead: a descendant selector (0,2,0) outranks
+   a Tailwind utility (0,1,0) without !important and without touching markup.
+
+   This is a bridge, not the destination. A page that gets rewritten properly
+   should use the tokens directly and stop relying on any of this. Scoped to
+   the app shell so it can never reach the public site.
+   ------------------------------------------------------------------------- */
+.app-offset, .scholr-page:not(.pub-wash) { --retone: 1; }
+
+[style*="--retone"] .text-slate-900,
+[style*="--retone"] .text-slate-800,
+.app-offset .text-slate-900, .app-offset .text-slate-800 { color: var(--ink); }
+.app-offset .text-slate-700, .app-offset .text-slate-600 { color: var(--body); }
+.app-offset .text-slate-500 { color: var(--muted); }
+.app-offset .text-slate-400, .app-offset .text-slate-300 { color: var(--faint); }
+
+.app-offset .bg-white { background-color: var(--surface); }
+.app-offset .bg-slate-50 { background-color: var(--surface-sunk); }
+.app-offset .bg-slate-100 { background-color: color-mix(in oklab, var(--ink) 6%, transparent); }
+
+.app-offset .border-slate-200, .app-offset .border-slate-300 { border-color: var(--rule); }
+.app-offset .border-slate-100, .app-offset .border-slate-50 { border-color: var(--rule-soft); }
+.app-offset .divide-slate-100 > * + *, .app-offset .divide-slate-50 > * + * { border-color: var(--rule-soft); }
+
+/* Radii and lift, so a page written with rounded-md doesn't sit next to a
+   grouped list with a visibly different corner. */
+.app-offset .rounded-md { border-radius: var(--radius-inset); }
+.app-offset .rounded-lg { border-radius: var(--radius-control); }
+.app-offset .rounded-xl, .app-offset .rounded-2xl { border-radius: var(--radius-surface); }
+.app-offset .shadow-sm, .app-offset .shadow { box-shadow: var(--lift-sm); }
+.app-offset .shadow-md, .app-offset .shadow-lg { box-shadow: var(--lift-md); }
+
+/* shadcn's Card is the most common container on these pages. Make it the same
+   object as a grouped list rather than a second, competing kind of box. */
+.app-offset [class*="rounded-xl"][class*="border"][class*="bg-card"],
+.app-offset [class*="rounded-lg"][class*="border"][class*="bg-card"] {
+  border-color: transparent;
+  border-radius: var(--radius-surface);
+  box-shadow: var(--lift-sm);
+  background: var(--surface);
+}
+
+/* Page headings written before AppShell existed. They keep their own markup;
+   they just stop being a different typeface from every other title. */
+.app-offset h1, .app-offset h2 {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.app-offset h1 { font-weight: 640; }
+.app-offset h2 { font-weight: 620; }
+
+/* A role chip. Identity, not status — so it is neutral, and the word carries
+   the meaning. See src/components/users/userConstants for why. */
+.role-chip {
+  background: color-mix(in oklab, var(--ink) 5%, transparent) !important;
+  color: var(--body) !important;
+  border-color: var(--rule) !important;
+  font-weight: 500;
+}
+
+/* Tables appear on a dozen screens and were never themed at all. */
+.app-offset table { border-collapse: collapse; }
+.app-offset thead th {
+  font-family: var(--font-mono); font-size: .64rem; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--muted); font-weight: 500;
+  text-align: left; padding: .55rem .75rem;
+  border-bottom: 1px solid var(--rule);
+}
+.app-offset tbody td { padding: .6rem .75rem; border-bottom: 1px solid var(--rule-soft); color: var(--body); }
+.app-offset tbody tr:last-child td { border-bottom: none; }
+.app-offset tbody tr { transition: background-color var(--dur-micro) var(--ease-out); }
+.app-offset tbody tr:hover { background: color-mix(in oklab, var(--ink) 3%, transparent); }
+.app-offset .scholr-num, .app-offset td:has(> .tabular) { font-variant-numeric: tabular-nums; }

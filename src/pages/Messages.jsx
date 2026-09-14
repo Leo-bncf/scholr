@@ -95,7 +95,7 @@ export default function Messages() {
           schoolId={schoolId}
         />
 
-        <main className="md:ml-64">
+        <main className="app-offset">
           {/* Header */}
           <div className="bg-white border-b border-slate-200 px-4 md:px-6 py-4">
             <div className="flex items-center justify-between max-w-7xl mx-auto">

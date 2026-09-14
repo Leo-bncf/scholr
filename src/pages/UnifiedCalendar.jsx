@@ -192,7 +192,7 @@ export default function UnifiedCalendar() {
     <RoleGuard allowedRoles={['student', 'teacher', 'parent', 'school_admin', 'ib_coordinator', 'super_admin', 'admin']}>
       <div className="min-h-screen bg-slate-50">
         <AppSidebar links={sidebarLinks} role={role} schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="ml-0 md:ml-64 p-4 md:p-8">
+        <main className="app-offset p-4 md:p-8">
           <div className="max-w-7xl mx-auto space-y-6">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div>

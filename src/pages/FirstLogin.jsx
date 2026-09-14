@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import useLightTheme from '@/components/public/useLightTheme';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,6 +17,10 @@ import { getCurrentUser, isAuthenticated, updateMyProfile } from '@/data/session
  * Guides user through profile completion, password setup, and welcomes them
  */
 export default function FirstLogin() {
+  // Signed-out screens are light, like the rest of the entry experience.
+  // The multi-step logic here is untouched — only the ground it sits on.
+  useLightTheme();
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -183,7 +188,7 @@ export default function FirstLogin() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen scholr-page flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
       </div>
     );
@@ -191,7 +196,7 @@ export default function FirstLogin() {
 
   if (error && !user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center p-4">
+      <div className="min-h-screen scholr-page flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardContent className="pt-6">
             <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 mx-auto mb-4">
@@ -214,7 +219,7 @@ export default function FirstLogin() {
   const progress = currentStep === 'welcome' ? 0 : ((currentStepIndex + 1) / steps.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen scholr-page flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         {currentStep === 'welcome' && (
          <>
@@ -236,7 +241,7 @@ export default function FirstLogin() {
              </div>
 
              {accountState && (
-               <div className="space-y-3 bg-slate-50 p-4 rounded-lg">
+               <div className="space-y-3 scholr-page p-4 rounded-lg">
                  <div>
                    <p className="text-xs font-semibold text-slate-600 uppercase">School</p>
                    <p className="text-slate-900 mt-1">{accountState.school_name}</p>

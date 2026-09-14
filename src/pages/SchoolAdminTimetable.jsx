@@ -47,7 +47,7 @@ export default function SchoolAdminTimetable() {
           schoolId={schoolId}
         />
 
-        <main className="md:ml-64 min-h-screen flex flex-col">
+        <main className="app-offset min-h-screen flex flex-col">
           <AdminTabNavigation
             tabs={[
               { id: 'structure', label: 'Structure', icon: MapPin },
