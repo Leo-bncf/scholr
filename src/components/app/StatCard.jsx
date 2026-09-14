@@ -6,34 +6,33 @@ import React from 'react';
  * A stat tile, deliberately not a chart: these are single magnitudes with no
  * trend to read, and a sparkline behind "3 classes" would be decoration.
  *
- * The previous version gave every tile a coloured accent bar, a filled icon
- * chip and a drop shadow, so four of them read as four competing objects.
- * Cobalt puts the weight on the number and lets hairlines do the structure,
- * which is why there is no longer a per-tile `color` — Cobalt has one accent
- * and a stat tile is not what it is for.
+ * The figure leads at display size with tight tracking, the label sits above
+ * it small and quiet, and the qualifier sits below. Reading order is
+ * label → number → context, which is the order the question arrives in.
  *
- * Six other files declare their own local `StatCard`. They are not this one.
- * Folding them in is worth doing, but it is a change to those screens, not to
- * this component.
+ * `color` and `icon` are gone. There is one accent in this product and a stat
+ * tile is not what it is for.
  */
 export default function StatCard({ label, value, trend, hint }) {
   return (
-    <div className="px-4 py-3.5">
-      <p className="scholr-label m-0">{label}</p>
+    <div style={{ padding: '.85rem .95rem' }}>
+      <p className="scholr-label" style={{ margin: 0 }}>{label}</p>
       <p
-        className="scholr-num m-0 mt-1 leading-none"
+        className="scholr-num"
         style={{
+          margin: '.3rem 0 0',
           fontFamily: 'var(--font-display)',
-          fontSize: '1.85rem',
-          fontWeight: 600,
-          letterSpacing: '-0.03em',
+          fontSize: '1.9rem',
+          fontWeight: 620,
+          letterSpacing: '-0.04em',
+          lineHeight: 1,
           color: 'var(--ink)',
         }}
       >
         {value}
       </p>
       {(trend || hint) && (
-        <p className="m-0 mt-1.5 text-xs" style={{ color: 'var(--muted)' }}>
+        <p style={{ margin: '.35rem 0 0', fontSize: '.78rem', color: 'var(--muted)' }}>
           {trend || hint}
         </p>
       )}

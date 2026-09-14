@@ -4,9 +4,9 @@ import * as classesData from '@/data/classes';
 import * as assignmentsData from '@/data/assignments';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
+import AppShell, { Group, Row, GroupEmpty } from '@/components/app/AppShell';
 import StatCard from '@/components/app/StatCard';
 import StatRow from '@/components/app/StatRow';
-import { Panel, PanelRow, PanelEmpty } from '@/components/app/Panel';
 import TodaySchedule from '@/components/timetable/TodaySchedule';
 import { useUser } from '@/components/auth/UserContext';
 import { Loader2 } from 'lucide-react';
@@ -33,59 +33,59 @@ export default function TeacherDashboard() {
 
   const pendingAssignments = assignments.filter(a => a.status === 'published');
   const totalStudents = classes.reduce((sum, c) => sum + (c.student_ids?.length || 0), 0);
+  const firstName = user?.full_name?.split(' ')[0];
 
   return (
     <RoleGuard allowedRoles={['teacher', 'school_admin', 'super_admin', 'admin']}>
-      <div className="scholr-page min-h-screen">
-        <AppSidebar links={getAppSidebarLinks('teacher')} role="teacher" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="ml-0 md:ml-64 p-4 md:p-8">
-          <div className="max-w-6xl mx-auto">
-            <header className="mb-6 md:mb-8">
-              <p className="scholr-label m-0">{format(new Date(), 'EEEE d MMMM yyyy')}</p>
-              <h1 className="scholr-h1 m-0 mt-1.5 text-2xl md:text-3xl">
-                Good {new Date().getHours() < 12 ? 'morning' : 'afternoon'}, {user?.full_name?.split(' ')[0] || 'Teacher'}
-              </h1>
-            </header>
+      <AppSidebar
+        links={getAppSidebarLinks('teacher')}
+        role="teacher"
+        schoolName={school?.name}
+        userName={user?.full_name}
+        userId={user?.id}
+        schoolId={schoolId}
+      />
+      <div className="md:pl-[15.5rem]">
+        <AppShell
+          eyebrow={format(new Date(), 'EEEE d MMMM')}
+          title={firstName ? `Good ${new Date().getHours() < 12 ? 'morning' : 'afternoon'}, ${firstName}` : 'Today'}
+        >
+          {isLoading ? (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-2xl) 0' }}>
+              <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--brand)' }} />
+            </div>
+          ) : (
+            <>
+              <StatRow>
+                <StatCard label="Classes" value={classes.length} />
+                <StatCard label="Students" value={totalStudents} hint="across those classes" />
+                <StatCard label="Live assignments" value={pendingAssignments.length} />
+                <StatCard label="To grade" value={0} />
+              </StatRow>
 
-            {isLoading ? (
-              <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--brand)' }} />
-              </div>
-            ) : (
-              <div className="flex flex-col gap-5 md:gap-6">
-                <StatRow>
-                  <StatCard label="My classes" value={classes.length} />
-                  <StatCard label="Students" value={totalStudents} hint="across those classes" />
-                  <StatCard label="Live assignments" value={pendingAssignments.length} />
-                  <StatCard label="To grade" value={0} />
-                </StatRow>
-
-                {/* The dark beat: what's on right now. A teacher opens this page
-                    between periods, so the timetable outranks everything else. */}
-                <Panel title="Today" dark>
+              <Group title="Today">
+                <div style={{ padding: '.35rem .9rem .8rem' }}>
                   <TodaySchedule schoolId={schoolId} userId={user?.id} userRole="teacher" />
-                </Panel>
+                </div>
+              </Group>
 
-                <Panel title="Recent assignments">
-                  {assignments.length === 0 ? (
-                    <PanelEmpty>Nothing set yet — assignments you create appear here.</PanelEmpty>
-                  ) : (
-                    <div className="max-h-96 overflow-y-auto">
-                      {assignments.slice(0, 6).map(a => (
-                        <PanelRow
-                          key={a.id}
-                          name={a.title}
-                          detail={a.type?.replace('_', ' ')}
-                          value={a.due_date ? `due ${format(new Date(a.due_date), 'd MMM')}` : 'no due date'}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </Panel>
-              </div>
-            )}
-          </div>
-        </main>
+              <Group title="Recent assignments">
+                {assignments.length === 0 ? (
+                  <GroupEmpty>Nothing set yet — assignments you create appear here.</GroupEmpty>
+                ) : (
+                  assignments.slice(0, 6).map(a => (
+                    <Row
+                      key={a.id}
+                      label={a.title}
+                      detail={a.type?.replace('_', ' ')}
+                      value={a.due_date ? `due ${format(new Date(a.due_date), 'd MMM')}` : 'no due date'}
+                    />
+                  ))
+                )}
+              </Group>
+            </>
+          )}
+        </AppShell>
       </div>
     </RoleGuard>
   );

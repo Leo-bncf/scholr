@@ -13,7 +13,7 @@ import { useSuperAdminAccess } from '@/components/hooks/useSuperAdminAccess';
 import StatCard from '@/components/app/StatCard';
 import StatRow from '@/components/app/StatRow';
 import StatusChip from '@/components/app/StatusChip';
-import { Panel, PanelRow, PanelRowLink, PanelEmpty } from '@/components/app/Panel';
+import { Group, Row, GroupEmpty } from '@/components/app/AppShell';
 import Meter from '@/components/app/Meter';
 
 // Platform status → the reserved palette. `suspended` and a broken billing
@@ -65,7 +65,7 @@ export default function SuperAdminDashboard() {
   return (
     <>
       <SuperAdminShell activeItem="overview" currentUser={currentUser}>
-        <div className="scholr-page max-w-6xl mx-auto flex flex-col gap-5 md:gap-6" style={{ background: 'transparent' }}>
+        <div className="max-w-6xl mx-auto flex flex-col" style={{ gap: 'var(--space-md)' }}>
           <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div className="min-w-0">
               <p className="scholr-label m-0">Every school, every tenant</p>
@@ -98,25 +98,23 @@ export default function SuperAdminDashboard() {
               that anyone has to act on. It is omitted entirely when empty
               rather than rendered as a reassuring green box. */}
           {atRiskSchools.length > 0 && (
-            <Panel title={`Needs attention · ${atRiskSchools.length}`} dark>
+            <Group title={`Needs attention · ${atRiskSchools.length}`}>
               <div className="max-h-56 overflow-y-auto">
                 {atRiskSchools.map((school) => (
-                  <PanelRowLink
+                  <Row
                     key={school.id}
-                    type="button"
+                    label={school.name}
                     onClick={() => navigate(createPageUrl('SuperAdminSchoolDetail') + `/${school.id}`)}
                   >
-                    <PanelRow name={school.name}>
-                      <StatusChip tone={schoolTone(school)}>{schoolStateLabel(school)}</StatusChip>
-                    </PanelRow>
-                  </PanelRowLink>
+                    <StatusChip tone={schoolTone(school)}>{schoolStateLabel(school)}</StatusChip>
+                  </Row>
                 ))}
               </div>
-            </Panel>
+            </Group>
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6">
-            <Panel
+            <Group
               title="Recent schools"
               className="lg:col-span-2 overflow-hidden"
               action={
@@ -130,27 +128,23 @@ export default function SuperAdminDashboard() {
               }
             >
               {recentSchools.length === 0 ? (
-                <PanelEmpty>No schools on the platform yet.</PanelEmpty>
+                <GroupEmpty>No schools on the platform yet.</GroupEmpty>
               ) : (
                 recentSchools.map((school) => (
-                  <PanelRowLink
+                  <Row
                     key={school.id}
-                    type="button"
+                    label={school.name}
+                    detail={[school.city, school.country].filter(Boolean).join(', ') || undefined}
                     onClick={() => navigate(createPageUrl('SuperAdminSchoolDetail') + `/${school.id}`)}
                   >
-                    <PanelRow
-                      name={school.name}
-                      detail={[school.city, school.country].filter(Boolean).join(', ') || undefined}
-                    >
-                      <StatusChip tone={schoolTone(school)}>{schoolStateLabel(school)}</StatusChip>
-                    </PanelRow>
-                  </PanelRowLink>
+                    <StatusChip tone={schoolTone(school)}>{schoolStateLabel(school)}</StatusChip>
+                  </Row>
                 ))
               )}
-            </Panel>
+            </Group>
 
             <div className="flex flex-col gap-5 md:gap-6">
-              <Panel title="Subscription split">
+              <Group title="Subscription split">
                 <div className="px-4 py-3.5 flex flex-col gap-2.5">
                   {split.map((item) => (
                     <div key={item.label}>
@@ -171,22 +165,20 @@ export default function SuperAdminDashboard() {
                     </div>
                   ))}
                 </div>
-              </Panel>
+              </Group>
 
-              <Panel title="Go to">
+              <Group title="Go to">
                 {[
                   ['SuperAdminSchools', 'Schools'],
                   ['SuperAdminUsers', 'Users'],
                   ['SuperAdminBilling', 'Billing'],
                   ['SuperAdminAuditLogs', 'Audit logs'],
                 ].map(([page, label]) => (
-                  <PanelRowLink key={page} as={Link} to={createPageUrl(page)}>
-                    <PanelRow name={label}>
-                      <ChevronRight className="w-4 h-4" style={{ color: 'var(--faint)' }} />
-                    </PanelRow>
-                  </PanelRowLink>
+                  <Row key={page} label={label} href={createPageUrl(page)}>
+                    <ChevronRight className="w-4 h-4" style={{ color: 'var(--faint)' }} />
+                  </Row>
                 ))}
-              </Panel>
+              </Group>
             </div>
           </div>
         </div>

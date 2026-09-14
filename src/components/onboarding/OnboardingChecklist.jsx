@@ -23,7 +23,7 @@ export default function OnboardingChecklist({ schoolId, onDismiss, showWizard })
   const { steps, completedCount, totalCount, progressPct, nextIncomplete } = data;
 
   return (
-    <section className="scholr-panel overflow-hidden">
+    <section className="app-group">
       <header className="px-4 pt-3.5 pb-3" style={{ borderBottom: '1px solid var(--rule-soft)' }}>
         <div className="flex items-center gap-3">
           <h2 className="scholr-label m-0">Setting up</h2>

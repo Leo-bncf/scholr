@@ -6,7 +6,7 @@ import StatCard from '@/components/app/StatCard';
 import StatRow from '@/components/app/StatRow';
 import StatusChip from '@/components/app/StatusChip';
 import Meter from '@/components/app/Meter';
-import { Panel } from '@/components/app/Panel';
+import { Group } from '@/components/app/AppShell';
 
 // ─── shared bits ─────────────────────────────────────────────────────────────
 
@@ -73,7 +73,7 @@ function MemberBreakdown({ members }) {
   ];
 
   return (
-    <Panel title="Members" action={<PanelLink to="SchoolAdminUsers">Manage</PanelLink>}>
+    <Group title="Members" action={<PanelLink to="SchoolAdminUsers">Manage</PanelLink>}>
       <div className="px-4 py-3 flex flex-col gap-3">
         {items.map(item => {
           const pct = total > 0 ? Math.round((item.count / total) * 100) : 0;
@@ -97,13 +97,13 @@ function MemberBreakdown({ members }) {
         })}
         <p className="scholr-label m-0">{total} active members</p>
       </div>
-    </Panel>
+    </Group>
   );
 }
 
 function ActivitySignals({ attendanceRate, missingWorkRate, messagingVolume }) {
   return (
-    <Panel title="Activity" action={<PanelLink to="SchoolAdminAttendance">Attendance</PanelLink>}>
+    <Group title="Activity" action={<PanelLink to="SchoolAdminAttendance">Attendance</PanelLink>}>
       <div className="px-4 py-1">
         <MetricRow
           label="Attendance"
@@ -130,7 +130,7 @@ function ActivitySignals({ attendanceRate, missingWorkRate, messagingVolume }) {
         </div>
         <p className="scholr-label m-0 pb-3">Rolling 30 days</p>
       </div>
-    </Panel>
+    </Group>
   );
 }
 
@@ -150,7 +150,7 @@ function ClassCoverage({ classes }) {
   const studentPct = totalClasses > 0 ? (classesWithStudents / totalClasses) * 100 : 0;
 
   return (
-    <Panel title="Class coverage" action={<PanelLink to="SchoolAdminClasses">Manage</PanelLink>}>
+    <Group title="Class coverage" action={<PanelLink to="SchoolAdminClasses">Manage</PanelLink>}>
       {totalClasses === 0 ? (
         <p className="px-4 py-6 m-0 text-sm" style={{ color: 'var(--faint)' }}>
           No active classes yet, so there is no coverage to report.
@@ -178,13 +178,13 @@ function ClassCoverage({ classes }) {
           </p>
         </div>
       )}
-    </Panel>
+    </Group>
   );
 }
 
 function ReportingWindows({ upcomingTerms }) {
   return (
-    <Panel title="Reporting windows" action={<PanelLink to="SchoolAdminAcademicSetup">Calendar</PanelLink>}>
+    <Group title="Reporting windows" action={<PanelLink to="SchoolAdminAcademicSetup">Calendar</PanelLink>}>
       {upcomingTerms.length === 0 ? (
         <div className="px-4 py-6">
           <p className="m-0 text-sm" style={{ color: 'var(--faint)' }}>
@@ -228,7 +228,7 @@ function ReportingWindows({ upcomingTerms }) {
           })}
         </div>
       )}
-    </Panel>
+    </Group>
   );
 }
 

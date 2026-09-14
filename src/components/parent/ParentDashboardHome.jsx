@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format, isAfter, addDays, differenceInCalendarDays } from 'date-fns';
 import { CheckCircle } from 'lucide-react';
 import StatusChip from '@/components/app/StatusChip';
-import { Panel, PanelRow, PanelEmpty } from '@/components/app/Panel';
+import { Group, Row, GroupEmpty } from '@/components/app/AppShell';
 import * as classesData from '@/data/classes';
 import * as assignmentsData from '@/data/assignments';
 import * as gradebookData from '@/data/gradebook';
@@ -107,28 +107,28 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6">
 
-      <Panel title="Coming up">
+      <Group title="Coming up">
         {assignments.length === 0 ? (
-          <PanelEmpty>Nothing due in the near future.</PanelEmpty>
+          <GroupEmpty>Nothing due in the near future.</GroupEmpty>
         ) : (
           assignments.slice(0, 6).map(a => (
-            <PanelRow key={a.id} name={a.title} detail={a.type?.replace(/_/g, ' ')}>
+            <Row key={a.id} label={a.title} detail={a.type?.replace(/_/g, ' ')}>
               <StatusChip tone={dueTone(a.due_date)}>{format(new Date(a.due_date), 'd MMM')}</StatusChip>
-            </PanelRow>
+            </Row>
           ))
         )}
-      </Panel>
+      </Group>
 
-      <Panel title="Grades released">
+      <Group title="Grades released">
         {grades.length === 0 ? (
-          <PanelEmpty>
+          <GroupEmpty>
             Nothing released yet. Teachers choose when a grade becomes visible to families.
-          </PanelEmpty>
+          </GroupEmpty>
         ) : (
           grades.map(g => (
-            <PanelRow
+            <Row
               key={g.id}
-              name={g.title}
+              label={g.title}
               detail={[
                 g.score != null && g.max_score ? `${g.score}/${g.max_score}` : null,
                 g.created_at ? format(new Date(g.created_at), 'd MMM') : null,
@@ -143,30 +143,30 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
             />
           ))
         )}
-      </Panel>
+      </Group>
 
-      <Panel title="Attendance">
+      <Group title="Attendance">
         {attendance.length === 0 ? (
-          <PanelEmpty>No absences or lates in the last 30 days.</PanelEmpty>
+          <GroupEmpty>No absences or lates in the last 30 days.</GroupEmpty>
         ) : (
           attendance.map(a => (
-            <PanelRow key={a.id} name={format(new Date(a.date), 'EEEE d MMM')} detail={a.note || undefined}>
+            <Row key={a.id} label={format(new Date(a.date), 'EEEE d MMM')} detail={a.note || undefined}>
               <StatusChip tone={ATTENDANCE_TONE[a.status] || 'mute'}>{a.status}</StatusChip>
-            </PanelRow>
+            </Row>
           ))
         )}
-      </Panel>
+      </Group>
 
-      <Panel title={unreadMessages.length > 0 ? `Messages · ${unreadMessages.length} unread` : 'Messages'}>
+      <Group title={unreadMessages.length > 0 ? `Messages · ${unreadMessages.length} unread` : 'Messages'}>
         {messages.length === 0 ? (
-          <PanelEmpty>No messages from the school yet.</PanelEmpty>
+          <GroupEmpty>No messages from the school yet.</GroupEmpty>
         ) : (
           <div className="max-h-80 overflow-y-auto">
             {unreadMessages.map(msg => (
               <div
                 key={msg.id}
-                className="panel-row flex items-start gap-3 px-4 py-3"
-                style={{ borderBottom: '1px solid var(--rule-soft)', borderLeft: '3px solid var(--brand)' }}
+                className="app-row" style={{ display: 'flex', alignItems: 'flex-start', gap: '.75rem', padding: '.7rem .9rem' }}
+                style={{ display: 'flex', alignItems: 'flex-start', gap: '.75rem', padding: '.7rem .9rem', background: 'var(--brand-sf)' }}
               >
                 <div className="min-w-0 flex-1">
                   <p className="m-0 text-sm font-medium" style={{ color: 'var(--ink)' }}>{msg.subject}</p>
@@ -195,8 +195,8 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
             {readMessages.map(msg => (
               <div
                 key={msg.id}
-                className="panel-row px-4 py-3"
-                style={{ borderBottom: '1px solid var(--rule-soft)', opacity: 0.6 }}
+                style={{ padding: '.7rem .9rem' }}
+                style={{ padding: '.7rem .9rem', opacity: 0.6 }}
               >
                 <p className="m-0 text-sm" style={{ color: 'var(--body)' }}>{msg.subject}</p>
                 <p className="m-0 mt-0.5 text-xs" style={{ color: 'var(--muted)' }}>
@@ -206,7 +206,7 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
             ))}
           </div>
         )}
-      </Panel>
+      </Group>
 
     </div>
   );

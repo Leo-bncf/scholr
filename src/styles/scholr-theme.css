@@ -6,7 +6,13 @@
  * nav: N10 floating-on-scroll morph · footer: Ft5 Statement
  * enrichment: none beyond the real product captures — Workbench's images ARE the content
  * tone: utilitarian · audience: heads of school, IB coordinators, IT directors
- * pre-emit critique: P4 H4 E4 S5 R4 V4
+ *
+ * app chrome: Apple-minimalist inside the Hallmark rules — grouped inset lists
+ *   on a tinted ground, translucent materials, a large title that collapses
+ *   into the toolbar, nested radii, lift instead of drop shadow. Hallmark
+ *   keeps the accent budget, the reserved status palette, the token rule and
+ *   the motion contract.
+ * pre-emit critique: P4 H5 E4 S5 R5 V4
  */
 /* ---------------------------------------------------------------------------
    Scholr — the design tokens
@@ -83,9 +89,20 @@
   /* Depth. On a light ground contrast can't do it, so shadows carry the hue of
      the surface they fall on — grey shadows on a green-tinted paper read as
      dirt. */
-  --lift-sm: 0 1px 2px oklch(30% 0.07 152 / 0.05), 0 6px 16px -8px oklch(30% 0.07 152 / 0.13);
-  --lift-md: 0 2px 6px oklch(30% 0.07 152 / 0.07), 0 18px 40px -18px oklch(30% 0.07 152 / 0.22);
-  --lift-lg: 0 3px 10px oklch(28% 0.07 152 / 0.09), 0 46px 90px -34px oklch(26% 0.07 152 / 0.40);
+  /* A lift, not a drop: a hairline that defines the edge, then a very soft,
+     very wide shadow at low opacity. A single dark blur reads as a sticker. */
+  --lift-sm:
+    0 0 0 0.5px oklch(28% 0.05 150 / 0.06),
+    0 1px 2px oklch(28% 0.05 150 / 0.04),
+    0 4px 12px -4px oklch(28% 0.05 150 / 0.06);
+  --lift-md:
+    0 0 0 0.5px oklch(28% 0.05 150 / 0.07),
+    0 2px 6px oklch(28% 0.05 150 / 0.05),
+    0 12px 32px -10px oklch(28% 0.05 150 / 0.12);
+  --lift-lg:
+    0 0 0 0.5px oklch(28% 0.05 150 / 0.08),
+    0 4px 12px oklch(28% 0.05 150 / 0.06),
+    0 40px 80px -28px oklch(26% 0.05 150 / 0.22);
 
   /* Status is a RESERVED palette: good / warning / critical. Never reused as a
      decorative or "series" colour, and never the only signal — a status always
@@ -126,10 +143,20 @@
   --gold-glow:    oklch(64% 0.16 60 / 0.5);
   --tint-edge:    oklch(45% 0.115 152 / 0.18);
 
+  /* Radii nest: an inner corner is the outer corner minus the padding between
+     them, or the two curves fight. --radius-inset is what a row highlight uses
+     inside a --radius-surface group with 6px of padding. */
+  --radius-inset:   8px;   /* a highlighted row inside a group */
   --radius-control: 10px;  /* buttons, inputs */
-  --radius-surface: 16px;  /* panels */
-  --radius-large:   24px;  /* the big surfaces: hero shot, closing block */
-  --radius-pill:    999px; /* nav, primary buttons */
+  --radius-surface: 14px;  /* grouped lists, panels */
+  --radius-large:   20px;  /* the big surfaces */
+  --radius-pill:    999px;
+
+  /* Materials. Chrome is translucent and picks up what scrolls under it;
+     saturate() is what stops a blurred backdrop going grey and lifeless. */
+  --material:        color-mix(in oklab, var(--surface) 72%, transparent);
+  --material-blur:   saturate(180%) blur(20px);
+  --material-edge:   color-mix(in oklab, var(--ink) 8%, transparent);
 
   --font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
   --font-sans:    'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
@@ -362,6 +389,15 @@ figure:hover > .pub-shot { transform: translateY(-3px); }
    breaks `position: sticky` on every descendant, which would kill the nav. */
 html, body { overflow-x: clip; }
 
+/* body MUST carry the ground colour, not just the page wrapper inside it.
+   `.scholr-page` sits on an inner div, so anything outside that div — the
+   strip behind a position:fixed sidebar, the overscroll area — fell back to
+   the browser's white. In dark mode that showed as a white block beside the
+   sidebar, and worse: the sidebar is a translucent material, so it composited
+   over white and rendered pale grey on a near-black page. */
+html { background: var(--paper); }
+body { background: var(--paper); color: var(--body); }
+
 /* --- public site ---------------------------------------------------------
    These live in the token layer rather than in a page, because the hero, the
    nav and the closing block appear on more than one route and had already
@@ -571,4 +607,90 @@ html, body { overflow-x: clip; }
   .bench-cta p { display: none; }
   .bench-cta { justify-content: center; padding: .5rem; }
   .bench-cta a { margin-left: 0 !important; width: 100%; justify-content: center; min-height: 44px; }
+}
+
+/* --- app chrome -----------------------------------------------------------
+   The signed-in product. Grouped inset lists on a tinted ground, translucent
+   chrome, a title that starts large and collapses into the toolbar. */
+
+/* Translucent chrome. The fallback matters: without backdrop-filter support
+   the material must still be opaque, or the sidebar becomes see-through. */
+.app-material { background: var(--surface); }
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .app-material {
+    background: var(--material);
+    -webkit-backdrop-filter: var(--material-blur);
+    backdrop-filter: var(--material-blur);
+  }
+}
+
+/* The sidebar. Selected state is a filled inset row, not a left stripe. */
+.app-nav-item {
+  display: flex; align-items: center; gap: .65rem;
+  padding: .5rem .6rem; border-radius: var(--radius-inset);
+  font-size: .885rem; color: var(--body); text-decoration: none;
+  transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+}
+.app-nav-item:hover { background: color-mix(in oklab, var(--ink) 5%, transparent); color: var(--ink); }
+.app-nav-item[aria-current='page'] { background: var(--brand-sf); color: var(--brand); font-weight: 550; }
+.app-nav-item[aria-current='page'] svg { color: var(--brand); }
+
+/* A grouped inset list: one card, hairline rows, nothing nested inside it. */
+.app-group {
+  background: var(--surface);
+  border-radius: var(--radius-surface);
+  box-shadow: var(--lift-sm);
+  overflow: hidden;
+}
+.app-group > * + * { border-top: 1px solid var(--rule-soft); }
+.app-group-head {
+  display: flex; align-items: baseline; gap: .75rem;
+  padding: .1rem .25rem .5rem;
+}
+
+/* The large title, and the compact one that replaces it in the toolbar. */
+.app-title {
+  font-family: var(--font-display); font-weight: 640;
+  font-size: clamp(1.6rem, 3vw, 2rem); letter-spacing: -0.035em;
+  line-height: 1.08; color: var(--ink); margin: 0;
+  overflow-wrap: anywhere; min-width: 0;
+}
+.app-toolbar-title {
+  font-family: var(--font-display); font-weight: 600; font-size: .95rem;
+  letter-spacing: -0.02em; color: var(--ink);
+  opacity: 0; transform: translateY(6px);
+  transition: opacity var(--dur-short) var(--ease-out), transform var(--dur-short) var(--ease-out);
+}
+.app-toolbar[data-collapsed='true'] .app-toolbar-title { opacity: 1; transform: none; }
+.app-toolbar { border-bottom: 1px solid transparent; transition: border-color var(--dur-short) var(--ease-out); }
+.app-toolbar[data-collapsed='true'] { border-bottom-color: var(--material-edge); }
+
+/* Segmented control. One pill slides; the labels never move. */
+/* The stat strip is a group too: one card, hairline dividers, soft lift — not
+   a bordered grid sitting flat on the page. */
+.app-statrow {
+  border: none !important;
+  box-shadow: var(--lift-sm);
+  border-radius: var(--radius-surface) !important;
+  background: var(--rule-soft) !important;
+}
+
+.app-row { transition: background-color var(--dur-micro) var(--ease-out); }
+a.app-row:hover, button.app-row:hover { background: color-mix(in oklab, var(--ink) 4%, transparent); }
+
+.app-segmented {
+  display: inline-flex; padding: 2px; gap: 2px;
+  background: color-mix(in oklab, var(--ink) 6%, transparent);
+  border-radius: var(--radius-control);
+}
+.app-segment {
+  appearance: none; border: none; background: transparent; cursor: pointer;
+  font: inherit; font-size: .82rem; font-weight: 500; color: var(--muted);
+  padding: .3rem .7rem; border-radius: calc(var(--radius-control) - 3px);
+  transition: color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+}
+.app-segment:hover { color: var(--ink); }
+.app-segment[aria-selected='true'] {
+  background: var(--surface); color: var(--ink);
+  box-shadow: 0 0 0 0.5px oklch(28% 0.05 150 / 0.08), 0 1px 2px oklch(28% 0.05 150 / 0.08);
 }

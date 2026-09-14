@@ -25,6 +25,7 @@ import StatRow from '@/components/app/StatRow';
 import StatusChip from '@/components/app/StatusChip';
 import Meter from '@/components/app/Meter';
 import { Panel, PanelRow } from '@/components/app/Panel';
+import { Group, Row, Segmented } from '@/components/app/AppShell';
 import TodaySchedule from '@/components/timetable/TodaySchedule';
 
 const SCHOOL = 'sch', USER = 'usr';
@@ -61,7 +62,7 @@ const NAV = {
 function Chrome({ nav, school, who, children }) {
   return (
     <div className="scholr-page" style={{ display: 'flex', minHeight: '840px' }}>
-      <aside style={{ width: 236, flex: 'none', borderRight: '1px solid var(--rule)', background: 'var(--surface)', padding: '1.1rem .9rem' }}>
+      <aside className="app-material" style={{ width: 248, flex: 'none', borderRight: '1px solid var(--material-edge)', padding: '.9rem .7rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '.6rem', padding: '0 .35rem 1.2rem' }}>
           <span style={{ width: 26, height: 26, borderRadius: 8, background: 'var(--brand)', position: 'relative', display: 'block' }}>
             <span style={{ position: 'absolute', top: 4, right: 4, width: 7, height: 7, borderRadius: '50%', background: 'var(--gold)' }} />
@@ -69,18 +70,14 @@ function Chrome({ nav, school, who, children }) {
           <span style={{ fontFamily: 'var(--font-display)', fontWeight: 650, letterSpacing: '-.035em', color: 'var(--ink)' }}>Scholr</span>
         </div>
         {nav.map((n, i) => (
-          <div key={n} style={{
-            padding: '.45rem .55rem', borderRadius: 'var(--radius-control)', fontSize: '.87rem',
-            color: i === 0 ? 'var(--brand)' : 'var(--muted)', fontWeight: i === 0 ? 550 : 400,
-            background: i === 0 ? 'var(--brand-sf)' : 'transparent', marginBottom: 2,
-          }}>{n}</div>
+          <div key={n} className="app-nav-item" aria-current={i === 0 ? 'page' : undefined}>{n}</div>
         ))}
         <div style={{ marginTop: '1.4rem', padding: '0 .55rem' }}>
           <p className="scholr-label" style={{ margin: 0 }}>{school}</p>
           <p style={{ margin: '.3rem 0 0', fontSize: '.8rem', color: 'var(--muted)' }}>{who}</p>
         </div>
       </aside>
-      <main style={{ flex: 1, padding: '1.6rem 1.8rem', display: 'flex', flexDirection: 'column', gap: '1.1rem', minWidth: 0 }}>
+      <main style={{ flex: 1, padding: '1.5rem 1.7rem', display: 'flex', flexDirection: 'column', gap: 'var(--space-md)', minWidth: 0 }}>
         {children}
       </main>
     </div>
@@ -92,7 +89,7 @@ function TeacherShot() {
     <Chrome nav={NAV.teacher} school="Rathmore International" who="Aoife Ní Bhriain · Teacher">
       <header>
         <p className="scholr-label" style={{ margin: 0 }}>{format(new Date(), 'EEEE d MMMM')}</p>
-        <h1 className="scholr-h1" style={{ margin: '.4rem 0 0', fontSize: '1.7rem' }}>Good morning, Aoife</h1>
+        <h1 className="app-title">Good morning, Aoife</h1>
       </header>
       <StatRow>
         <StatCard label="My classes" value={6} />
@@ -100,20 +97,20 @@ function TeacherShot() {
         <StatCard label="Live assignments" value={9} />
         <StatCard label="To grade" value={23} hint="oldest 3 days" />
       </StatRow>
-      <Panel title="Today" dark>
+      <Group title="Today">
         <TodaySchedule schoolId={SCHOOL} userId={USER} userRole="teacher" />
-      </Panel>
+      </Group>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.1rem' }}>
-        <Panel title="To grade">
-          <PanelRow name="Paper 2 mock — calculus" detail="DP1"><StatusChip tone="warn">12 waiting</StatusChip></PanelRow>
-          <PanelRow name="TOK essay draft" detail="DP1"><StatusChip tone="warn">8 waiting</StatusChip></PanelRow>
-          <PanelRow name="Vectors problem set" detail="MYP5"><StatusChip tone="crit">3 late</StatusChip></PanelRow>
-        </Panel>
-        <Panel title="Coming up">
-          <PanelRow name="Report deadline" detail="DP1" value="in 9 days" />
-          <PanelRow name="Parents' evening" detail="whole school" value="24 Sept" />
-          <PanelRow name="EE first drafts" detail="DP2" value="2 Oct" />
-        </Panel>
+        <Group title="To grade">
+          <Row label="Paper 2 mock — calculus" detail="DP1"><StatusChip tone="warn">12 waiting</StatusChip></Row>
+          <Row label="TOK essay draft" detail="DP1"><StatusChip tone="warn">8 waiting</StatusChip></Row>
+          <Row label="Vectors problem set" detail="MYP5"><StatusChip tone="crit">3 late</StatusChip></Row>
+        </Group>
+        <Group title="Coming up">
+          <Row label="Report deadline" detail="DP1" value="in 9 days" />
+          <Row label="Parents' evening" detail="whole school" value="24 Sept" />
+          <Row label="EE first drafts" detail="DP2" value="2 Oct" />
+        </Group>
       </div>
     </Chrome>
   );
@@ -125,7 +122,7 @@ function CoordinatorShot() {
     <Chrome nav={NAV.coordinator} school="Rathmore International" who="Cormac Doyle · DP coordinator">
       <header>
         <p className="scholr-label" style={{ margin: 0 }}>Diploma Programme · DP2</p>
-        <h1 className="scholr-h1" style={{ margin: '.4rem 0 0', fontSize: '1.7rem' }}>Cohort</h1>
+        <h1 className="app-title">Cohort</h1>
       </header>
       <StatRow>
         <StatCard label="Students" value={44} />
@@ -133,22 +130,22 @@ function CoordinatorShot() {
         <StatCard label="Subjects" value={19} />
         <StatCard label="At risk" value={5} hint="two or more below target" />
       </StatRow>
-      <Panel title="Extended Essay" dark>
-        <PanelRow name="Proposal approved" detail="41 of 44">{bar(93)}</PanelRow>
-        <PanelRow name="First draft in" detail="29 of 44">{bar(66)}</PanelRow>
-        <PanelRow name="Viva booked" detail="12 of 44">{bar(27)}</PanelRow>
-      </Panel>
+      <Group title="Extended Essay">
+        <Row label="Proposal approved" detail="41 of 44">{bar(93)}</Row>
+        <Row label="First draft in" detail="29 of 44">{bar(66)}</Row>
+        <Row label="Viva booked" detail="12 of 44">{bar(27)}</Row>
+      </Group>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.1rem' }}>
-        <Panel title="Predicted vs target">
-          <PanelRow name="Mathematics HL" detail="9 students" value="5.8 / 6.0" />
-          <PanelRow name="Biology HL" detail="14 students" value="5.1 / 5.5" />
-          <PanelRow name="English A SL" detail="21 students" value="5.6 / 5.5" />
-        </Panel>
-        <Panel title="Needs a conversation">
-          <PanelRow name="Student 0412" detail="3 subjects below"><StatusChip tone="crit">Review</StatusChip></PanelRow>
-          <PanelRow name="Student 0388" detail="2 subjects below"><StatusChip tone="warn">Watch</StatusChip></PanelRow>
-          <PanelRow name="Student 0431" detail="EE overdue"><StatusChip tone="warn">Chase</StatusChip></PanelRow>
-        </Panel>
+        <Group title="Predicted vs target">
+          <Row label="Mathematics HL" detail="9 students" value="5.8 / 6.0" />
+          <Row label="Biology HL" detail="14 students" value="5.1 / 5.5" />
+          <Row label="English A SL" detail="21 students" value="5.6 / 5.5" />
+        </Group>
+        <Group title="Needs a conversation">
+          <Row label="Student 0412" detail="3 subjects below"><StatusChip tone="crit">Review</StatusChip></Row>
+          <Row label="Student 0388" detail="2 subjects below"><StatusChip tone="warn">Watch</StatusChip></Row>
+          <Row label="Student 0431" detail="EE overdue"><StatusChip tone="warn">Chase</StatusChip></Row>
+        </Group>
       </div>
     </Chrome>
   );
@@ -159,7 +156,7 @@ function ParentShot() {
     <Chrome nav={NAV.parent} school="Rathmore International" who="Parent · two children">
       <header>
         <p className="scholr-label" style={{ margin: 0 }}>Viewing · Niamh, DP1</p>
-        <h1 className="scholr-h1" style={{ margin: '.4rem 0 0', fontSize: '1.7rem' }}>Family portal</h1>
+        <h1 className="app-title">Family portal</h1>
       </header>
       <StatRow>
         <StatCard label="Attendance" value="96%" hint="this term" />
@@ -167,20 +164,20 @@ function ParentShot() {
         <StatCard label="Released grades" value={11} hint="visible to families" />
         <StatCard label="Unread" value={1} hint="from her tutor" />
       </StatRow>
-      <Panel title="Grades released" dark>
-        <PanelRow name="Mathematics HL — Paper 2 mock" detail="18 Sept" value="6 / 7" />
-        <PanelRow name="Biology HL — Cell respiration" detail="12 Sept" value="5 / 7" />
-        <PanelRow name="English A SL — Comparative essay" detail="9 Sept" value="6 / 7" />
-      </Panel>
+      <Group title="Grades released">
+        <Row label="Mathematics HL — Paper 2 mock" detail="18 Sept" value="6 / 7" />
+        <Row label="Biology HL — Cell respiration" detail="12 Sept" value="5 / 7" />
+        <Row label="English A SL — Comparative essay" detail="9 Sept" value="6 / 7" />
+      </Group>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.1rem' }}>
-        <Panel title="Attendance">
-          <PanelRow name="Tuesday 2 Sept" detail="period 4"><StatusChip tone="warn">Late</StatusChip></PanelRow>
-          <PanelRow name="Friday 22 Aug" detail="authorised"><StatusChip tone="info">Absent</StatusChip></PanelRow>
-        </Panel>
-        <Panel title="Coming up">
-          <PanelRow name="TOK essay draft" detail="English A" value="in 3 days" />
-          <PanelRow name="Parents' evening" detail="whole school" value="24 Sept" />
-        </Panel>
+        <Group title="Attendance">
+          <Row label="Tuesday 2 Sept" detail="period 4"><StatusChip tone="warn">Late</StatusChip></Row>
+          <Row label="Friday 22 Aug" detail="authorised"><StatusChip tone="info">Absent</StatusChip></Row>
+        </Group>
+        <Group title="Coming up">
+          <Row label="TOK essay draft" detail="English A" value="in 3 days" />
+          <Row label="Parents' evening" detail="whole school" value="24 Sept" />
+        </Group>
       </div>
     </Chrome>
   );
@@ -191,13 +188,13 @@ function AdminShot() {
     <Chrome nav={NAV.admin} school="Rathmore International" who="Operations">
       <header>
         <p className="scholr-label" style={{ margin: 0 }}>Monday 14 September · IB</p>
-        <h1 className="scholr-h1" style={{ margin: '.4rem 0 0', fontSize: '1.7rem' }}>Operations</h1>
+        <h1 className="app-title">Operations</h1>
       </header>
-      <Panel title="Needs attention" dark>
-        <PanelRow name="2 classes without a teacher" detail="Physics SL, Spanish B"><StatusChip tone="crit">Critical</StatusChip></PanelRow>
-        <PanelRow name="Attendance at 87%" detail="last 30 days"><StatusChip tone="warn">Warning</StatusChip></PanelRow>
-        <PanelRow name="4 students not enrolled" detail="no class yet"><StatusChip tone="warn">Warning</StatusChip></PanelRow>
-      </Panel>
+      <Group title="Needs attention">
+        <Row label="2 classes without a teacher" detail="Physics SL, Spanish B"><StatusChip tone="crit">Critical</StatusChip></Row>
+        <Row label="Attendance at 87%" detail="last 30 days"><StatusChip tone="warn">Warning</StatusChip></Row>
+        <Row label="4 students not enrolled" detail="no class yet"><StatusChip tone="warn">Warning</StatusChip></Row>
+      </Group>
       <StatRow>
         <StatCard label="Students" value={741} hint="active enrolments" />
         <StatCard label="Teachers & staff" value={96} />
@@ -205,14 +202,14 @@ function AdminShot() {
         <StatCard label="Classes" value={54} hint="this academic year" />
       </StatRow>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.1rem' }}>
-        <Panel title="Class coverage">
-          <PanelRow name="Teacher assigned" detail="50 of 54"><StatusChip tone="warn">Gaps</StatusChip></PanelRow>
-          <PanelRow name="Has students" detail="48 of 54"><StatusChip tone="warn">Gaps</StatusChip></PanelRow>
-        </Panel>
-        <Panel title="Reporting windows">
-          <PanelRow name="Autumn term ends" detail="22 Sept"><StatusChip tone="crit">Due soon</StatusChip></PanelRow>
-          <PanelRow name="Spring term ends" detail="11 Jan" value="120d" />
-        </Panel>
+        <Group title="Class coverage">
+          <Row label="Teacher assigned" detail="50 of 54"><StatusChip tone="warn">Gaps</StatusChip></Row>
+          <Row label="Has students" detail="48 of 54"><StatusChip tone="warn">Gaps</StatusChip></Row>
+        </Group>
+        <Group title="Reporting windows">
+          <Row label="Autumn term ends" detail="22 Sept"><StatusChip tone="crit">Due soon</StatusChip></Row>
+          <Row label="Spring term ends" detail="11 Jan" value="120d" />
+        </Group>
       </div>
     </Chrome>
   );

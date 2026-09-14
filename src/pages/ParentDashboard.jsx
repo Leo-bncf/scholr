@@ -15,7 +15,7 @@ import { LayoutDashboard } from 'lucide-react';
 import ParentDashboardHome from '@/components/parent/ParentDashboardHome';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AnnouncementsFeed from '@/components/messaging/AnnouncementsFeed';
-import { Panel } from '@/components/app/Panel';
+import AppShell, { Group } from '@/components/app/AppShell';
 
 const sidebarLinks = [
   { label: 'Dashboard', page: 'ParentDashboard', icon: LayoutDashboard },
@@ -42,16 +42,9 @@ export default function ParentDashboard() {
 
   return (
     <RoleGuard allowedRoles={['parent', 'super_admin', 'admin']}>
-      <div className="scholr-page min-h-screen">
-        <AppSidebar links={sidebarLinks} role="parent" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-
-        <main className="ml-0 md:ml-64 p-4 md:p-8">
-          <div className="max-w-6xl mx-auto flex flex-col gap-5 md:gap-6">
-            <header>
-              <p className="scholr-label m-0">{school?.name}</p>
-              <h1 className="scholr-h1 m-0 mt-1.5 text-2xl md:text-3xl">Family portal</h1>
-            </header>
-
+      <AppSidebar links={sidebarLinks} role="parent" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
+      <div className="md:pl-[15.5rem]">
+        <AppShell eyebrow={school?.name} title="Family portal">
             <ChildSelector
               parentId={user?.id}
               schoolId={schoolId}
@@ -80,40 +73,40 @@ export default function ParentDashboard() {
                 </TabsContent>
 
                 <TabsContent value="grades">
-                  <Panel title="Grades & feedback">
+                  <Group title="Grades & feedback">
                     <div className="p-4">
                       <ChildGradesOverview schoolId={schoolId} studentId={selectedChildId} />
                     </div>
-                  </Panel>
+                  </Group>
                 </TabsContent>
 
                 <TabsContent value="predicted">
-                  <Panel title="Predicted grades">
+                  <Group title="Predicted grades">
                     <div className="p-4">
                       <ChildPredictedGrades schoolId={schoolId} studentId={selectedChildId} />
                     </div>
-                  </Panel>
+                  </Group>
                 </TabsContent>
 
                 <TabsContent value="assignments">
-                  <Panel title="Assignments">
+                  <Group title="Assignments">
                     <div className="p-4">
                       <ChildAssignmentsOverview schoolId={schoolId} studentId={selectedChildId} />
                     </div>
-                  </Panel>
+                  </Group>
                 </TabsContent>
 
                 <TabsContent value="attendance">
-                  <Panel title="Attendance">
+                  <Group title="Attendance">
                     <div className="p-4">
                       <ChildAttendanceOverview schoolId={schoolId} studentId={selectedChildId} />
                     </div>
-                  </Panel>
+                  </Group>
                 </TabsContent>
 
                 <TabsContent value="messages">
                   <div className="flex flex-col gap-5 md:gap-6">
-                    <Panel title="Teachers">
+                    <Group title="Teachers">
                       <div className="p-4">
                         <ParentMessaging
                           parentId={user?.id}
@@ -122,22 +115,22 @@ export default function ParentDashboard() {
                           studentId={selectedChildId}
                         />
                       </div>
-                    </Panel>
+                    </Group>
 
-                    <Panel title="Announcements">
+                    <Group title="Announcements">
                       <div className="p-4">
                         <AnnouncementsFeed schoolId={schoolId} userId={user?.id} classIds={[]} />
                       </div>
-                    </Panel>
+                    </Group>
                   </div>
                 </TabsContent>
 
                 <TabsContent value="behavior">
-                  <Panel title="Behaviour & notes">
+                  <Group title="Behaviour & notes">
                     <div className="p-4">
                       <ChildBehaviorOverview schoolId={schoolId} studentId={selectedChildId} />
                     </div>
-                  </Panel>
+                  </Group>
                 </TabsContent>
 
                 <TabsContent value="reporting">
@@ -145,14 +138,13 @@ export default function ParentDashboard() {
                 </TabsContent>
               </Tabs>
             ) : (
-              <Panel title="No child selected">
+              <Group title="No child selected">
                 <p className="px-4 py-6 m-0 text-sm" style={{ color: 'var(--faint)' }}>
                   Pick a child above to see their grades, attendance and messages.
                 </p>
-              </Panel>
+              </Group>
             )}
-          </div>
-        </main>
+        </AppShell>
       </div>
     </RoleGuard>
   );

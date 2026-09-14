@@ -110,11 +110,14 @@ const SEVERITY_WORD = { crit: 'Critical', warn: 'Warning' };
 /**
  * One alert.
  *
- * Severity is a 3px left rule in the reserved palette plus the word itself in
- * a chip — never the colour alone. The whole row is not tinted: a page of
- * red-and-amber panels flattens the difference between "billing failed" and
- * "attendance is a little low", which is precisely the distinction an admin
- * comes here to make.
+ * Severity is the chip: the reserved colour and the word together, never the
+ * colour alone. The whole row is not tinted — a page of red-and-amber panels
+ * flattens the difference between "billing failed" and "attendance is a little
+ * low", which is exactly the distinction an admin comes here to make.
+ *
+ * There used to be a 3px coloured rule down the left of each row as well. That
+ * is the side-stripe card, a named tell, and it was redundant the moment the
+ * chip carried both signals. Gone.
  */
 function Alert({ alert }) {
   const [expanded, setExpanded] = useState(false);
@@ -122,10 +125,7 @@ function Alert({ alert }) {
   return (
     <div
       className="flex items-start gap-3 px-4 py-3.5 panel-row"
-      style={{
-        borderBottom: '1px solid var(--rule-soft)',
-        borderLeft: `3px solid var(--${alert.severity})`,
-      }}
+      style={{ borderBottom: '1px solid var(--rule-soft)' }}
     >
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 flex-wrap">
@@ -191,7 +191,7 @@ export default function OperationalAlerts({ data }) {
 
   if (alerts.length === 0) {
     return (
-      <div className="scholr-panel px-4 py-3.5 flex items-center gap-3 flex-wrap">
+      <div className="app-group" style={{ padding: '.85rem .9rem', display: 'flex', alignItems: 'center', gap: '.75rem', flexWrap: 'wrap' }}>
         <StatusChip tone="good">Clear</StatusChip>
         <p className="m-0 text-sm" style={{ color: 'var(--body)' }}>
           Nothing needs attention — enrolments, attendance, billing and the timetable all check out.
@@ -201,7 +201,7 @@ export default function OperationalAlerts({ data }) {
   }
 
   return (
-    <div className="scholr-panel overflow-hidden">
+    <div className="app-group">
       <header
         className="flex items-center gap-2 px-4 py-2.5 flex-wrap"
         style={{ borderBottom: '1px solid var(--rule-soft)' }}

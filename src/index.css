@@ -16,11 +16,14 @@
      this file is imported after it, so a token named `--accent` there would be
      silently overwritten here and every primary button would lose its fill. */
   :root {
-    --background: 0 0% 100%;
+    /* The app ground, matching --paper in the theme file. Not 0 0% 100%:
+       pure white is a named tell, and it left the grouped lists with nothing
+       to float on. */
+    --background: 92 23% 95%;
     --foreground: 161 29% 10%;
-    --card: 0 0% 100%;
+    --card: 78 64% 99%;
     --card-foreground: 161 29% 10%;
-    --popover: 0 0% 100%;
+    --popover: 78 64% 99%;
     --popover-foreground: 161 29% 10%;
     --primary: 164 93% 21%;
     --primary-foreground: 0 0% 100%;
@@ -60,12 +63,22 @@
      dark mode turned every Card, Button and Input slate-and-blue while the
      rest of the product stayed green. Now it mirrors the theme file's dark
      palette. */
-  .dark {
-    --background: 158 39% 5%;
+  /* Three states, matching src/styles/scholr-theme.css exactly:
+       · .dark              — the in-app toggle, written to localStorage
+       · prefers-color-scheme — the OS, unless the user chose light
+       · [data-theme=dark]  — an explicit choice
+     These used to be one selector (.dark) while the token layer used the other
+     two. The result was a page whose shadcn surfaces followed localStorage and
+     whose tokens followed the OS: a white body behind a dark page, and a
+     translucent sidebar compositing over it. */
+  .dark,
+  :root[data-theme='dark'],
+  :root[data-theme='dark'] * {
+    --background: 133 41% 3%;
     --foreground: 153 18% 93%;
-    --card: 158 27% 8%;
+    --card: 135 28% 7%;
     --card-foreground: 153 18% 93%;
-    --popover: 158 27% 8%;
+    --popover: 135 28% 7%;
     --popover-foreground: 153 18% 93%;
     --primary: 162 55% 48%;
     --primary-foreground: 158 39% 5%;
@@ -93,6 +106,38 @@
     --sidebar-accent-foreground: 162 55% 48%;
     --sidebar-border: 157 15% 16%;
     --sidebar-ring: 162 55% 48%;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --background: 133 41% 3%;
+      --foreground: 153 18% 93%;
+      --card: 135 28% 7%;
+      --card-foreground: 153 18% 93%;
+      --popover: 135 28% 7%;
+      --popover-foreground: 153 18% 93%;
+      --primary: 162 55% 48%;
+      --primary-foreground: 158 39% 5%;
+      --secondary: 158 32% 6%;
+      --secondary-foreground: 153 18% 93%;
+      --muted: 158 32% 6%;
+      --muted-foreground: 156 5% 56%;
+      --accent: 162 80% 10%;
+      --accent-foreground: 162 55% 48%;
+      --destructive: 3 78% 68%;
+      --destructive-foreground: 158 39% 5%;
+      --border: 157 15% 16%;
+      --input: 157 15% 16%;
+      --ring: 162 55% 48%;
+      --sidebar-background: 158 32% 6%;
+      --sidebar-foreground: 153 18% 93%;
+      --sidebar-primary: 162 55% 48%;
+      --sidebar-primary-foreground: 158 39% 5%;
+      --sidebar-accent: 162 80% 10%;
+      --sidebar-accent-foreground: 162 55% 48%;
+      --sidebar-border: 157 15% 16%;
+      --sidebar-ring: 162 55% 48%;
+    }
   }
 }
 

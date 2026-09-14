@@ -1,5 +1,5 @@
 import React from 'react';
-import { Panel, PanelEmpty } from '@/components/app/Panel';
+import { Group, GroupEmpty } from '@/components/app/AppShell';
 import Meter from '@/components/app/Meter';
 
 /**
@@ -20,13 +20,13 @@ export default function AssignmentCompletionChart({ data }) {
   const rows = [...data].sort((a, b) => b.completionRate - a.completionRate);
 
   return (
-    <Panel title="Assignment completion">
+    <Group title="Assignment completion">
       {rows.length === 0 ? (
-        <PanelEmpty>
+        <GroupEmpty>
           No submissions recorded yet, so there is nothing to compare.
-        </PanelEmpty>
+        </GroupEmpty>
       ) : (
-        <div className="px-4 py-4 flex flex-col gap-3">
+        <div style={{ padding: '.85rem .9rem', display: 'flex', flexDirection: 'column', gap: '.85rem' }}>
           {rows.map((row) => (
             <div key={row.name}>
               <div className="flex items-baseline gap-3 mb-1">
@@ -46,6 +46,6 @@ export default function AssignmentCompletionChart({ data }) {
           <p className="scholr-label m-0 mt-1">Submitted ÷ expected, per class</p>
         </div>
       )}
-    </Panel>
+    </Group>
   );
 }
