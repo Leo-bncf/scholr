@@ -377,12 +377,12 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen bg-[var(--mkt-paper)]" style={{ fontFamily: 'var(--mkt-font-body)' }}>
-      {/* Two blooms framing the nav at the top of the page — visible at every
-          width (not gated behind a breakpoint), fading in once on load and
-          drifting a few px on a slow, restrained loop. Sits in normal
-          document flow (not fixed) so it scrolls away with the hero rather
-          than bleeding into later sections. */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[28rem] overflow-hidden">
+      {/* Two blooms framing the nav — fixed to the viewport, not the
+          document, so they stay put at the top of the screen as the page
+          scrolls beneath them rather than scrolling away with the hero.
+          pointer-events-none so they never block clicks on the nav/content
+          that scrolls under them. */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-x-0 top-0 h-[28rem] overflow-hidden">
         <div className="mkt-bloom-a absolute -top-24 left-[8%] h-96 w-96 rounded-full bg-[var(--mkt-accent)] opacity-[0.55] blur-2xl sm:h-[28rem] sm:w-[28rem]" />
         <div className="mkt-bloom-b absolute -top-16 right-[8%] h-80 w-80 rounded-full bg-[var(--mkt-accent)] opacity-[0.46] blur-2xl sm:h-[30rem] sm:w-[30rem]" />
       </div>
