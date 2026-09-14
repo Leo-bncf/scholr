@@ -2,46 +2,53 @@ import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
+import { lazy, Suspense } from 'react';
+
+/* Routes declared here, rather than through pages.config, are lazy for the
+ * same reason the rest are — and one of them mattered more than the others:
+ * SuperAdminAnalytics imports recharts, so a static import put the whole
+ * 421 kB charting library in the entry graph. Every visitor to the
+ * marketing site downloaded it. */
+const SuperAdminAnalytics = lazy(() => import('./pages/SuperAdminAnalytics'));
+const SuperAdminAutomation = lazy(() => import('./pages/SuperAdminAutomation'));
+const SuperAdminSupport = lazy(() => import('./pages/SuperAdminSupport'));
+const SuperAdminTimetables = lazy(() => import('./pages/SuperAdminTimetables'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService'));
+const SecurityAndCompliance = lazy(() => import('./pages/SecurityAndCompliance'));
+const SuperAdminSchoolDetail = lazy(() => import('./pages/SuperAdminSchoolDetail'));
+const SuperAdminSettings = lazy(() => import('./pages/SuperAdminSettings'));
+const SchoolAdminAcademicSetup = lazy(() => import('./pages/SchoolAdminAcademicSetup'));
+const PersonalSettings = lazy(() => import('./pages/PersonalSettings'));
+const TeacherWorkspace = lazy(() => import('./pages/TeacherWorkspace'));
+const ParentInsightsDashboard = lazy(() => import('./pages/ParentInsightsDashboard'));
+const UnifiedCalendar = lazy(() => import('./pages/UnifiedCalendar'));
+const SchoolAnalytics = lazy(() => import('./pages/SchoolAnalytics'));
+const ReportingEngine = lazy(() => import('./pages/ReportingEngine'));
+const SchoolOnboardingFlow = lazy(() => import('./pages/SchoolOnboardingFlow'));
+const CurriculumMapping = lazy(() => import('./pages/CurriculumMapping'));
+const StudentAcademicDashboard = lazy(() => import('./pages/StudentAcademicDashboard'));
+const StudentTimetable = lazy(() => import('./pages/StudentTimetable'));
+const StudentAttendance = lazy(() => import('./pages/StudentAttendance'));
+const StudentCommunication = lazy(() => import('./pages/StudentCommunication'));
+const StudentIBCore = lazy(() => import('./pages/StudentIBCore'));
+const SchoolAdminOnboarding = lazy(() => import('./pages/SchoolAdminOnboarding'));
+const DemoHub = lazy(() => import('./pages/demo/DemoHub'));
+const DemoStudent = lazy(() => import('./pages/demo/DemoStudent'));
+const DemoStudentAssignment = lazy(() => import('./pages/demo/DemoStudentAssignment'));
+const DemoTeacher = lazy(() => import('./pages/demo/DemoTeacher'));
+const DemoTeacherClass = lazy(() => import('./pages/demo/DemoTeacherClass'));
+const DemoTeacherReview = lazy(() => import('./pages/demo/DemoTeacherReview'));
+const DemoParent = lazy(() => import('./pages/demo/DemoParent'));
+const DemoParentAssignment = lazy(() => import('./pages/demo/DemoParentAssignment'));
+const DemoLeader = lazy(() => import('./pages/demo/DemoLeader'));
+const SchoolAdminSupport = lazy(() => import('./pages/SchoolAdminSupport'));
+const SchoolAdminGradebookGovernance = lazy(() => import('./pages/SchoolAdminGradebookGovernance'));
+const SchoolAdminBehavior = lazy(() => import('./pages/SchoolAdminBehavior'));
+const SchoolAdminMessagingPolicy = lazy(() => import('./pages/SchoolAdminMessagingPolicy'));
+const SchoolAdminGovernance = lazy(() => import('./pages/SchoolAdminGovernance'));
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
-import SuperAdminAnalytics from './pages/SuperAdminAnalytics';
-import SuperAdminAutomation from './pages/SuperAdminAutomation';
-import SuperAdminSupport from './pages/SuperAdminSupport';
-import SuperAdminTimetables from './pages/SuperAdminTimetables';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import TermsOfService from './pages/TermsOfService';
-import SecurityAndCompliance from './pages/SecurityAndCompliance';
-import SuperAdminSchoolDetail from './pages/SuperAdminSchoolDetail';
-import SuperAdminSettings from './pages/SuperAdminSettings';
-import SchoolAdminAcademicSetup from './pages/SchoolAdminAcademicSetup';
-import PersonalSettings from './pages/PersonalSettings';
-import TeacherWorkspace from './pages/TeacherWorkspace';
-import ParentInsightsDashboard from './pages/ParentInsightsDashboard';
-import UnifiedCalendar from './pages/UnifiedCalendar';
-import SchoolAnalytics from './pages/SchoolAnalytics';
-import ReportingEngine from './pages/ReportingEngine';
-import SchoolOnboardingFlow from './pages/SchoolOnboardingFlow';
-import CurriculumMapping from './pages/CurriculumMapping';
-import StudentAcademicDashboard from './pages/StudentAcademicDashboard';
-import StudentTimetable from './pages/StudentTimetable';
-import StudentAttendance from './pages/StudentAttendance';
-import StudentCommunication from './pages/StudentCommunication';
-import StudentIBCore from './pages/StudentIBCore';
-import SchoolAdminOnboarding from './pages/SchoolAdminOnboarding';
-import DemoHub from './pages/demo/DemoHub';
-import DemoStudent from './pages/demo/DemoStudent';
-import DemoStudentAssignment from './pages/demo/DemoStudentAssignment';
-import DemoTeacher from './pages/demo/DemoTeacher';
-import DemoTeacherClass from './pages/demo/DemoTeacherClass';
-import DemoTeacherReview from './pages/demo/DemoTeacherReview';
-import DemoParent from './pages/demo/DemoParent';
-import DemoParentAssignment from './pages/demo/DemoParentAssignment';
-import DemoLeader from './pages/demo/DemoLeader';
-import SchoolAdminSupport from './pages/SchoolAdminSupport';
-import SchoolAdminGradebookGovernance from './pages/SchoolAdminGradebookGovernance';
-import SchoolAdminBehavior from './pages/SchoolAdminBehavior';
-import SchoolAdminMessagingPolicy from './pages/SchoolAdminMessagingPolicy';
-import SchoolAdminGovernance from './pages/SchoolAdminGovernance';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { ImpersonationProvider, useImpersonation } from '@/components/auth/ImpersonationContext';
@@ -55,6 +62,22 @@ const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
 const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>
   : <>{children}</>;
+
+/**
+ * Shown while a route's chunk is in flight.
+ *
+ * Every page is lazy, so a boundary is mandatory — React throws without one.
+ * It is deliberately the same spinner the auth check already renders, so a
+ * navigation waiting on a chunk looks like one waiting on data instead of
+ * flashing a second, different loading state.
+ */
+function RouteFallback() {
+  return (
+    <div className="fixed inset-0 flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+    </div>
+  );
+}
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -81,6 +104,7 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
+    <Suspense fallback={<RouteFallback />}>
     <Routes>
       <Route path="/" element={
         <LayoutWrapper currentPageName={mainPageKey}>
@@ -345,6 +369,7 @@ const AuthenticatedApp = () => {
       />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
+    </Suspense>
   );
 };
 

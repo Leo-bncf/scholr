@@ -48,66 +48,77 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import AcceptInvitation from './pages/AcceptInvitation';
-import AppHome from './pages/AppHome';
-import AssignmentDetail from './pages/AssignmentDetail';
-import ClassGradebook from './pages/ClassGradebook';
-import ClassWorkspace from './pages/ClassWorkspace';
-import Contact from './pages/Contact';
-import CoordinatorDashboard from './pages/CoordinatorDashboard';
-import CoordinatorIBCore from './pages/CoordinatorIBCore';
-import CoordinatorPredictedGrades from './pages/CoordinatorPredictedGrades';
-import BookDemo from './pages/BookDemo';
-import DemoShowcase from './pages/DemoShowcase';
-import Features from './pages/Features';
-import FirstLogin from './pages/FirstLogin';
-import Login from './pages/Login';
-import Landing from './pages/Landing';
-import Messages from './pages/Messages';
-import NoSchool from './pages/NoSchool';
-import ParentDashboard from './pages/ParentDashboard';
-import PasswordReset from './pages/PasswordReset';
-import Pricing from './pages/Pricing';
-import About from './pages/About';
-import FAQ from './pages/FAQ';
-import Schedual from './pages/Schedual';
-import SuperAdminHealth from './pages/SuperAdminHealth';
-import IbCurriculum from './pages/curriculum/IbCurriculum';
-import IgcseCurriculum from './pages/curriculum/IgcseCurriculum';
-import ALevelCurriculum from './pages/curriculum/ALevelCurriculum';
-import UsCurriculum from './pages/curriculum/UsCurriculum';
 
-import SchoolAdminAttendance from './pages/SchoolAdminAttendance';
-import SchoolAdminBilling from './pages/SchoolAdminBilling';
-import SchoolAdminClasses from './pages/SchoolAdminClasses';
-import SchoolAdminDashboard from './pages/SchoolAdminDashboard';
-import SchoolAdminEnrollments from './pages/SchoolAdminEnrollments';
-import SchoolAdminReports from './pages/SchoolAdminReports';
-import SchoolAdminSettings from './pages/SchoolAdminSettings';
-import SchoolAdminSubjects from './pages/SchoolAdminSubjects';
-import SchoolAdminTimetable from './pages/SchoolAdminTimetable';
-import SchoolAdminUsers from './pages/SchoolAdminUsers';
-import SchoolOnboarding from './pages/SchoolOnboarding';
-import Security from './pages/Security';
-import StudentBehavior from './pages/StudentBehavior';
-import StudentCAS from './pages/StudentCAS';
-import StudentDashboard from './pages/StudentDashboard';
-import StudentEE from './pages/StudentEE';
-import StudentTOK from './pages/StudentTOK';
-import SubmissionReview from './pages/SubmissionReview';
-import SuperAdminAuditLogs from './pages/SuperAdminAuditLogs';
-import SuperAdminBilling from './pages/SuperAdminBilling';
-import SuperAdminDashboard from './pages/SuperAdminDashboard';
-import SuperAdminPlanManagement from './pages/SuperAdminPlanManagement';
-import SuperAdminPlans from './pages/SuperAdminPlans';
-import SuperAdminProduction from './pages/SuperAdminProduction';
-import SuperAdminProductionLaunch from './pages/SuperAdminProductionLaunch';
-import SuperAdminSchoolDetail from './pages/SuperAdminSchoolDetail';
-import SuperAdminSchools from './pages/SuperAdminSchools';
-import SuperAdminUsers from './pages/SuperAdminUsers';
-import TeacherClasses from './pages/TeacherClasses';
-import TeacherDashboard from './pages/TeacherDashboard';
+import { lazy } from 'react';
 import __Layout from './Layout.jsx';
+
+/* Every page is loaded on demand.
+ *
+ * These were 58 static imports, so one chunk carried the whole product:
+ * 3,355 kB minified. Someone landing on the marketing site downloaded and
+ * parsed the super-admin console, the gradebook and every dashboard before
+ * the page could paint.
+ *
+ * Layout is deliberately NOT lazy — it wraps every route, so deferring it
+ * would only put a suspense boundary around everything and gain nothing. */
+const AcceptInvitation = lazy(() => import('./pages/AcceptInvitation'));
+const AppHome = lazy(() => import('./pages/AppHome'));
+const AssignmentDetail = lazy(() => import('./pages/AssignmentDetail'));
+const ClassGradebook = lazy(() => import('./pages/ClassGradebook'));
+const ClassWorkspace = lazy(() => import('./pages/ClassWorkspace'));
+const Contact = lazy(() => import('./pages/Contact'));
+const CoordinatorDashboard = lazy(() => import('./pages/CoordinatorDashboard'));
+const CoordinatorIBCore = lazy(() => import('./pages/CoordinatorIBCore'));
+const CoordinatorPredictedGrades = lazy(() => import('./pages/CoordinatorPredictedGrades'));
+const BookDemo = lazy(() => import('./pages/BookDemo'));
+const DemoShowcase = lazy(() => import('./pages/DemoShowcase'));
+const Features = lazy(() => import('./pages/Features'));
+const FirstLogin = lazy(() => import('./pages/FirstLogin'));
+const Login = lazy(() => import('./pages/Login'));
+const Landing = lazy(() => import('./pages/Landing'));
+const Messages = lazy(() => import('./pages/Messages'));
+const NoSchool = lazy(() => import('./pages/NoSchool'));
+const ParentDashboard = lazy(() => import('./pages/ParentDashboard'));
+const PasswordReset = lazy(() => import('./pages/PasswordReset'));
+const Pricing = lazy(() => import('./pages/Pricing'));
+const About = lazy(() => import('./pages/About'));
+const FAQ = lazy(() => import('./pages/FAQ'));
+const Schedual = lazy(() => import('./pages/Schedual'));
+const SuperAdminHealth = lazy(() => import('./pages/SuperAdminHealth'));
+const IbCurriculum = lazy(() => import('./pages/curriculum/IbCurriculum'));
+const IgcseCurriculum = lazy(() => import('./pages/curriculum/IgcseCurriculum'));
+const ALevelCurriculum = lazy(() => import('./pages/curriculum/ALevelCurriculum'));
+const UsCurriculum = lazy(() => import('./pages/curriculum/UsCurriculum'));
+const SchoolAdminAttendance = lazy(() => import('./pages/SchoolAdminAttendance'));
+const SchoolAdminBilling = lazy(() => import('./pages/SchoolAdminBilling'));
+const SchoolAdminClasses = lazy(() => import('./pages/SchoolAdminClasses'));
+const SchoolAdminDashboard = lazy(() => import('./pages/SchoolAdminDashboard'));
+const SchoolAdminEnrollments = lazy(() => import('./pages/SchoolAdminEnrollments'));
+const SchoolAdminReports = lazy(() => import('./pages/SchoolAdminReports'));
+const SchoolAdminSettings = lazy(() => import('./pages/SchoolAdminSettings'));
+const SchoolAdminSubjects = lazy(() => import('./pages/SchoolAdminSubjects'));
+const SchoolAdminTimetable = lazy(() => import('./pages/SchoolAdminTimetable'));
+const SchoolAdminUsers = lazy(() => import('./pages/SchoolAdminUsers'));
+const SchoolOnboarding = lazy(() => import('./pages/SchoolOnboarding'));
+const Security = lazy(() => import('./pages/Security'));
+const StudentBehavior = lazy(() => import('./pages/StudentBehavior'));
+const StudentCAS = lazy(() => import('./pages/StudentCAS'));
+const StudentDashboard = lazy(() => import('./pages/StudentDashboard'));
+const StudentEE = lazy(() => import('./pages/StudentEE'));
+const StudentTOK = lazy(() => import('./pages/StudentTOK'));
+const SubmissionReview = lazy(() => import('./pages/SubmissionReview'));
+const SuperAdminAuditLogs = lazy(() => import('./pages/SuperAdminAuditLogs'));
+const SuperAdminBilling = lazy(() => import('./pages/SuperAdminBilling'));
+const SuperAdminDashboard = lazy(() => import('./pages/SuperAdminDashboard'));
+const SuperAdminPlanManagement = lazy(() => import('./pages/SuperAdminPlanManagement'));
+const SuperAdminPlans = lazy(() => import('./pages/SuperAdminPlans'));
+const SuperAdminProduction = lazy(() => import('./pages/SuperAdminProduction'));
+const SuperAdminProductionLaunch = lazy(() => import('./pages/SuperAdminProductionLaunch'));
+const SuperAdminSchoolDetail = lazy(() => import('./pages/SuperAdminSchoolDetail'));
+const SuperAdminSchools = lazy(() => import('./pages/SuperAdminSchools'));
+const SuperAdminUsers = lazy(() => import('./pages/SuperAdminUsers'));
+const TeacherClasses = lazy(() => import('./pages/TeacherClasses'));
+const TeacherDashboard = lazy(() => import('./pages/TeacherDashboard'));
 
 
 export const PAGES = {
