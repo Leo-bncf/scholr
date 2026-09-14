@@ -67,8 +67,8 @@ function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
           <div className="lg:col-span-4">
             <h1
-              className="motion-safe:animate-[mkt-fade-in_550ms_var(--mkt-ease-out)_backwards] font-[var(--mkt-font-display)] font-bold tracking-[-0.03em] text-[var(--mkt-ink)]"
-              style={{ fontSize: 'clamp(2.5rem, 4.2vw + 1rem, 3.75rem)', lineHeight: 1.05, animationDelay: '0ms' }}
+              className="motion-safe:animate-[mkt-fade-in_550ms_var(--mkt-ease-out)_backwards] font-bold tracking-[-0.03em] text-[var(--mkt-ink)]"
+              style={{ fontFamily: 'var(--mkt-font-display)', fontSize: 'clamp(2.5rem, 4.2vw + 1rem, 3.75rem)', lineHeight: 1.05, animationDelay: '0ms' }}
             >
               One system for every curriculum you teach.
             </h1>
@@ -296,8 +296,8 @@ function FinalCTA() {
     <section className="bg-[var(--mkt-dark)] py-20 sm:py-28">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2
-          className="font-[var(--mkt-font-display)] font-bold tracking-[-0.02em] text-[var(--mkt-dark-ink)]"
-          style={{ fontSize: 'clamp(1.75rem, 2vw + 1.2rem, 2.5rem)', lineHeight: 1.15 }}
+          className="font-bold tracking-[-0.02em] text-[var(--mkt-dark-ink)]"
+          style={{ fontFamily: 'var(--mkt-font-display)', fontSize: 'clamp(1.75rem, 2vw + 1.2rem, 2.5rem)', lineHeight: 1.15 }}
         >
           See it running in your school.
         </h2>
@@ -376,15 +376,15 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-[var(--mkt-paper)] font-[var(--mkt-font-body)]">
+    <div className="relative min-h-screen bg-[var(--mkt-paper)]" style={{ fontFamily: 'var(--mkt-font-body)' }}>
       {/* Two blooms framing the nav at the top of the page — visible at every
           width (not gated behind a breakpoint), fading in once on load and
           drifting a few px on a slow, restrained loop. Sits in normal
           document flow (not fixed) so it scrolls away with the hero rather
           than bleeding into later sections. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[28rem] overflow-hidden">
-        <div className="mkt-bloom-a absolute -top-24 left-[8%] h-80 w-80 rounded-full bg-[var(--mkt-accent)] opacity-[0.32] blur-3xl sm:h-96 sm:w-96" />
-        <div className="mkt-bloom-b absolute -top-16 right-[8%] h-72 w-72 rounded-full bg-[var(--mkt-accent)] opacity-[0.26] blur-3xl sm:h-[26rem] sm:w-[26rem]" />
+        <div className="mkt-bloom-a absolute -top-24 left-[8%] h-96 w-96 rounded-full bg-[var(--mkt-accent)] opacity-[0.55] blur-2xl sm:h-[28rem] sm:w-[28rem]" />
+        <div className="mkt-bloom-b absolute -top-16 right-[8%] h-80 w-80 rounded-full bg-[var(--mkt-accent)] opacity-[0.46] blur-2xl sm:h-[30rem] sm:w-[30rem]" />
       </div>
 
       <div className="fixed top-4 left-0 right-0 z-50 px-4 flex justify-center sm:top-6">

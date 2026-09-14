@@ -195,7 +195,7 @@ export default function PricingTiersSection() {
                 <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--mkt-ink-3)]">
                   {tier.tierLabel}
                 </div>
-                <div className="mt-1 text-xl font-bold text-[var(--mkt-ink)] font-[var(--mkt-font-mono)] [font-variant-numeric:tabular-nums]">{tier.price}</div>
+                <div className="mt-1 text-xl font-bold text-[var(--mkt-ink)] [font-variant-numeric:tabular-nums]" style={{ fontFamily: 'var(--mkt-font-mono)' }}>{tier.price}</div>
                 <div className="text-[11px] text-[var(--mkt-ink-3)]">/ student / year</div>
               </button>
             );
@@ -220,7 +220,7 @@ export default function PricingTiersSection() {
               <div className="mt-6 grid gap-4 sm:grid-cols-3">
                 {selectedTier.highlights.map((item) => (
                   <div key={item.label} className="rounded-xl border border-[var(--mkt-rule)] p-4">
-                    <div className="text-xl font-bold text-[var(--mkt-ink)] font-[var(--mkt-font-mono)] [font-variant-numeric:tabular-nums]">{item.value}</div>
+                    <div className="text-xl font-bold text-[var(--mkt-ink)] [font-variant-numeric:tabular-nums]" style={{ fontFamily: 'var(--mkt-font-mono)' }}>{item.value}</div>
                     <div className="text-sm text-[var(--mkt-ink-3)]">{item.label}</div>
                   </div>
                 ))}
@@ -260,7 +260,7 @@ export default function PricingTiersSection() {
                     </Badge>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <div className="text-3xl font-bold font-[var(--mkt-font-mono)] [font-variant-numeric:tabular-nums]">{selectedTier.price}</div>
+                    <div className="text-3xl font-bold [font-variant-numeric:tabular-nums]" style={{ fontFamily: 'var(--mkt-font-mono)' }}>{selectedTier.price}</div>
                     <div className="text-sm text-[var(--mkt-dark-ink-2)]">per student, per year</div>
                   </div>
                   <div className="mt-4">

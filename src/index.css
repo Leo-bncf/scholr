@@ -76,9 +76,16 @@
     --mkt-dark-ink:    oklch(96%   0.012 145);
     --mkt-dark-ink-2:  oklch(76%   0.02  146);
 
-    --mkt-font-display: 'Geist', ui-sans-serif, system-ui, sans-serif;
-    --mkt-font-body:    'Geist', ui-sans-serif, system-ui, sans-serif;
-    --mkt-font-mono:    'Geist Mono', ui-monospace, 'SFMono-Regular', monospace;
+    /* Bricolage Grotesque + Instrument Sans, not Geist: both are already
+       self-hosted site-wide (src/styles/scholr-theme.css), so this costs no
+       extra font load. Picked for the same reason the rest of the site
+       picked them — Inter/Geist/Space Grotesk are the faces every generated
+       page reaches for; a page set in them announces that nobody chose
+       anything. Bricolage's flared stems and tight apertures read as
+       original without giving up a professional register. */
+    --mkt-font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+    --mkt-font-body:    'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
+    --mkt-font-mono:    'Geist Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
 
     --mkt-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     --mkt-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
