@@ -23,6 +23,9 @@ const PUBLIC_ROUTES = [
   ['/About', 0.6],
   ['/BookDemo', 0.6],
   ['/Contact', 0.5],
+  // The interactive sandbox. A genuine public page — it is the only place
+  // someone can click through the product without an account.
+  ['/demo', 0.6],
   ['/PrivacyPolicy', 0.3],
   ['/TermsOfService', 0.3],
 ];
@@ -30,6 +33,9 @@ const PUBLIC_ROUTES = [
 // Routes live in two places: most are registered in pages.config.js, but a
 // handful (the legal pages, the super-admin detail routes) are declared
 // explicitly in App.jsx. Check both, or the guard fires on real pages.
+// /demo is declared directly in App.jsx as the sandbox hub, ahead of the
+// pagesConfig loop, so it is matched by the App.jsx scan below rather than by
+// the pages.config.js one.
 const config = readFileSync('src/pages.config.js', 'utf8');
 const app = readFileSync('src/App.jsx', 'utf8');
 const registered = new Set([

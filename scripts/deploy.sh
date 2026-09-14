@@ -65,6 +65,13 @@ if [ ! -f dist/index.html ]; then
   exit 1
 fi
 
+# Prerender the public marketing/SEO pages to static HTML (Puppeteer crawls the
+# built dist and bakes each route's rendered content into dist/<route>/index.html).
+# Without this every route serves the same empty <div id="root">. Fails the
+# deploy if any route can't prerender.
+echo "==> prerender public pages (SEO)"
+npm run prerender
+
 echo "==> publish to $HOST:$WEBROOT"
 rsync -az --delete -e "ssh ${SSH_OPTS[*]}" dist/ "$HOST:$WEBROOT/"
 
