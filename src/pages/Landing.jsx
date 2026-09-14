@@ -1,6 +1,7 @@
-/* Hallmark · genre: modern-minimal · macrostructure: Workbench · theme: Coral
+/* Hallmark · genre: modern-minimal · macrostructure: Workbench · theme: custom (leaf green)
  * nav: N5 Floating pill · footer: Ft1 Mast-headed
- * enrichment: real product screenshots (demo sandbox, no chrome redrawn)
+ * enrichment: real product screenshots (demo sandbox, no chrome redrawn) +
+ *   an interactive role explorer (F5 Annotated screenshot, tab-driven)
  * pre-emit critique: P5 H4 E5 S4 R4 V4
  */
 import React, { useEffect, useRef, useState } from 'react';
@@ -55,36 +56,42 @@ function Reveal({ children, className = '' }) {
 
 function HeroSection() {
   return (
-    <section className="pt-32 pb-16 sm:pt-40 sm:pb-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-28">
+      {/* A soft green wash behind the shot, bleeding past the container's right
+          edge — one deliberate grid-break rather than a flat, edge-to-edge paper. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-0 top-16 hidden h-[34rem] w-[60vw] rounded-l-[3rem] bg-[var(--mkt-paper-2)] lg:block"
+      />
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-4">
             <h1
-              className="font-[var(--coral-font-display)] font-bold tracking-[-0.03em] text-[var(--coral-ink)]"
-              style={{ fontSize: 'clamp(2.25rem, 3.4vw + 1.2rem, 3.5rem)', lineHeight: 1.08 }}
+              className="font-[var(--mkt-font-display)] font-bold tracking-[-0.03em] text-[var(--mkt-ink)]"
+              style={{ fontSize: 'clamp(2.5rem, 4.2vw + 1rem, 3.75rem)', lineHeight: 1.05 }}
             >
               One system for every curriculum you teach.
             </h1>
-            <p className="mt-5 text-lg text-[var(--coral-ink-2)] leading-relaxed max-w-md">
+            <p className="mt-5 text-lg text-[var(--mkt-ink-2)] leading-relaxed max-w-md">
               Gradebooks, timetables, attendance and parent communication — for schools
               running IB, IGCSE, A&#8209;Level and US programmes side by side.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link to="/BookDemo">
-                <Button className="h-12 px-7 rounded-lg bg-[var(--coral-ink)] hover:bg-[var(--coral-ink)]/90 text-[var(--coral-paper)] text-base font-medium shadow-none whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[var(--coral-focus)] focus-visible:ring-offset-2">
+                <Button className="h-12 px-7 rounded-lg bg-[var(--mkt-ink)] hover:bg-[var(--mkt-ink)]/90 text-[var(--mkt-paper)] text-base font-medium shadow-none whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[var(--mkt-focus)] focus-visible:ring-offset-2">
                   Book a demo <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>
               <button
                 onClick={handleSignIn}
-                className="h-12 px-2 text-base font-medium text-[var(--coral-ink-2)] hover:text-[var(--coral-ink)] transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--coral-focus)] focus-visible:ring-offset-2 rounded-md"
+                className="h-12 px-2 text-base font-medium text-[var(--mkt-ink-2)] hover:text-[var(--mkt-ink)] transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--mkt-focus)] focus-visible:ring-offset-2 rounded-md"
               >
                 Sign in
               </button>
             </div>
           </div>
-          <div className="lg:col-span-7">
-            <figure className="rounded-xl border border-[var(--coral-rule)] shadow-[0_1px_2px_oklch(20%_0.01_40/0.06)] overflow-hidden bg-[var(--coral-paper-2)]">
+          <div className="relative lg:col-span-8">
+            <figure className="rounded-xl border border-[var(--mkt-rule)] shadow-[0_1px_2px_oklch(20%_0.01_150/0.06)] overflow-hidden bg-[var(--mkt-paper-2)]">
               <img
                 src="/product/teacher.png"
                 alt="A teacher's Scholr dashboard showing assignments to grade, today's schedule and class overview"
@@ -94,6 +101,9 @@ function HeroSection() {
                 className="block w-full h-auto"
               />
             </figure>
+            <div className="absolute -bottom-4 left-6 rounded-lg border border-[var(--mkt-rule)] bg-[var(--mkt-paper)] px-3 py-2 text-xs font-medium text-[var(--mkt-ink-2)] shadow-[0_4px_16px_-6px_oklch(20%_0.03_150/0.25)] sm:left-10">
+              Late work is flagged and sorted first — no hunting through a list.
+            </div>
           </div>
         </div>
       </div>
@@ -101,60 +111,121 @@ function HeroSection() {
   );
 }
 
-function WalkthroughBlock({ eyebrow, title, body, src, alt, align, sentinelRef }) {
-  const imageFirst = align === 'right';
+const ROLES = [
+  {
+    key: 'teacher',
+    label: 'Teacher',
+    title: 'Grading, attendance and the day’s schedule in one workspace.',
+    body: 'Submissions queue by due date with late work surfaced first. One-click attendance per class, criterion-based feedback, and a running class average — no spreadsheet exports.',
+    src: '/product/teacher.png',
+    alt: 'Teacher dashboard listing assignments to review, today’s schedule and class overview',
+    note: 'Late work is flagged and sorted first.',
+  },
+  {
+    key: 'student',
+    label: 'Student',
+    title: 'Every deadline, grade and class in one dashboard.',
+    body: 'Upcoming work sorted by urgency, predicted grades trending by subject, and today’s timetable — the same view whether a student is doing IB, IGCSE, or A-Levels.',
+    src: '/product/student.png',
+    alt: 'Student dashboard showing upcoming deadlines, performance by subject and today’s schedule',
+    note: 'The most urgent deadline is always pinned to the top.',
+  },
+  {
+    key: 'parent',
+    label: 'Parent',
+    title: 'Real-time visibility across every child at the school.',
+    body: 'Grades, attendance and teacher feedback per child, switchable from one login. No chasing emails for a progress update that’s already on the screen.',
+    src: '/product/parent.png',
+    alt: 'Parent dashboard showing multiple children, grades, attendance and upcoming deadlines',
+    note: 'Switch children from one login — nothing is shared between them.',
+  },
+  {
+    key: 'leader',
+    label: 'Leadership',
+    title: 'School-wide performance, with problems flagged before they grow.',
+    body: 'Subject performance trends term over term, at-risk students surfaced automatically, filterable by year group and subject — the view a head of school actually needs.',
+    src: '/product/leader.png',
+    alt: 'School leadership dashboard showing subject performance trends and flagged at-risk students',
+    note: 'At-risk students are flagged automatically, not hunted for.',
+  },
+];
+
+function RoleExplorer({ sectionRef }) {
+  const [active, setActive] = useState('student');
+  const role = ROLES.find((r) => r.key === active) ?? ROLES[0];
+  const tabRefs = useRef({});
+
+  const onTabKeyDown = (e, index) => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    e.preventDefault();
+    const next = (index + (e.key === 'ArrowRight' ? 1 : -1) + ROLES.length) % ROLES.length;
+    const nextRole = ROLES[next];
+    setActive(nextRole.key);
+    tabRefs.current[nextRole.key]?.focus();
+  };
+
   return (
-    <Reveal className="py-14 sm:py-20">
-      <div ref={sentinelRef} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-          <div className={`lg:col-span-5 ${imageFirst ? 'lg:order-2' : ''}`}>
-            <p className="text-sm font-semibold text-[var(--coral-accent)]">{eyebrow}</p>
-            <h2 className="mt-2 text-2xl sm:text-[1.75rem] font-semibold tracking-[-0.02em] text-[var(--coral-ink)]">
-              {title}
-            </h2>
-            <p className="mt-4 text-[15px] leading-relaxed text-[var(--coral-ink-2)] max-w-md">{body}</p>
+    <section ref={sectionRef} className="py-20 sm:py-28 border-t border-[var(--mkt-rule)]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl">
+          <h2 className="text-2xl sm:text-[1.75rem] font-semibold tracking-[-0.02em] text-[var(--mkt-ink)]">
+            The same platform, a different screen for every role.
+          </h2>
+          <p className="mt-3 text-[15px] leading-relaxed text-[var(--mkt-ink-2)]">
+            Nobody gets a general-purpose dashboard. Pick a role to see what they actually open.
+          </p>
+        </div>
+
+        <div role="tablist" aria-label="Choose a role" className="mt-8 flex flex-wrap gap-2">
+          {ROLES.map((r, i) => {
+            const isActive = r.key === active;
+            return (
+              <button
+                key={r.key}
+                ref={(el) => (tabRefs.current[r.key] = el)}
+                role="tab"
+                id={`role-tab-${r.key}`}
+                aria-selected={isActive}
+                aria-controls={`role-panel-${r.key}`}
+                tabIndex={isActive ? 0 : -1}
+                onClick={() => setActive(r.key)}
+                onKeyDown={(e) => onTabKeyDown(e, i)}
+                className={`rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--mkt-focus)] focus-visible:ring-offset-2 ${
+                  isActive
+                    ? 'bg-[var(--mkt-ink)] text-[var(--mkt-paper)]'
+                    : 'bg-[var(--mkt-paper-2)] text-[var(--mkt-ink-2)] hover:text-[var(--mkt-ink)]'
+                }`}
+              >
+                {r.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div
+          id={`role-panel-${role.key}`}
+          role="tabpanel"
+          aria-labelledby={`role-tab-${role.key}`}
+          className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start"
+        >
+          <div className="lg:col-span-4">
+            <h3 className="text-xl font-semibold tracking-[-0.01em] text-[var(--mkt-ink)]">{role.title}</h3>
+            <p className="mt-4 text-[15px] leading-relaxed text-[var(--mkt-ink-2)] max-w-md">{role.body}</p>
           </div>
-          <div className={`lg:col-span-7 ${imageFirst ? 'lg:order-1' : ''}`}>
-            <figure className="rounded-xl border border-[var(--coral-rule)] shadow-[0_1px_2px_oklch(20%_0.01_40/0.06)] overflow-hidden bg-[var(--coral-paper-2)]">
-              <img src={src} alt={alt} width={1400} height={933} loading="lazy" className="block w-full h-auto" />
+          <div className="relative lg:col-span-8">
+            <figure
+              key={role.key}
+              className="motion-safe:animate-[mkt-fade-in_360ms_var(--mkt-ease-out)] rounded-xl border border-[var(--mkt-rule)] shadow-[0_1px_2px_oklch(20%_0.01_150/0.06)] overflow-hidden bg-[var(--mkt-paper-2)]"
+            >
+              <img src={role.src} alt={role.alt} width={1400} height={933} loading="lazy" className="block w-full h-auto" />
             </figure>
+            <div className="absolute -bottom-4 left-6 rounded-lg border border-[var(--mkt-rule)] bg-[var(--mkt-paper)] px-3 py-2 text-xs font-medium text-[var(--mkt-ink-2)] shadow-[0_4px_16px_-6px_oklch(20%_0.03_150/0.25)] sm:left-8">
+              {role.note}
+            </div>
           </div>
         </div>
       </div>
-    </Reveal>
-  );
-}
-
-function ProductWalkthrough({ thirdBlockRef }) {
-  return (
-    <div className="divide-y divide-[var(--coral-rule)]">
-      <WalkthroughBlock
-        eyebrow="For students"
-        title="Every deadline, grade and class in one dashboard."
-        body="Upcoming work sorted by urgency, predicted grades trending by subject, and today's timetable — the same view whether a student is doing IB, IGCSE, or A-Levels."
-        src="/product/student.png"
-        alt="Student dashboard showing upcoming deadlines, performance by subject and today's schedule"
-        align="left"
-      />
-      <div ref={thirdBlockRef}>
-        <WalkthroughBlock
-          eyebrow="For parents"
-          title="Real-time visibility across every child at the school."
-          body="Grades, attendance and teacher feedback per child, switchable from one login. No chasing emails for a progress update that's already on the screen."
-          src="/product/parent.png"
-          alt="Parent dashboard showing multiple children, grades, attendance and upcoming deadlines"
-          align="right"
-        />
-      </div>
-      <WalkthroughBlock
-        eyebrow="For school leadership"
-        title="School-wide performance, with problems flagged before they grow."
-        body="Subject performance trends term over term, at-risk students surfaced automatically, filterable by year group and subject — the view a head of school actually needs."
-        src="/product/leader.png"
-        alt="School leadership dashboard showing subject performance trends and flagged at-risk students"
-        align="left"
-      />
-    </div>
+    </section>
   );
 }
 
@@ -186,20 +257,23 @@ const CAPABILITIES = [
 ];
 
 function CapabilitiesSection() {
+  const [first, ...rest] = CAPABILITIES;
   return (
-    <Reveal className="py-16 sm:py-24 bg-[var(--coral-paper-2)]">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl sm:text-[1.75rem] font-semibold tracking-[-0.02em] text-[var(--coral-ink)]">
+    <Reveal className="py-16 sm:py-24 bg-[var(--mkt-paper-2)]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-2xl sm:text-[1.75rem] font-semibold tracking-[-0.02em] text-[var(--mkt-ink)] max-w-2xl">
           Underneath the dashboards
         </h2>
-        <div className="mt-8 border-t border-[var(--coral-rule)]">
-          {CAPABILITIES.map((c) => (
-            <div
-              key={c.name}
-              className="grid grid-cols-1 sm:grid-cols-[minmax(0,15rem)_1fr] gap-x-8 gap-y-1 py-5 border-b border-[var(--coral-rule)]"
-            >
-              <p className="font-medium text-[var(--coral-ink)]">{c.name}</p>
-              <p className="text-[15px] leading-relaxed text-[var(--coral-ink-2)]">{c.desc}</p>
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-0 border-t border-[var(--mkt-rule)]">
+          {/* One deliberately wider row — the grid isn't uniform on purpose. */}
+          <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-[minmax(0,16rem)_1fr] gap-x-8 gap-y-1 py-6 border-b border-[var(--mkt-rule)]">
+            <p className="font-medium text-[var(--mkt-ink)]">{first.name}</p>
+            <p className="text-[15px] leading-relaxed text-[var(--mkt-ink-2)] max-w-xl">{first.desc}</p>
+          </div>
+          {rest.map((c) => (
+            <div key={c.name} className="py-6 border-b border-[var(--mkt-rule)] sm:odd:pr-8">
+              <p className="font-medium text-[var(--mkt-ink)]">{c.name}</p>
+              <p className="mt-1.5 text-[15px] leading-relaxed text-[var(--mkt-ink-2)]">{c.desc}</p>
             </div>
           ))}
         </div>
@@ -210,20 +284,20 @@ function CapabilitiesSection() {
 
 function FinalCTA() {
   return (
-    <section className="bg-[var(--coral-dark)] py-20 sm:py-28">
+    <section className="bg-[var(--mkt-dark)] py-20 sm:py-28">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2
-          className="font-[var(--coral-font-display)] font-bold tracking-[-0.02em] text-[var(--coral-dark-ink)]"
+          className="font-[var(--mkt-font-display)] font-bold tracking-[-0.02em] text-[var(--mkt-dark-ink)]"
           style={{ fontSize: 'clamp(1.75rem, 2vw + 1.2rem, 2.5rem)', lineHeight: 1.15 }}
         >
           See it running in your school.
         </h2>
-        <p className="mt-4 text-[var(--coral-dark-ink-2)] text-lg">
+        <p className="mt-4 text-[var(--mkt-dark-ink-2)] text-lg">
           A 20-minute walkthrough with your own curriculum mix, not a generic script.
         </p>
         <div className="mt-8">
           <Link to="/BookDemo">
-            <Button className="h-12 px-8 rounded-lg bg-[var(--coral-accent)] hover:bg-[var(--coral-accent)]/90 text-[var(--coral-accent-ink)] text-base font-medium shadow-none whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[var(--coral-dark-ink)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--coral-dark)]">
+            <Button className="h-12 px-8 rounded-lg bg-[var(--mkt-accent)] hover:bg-[var(--mkt-accent)]/90 text-[var(--mkt-accent-ink)] text-base font-medium shadow-none whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[var(--mkt-dark-ink)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--mkt-dark)]">
               Book a demo <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </Link>
@@ -242,20 +316,20 @@ function StickyDemoBar({ visible, onDismiss }) {
       aria-hidden={!visible}
     >
       <div className="mx-auto max-w-6xl px-4 pb-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4 rounded-xl border border-[var(--coral-rule)] bg-[var(--coral-paper)]/95 backdrop-blur-md shadow-[0_8px_24px_-12px_oklch(0%_0_0/0.22)] px-5 py-3">
-          <p className="text-sm font-medium text-[var(--coral-ink)] truncate">
+        <div className="flex items-center justify-between gap-4 rounded-xl border border-[var(--mkt-rule)] bg-[var(--mkt-paper)]/95 backdrop-blur-md shadow-[0_8px_24px_-12px_oklch(0%_0_0/0.22)] px-5 py-3">
+          <p className="text-sm font-medium text-[var(--mkt-ink)] truncate">
             See how this looks with your school's curriculum.
           </p>
           <div className="flex items-center gap-2 shrink-0">
             <Link to="/BookDemo">
-              <Button className="h-9 px-4 rounded-lg bg-[var(--coral-ink)] hover:bg-[var(--coral-ink)]/90 text-[var(--coral-paper)] text-sm font-medium shadow-none whitespace-nowrap">
+              <Button className="h-9 px-4 rounded-lg bg-[var(--mkt-ink)] hover:bg-[var(--mkt-ink)]/90 text-[var(--mkt-paper)] text-sm font-medium shadow-none whitespace-nowrap">
                 Book a demo
               </Button>
             </Link>
             <button
               onClick={onDismiss}
               aria-label="Dismiss"
-              className="h-9 w-9 flex items-center justify-center rounded-lg text-[var(--coral-ink-3)] hover:text-[var(--coral-ink)] hover:bg-[var(--coral-paper-2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--coral-focus)]"
+              className="h-9 w-9 flex items-center justify-center rounded-lg text-[var(--mkt-ink-3)] hover:text-[var(--mkt-ink)] hover:bg-[var(--mkt-paper-2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--mkt-focus)]"
             >
               <X className="w-4 h-4" />
             </button>
@@ -270,7 +344,7 @@ export default function Landing() {
   const [showConsent, setShowConsent] = useState(false);
   const [barVisible, setBarVisible] = useState(false);
   const [barDismissed, setBarDismissed] = useState(false);
-  const thirdBlockRef = useRef(null);
+  const explorerRef = useRef(null);
 
   useEffect(() => {
     try {
@@ -283,7 +357,7 @@ export default function Landing() {
   }, []);
 
   useEffect(() => {
-    const el = thirdBlockRef.current;
+    const el = explorerRef.current;
     if (!el) return;
     const io = new IntersectionObserver(([entry]) => setBarVisible(entry.isIntersecting || entry.boundingClientRect.top < 0), {
       threshold: 0,
@@ -293,13 +367,13 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[var(--coral-paper)] font-[var(--coral-font-body)]">
+    <div className="min-h-screen bg-[var(--mkt-paper)] font-[var(--mkt-font-body)]">
       <div className="fixed top-4 left-0 right-0 z-50 px-4 flex justify-center sm:top-6">
         <DetachedNavbar />
       </div>
 
       <HeroSection />
-      <ProductWalkthrough thirdBlockRef={thirdBlockRef} />
+      <RoleExplorer sectionRef={explorerRef} />
       <CapabilitiesSection />
       <PricingTiersSection />
       <FinalCTA />

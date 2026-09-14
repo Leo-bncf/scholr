@@ -161,13 +161,13 @@ export default function PricingTiersSection() {
   };
 
   return (
-    <section id="pricing" className="relative overflow-hidden bg-[var(--coral-paper)] py-20 sm:py-24">
+    <section id="pricing" className="relative overflow-hidden bg-[var(--mkt-paper)] py-20 sm:py-24">
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-2xl sm:text-[1.75rem] font-semibold tracking-[-0.02em] text-[var(--coral-ink)]">
+          <h2 className="text-2xl sm:text-[1.75rem] font-semibold tracking-[-0.02em] text-[var(--mkt-ink)]">
             One platform. Every feature. Tiers by student count.
           </h2>
-          <p className="mt-4 text-[15px] leading-relaxed text-[var(--coral-ink-2)]">
+          <p className="mt-4 text-[15px] leading-relaxed text-[var(--mkt-ink-2)]">
             All tiers include the full platform — same features, same support. The only
             difference is student capacity and the per&#8209;student yearly price, which drops as your school grows.
           </p>
@@ -188,15 +188,15 @@ export default function PricingTiersSection() {
                 onClick={() => setExpandedTier(key)}
                 className={`rounded-xl border px-3 py-3 transition-colors ${
                   active
-                    ? 'border-[var(--coral-ink)] bg-[var(--coral-paper-2)]'
-                    : 'border-[var(--coral-rule)] hover:bg-[var(--coral-paper-2)]'
+                    ? 'border-[var(--mkt-ink)] bg-[var(--mkt-paper-2)]'
+                    : 'border-[var(--mkt-rule)] hover:bg-[var(--mkt-paper-2)]'
                 }`}
               >
-                <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--coral-ink-3)]">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--mkt-ink-3)]">
                   {tier.tierLabel}
                 </div>
-                <div className="mt-1 text-xl font-bold text-[var(--coral-ink)] font-[var(--coral-font-mono)] [font-variant-numeric:tabular-nums]">{tier.price}</div>
-                <div className="text-[11px] text-[var(--coral-ink-3)]">/ student / year</div>
+                <div className="mt-1 text-xl font-bold text-[var(--mkt-ink)] font-[var(--mkt-font-mono)] [font-variant-numeric:tabular-nums]">{tier.price}</div>
+                <div className="text-[11px] text-[var(--mkt-ink-3)]">/ student / year</div>
               </button>
             );
           })}
@@ -210,18 +210,18 @@ export default function PricingTiersSection() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={panelTransition}
-              className="rounded-2xl border border-[var(--coral-rule)] bg-[var(--coral-paper)] p-6 sm:p-8"
+              className="rounded-2xl border border-[var(--mkt-rule)] bg-[var(--mkt-paper)] p-6 sm:p-8"
             >
-              <div className="border-b border-[var(--coral-rule)] pb-6">
-                <h3 className="text-2xl font-semibold text-[var(--coral-ink)]">{selectedTier.name}</h3>
-                <p className="mt-3 max-w-2xl text-[var(--coral-ink-2)]">{selectedTier.subtitle}</p>
+              <div className="border-b border-[var(--mkt-rule)] pb-6">
+                <h3 className="text-2xl font-semibold text-[var(--mkt-ink)]">{selectedTier.name}</h3>
+                <p className="mt-3 max-w-2xl text-[var(--mkt-ink-2)]">{selectedTier.subtitle}</p>
               </div>
 
               <div className="mt-6 grid gap-4 sm:grid-cols-3">
                 {selectedTier.highlights.map((item) => (
-                  <div key={item.label} className="rounded-xl border border-[var(--coral-rule)] p-4">
-                    <div className="text-xl font-bold text-[var(--coral-ink)] font-[var(--coral-font-mono)] [font-variant-numeric:tabular-nums]">{item.value}</div>
-                    <div className="text-sm text-[var(--coral-ink-3)]">{item.label}</div>
+                  <div key={item.label} className="rounded-xl border border-[var(--mkt-rule)] p-4">
+                    <div className="text-xl font-bold text-[var(--mkt-ink)] font-[var(--mkt-font-mono)] [font-variant-numeric:tabular-nums]">{item.value}</div>
+                    <div className="text-sm text-[var(--mkt-ink-3)]">{item.label}</div>
                   </div>
                 ))}
               </div>
@@ -235,36 +235,36 @@ export default function PricingTiersSection() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ ...panelTransition, delay: 0.03 }}
-              className="flex h-full flex-col rounded-2xl border border-[var(--coral-rule)] bg-[var(--coral-dark)] p-6 text-[var(--coral-dark-ink)] sm:p-8"
+              className="flex h-full flex-col rounded-2xl border border-[var(--mkt-rule)] bg-[var(--mkt-dark)] p-6 text-[var(--mkt-dark-ink)] sm:p-8"
             >
-              <p className="text-sm uppercase tracking-[0.14em] text-[var(--coral-dark-ink-2)]">What this controls</p>
+              <p className="text-sm uppercase tracking-[0.14em] text-[var(--mkt-dark-ink-2)]">What this controls</p>
               <h3 className="mt-3 text-xl font-semibold">{selectedTier.name} rules applied across your school</h3>
-              <div className="mt-6 space-y-3 text-sm text-[var(--coral-dark-ink-2)]">
+              <div className="mt-6 space-y-3 text-sm text-[var(--mkt-dark-ink-2)]">
                 {summaryLines.map((line) => (
                   <p key={line}>{line}</p>
                 ))}
               </div>
 
               <div className="mt-8 rounded-xl border border-white/10 bg-white/5 p-4">
-                <p className="text-sm text-[var(--coral-dark-ink-2)]">We set this up with you directly — most schools buy on a purchase order, not a card.</p>
+                <p className="text-sm text-[var(--mkt-dark-ink-2)]">We set this up with you directly — most schools buy on a purchase order, not a card.</p>
               </div>
 
               <div className="mt-auto pt-8">
                 <div className="mb-4 rounded-xl border border-white/10 bg-white/5 p-5">
                   <div className="flex items-center justify-between">
-                    <div className="text-xs uppercase tracking-[0.14em] text-[var(--coral-dark-ink-2)]">
+                    <div className="text-xs uppercase tracking-[0.14em] text-[var(--mkt-dark-ink-2)]">
                       {selectedTier.tierLabel} · per student / year
                     </div>
-                    <Badge className="bg-white/10 text-[var(--coral-dark-ink)] border border-white/15 text-[10px]">
+                    <Badge className="bg-white/10 text-[var(--mkt-dark-ink)] border border-white/15 text-[10px]">
                       Tiered pricing
                     </Badge>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <div className="text-3xl font-bold font-[var(--coral-font-mono)] [font-variant-numeric:tabular-nums]">{selectedTier.price}</div>
-                    <div className="text-sm text-[var(--coral-dark-ink-2)]">per student, per year</div>
+                    <div className="text-3xl font-bold font-[var(--mkt-font-mono)] [font-variant-numeric:tabular-nums]">{selectedTier.price}</div>
+                    <div className="text-sm text-[var(--mkt-dark-ink-2)]">per student, per year</div>
                   </div>
                   <div className="mt-4">
-                    <div className="text-sm text-[var(--coral-dark-ink-2)] mb-3">
+                    <div className="text-sm text-[var(--mkt-dark-ink-2)] mb-3">
                       Billed yearly. The per&#8209;student rate drops automatically at each higher tier — you pay less per student as your school grows.
                     </div>
                     <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-2 text-sm font-medium">
@@ -277,7 +277,7 @@ export default function PricingTiersSection() {
                 {CHECKOUT_ENABLED ? (
                   <Button
                     type="button"
-                    className="h-12 text-base w-full rounded-lg bg-[var(--coral-paper)] text-[var(--coral-dark)] font-medium hover:bg-[var(--coral-paper)]/90 shadow-none transition-colors whitespace-nowrap"
+                    className="h-12 text-base w-full rounded-lg bg-[var(--mkt-paper)] text-[var(--mkt-dark)] font-medium hover:bg-[var(--mkt-paper)]/90 shadow-none transition-colors whitespace-nowrap"
                     onClick={async () => {
                       await handleCheckout(selectedTier.priceId, expandedTier);
                     }}
@@ -299,7 +299,7 @@ export default function PricingTiersSection() {
                   <a href="/BookDemo">
                     <Button
                       type="button"
-                      className="h-12 text-base w-full rounded-lg bg-[var(--coral-paper)] text-[var(--coral-dark)] font-medium hover:bg-[var(--coral-paper)]/90 shadow-none transition-colors whitespace-nowrap"
+                      className="h-12 text-base w-full rounded-lg bg-[var(--mkt-paper)] text-[var(--mkt-dark)] font-medium hover:bg-[var(--mkt-paper)]/90 shadow-none transition-colors whitespace-nowrap"
                     >
                       <span>Talk to us about {selectedTier.name}</span>
                       <ArrowRight className="ml-2 h-5 w-5" />
@@ -313,17 +313,17 @@ export default function PricingTiersSection() {
 
         <div className="mt-20">
           <div className="mb-10">
-            <h3 className="text-xl font-semibold text-[var(--coral-ink)]">How the tier system works in practice</h3>
-            <p className="mt-3 max-w-2xl text-[var(--coral-ink-2)]">
+            <h3 className="text-xl font-semibold text-[var(--mkt-ink)]">How the tier system works in practice</h3>
+            <p className="mt-3 max-w-2xl text-[var(--mkt-ink-2)]">
               Every school gets the same full platform. Tiers only change how many students you can host and your per&#8209;student yearly rate.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6 border-t border-[var(--coral-rule)] pt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6 border-t border-[var(--mkt-rule)] pt-6">
             {SYSTEM_RULES.map((rule) => (
               <div key={rule.title}>
-                <h4 className="text-[15px] font-medium text-[var(--coral-ink)]">{rule.title}</h4>
-                <p className="mt-1.5 text-sm leading-relaxed text-[var(--coral-ink-2)]">{rule.description}</p>
+                <h4 className="text-[15px] font-medium text-[var(--mkt-ink)]">{rule.title}</h4>
+                <p className="mt-1.5 text-sm leading-relaxed text-[var(--mkt-ink-2)]">{rule.description}</p>
               </div>
             ))}
           </div>

@@ -109,31 +109,32 @@
   --d-crit: oklch(70% 0.15 25);  --d-crit-sf: oklch(28% 0.04 25);
 }
 
-/* Hallmark · Coral — a second, page-scoped theme used ONLY by src/pages/
- * Landing.jsx and its shared DetachedNavbar / PublicFooter. Everything above
- * this line is the site-wide system every other page runs on; this block is
- * additive and never overrides it. Mirrors the --coral-* custom properties
- * defined in src/index.css. Paper band: light · Display: grotesk-sans
- * (Geist) · Accent hue: warm coral (~32°) — deliberately distinct from the
- * site-wide --crit hue (25°) it sits near, so it is never reused app-wide. */
+/* Hallmark · a second, page-scoped theme used ONLY by src/pages/Landing.jsx
+ * and its shared DetachedNavbar / PublicFooter. Everything above this line
+ * is the site-wide system every other page runs on; this block is additive
+ * and never overrides it. Mirrors the --mkt-* custom properties defined in
+ * src/index.css. Paper band: light · Display: grotesk-sans (Geist) · Accent
+ * hue: leaf green (~145°) — a different green from the site-wide --brand
+ * (152°), chosen deliberately so this page-scoped token is never mistaken
+ * for (or swapped in as) the shared app-wide brand colour. */
 :root {
-  --coral-paper:       oklch(97.5% 0.010 46);
-  --coral-paper-2:     oklch(94.5% 0.016 46);
-  --coral-ink:         oklch(21%   0.014 40);
-  --coral-ink-2:       oklch(40%   0.014 42);
-  --coral-ink-3:       oklch(58%   0.012 42);
-  --coral-rule:        oklch(88%   0.014 46);
-  --coral-accent:      oklch(66%   0.19  32);
-  --coral-accent-ink:  oklch(99%   0.008 46);
-  --coral-focus:       oklch(66%   0.19  32);
-  --coral-dark:        oklch(20%   0.014 40);
-  --coral-dark-ink:    oklch(96%   0.010 46);
-  --coral-dark-ink-2:  oklch(78%   0.014 44);
+  --mkt-paper:       oklch(97.5% 0.012 145);
+  --mkt-paper-2:     oklch(94%   0.02  145);
+  --mkt-ink:         oklch(20%   0.03  150);
+  --mkt-ink-2:       oklch(38%   0.026 148);
+  --mkt-ink-3:       oklch(56%   0.02  148);
+  --mkt-rule:        oklch(87%   0.02  145);
+  --mkt-accent:      oklch(56%   0.17  145);
+  --mkt-accent-ink:  oklch(99%   0.01  145);
+  --mkt-focus:       oklch(56%   0.17  145);
+  --mkt-dark:        oklch(19%   0.03  150);
+  --mkt-dark-ink:    oklch(96%   0.012 145);
+  --mkt-dark-ink-2:  oklch(76%   0.02  146);
 
-  --coral-font-display: 'Geist', ui-sans-serif, system-ui, sans-serif;
-  --coral-font-body:    'Geist', ui-sans-serif, system-ui, sans-serif;
-  --coral-font-mono:    'Geist Mono', ui-monospace, 'SFMono-Regular', monospace;
+  --mkt-font-display: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --mkt-font-body:    'Geist', ui-sans-serif, system-ui, sans-serif;
+  --mkt-font-mono:    'Geist Mono', ui-monospace, 'SFMono-Regular', monospace;
 
-  --coral-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --coral-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --mkt-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --mkt-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }

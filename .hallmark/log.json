@@ -2,8 +2,12 @@
   {
     "date": "2026-09-14",
     "macrostructure": "Workbench",
-    "theme": "Coral",
-    "enrichment": "real product screenshots (demo sandbox)",
+    "theme": "custom",
+    "theme_axes": "light / grotesk-sans / chromatic-green",
+    "vibe": "leaf green, warmer and more vivid than the site-wide institutional green",
+    "nav": "N5 floating pill",
+    "footer": "Ft1 mast-headed",
+    "enrichment": "real product screenshots (demo sandbox) + an interactive tab-driven role explorer (F5 annotated screenshot)",
     "brief": "Scholr · school-management LMS for international schools — Landing page only, page-scoped theme"
   },
   {
