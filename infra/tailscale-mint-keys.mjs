@@ -33,8 +33,49 @@ const API = 'https://api.tailscale.com/api/v2';
 const TAILNET = '-'; // "-" = the tailnet this token belongs to
 const TAG = 'tag:scholr';
 
-const token = process.env.TS_TOKEN;
+let token = process.env.TS_TOKEN;
 const dryRun = process.argv.includes('--dry-run');
+
+/* Tailscale hands out two credential shapes and the console shows them on the
+ * same page, so mixing them up is the normal outcome:
+ *   tskey-api-...     an API access token — used directly as a bearer token
+ *   tskey-client-...  an OAuth client secret — must be exchanged for a
+ *                     short-lived bearer token first
+ * An auth key (tskey-auth-...) is neither; it enrols a device and cannot call
+ * the API at all. Accept the first two, name the third explicitly. */
+async function resolveToken(raw) {
+  const t = (raw || '').trim();
+  if (t.startsWith('tskey-auth-')) {
+    throw new Error(
+      'That is a device AUTH KEY (tskey-auth-...), not an API credential.\n' +
+      'It enrols a machine; it cannot create keys. You want Settings -> Keys ->\n' +
+      '"API access tokens" -> Generate access token, with auth_keys:write.',
+    );
+  }
+  if (t.startsWith('tskey-client-') || process.env.TS_CLIENT_ID) {
+    const id = process.env.TS_CLIENT_ID;
+    if (!id) {
+      throw new Error(
+        'That looks like an OAuth client secret. Set TS_CLIENT_ID as well:\n' +
+        '  TS_CLIENT_ID=... TS_TOKEN=tskey-client-... node infra/tailscale-mint-keys.mjs',
+      );
+    }
+    const res = await fetch('https://api.tailscale.com/api/v2/oauth/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id: id,
+        client_secret: t,
+        grant_type: 'client_credentials',
+        scope: 'auth_keys',
+      }),
+    });
+    if (!res.ok) throw new Error(`OAuth exchange failed: ${res.status}\n${await res.text()}`);
+    const { access_token: access } = await res.json();
+    return access;
+  }
+  return t;
+}
 
 const daysArg = process.argv.find((a) => a.startsWith('--days='));
 const days = daysArg ? Number(daysArg.slice('--days='.length)) : 7;
@@ -59,6 +100,8 @@ if (targets.length === 0) {
   process.exit(1);
 }
 
+token = await resolveToken(token);
+
 async function api(method, path, body) {
   const res = await fetch(`${API}${path}`, {
     method,
@@ -75,7 +118,11 @@ async function api(method, path, body) {
 
 function keyRequest(person) {
   return {
-    description: `${person} — Scholr only (${new Date().toISOString().slice(0, 10)})`,
+    // The description charset is narrow and the API rejects the whole request
+    // rather than sanitising: parentheses fail, and so does anything non-ASCII
+    // such as an em dash. Letters, digits, spaces, hyphens and underscores are
+    // known good.
+    description: `${person} - Scholr only ${new Date().toISOString().slice(0, 10)}`,
     capabilities: {
       devices: {
         create: {
