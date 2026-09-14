@@ -12,16 +12,12 @@ import React from 'react';
  * viewport, so which cells land on a row edge isn't knowable in advance — this
  * way the hairlines are always right, at any wrap, with no nth-child guessing.
  */
-export default function StatRow({ children, min = '9rem' }) {
+export default function StatRow({ children }) {
   return (
     <div
-      className="scholr-grid app-statrow"
-      style={{
-        // minmax(min(x, 100%), 1fr) rather than minmax(x, 1fr): the bare form
-        // refuses to shrink below x and pushes the page into horizontal scroll
-        // on a narrow phone.
-        gridTemplateColumns: `repeat(auto-fit, minmax(min(${min}, 100%), 1fr))`,
-      }}
+      // Four columns, halving to two then one. A fixed count rather than
+      // auto-fit, because a partial last row exposes the grid's backdrop.
+      className="scholr-grid app-statrow app-cols-4"
     >
       {React.Children.toArray(children).filter(Boolean).map((child, i) => (
         <div key={i}>{child}</div>

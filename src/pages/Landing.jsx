@@ -5,6 +5,7 @@ import { Bench, StickyCTA } from '@/components/public/Workbench';
 import ConsentModal from '@/components/public/ConsentModal';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
 import { isAuthenticated } from '@/data/session';
+import SHOTS from '@/marketing/manifest.json';
 
 /* eslint-disable react/no-unescaped-entities */
 
@@ -87,7 +88,7 @@ export default function Landing() {
           n="Teacher"
           caption="The period you are about to teach, not a homepage"
           note="A teacher gets a few minutes between lessons. The dashboard opens on today's timetable with the current period marked, the room, and the work waiting to be marked — no navigating to find it."
-          src="/marketing/teacher-dashboard.png"
+          src={SHOTS['teacher-dashboard']}
           alt="A teacher's dashboard: today's timetable with the current period marked, twenty-three pieces of work waiting to be graded, and the term's deadlines."
           annotations={[{ text: 'the current period, marked', top: '30%', right: '1.25rem' }]}
           eager
@@ -97,7 +98,7 @@ export default function Landing() {
           n="Coordinator"
           caption="Predicted grades with the trend behind them"
           note="A coordinator signs off predictions for the whole cohort. Each one shows its history and its target, so a number you disagree with can be questioned rather than simply overwritten — and Extended Essay progress is tracked per student, not per spreadsheet."
-          src="/marketing/coordinator-cohort.png"
+          src={SHOTS['coordinator-cohort']}
           alt="A coordinator's cohort view: predicted mean against target per subject, Extended Essay progress across the year group, and the students who need a conversation."
           annotations={[{ text: 'the trend behind the number', top: '73%', right: '1.25rem' }]}
           layout="left"
@@ -108,7 +109,7 @@ export default function Landing() {
             n="Family"
             caption="A parent's own children, and only what has been released"
             note="Parents are linked to specific students and see nothing outside that link. Marks appear when the teacher publishes them; attendance visibility is a school-level setting; notes marked staff-only never leave the staff room."
-            src="/marketing/parent-portal.png"
+            src={SHOTS['parent-portal']}
             alt="The family portal: attendance for the term, grades released by teachers, and what is due this week for one named child."
             annotations={[{ text: 'released by the teacher, not automatic', top: '76%', right: '1.25rem' }]}
             layout="right"
@@ -119,7 +120,7 @@ export default function Landing() {
           n="Operations"
           caption="What is broken this morning, in order"
           note="Classes with no teacher assigned, students enrolled in nothing, attendance drifting, a reporting deadline approaching. The page is a ranked list of things that need a decision, not a wall of charts."
-          src="/marketing/admin-operations.png"
+          src={SHOTS['admin-operations']}
           alt="The operations page: two classes without a teacher flagged critical, attendance at 87% flagged as a warning, and the term's reporting deadline nine days out."
           annotations={[{ text: 'ranked, not an inbox', top: '62%', right: '1.25rem' }]}
         />

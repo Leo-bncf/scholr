@@ -346,8 +346,14 @@
 .legal-prose a { color: var(--brand); }
 
 /* A grid whose dividers are the 1px gap showing through a rule-coloured
-   backdrop. Cells paint their own surface on top. This is how a row of tiles
-   keeps correct hairlines at every wrap point without nth-child arithmetic. */
+   backdrop. Cells paint their own surface on top — correct hairlines at every
+   wrap point, with no nth-child arithmetic.
+   
+   The catch, learned the hard way: the backdrop is visible wherever a cell
+   ISN'T. With `auto-fit` and six items the last row can be one cell wide, and
+   the remaining five cells of backdrop render as a grey slab. So every user of
+   this class must declare a column count that its item count divides into
+   exactly — see .app-cols-* below — rather than letting auto-fit decide. */
 .scholr-grid {
   display: grid;
   gap: 1px;
@@ -357,7 +363,8 @@
   overflow: hidden;
 }
 .scholr-grid > * { background: var(--surface); }
-.scholr-grid > a:hover { background: var(--surface-sunk); }
+.scholr-grid > a { transition: background-color var(--dur-micro) var(--ease-out); }
+.scholr-grid > a:hover { background: color-mix(in oklab, var(--brand) 4%, transparent); }
 
 /* A band already pads itself, so its rows sit flush to that padding instead of
    indenting a second time. This is why PanelRow carries a class at all. */
@@ -624,16 +631,63 @@ body { background: var(--paper); color: var(--body); }
   }
 }
 
-/* The sidebar. Selected state is a filled inset row, not a left stripe. */
-.app-nav-item {
-  display: flex; align-items: center; gap: .65rem;
-  padding: .5rem .6rem; border-radius: var(--radius-inset);
-  font-size: .885rem; color: var(--body); text-decoration: none;
-  transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+/* The sidebar.
+   Its ground is a step darker than the app's, and the nav sits on it as a
+   floating group — the same inset-list idea as the content area, so the two
+   halves of the screen speak one language. Borrowed from Schedual, which
+   solves this well.
+
+   The selected row is a raised white card with an accent ring, not a filled
+   pill: at 14px a fill competes with the group it sits in, while a lift reads
+   as "this one is in front". */
+.app-sidebar { background: color-mix(in oklab, var(--paper) 82%, var(--rule)); }
+.app-nav-group {
+  background: var(--surface);
+  border-radius: var(--radius-surface);
+  box-shadow: var(--lift-sm);
+  padding: 4px;
 }
-.app-nav-item:hover { background: color-mix(in oklab, var(--ink) 5%, transparent); color: var(--ink); }
-.app-nav-item[aria-current='page'] { background: var(--brand-sf); color: var(--brand); font-weight: 550; }
+.app-nav-item {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .45rem .55rem; border-radius: var(--radius-inset);
+  font-size: .875rem; color: var(--body); text-decoration: none;
+  border: 1px solid transparent;
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out);
+}
+.app-nav-item + .app-nav-item { margin-top: 1px; }
+.app-nav-item:hover { background: color-mix(in oklab, var(--ink) 4%, transparent); color: var(--ink); }
+.app-nav-item[aria-current='page'] {
+  background: var(--surface); color: var(--ink); font-weight: 550;
+  border-color: color-mix(in oklab, var(--brand) 45%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--brand) 14%, transparent);
+}
 .app-nav-item[aria-current='page'] svg { color: var(--brand); }
+
+/* Nav search. Filtering fifteen destinations beats scrolling them. */
+.app-navsearch {
+  position: relative; display: flex; align-items: center;
+}
+.app-navsearch input {
+  width: 100%; height: 2.1rem; padding: 0 2.6rem 0 2rem;
+  font: inherit; font-size: .85rem; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--rule);
+  border-radius: var(--radius-control);
+  transition: border-color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+}
+.app-navsearch input::placeholder { color: var(--faint); }
+.app-navsearch input:focus-visible {
+  outline: none; border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand) 14%, transparent);
+}
+.app-navsearch .app-navsearch__icon { position: absolute; left: .6rem; color: var(--faint); pointer-events: none; }
+.app-navsearch kbd {
+  position: absolute; right: .4rem; font-family: var(--font-mono); font-size: .62rem;
+  color: var(--muted); background: color-mix(in oklab, var(--ink) 5%, transparent);
+  border: 1px solid var(--rule); border-radius: 5px; padding: .1rem .3rem;
+}
 
 /* A grouped inset list: one card, hairline rows, nothing nested inside it. */
 .app-group {
@@ -645,7 +699,7 @@ body { background: var(--paper); color: var(--body); }
 .app-group > * + * { border-top: 1px solid var(--rule-soft); }
 .app-group-head {
   display: flex; align-items: baseline; gap: .75rem;
-  padding: .1rem .25rem .5rem;
+  padding: 0 .3rem .45rem;
 }
 
 /* The large title, and the compact one that replaces it in the toolbar. */
@@ -666,9 +720,23 @@ body { background: var(--paper); color: var(--body); }
 .app-toolbar[data-collapsed='true'] { border-bottom-color: var(--material-edge); }
 
 /* Segmented control. One pill slides; the labels never move. */
+/* Column counts that always fill. 6 items → 3/2/1; 4 items → 4/2/1. Anything
+   that leaves a partial last row exposes the grid backdrop. */
+.app-cols-6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.app-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 68rem) {
+  .app-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 46rem) {
+  .app-cols-6 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 30rem) {
+  .app-cols-6, .app-cols-4 { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* The stat strip is a group too: one card, hairline dividers, soft lift — not
    a bordered grid sitting flat on the page. */
-.app-statrow {
+.app-statrow, .scholr-page .scholr-grid {
   border: none !important;
   box-shadow: var(--lift-sm);
   border-radius: var(--radius-surface) !important;

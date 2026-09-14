@@ -10,7 +10,16 @@
  * Run it whenever the dashboards change appearance. The alternative — taking
  * screenshots by hand — is how a marketing site ends up showing a version of
  * the product that no longer exists.
+ *
+ * Filenames carry a content hash, and src/marketing/manifest.json maps the
+ * logical name to the current file. That is not tidiness: at a stable path,
+ * Cloudflare had cached an HTML 404 from before these images existed and kept
+ * serving it long after the PNGs were on disk — the origin returned the image
+ * and the CDN returned a web page. A hashed name is a new cache key, so a
+ * stale entry can never shadow a new render.
  */
+import { createHash } from 'node:crypto';
+import { readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 import { setTimeout as sleep } from 'node:timers/promises';
 import puppeteer from 'puppeteer';
@@ -23,6 +32,7 @@ const SHOTS = [
   { name: 'admin-operations', width: 1320, height: 840 },
 ];
 
+const manifest = {};
 const vite = spawn('npx', ['vite', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' });
 const stop = () => { try { vite.kill(); } catch { /* already gone */ } };
 process.on('exit', stop);
@@ -50,11 +60,25 @@ try {
     await page.goto(`http://localhost:${PORT}/shots.html?shot=${shot.name}`, { waitUntil: 'networkidle0', timeout: 60000 });
     await sleep(1200);
     if (errors.length) throw new Error(`${shot.name} rendered with errors: ${errors.join(' | ')}`);
-    await page.screenshot({ path: `public/marketing/${shot.name}.png` });
-    console.log(`  wrote public/marketing/${shot.name}.png`);
+    const buf = await page.screenshot();
+    const hash = createHash('sha256').update(buf).digest('hex').slice(0, 8);
+    const file = `${shot.name}-${hash}.png`;
+    writeFileSync(`public/marketing/${file}`, buf);
+    manifest[shot.name] = `/marketing/${file}`;
+    console.log(`  wrote public/marketing/${file}`);
   }
 
   await browser.close();
+
+  // Drop renders that are no longer referenced, so the directory doesn't grow
+  // a new copy every time a pixel changes.
+  const keep = new Set(Object.values(manifest).map(v => v.replace('/marketing/', '')));
+  for (const f of readdirSync('public/marketing')) {
+    if (f.endsWith('.png') && !keep.has(f)) { rmSync(`public/marketing/${f}`); console.log(`  removed stale ${f}`); }
+  }
+
+  writeFileSync('src/marketing/manifest.json', JSON.stringify(manifest, null, 2) + '\n');
+  console.log('  wrote src/marketing/manifest.json');
 } finally {
   stop();
 }

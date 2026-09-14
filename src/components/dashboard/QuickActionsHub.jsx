@@ -23,8 +23,10 @@ const QUICK_ACTIONS = [
 export default function QuickActionsHub() {
   return (
     <div
-      className="scholr-grid"
-      style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(11rem, 100%), 1fr))' }}
+      // Six items, three columns: the count has to divide the column count
+      // exactly or the unfilled cells of the last row show the grid backdrop
+      // as a grey slab.
+      className="scholr-grid app-cols-6"
     >
       {QUICK_ACTIONS.map(({ label, sub, link }) => (
         <Link

@@ -39,12 +39,22 @@ export default function AppShell({ title, eyebrow, actions, children }) {
           minHeight: '3.25rem', padding: '0 var(--space-md)',
         }}
       >
-        <span className="app-toolbar-title" style={{ minWidth: 0 }}>{title}</span>
-        {actions && <span style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--space-2xs)' }}>{actions}</span>}
+        <span
+          style={{
+            maxWidth: '68rem', margin: '0 auto', width: '100%',
+            display: 'flex', alignItems: 'center', gap: 'var(--space-sm)',
+          }}
+        >
+          <span className="app-toolbar-title" style={{ minWidth: 0 }}>{title}</span>
+          {actions && <span style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--space-2xs)' }}>{actions}</span>}
+        </span>
       </div>
 
-      <div style={{ padding: '0 var(--space-md) var(--space-2xl)' }}>
-        <header style={{ padding: 'var(--space-md) 0 var(--space-lg)' }}>
+      {/* Content is held to a measure. Left to fill a 1440px window the groups
+          sprawl, a row's label and its value end up a hand-span apart, and the
+          page reads as unfinished rather than spacious. */}
+      <div style={{ maxWidth: '68rem', margin: '0 auto', padding: '0 var(--space-md) var(--space-3xl)' }}>
+        <header style={{ padding: 'var(--space-lg) 0 var(--space-xl)' }}>
           {eyebrow && <p className="scholr-label" style={{ margin: '0 0 .4rem' }}>{eyebrow}</p>}
           <h1 className="app-title">{title}</h1>
         </header>
@@ -53,7 +63,7 @@ export default function AppShell({ title, eyebrow, actions, children }) {
             while the heading is still half-visible. */}
         <div ref={sentinel} aria-hidden="true" style={{ height: 0, marginTop: '-1.25rem' }} />
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xl)' }}>
           {children}
         </div>
       </div>

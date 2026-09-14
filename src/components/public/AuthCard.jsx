@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import useLightTheme from './useLightTheme';
+import SHOTS from '@/marketing/manifest.json';
 
 /**
  * The frame every signed-out auth screen sits in — sign in, password reset,
@@ -57,7 +58,7 @@ export function AuthCard({ title, subtitle, footnote, children }) {
             Today’s timetable, what’s due, and what’s waiting to be marked.
           </p>
           <img
-            src="/marketing/teacher-dashboard.png"
+            src={SHOTS['teacher-dashboard']}
             alt=""
             width="1320"
             height="840"
