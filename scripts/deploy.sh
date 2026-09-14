@@ -57,20 +57,18 @@ if [ -d .git ] && [ "${ALLOW_DIRTY_DEPLOY:-}" != "1" ]; then
   fi
 fi
 
-echo "==> build"
+# `npm run build` already chains sitemap generation, `vite build`, and
+# prerender (Puppeteer crawls the built dist and bakes each route's rendered
+# content into dist/<route>/index.html — without it every route serves the
+# same empty <div id="root">). Don't call prerender again here; it's redundant
+# and doubles the deploy's build time.
+echo "==> build (sitemap + vite build + prerender)"
 npm run build
 
 if [ ! -f dist/index.html ]; then
   echo "dist/index.html missing — build produced nothing. Aborting." >&2
   exit 1
 fi
-
-# Prerender the public marketing/SEO pages to static HTML (Puppeteer crawls the
-# built dist and bakes each route's rendered content into dist/<route>/index.html).
-# Without this every route serves the same empty <div id="root">. Fails the
-# deploy if any route can't prerender.
-echo "==> prerender public pages (SEO)"
-npm run prerender
 
 echo "==> publish to $HOST:$WEBROOT"
 rsync -az --delete -e "ssh ${SSH_OPTS[*]}" dist/ "$HOST:$WEBROOT/"
