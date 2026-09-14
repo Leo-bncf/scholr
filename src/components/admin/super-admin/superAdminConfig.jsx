@@ -11,78 +11,37 @@ export const SCHOOL_PLAN_PRICES = {
   enterprise: 799,
 };
 
+/* Two axes, not eight hues.
+ *
+ * A plan is an ATTRIBUTE — Starter is not healthier than Enterprise — so it
+ * wears the neutral chip. Only billing and school status describe something
+ * that can be wrong, so only they draw from the reserved good/warn/crit
+ * palette. This used to be eight Tailwind hues (blue, indigo, violet, emerald,
+ * red, slate, amber, orange) with hand-written light/dark class pairs, and
+ * every caller asked for the 'dark' pair — so the console rendered navy pills
+ * with pale text on a white page.
+ */
 const PLAN_META = {
-  starter: {
-    label: 'Starter',
-    light: 'bg-blue-100 text-blue-700 border-blue-200',
-    dark: 'bg-blue-900/50 text-blue-300 border-blue-800',
-  },
-  professional: {
-    label: 'Professional',
-    light: 'bg-indigo-100 text-indigo-700 border-indigo-200',
-    dark: 'bg-indigo-900/50 text-indigo-300 border-indigo-800',
-  },
-  enterprise: {
-    label: 'Enterprise',
-    light: 'bg-violet-100 text-violet-700 border-violet-200',
-    dark: 'bg-violet-900/50 text-violet-300 border-violet-800',
-  },
+  starter: { label: 'Starter' },
+  professional: { label: 'Professional' },
+  enterprise: { label: 'Enterprise' },
 };
 
 const SCHOOL_STATUS_META = {
-  active: {
-    label: 'Active',
-    light: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-    dark: 'bg-emerald-900/50 text-emerald-300 border-emerald-800',
-  },
-  onboarding: {
-    label: 'Onboarding',
-    light: 'bg-blue-100 text-blue-700 border-blue-200',
-    dark: 'bg-blue-900/50 text-blue-300 border-blue-800',
-  },
-  suspended: {
-    label: 'Suspended',
-    light: 'bg-red-100 text-red-700 border-red-200',
-    dark: 'bg-red-900/50 text-red-300 border-red-800',
-  },
-  cancelled: {
-    label: 'Cancelled',
-    light: 'bg-slate-100 text-slate-600 border-slate-200',
-    dark: 'bg-slate-700/50 text-slate-400 border-slate-600',
-  },
+  active: { label: 'Active', tone: 'good' },
+  onboarding: { label: 'Onboarding', tone: 'info' },
+  suspended: { label: 'Suspended', tone: 'crit' },
+  cancelled: { label: 'Cancelled', tone: 'mute' },
 };
 
 const BILLING_STATUS_META = {
-  trial: {
-    label: 'Trial',
-    light: 'bg-amber-100 text-amber-700 border-amber-200',
-    dark: 'bg-amber-900/50 text-amber-300 border-amber-800',
-  },
-  active: {
-    label: 'Paid',
-    light: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-    dark: 'bg-emerald-900/50 text-emerald-300 border-emerald-800',
-  },
-  past_due: {
-    label: 'Past Due',
-    light: 'bg-red-100 text-red-700 border-red-200',
-    dark: 'bg-red-900/50 text-red-300 border-red-800',
-  },
-  incomplete: {
-    label: 'Incomplete',
-    light: 'bg-orange-100 text-orange-700 border-orange-200',
-    dark: 'bg-orange-900/50 text-orange-300 border-orange-800',
-  },
-  canceled: {
-    label: 'Canceled',
-    light: 'bg-slate-100 text-slate-600 border-slate-200',
-    dark: 'bg-slate-700/50 text-slate-400 border-slate-600',
-  },
-  unpaid: {
-    label: 'Unpaid',
-    light: 'bg-red-100 text-red-700 border-red-200',
-    dark: 'bg-red-900/50 text-red-300 border-red-800',
-  },
+  trial: { label: 'Trial', tone: 'info' },
+  active: { label: 'Paid', tone: 'good' },
+  past_due: { label: 'Past due', tone: 'crit' },
+  incomplete: { label: 'Incomplete', tone: 'warn' },
+  canceled: { label: 'Canceled', tone: 'mute' },
+  unpaid: { label: 'Unpaid', tone: 'crit' },
+  none: { label: 'No billing', tone: 'mute' },
 };
 
 export const SCHOOL_PLAN_OPTIONS = Object.entries(PLAN_META).map(([value, meta]) => ({
@@ -109,28 +68,18 @@ export function getPlanPrice(plan) {
   return SCHOOL_PLAN_PRICES[plan] || SCHOOL_PLAN_PRICES[DEFAULT_SCHOOL_PLAN];
 }
 
-export function getPlanMeta(plan, tone = 'dark') {
-  const meta = PLAN_META[plan] || PLAN_META[DEFAULT_SCHOOL_PLAN];
-  return { ...meta, color: meta[tone] };
+export function getPlanMeta(plan) {
+  return PLAN_META[plan] || PLAN_META[DEFAULT_SCHOOL_PLAN];
 }
 
-export function getSchoolStatusMeta(status, tone = 'light') {
-  const meta = SCHOOL_STATUS_META[status] || {
-    label: status || 'Unknown',
-    light: 'bg-slate-100 text-slate-600 border-slate-200',
-    dark: 'bg-slate-700/50 text-slate-400 border-slate-600',
-  };
-  return { ...meta, color: meta[tone] };
+export function getSchoolStatusMeta(status) {
+  return SCHOOL_STATUS_META[status] || { label: status || 'Unknown', tone: 'mute' };
 }
 
-export function getBillingStatusMeta(status, tone = 'light') {
-  const normalizedStatus = status === 'cancelled' ? 'canceled' : status;
-  const meta = BILLING_STATUS_META[normalizedStatus] || {
-    label: normalizedStatus || 'No Plan',
-    light: 'bg-slate-100 text-slate-600 border-slate-200',
-    dark: 'bg-slate-700/50 text-slate-400 border-slate-600',
-  };
-  return { ...meta, color: meta[tone] };
+export function getBillingStatusMeta(status) {
+  // The database has both spellings in the wild; normalise before lookup.
+  const key = status === 'cancelled' ? 'canceled' : (status || 'none');
+  return BILLING_STATUS_META[key] || { label: key, tone: 'mute' };
 }
 
 export function isPaidSchool(school) {

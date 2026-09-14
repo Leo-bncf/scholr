@@ -749,6 +749,80 @@ body { background: var(--paper); color: var(--body); }
 .app-row { transition: background-color var(--dur-micro) var(--ease-out); }
 a.app-row:hover, button.app-row:hover { background: color-mix(in oklab, var(--ink) 4%, transparent); }
 
+/* ── Tables ───────────────────────────────────────────────────────────────
+   A table lives INSIDE a Group, so it draws no border and no shadow of its
+   own — the group is already the containment layer. Its job is only to line
+   the columns up and keep the header legible while the body scrolls.
+
+   Every super-admin table was previously a bare <table> with
+   `border-slate-200 bg-white` written inline on each cell, which is why they
+   stayed grey-and-indigo while the rest of the product moved to the tokens. */
+.app-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.app-table th {
+  position: sticky; top: 0; z-index: 1;
+  padding: .55rem .9rem;
+  text-align: left; white-space: nowrap;
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+  color: var(--muted);
+  font: inherit;
+  font-size: .62rem; font-weight: 600;
+  letter-spacing: .07em; text-transform: uppercase;
+}
+.app-table td {
+  padding: .62rem .9rem;
+  border-top: 1px solid var(--rule-soft);
+  color: var(--body);
+  vertical-align: middle;
+}
+.app-table tbody tr:first-child td { border-top: none; }
+.app-table tbody tr { transition: background-color var(--dur-micro) var(--ease-out); }
+.app-table tbody tr[data-clickable='true'] { cursor: pointer; }
+.app-table tbody tr[data-clickable='true']:hover {
+  background: color-mix(in oklab, var(--ink) 4%, transparent);
+}
+/* Digits that line up down a column. */
+.app-table .num {
+  font-family: var(--font-mono);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+/* The horizontal-scroll container, so a wide table never pushes the page
+   sideways. */
+.app-tablewrap { overflow-x: auto; max-width: 100%; }
+
+/* ── Form controls ────────────────────────────────────────────────────────
+   One appearance for every input in the signed-in app. */
+.app-input {
+  width: 100%;
+  padding: .48rem .68rem;
+  font: inherit;
+  font-size: .88rem;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-control);
+  transition: border-color var(--dur-micro) var(--ease-out),
+              box-shadow var(--dur-micro) var(--ease-out);
+}
+.app-input::placeholder { color: var(--faint); }
+.app-input:hover { border-color: var(--muted); }
+.app-input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand) 18%, transparent);
+}
+.app-input:disabled { opacity: .55; cursor: not-allowed; }
+select.app-input { appearance: none; padding-right: 1.9rem; cursor: pointer; }
+
+/* Search: the icon sits in the padding, so it never overlaps the text. */
+.app-search { position: relative; display: block; }
+.app-search .app-input { padding-left: 2rem; }
+.app-search svg {
+  position: absolute; left: .6rem; top: 50%; transform: translateY(-50%);
+  width: .9rem; height: .9rem; color: var(--faint); pointer-events: none;
+}
+
 .app-segmented {
   display: inline-flex; padding: 2px; gap: 2px;
   background: color-mix(in oklab, var(--ink) 6%, transparent);

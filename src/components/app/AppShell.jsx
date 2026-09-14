@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 /**
  * The signed-in page frame.
@@ -76,9 +77,13 @@ export default function AppShell({ title, eyebrow, actions, children }) {
  * inside it. Nothing nested gets its own border or shadow, which is the line
  * between this and the card-in-card tell.
  */
-export function Group({ title, action, children }) {
+export function Group({ title, action, className, children }) {
+  // className is forwarded because callers place groups inside a grid — the
+  // Platform overview asks for lg:col-span-2. React drops unknown props on a
+  // component silently, so for a while that group simply sat in one column and
+  // nothing said why.
   return (
-    <section>
+    <section className={className}>
       {(title || action) && (
         <div className="app-group-head">
           <h2 className="scholr-label" style={{ margin: 0 }}>{title}</h2>
@@ -121,7 +126,20 @@ export function Row({ label, detail, value, children, onClick, href }) {
     background: 'transparent', border: 'none', width: '100%', font: 'inherit', textAlign: 'left',
   };
 
-  if (href) return <a href={href} className="app-row scholr-focus" style={style}>{inner}</a>;
+  // An internal href goes through the router. This was a bare <a>, which threw
+  // away the SPA on every click: full document reload, auth re-checked, every
+  // query refetched, scroll lost. External links keep the plain anchor.
+  if (href) {
+    const external = /^(https?:)?\/\//.test(href) || href.startsWith('mailto:');
+    if (external) {
+      return (
+        <a href={href} className="app-row scholr-focus" style={style} target="_blank" rel="noreferrer">
+          {inner}
+        </a>
+      );
+    }
+    return <Link to={href} className="app-row scholr-focus" style={style}>{inner}</Link>;
+  }
   if (onClick) return <button type="button" onClick={onClick} className="app-row scholr-focus" style={{ ...style, cursor: 'pointer' }}>{inner}</button>;
   return <div style={style}>{inner}</div>;
 }

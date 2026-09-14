@@ -143,7 +143,7 @@ export default function SuperAdminAnalytics() {
 
     const billingMix = ['trial', 'active', 'past_due', 'incomplete', 'canceled']
       .map((status) => ({
-        name: getBillingStatusMeta(status, 'light').label,
+        name: getBillingStatusMeta(status).label,
         value: schools.filter((school) => (school.billing_status || 'trial') === status).length,
       }))
       .filter((item) => item.value > 0);

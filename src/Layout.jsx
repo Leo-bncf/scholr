@@ -23,7 +23,6 @@ const publicPages = [
 // Messages is deliberately NOT in this list: it renders its own AppSidebar,
 // which already carries a bell. Having both mounted was what crashed the page.
 const fullScreenPages = ['ClassWorkspace', 'AssignmentDetail', 'SubmissionReview', 'ClassGradebook', 'SchoolOnboarding'];
-const adminPages = ['SuperAdminProduction'];
 
 function NotificationWrapper({ children }) {
   const { user, schoolId } = useUser();

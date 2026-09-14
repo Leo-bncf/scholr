@@ -110,10 +110,6 @@ const SubmissionReview = lazy(() => import('./pages/SubmissionReview'));
 const SuperAdminAuditLogs = lazy(() => import('./pages/SuperAdminAuditLogs'));
 const SuperAdminBilling = lazy(() => import('./pages/SuperAdminBilling'));
 const SuperAdminDashboard = lazy(() => import('./pages/SuperAdminDashboard'));
-const SuperAdminPlanManagement = lazy(() => import('./pages/SuperAdminPlanManagement'));
-const SuperAdminPlans = lazy(() => import('./pages/SuperAdminPlans'));
-const SuperAdminProduction = lazy(() => import('./pages/SuperAdminProduction'));
-const SuperAdminProductionLaunch = lazy(() => import('./pages/SuperAdminProductionLaunch'));
 const SuperAdminSchoolDetail = lazy(() => import('./pages/SuperAdminSchoolDetail'));
 const SuperAdminSchools = lazy(() => import('./pages/SuperAdminSchools'));
 const SuperAdminUsers = lazy(() => import('./pages/SuperAdminUsers'));
@@ -175,10 +171,6 @@ export const PAGES = {
     "SuperAdminAuditLogs": SuperAdminAuditLogs,
     "SuperAdminBilling": SuperAdminBilling,
     "SuperAdminDashboard": SuperAdminDashboard,
-    "SuperAdminPlanManagement": SuperAdminPlanManagement,
-    "SuperAdminPlans": SuperAdminPlans,
-    "SuperAdminProduction": SuperAdminProduction,
-    "SuperAdminProductionLaunch": SuperAdminProductionLaunch,
     "SuperAdminSchoolDetail": SuperAdminSchoolDetail,
     "SuperAdminSchools": SuperAdminSchools,
     "SuperAdminUsers": SuperAdminUsers,
