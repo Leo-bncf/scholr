@@ -230,7 +230,11 @@ export default function SuperAdminUsers() {
         activeItem="users"
         currentUser={currentUser}
         title="Users"
-        eyebrow={`${users.length} across every school`}
+        eyebrow={
+          totalItems === users.length
+            ? `${users.length} across every school`
+            : `${totalItems} of ${users.length} shown`
+        }
         actions={
           blankUserCount > 0 ? (
             <button
@@ -253,7 +257,6 @@ export default function SuperAdminUsers() {
         )}
 
         <Group
-          title={`Users · ${totalItems}`}
           action={
             blankUserCount > 0 ? (
               <button

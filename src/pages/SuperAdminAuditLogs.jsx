@@ -110,7 +110,11 @@ export default function SuperAdminAuditLogs() {
       activeItem="audit-logs"
       currentUser={currentUser}
       title="Audit log"
-      eyebrow="Everything that happened, and who did it"
+      eyebrow={
+        totalItems === logs.length
+          ? 'Everything that happened, and who did it'
+          : `${totalItems} of ${logs.length} entries shown`
+      }
     >
       <StatRow>
         <StatCard label="Entries" value={logs.length} hint="all time" />
@@ -118,7 +122,7 @@ export default function SuperAdminAuditLogs() {
         <StatCard label="Critical" value={counts.critical} hint="needs attention" />
       </StatRow>
 
-      <Group title={`Entries · ${totalItems}`}>
+      <Group>
         <div className="px-4 pt-3.5">
           <FilterBar>
             <Field label="Find" htmlFor="logs-search">

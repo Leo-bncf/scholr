@@ -186,7 +186,14 @@ export default function SuperAdminSchools() {
         activeItem="schools"
         currentUser={currentUser}
         title="Schools"
-        eyebrow={`${schools.length} on the platform`}
+        // The count lives here, not in a heading over the list. The page is
+        // already called Schools; repeating the word one line down is the
+        // "Settings / Platform Settings" tic.
+        eyebrow={
+          totalItems === schools.length
+            ? `${schools.length} on the platform`
+            : `${totalItems} of ${schools.length} shown`
+        }
         actions={
           <button
             type="button"
@@ -198,7 +205,7 @@ export default function SuperAdminSchools() {
           </button>
         }
       >
-        <Group title={`Schools · ${totalItems}`}>
+        <Group>
           <div className="px-4 pt-3.5">
             <FilterBar>
               <Field label="Find" htmlFor="schools-search">

@@ -168,7 +168,11 @@ export default function SuperAdminSupport() {
       activeItem="support"
       currentUser={currentUser}
       title="Support"
-      eyebrow="What schools have asked us to fix"
+      eyebrow={
+        filtered.length === tickets.length
+          ? 'What schools have asked us to fix'
+          : `${filtered.length} of ${tickets.length} shown`
+      }
     >
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-2xl) 0' }}>
@@ -182,7 +186,7 @@ export default function SuperAdminSupport() {
             <StatCard label="Resolved" value={counts.resolved} hint="all time" />
           </StatRow>
 
-          <Group title={`Tickets · ${filtered.length}`}>
+          <Group>
             <div className="px-4 pt-3.5">
               <FilterBar>
                 <Field label="Find" htmlFor="tickets-search">
