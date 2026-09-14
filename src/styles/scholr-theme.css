@@ -783,3 +783,82 @@ a.app-row:hover, button.app-row:hover { background: color-mix(in oklab, var(--in
   background: var(--surface); color: var(--ink);
   box-shadow: 0 0 0 0.5px oklch(28% 0.05 150 / 0.08), 0 1px 2px oklch(28% 0.05 150 / 0.08);
 }
+
+/* --- app retone -----------------------------------------------------------
+   There are ~4,600 hard-coded slate utilities across the pages that were
+   written before this token layer existed. Editing forty-eight files by hand
+   would be forty-eight chances to break a working screen, so the ground rules
+   are applied from the outside instead: a descendant selector (0,2,0) outranks
+   a Tailwind utility (0,1,0) without !important and without touching markup.
+
+   This is a bridge, not the destination. A page that gets rewritten properly
+   should use the tokens directly and stop relying on any of this. Scoped to
+   the app shell so it can never reach the public site.
+   ------------------------------------------------------------------------- */
+.app-offset, .scholr-page:not(.pub-wash) { --retone: 1; }
+
+[style*="--retone"] .text-slate-900,
+[style*="--retone"] .text-slate-800,
+.app-offset .text-slate-900, .app-offset .text-slate-800 { color: var(--ink); }
+.app-offset .text-slate-700, .app-offset .text-slate-600 { color: var(--body); }
+.app-offset .text-slate-500 { color: var(--muted); }
+.app-offset .text-slate-400, .app-offset .text-slate-300 { color: var(--faint); }
+
+.app-offset .bg-white { background-color: var(--surface); }
+.app-offset .bg-slate-50 { background-color: var(--surface-sunk); }
+.app-offset .bg-slate-100 { background-color: color-mix(in oklab, var(--ink) 6%, transparent); }
+
+.app-offset .border-slate-200, .app-offset .border-slate-300 { border-color: var(--rule); }
+.app-offset .border-slate-100, .app-offset .border-slate-50 { border-color: var(--rule-soft); }
+.app-offset .divide-slate-100 > * + *, .app-offset .divide-slate-50 > * + * { border-color: var(--rule-soft); }
+
+/* Radii and lift, so a page written with rounded-md doesn't sit next to a
+   grouped list with a visibly different corner. */
+.app-offset .rounded-md { border-radius: var(--radius-inset); }
+.app-offset .rounded-lg { border-radius: var(--radius-control); }
+.app-offset .rounded-xl, .app-offset .rounded-2xl { border-radius: var(--radius-surface); }
+.app-offset .shadow-sm, .app-offset .shadow { box-shadow: var(--lift-sm); }
+.app-offset .shadow-md, .app-offset .shadow-lg { box-shadow: var(--lift-md); }
+
+/* shadcn's Card is the most common container on these pages. Make it the same
+   object as a grouped list rather than a second, competing kind of box. */
+.app-offset [class*="rounded-xl"][class*="border"][class*="bg-card"],
+.app-offset [class*="rounded-lg"][class*="border"][class*="bg-card"] {
+  border-color: transparent;
+  border-radius: var(--radius-surface);
+  box-shadow: var(--lift-sm);
+  background: var(--surface);
+}
+
+/* Page headings written before AppShell existed. They keep their own markup;
+   they just stop being a different typeface from every other title. */
+.app-offset h1, .app-offset h2 {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.app-offset h1 { font-weight: 640; }
+.app-offset h2 { font-weight: 620; }
+
+/* A role chip. Identity, not status — so it is neutral, and the word carries
+   the meaning. See src/components/users/userConstants for why. */
+.role-chip {
+  background: color-mix(in oklab, var(--ink) 5%, transparent) !important;
+  color: var(--body) !important;
+  border-color: var(--rule) !important;
+  font-weight: 500;
+}
+
+/* Tables appear on a dozen screens and were never themed at all. */
+.app-offset table { border-collapse: collapse; }
+.app-offset thead th {
+  font-family: var(--font-mono); font-size: .64rem; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--muted); font-weight: 500;
+  text-align: left; padding: .55rem .75rem;
+  border-bottom: 1px solid var(--rule);
+}
+.app-offset tbody td { padding: .6rem .75rem; border-bottom: 1px solid var(--rule-soft); color: var(--body); }
+.app-offset tbody tr:last-child td { border-bottom: none; }
+.app-offset tbody tr { transition: background-color var(--dur-micro) var(--ease-out); }
+.app-offset tbody tr:hover { background: color-mix(in oklab, var(--ink) 3%, transparent); }
+.app-offset .scholr-num, .app-offset td:has(> .tabular) { font-variant-numeric: tabular-nums; }

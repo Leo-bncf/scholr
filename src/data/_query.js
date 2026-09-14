@@ -14,7 +14,7 @@ export const MAX_ROWS = 5000;
  * Supabase returns { data, error } rather than rejecting. Domain functions are
  * consumed by TanStack Query, which wants a thrown error, so convert here.
  */
-function raise(error, context) {
+export function raise(error, context) {
   const err = new Error(`${context}: ${error.message}`);
   err.code = error.code;
   err.details = error.details;

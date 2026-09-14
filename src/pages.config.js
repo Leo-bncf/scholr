@@ -71,6 +71,7 @@ import Pricing from './pages/Pricing';
 import About from './pages/About';
 import FAQ from './pages/FAQ';
 import Schedual from './pages/Schedual';
+import SuperAdminHealth from './pages/SuperAdminHealth';
 import IbCurriculum from './pages/curriculum/IbCurriculum';
 import IgcseCurriculum from './pages/curriculum/IgcseCurriculum';
 import ALevelCurriculum from './pages/curriculum/ALevelCurriculum';
@@ -133,6 +134,7 @@ export const PAGES = {
     "About": About,
     "FAQ": FAQ,
     "Schedual": Schedual,
+    "SuperAdminHealth": SuperAdminHealth,
     // Slug-shaped routes: these are the pages a head of department searches for
     // by name, so the URL says what the page is about rather than which React
     // component renders it.
