@@ -62,7 +62,7 @@ export default function DetachedNavbar() {
             >
               Sign in
             </button>
-            <Link to="/Demo">
+            <Link to="/BookDemo">
               <Button className="rounded-full bg-[var(--coral-ink)] hover:bg-[var(--coral-ink)]/90 text-[var(--coral-paper)] px-4 h-9 text-sm font-medium shadow-none whitespace-nowrap">
                 Book a demo
               </Button>

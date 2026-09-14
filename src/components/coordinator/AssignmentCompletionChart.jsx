@@ -1,30 +1,51 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
+import { Group, GroupEmpty } from '@/components/app/AppShell';
+import Meter from '@/components/app/Meter';
 
+/**
+ * Completion rate per class.
+ *
+ * Horizontal bars, not the vertical recharts bars this used to be: the
+ * categories are class names, and names read left-to-right. Vertically they
+ * had to be truncated to 18 characters and still collided on the axis.
+ *
+ * One measure, one series, so there is no legend and no colour coding — bar
+ * length is the whole encoding, and every bar carries its own number, which
+ * removes the need for a hover tooltip to read a value at all.
+ *
+ * Sorted descending, because the question this answers is "which classes are
+ * behind", and that is a ranking.
+ */
 export default function AssignmentCompletionChart({ data }) {
+  const rows = [...data].sort((a, b) => b.completionRate - a.completionRate);
+
   return (
-    <div className="bg-white rounded-md border border-slate-200 shadow-sm">
-      <div className="px-4 md:px-6 py-3 md:py-4 border-b border-slate-200 bg-slate-50 rounded-t-md">
-        <h2 className="font-bold text-sm md:text-base text-slate-900 uppercase tracking-wide">Assignment Completion Rates</h2>
-        <p className="text-xs text-slate-500 mt-1">Based on submitted assignments by class</p>
-      </div>
-      {data.length === 0 ? (
-        <div className="p-12 text-center text-slate-400 text-sm">No assignment data available yet</div>
+    <Group title="Assignment completion">
+      {rows.length === 0 ? (
+        <GroupEmpty>
+          No submissions recorded yet, so there is nothing to compare.
+        </GroupEmpty>
       ) : (
-        <div className="p-4 md:p-6">
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 8 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#475569' }} axisLine={false} tickLine={false} />
-                <YAxis domain={[0, 100]} tick={{ fontSize: 12, fill: '#475569' }} axisLine={false} tickLine={false} />
-                <Tooltip formatter={(value) => [`${value}%`, 'Completion']} />
-                <Bar dataKey="completionRate" fill="#065f46" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+        <div style={{ padding: '.85rem .9rem', display: 'flex', flexDirection: 'column', gap: '.85rem' }}>
+          {rows.map((row) => (
+            <div key={row.name}>
+              <div className="flex items-baseline gap-3 mb-1">
+                <span className="text-sm min-w-0 break-words" style={{ color: 'var(--ink)' }}>
+                  {row.name}
+                </span>
+                <span
+                  className="ml-auto text-sm scholr-num shrink-0"
+                  style={{ fontFamily: 'var(--font-mono)', color: 'var(--body)' }}
+                >
+                  {row.completionRate}%
+                </span>
+              </div>
+              <Meter value={row.completionRate} />
+            </div>
+          ))}
+          <p className="scholr-label m-0 mt-1">Submitted ÷ expected, per class</p>
         </div>
       )}
-    </div>
+    </Group>
   );
 }

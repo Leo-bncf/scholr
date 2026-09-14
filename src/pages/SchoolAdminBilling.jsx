@@ -104,7 +104,7 @@ export default function SchoolAdminBilling() {
       <div className="min-h-screen bg-slate-50">
         <AppSidebar links={SCHOOL_ADMIN_SIDEBAR_LINKS} role="school_admin" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
 
-        <main className="md:ml-64 min-h-screen flex flex-col">
+        <main className="app-offset min-h-screen flex flex-col">
           <AdminTabNavigation
             tabs={[
               { id: 'status', label: 'Subscription', icon: CreditCard },

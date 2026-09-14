@@ -222,12 +222,12 @@ export default function InvitationsTab({ schoolId, schoolName }) {
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-sm font-medium text-slate-900 truncate">{inv.email}</span>
-                        <span className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full ${st.color}`}>
+                        <span className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full role-chip`}>
                           <StatusIcon className="w-3 h-3" />
                           {st.label}
                         </span>
                         {rc && (
-                          <span className={`text-[11px] px-2 py-0.5 rounded-full border ${rc.color}`}>{rc.label}</span>
+                          <span className={`text-[11px] px-2 py-0.5 rounded-full border role-chip`}>{rc.label}</span>
                         )}
                       </div>
                       <p className="text-[11px] text-slate-400 mt-0.5">

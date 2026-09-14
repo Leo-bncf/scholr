@@ -70,7 +70,7 @@ function HeroSection() {
               running IB, IGCSE, A&#8209;Level and US programmes side by side.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
-              <Link to="/Demo">
+              <Link to="/BookDemo">
                 <Button className="h-12 px-7 rounded-lg bg-[var(--coral-ink)] hover:bg-[var(--coral-ink)]/90 text-[var(--coral-paper)] text-base font-medium shadow-none whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[var(--coral-focus)] focus-visible:ring-offset-2">
                   Book a demo <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
@@ -222,7 +222,7 @@ function FinalCTA() {
           A 20-minute walkthrough with your own curriculum mix, not a generic script.
         </p>
         <div className="mt-8">
-          <Link to="/Demo">
+          <Link to="/BookDemo">
             <Button className="h-12 px-8 rounded-lg bg-[var(--coral-accent)] hover:bg-[var(--coral-accent)]/90 text-[var(--coral-accent-ink)] text-base font-medium shadow-none whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[var(--coral-dark-ink)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--coral-dark)]">
               Book a demo <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
@@ -247,7 +247,7 @@ function StickyDemoBar({ visible, onDismiss }) {
             See how this looks with your school's curriculum.
           </p>
           <div className="flex items-center gap-2 shrink-0">
-            <Link to="/Demo">
+            <Link to="/BookDemo">
               <Button className="h-9 px-4 rounded-lg bg-[var(--coral-ink)] hover:bg-[var(--coral-ink)]/90 text-[var(--coral-paper)] text-sm font-medium shadow-none whitespace-nowrap">
                 Book a demo
               </Button>
@@ -267,14 +267,16 @@ function StickyDemoBar({ visible, onDismiss }) {
 }
 
 export default function Landing() {
-  const [showConsent, setShowConsent] = useState(true);
+  const [showConsent, setShowConsent] = useState(false);
   const [barVisible, setBarVisible] = useState(false);
   const [barDismissed, setBarDismissed] = useState(false);
   const thirdBlockRef = useRef(null);
 
   useEffect(() => {
     try {
-      setShowConsent(localStorage.getItem('scholr_consent_accepted') !== 'true');
+      // Either answer counts as answered — a decline used to store nothing,
+      // so the notice came back on every visit.
+      setShowConsent(localStorage.getItem('scholr_consent_accepted') === null);
     } catch {
       setShowConsent(true);
     }

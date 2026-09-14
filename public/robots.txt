@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Signed-in application routes carry no public content and should not be
+# crawled; they all redirect to the login page anyway.
+Disallow: /AppHome
+Disallow: /SuperAdmin
+Disallow: /SchoolAdmin
+Disallow: /Teacher
+Disallow: /Student
+Disallow: /Parent
+Disallow: /Coordinator
+Disallow: /Class
+Disallow: /Login
+
+Sitemap: https://scholr.pro/sitemap.xml

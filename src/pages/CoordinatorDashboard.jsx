@@ -2,11 +2,12 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
+import AppShell, { Group, Row, GroupEmpty } from '@/components/app/AppShell';
 import StatCard from '@/components/app/StatCard';
+import StatRow from '@/components/app/StatRow';
+import StatusChip from '@/components/app/StatusChip';
 import { useUser } from '@/components/auth/UserContext';
-import { Users, 
-  Loader2, GraduationCap, BookOpen, TrendingUp
-} from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { getCoordinatorSidebarLinks } from '@/components/app/coordinatorSidebarLinks';
 import { useCurriculum } from '@/hooks/useCurriculum';
@@ -27,25 +28,21 @@ export default function CoordinatorDashboard() {
     queryFn: () => membershipsData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
-
   const { data: classes = [] } = useQuery({
     queryKey: ['school-classes-coord', schoolId],
     queryFn: () => classesData.where({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
-
   const { data: subjects = [] } = useQuery({
     queryKey: ['school-subjects-coord', schoolId],
     queryFn: () => academics.whereSubjects({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
-
   const { data: assignments = [] } = useQuery({
     queryKey: ['school-assignments-coord', schoolId],
     queryFn: () => assignmentsData.where({ school_id: schoolId }),
     enabled: !!schoolId,
   });
-
   const { data: submissions = [] } = useQuery({
     queryKey: ['school-submissions-coord', schoolId],
     queryFn: () => submissionsData.where({ school_id: schoolId }),
@@ -55,99 +52,71 @@ export default function CoordinatorDashboard() {
   const students = memberships.filter(m => m.role === 'student');
   const teachers = memberships.filter(m => m.role === 'teacher');
 
-  const assignmentCompletionData = classes
-    .map((currentClass) => {
-      const classAssignments = assignments.filter((assignment) => assignment.class_id === currentClass.id);
-      const classStudents = currentClass.student_ids || [];
-      const expectedSubmissions = classAssignments.length * classStudents.length;
-      const submittedCount = submissions.filter(
-        (submission) => submission.class_id === currentClass.id && ['submitted', 'graded', 'returned', 'resubmitted', 'late'].includes(submission.status)
+  const completion = classes
+    .map((cls) => {
+      const classAssignments = assignments.filter(a => a.class_id === cls.id);
+      const expected = classAssignments.length * (cls.student_ids || []).length;
+      const submitted = submissions.filter(
+        s => s.class_id === cls.id && ['submitted', 'graded', 'returned', 'resubmitted', 'late'].includes(s.status),
       ).length;
-
-      return {
-        name: currentClass.name.length > 18 ? `${currentClass.name.slice(0, 18)}…` : currentClass.name,
-        completionRate: expectedSubmissions > 0 ? Math.round((submittedCount / expectedSubmissions) * 100) : 0,
-      };
+      return { name: cls.name, completionRate: expected > 0 ? Math.round((submitted / expected) * 100) : 0 };
     })
-    .filter((item) => item.completionRate > 0)
+    .filter(i => i.completionRate > 0)
     .slice(0, 6);
+
+  const cohorts = Object.entries(
+    students.reduce((acc, s) => {
+      const level = s.grade_level || 'Unassigned';
+      acc[level] = (acc[level] || 0) + 1;
+      return acc;
+    }, {}),
+  ).sort(([a], [b]) => a.localeCompare(b));
 
   return (
     <RoleGuard allowedRoles={['ib_coordinator', 'school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
-        <AppSidebar links={sidebarLinks} role="ib_coordinator" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="ml-64 p-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="mb-8">
-              <h1 className="text-2xl font-bold text-slate-900">{coordinatorLabel} Dashboard</h1>
-              <p className="text-sm text-slate-500 mt-1">{school?.name} · {shortLabel} · {format(new Date(), 'MMMM d, yyyy')}</p>
+      <AppSidebar links={sidebarLinks} role="ib_coordinator" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
+      <div className="app-offset">
+        <AppShell eyebrow={`${shortLabel} · ${format(new Date(), 'd MMMM yyyy')}`} title={coordinatorLabel}>
+          {isLoading ? (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-2xl) 0' }}>
+              <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--brand)' }} />
             </div>
+          ) : (
+            <>
+              <StatRow>
+                <StatCard label="Students" value={students.length} />
+                <StatCard label="Teachers" value={teachers.length} />
+                <StatCard label="Classes" value={classes.length} hint="active" />
+                <StatCard label="Subjects" value={subjects.length} />
+              </StatRow>
 
-            {isLoading ? (
-              <div className="flex items-center justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-indigo-600" /></div>
-            ) : (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                  <StatCard label="Students" value={students.length} icon={GraduationCap} color="indigo" />
-                  <StatCard label="Teachers" value={teachers.length} icon={Users} color="emerald" />
-                  <StatCard label="Active Classes" value={classes.length} icon={BookOpen} color="amber" />
-                  <StatCard label="Subjects" value={subjects.length} icon={TrendingUp} color="violet" />
-                </div>
+              <Group title="Cohorts">
+                {cohorts.length === 0 ? (
+                  <GroupEmpty>No students enrolled yet.</GroupEmpty>
+                ) : (
+                  cohorts.map(([level, count]) => <Row key={level} label={level} value={count} />)
+                )}
+              </Group>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                  <AssignmentCompletionChart data={assignmentCompletionData} />
+              <AssignmentCompletionChart data={completion} />
 
-                  <div className="bg-white rounded-md border border-slate-200 shadow-sm">
-                    <div className="px-4 md:px-6 py-3 md:py-4 border-b border-slate-200 bg-slate-50 rounded-t-md">
-                      <h2 className="font-bold text-sm md:text-base text-slate-900 uppercase tracking-wide">Student Cohorts</h2>
-                    </div>
-                    {students.length === 0 ? (
-                      <div className="p-12 text-center text-slate-400 text-sm">No students enrolled</div>
-                    ) : (
-                      <div className="p-6">
-                        {Object.entries(students.reduce((acc, s) => {
-                          const level = s.grade_level || 'Unassigned';
-                          acc[level] = (acc[level] || 0) + 1;
-                          return acc;
-                        }, {})).map(([level, count]) => (
-                          <div key={level} className="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0">
-                            <span className="text-sm font-medium text-slate-900">{level}</span>
-                            <span className="text-sm text-slate-500">{count} students</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-6">
-                  <div className="bg-white rounded-md border border-slate-200 shadow-sm">
-                    <div className="px-4 md:px-6 py-3 md:py-4 border-b border-slate-200 bg-slate-50 rounded-t-md">
-                      <h2 className="font-bold text-sm md:text-base text-slate-900 uppercase tracking-wide">Subjects Overview</h2>
-                    </div>
-                    {subjects.length === 0 ? (
-                      <div className="p-12 text-center text-slate-400 text-sm">No subjects configured</div>
-                    ) : (
-                      <div className="divide-y divide-slate-50">
-                        {subjects.slice(0, 10).map(s => (
-                          <div key={s.id} className="px-6 py-3.5 flex items-center justify-between">
-                            <div>
-                              <p className="text-sm font-medium text-slate-900">{s.name}</p>
-                              <p className="text-xs text-slate-400 capitalize">{s.ib_group?.replace(/_/g, ' ') || ''}</p>
-                            </div>
-                            {s.level !== 'na' && (
-                              <span className={`text-xs px-2 py-0.5 rounded-full ${s.level === 'HL' ? 'bg-rose-50 text-rose-700' : 'bg-blue-50 text-blue-700'}`}>{s.level}</span>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        </main>
+              <Group title="Subjects">
+                {subjects.length === 0 ? (
+                  <GroupEmpty>No subjects configured for this programme yet.</GroupEmpty>
+                ) : (
+                  subjects.slice(0, 10).map(s => (
+                    <Row key={s.id} label={s.name} detail={s.ib_group?.replace(/_/g, ' ') || ''}>
+                      {/* HL/SL is an attribute, not a health status, so it
+                          wears the neutral chip — the reserved colours stay
+                          for good/warn/crit. */}
+                      {s.level && s.level !== 'na' ? <StatusChip>{s.level}</StatusChip> : null}
+                    </Row>
+                  ))
+                )}
+              </Group>
+            </>
+          )}
+        </AppShell>
       </div>
     </RoleGuard>
   );

@@ -217,7 +217,7 @@ export default function TeacherWorkspace() {
     <RoleGuard allowedRoles={['teacher', 'school_admin', 'super_admin', 'admin']}>
       <div className="min-h-screen bg-slate-50">
         <AppSidebar links={getAppSidebarLinks('teacher')} role="teacher" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="ml-0 md:ml-64 p-4 md:p-6">
+        <main className="app-offset p-4 md:p-6">
           <div className="max-w-[1600px] mx-auto space-y-6">
             <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
               <div>

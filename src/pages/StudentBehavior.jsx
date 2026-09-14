@@ -32,7 +32,7 @@ export default function StudentBehavior() {
       <div className="min-h-screen bg-slate-50">
         <AppSidebar links={sidebarLinks} role="student" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         
-        <main className="ml-64 p-8">
+        <main className="app-offset p-8">
           <div className="max-w-5xl mx-auto">
             <h1 className="text-3xl font-bold text-slate-900 mb-2">My Behavior Records</h1>
             <p className="text-slate-600 mb-8">View notes and feedback from your teachers</p>

@@ -131,7 +131,7 @@ export default function SchoolAdminSettings() {
           schoolId={schoolId}
         />
 
-        <main className="md:ml-64 min-h-screen flex flex-col">
+        <main className="app-offset min-h-screen flex flex-col">
           <AdminTabNavigation
             tabs={[
               { id: 'school', label: 'School Profile', icon: Building2 },

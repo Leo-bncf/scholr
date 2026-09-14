@@ -4,6 +4,28 @@
     "macrostructure": "Workbench",
     "theme": "Coral",
     "enrichment": "real product screenshots (demo sandbox)",
-    "brief": "Scholr · school-management LMS for international schools — full landing page redesign"
+    "brief": "Scholr · school-management LMS for international schools — Landing page only, page-scoped theme"
+  },
+  {
+    "date": "2026-09-14",
+    "macrostructure": "n/a — app chrome, not a page shape",
+    "theme": "custom",
+    "theme_axes": "light / grotesk-sans / chromatic-green",
+    "vibe": "Apple-minimalist grouped lists, Irish green",
+    "nav": "app sidebar, translucent material",
+    "footer": "n/a",
+    "enrichment": "none",
+    "brief": "Scholr · signed-in dashboards · Apple minimalism within Hallmark"
+  },
+  {
+    "date": "2026-09-14",
+    "macrostructure": "Workbench",
+    "theme": "custom",
+    "theme_axes": "light / grotesk-sans / chromatic-green",
+    "vibe": "Irish green, institutional, bright, product-led",
+    "nav": "N10 floating-on-scroll morph",
+    "footer": "Ft5 Statement",
+    "enrichment": "none (real product captures)",
+    "brief": "Scholr · school management for international schools · public site (all pages except Landing)"
   }
 ]

@@ -57,7 +57,7 @@ import Contact from './pages/Contact';
 import CoordinatorDashboard from './pages/CoordinatorDashboard';
 import CoordinatorIBCore from './pages/CoordinatorIBCore';
 import CoordinatorPredictedGrades from './pages/CoordinatorPredictedGrades';
-import Demo from './pages/Demo';
+import BookDemo from './pages/BookDemo';
 import DemoShowcase from './pages/DemoShowcase';
 import Features from './pages/Features';
 import FirstLogin from './pages/FirstLogin';
@@ -67,6 +67,15 @@ import Messages from './pages/Messages';
 import NoSchool from './pages/NoSchool';
 import ParentDashboard from './pages/ParentDashboard';
 import PasswordReset from './pages/PasswordReset';
+import Pricing from './pages/Pricing';
+import About from './pages/About';
+import FAQ from './pages/FAQ';
+import Schedual from './pages/Schedual';
+import SuperAdminHealth from './pages/SuperAdminHealth';
+import IbCurriculum from './pages/curriculum/IbCurriculum';
+import IgcseCurriculum from './pages/curriculum/IgcseCurriculum';
+import ALevelCurriculum from './pages/curriculum/ALevelCurriculum';
+import UsCurriculum from './pages/curriculum/UsCurriculum';
 
 import SchoolAdminAttendance from './pages/SchoolAdminAttendance';
 import SchoolAdminBilling from './pages/SchoolAdminBilling';
@@ -111,7 +120,7 @@ export const PAGES = {
     "CoordinatorDashboard": CoordinatorDashboard,
     "CoordinatorIBCore": CoordinatorIBCore,
     "CoordinatorPredictedGrades": CoordinatorPredictedGrades,
-    "Demo": Demo,
+    "BookDemo": BookDemo,
     "DemoShowcase": DemoShowcase,
     "Features": Features,
     "FirstLogin": FirstLogin,
@@ -121,6 +130,18 @@ export const PAGES = {
     "NoSchool": NoSchool,
     "ParentDashboard": ParentDashboard,
     "PasswordReset": PasswordReset,
+    "Pricing": Pricing,
+    "About": About,
+    "FAQ": FAQ,
+    "Schedual": Schedual,
+    "SuperAdminHealth": SuperAdminHealth,
+    // Slug-shaped routes: these are the pages a head of department searches for
+    // by name, so the URL says what the page is about rather than which React
+    // component renders it.
+    "ib-school-management-software": IbCurriculum,
+    "igcse-school-management-software": IgcseCurriculum,
+    "a-level-school-management-software": ALevelCurriculum,
+    "us-school-management-software": UsCurriculum,
 
     "SchoolAdminAttendance": SchoolAdminAttendance,
     "SchoolAdminBilling": SchoolAdminBilling,

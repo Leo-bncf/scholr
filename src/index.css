@@ -1,49 +1,66 @@
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap');
+@import './styles/scholr-theme.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  /* shadcn's variables, kept in step with src/styles/scholr-theme.css.
+     They are HSL triplets because that is the contract every ui/ component
+     assumes (`hsl(var(--primary))`), so these are the sRGB equivalents of the
+     oklch tokens rather than a second, independent palette. Change a colour in
+     the theme file and convert it here; do not invent a value.
+
+     NOTE: shadcn owns the name `--accent` in this block. The theme file's
+     brand colour is deliberately called `--brand` for exactly that reason —
+     this file is imported after it, so a token named `--accent` there would be
+     silently overwritten here and every primary button would lose its fill. */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 158 64% 8%;
-    --card: 0 0% 100%;
-    --card-foreground: 158 64% 8%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 158 64% 8%;
-    --primary: 170 72% 13%;
-    --primary-foreground: 152 76% 96%;
-    --secondary: 168 40% 94%;
-    --secondary-foreground: 170 72% 10%;
-    --muted: 168 40% 94%;
-    --muted-foreground: 170 30% 24%;
-    --accent: 168 40% 94%;
-    --accent-foreground: 170 72% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 168 28% 86%;
-    --input: 168 28% 86%;
-    --ring: 170 72% 18%;
+    /* The app ground, matching --paper in the theme file. Not 0 0% 100%:
+       pure white is a named tell, and it left the grouped lists with nothing
+       to float on. */
+    --background: 92 23% 95%;
+    --foreground: 161 29% 10%;
+    --card: 78 64% 99%;
+    --card-foreground: 161 29% 10%;
+    --popover: 78 64% 99%;
+    --popover-foreground: 161 29% 10%;
+    --primary: 164 93% 21%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 156 23% 96%;
+    --secondary-foreground: 161 29% 10%;
+    --muted: 156 23% 96%;
+    --muted-foreground: 158 5% 44%;
+    --accent: 154 59% 93%;
+    --accent-foreground: 164 93% 21%;
+    --destructive: 359 59% 48%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 156 11% 88%;
+    --input: 156 11% 88%;
+    --ring: 164 93% 21%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 170 72% 13%;
-    --sidebar-primary-foreground: 152 76% 96%;
-    --sidebar-accent: 168 40% 94%;
-    --sidebar-accent-foreground: 170 72% 10%;
-    --sidebar-border: 168 28% 86%;
-    --sidebar-ring: 170 72% 18%;
-    --font-landing-display: 'Merriweather', serif;
+    --sidebar-background: 155 38% 98%;
+    --sidebar-foreground: 159 12% 21%;
+    --sidebar-primary: 164 93% 21%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 154 59% 93%;
+    --sidebar-accent-foreground: 164 93% 21%;
+    --sidebar-border: 156 11% 88%;
+    --sidebar-ring: 164 93% 21%;
+    /* Kept so tailwind's `font-landing` utility still resolves; it now points
+       at the self-hosted display face rather than fetching Merriweather from
+       Google on every page load. */
+    --font-landing-display: var(--font-display);
 
-    /* Hallmark · Coral theme tokens — scoped to the public marketing surface
-       (Landing + shared nav/footer). Additive: the shadcn HSL variables above
-       remain untouched so the authenticated app is unaffected. */
+    /* Hallmark · Coral theme tokens — scoped to the Landing page and its
+       shared nav/footer only. Additive: none of the shadcn/scholr-theme
+       variables above are touched, so the rest of the app (dashboards,
+       every other public page) keeps the green system unchanged. */
     --coral-paper:       oklch(97.5% 0.010 46);
     --coral-paper-2:     oklch(94.5% 0.016 46);
     --coral-ink:         oklch(21%   0.014 40);
@@ -65,39 +82,86 @@
     --coral-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   }
 
-  .dark {
-    --background: 222 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 221 83% 53%;
-    --secondary: 222 47% 11%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 222 47% 11%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 222 47% 11%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 222 47% 11%;
-    --input: 222 47% 11%;
-    --ring: 210 40% 83.1%;
+  /* This block was still stock shadcn blue — the theme pivot in
+     tailwind.config.js only remaps Tailwind's palette, not these variables, so
+     dark mode turned every Card, Button and Input slate-and-blue while the
+     rest of the product stayed green. Now it mirrors the theme file's dark
+     palette. */
+  /* Three states, matching src/styles/scholr-theme.css exactly:
+       · .dark              — the in-app toggle, written to localStorage
+       · prefers-color-scheme — the OS, unless the user chose light
+       · [data-theme=dark]  — an explicit choice
+     These used to be one selector (.dark) while the token layer used the other
+     two. The result was a page whose shadcn surfaces followed localStorage and
+     whose tokens followed the OS: a white body behind a dark page, and a
+     translucent sidebar compositing over it. */
+  .dark,
+  :root[data-theme='dark'],
+  :root[data-theme='dark'] * {
+    --background: 133 41% 3%;
+    --foreground: 153 18% 93%;
+    --card: 135 28% 7%;
+    --card-foreground: 153 18% 93%;
+    --popover: 135 28% 7%;
+    --popover-foreground: 153 18% 93%;
+    --primary: 162 55% 48%;
+    --primary-foreground: 158 39% 5%;
+    --secondary: 158 32% 6%;
+    --secondary-foreground: 153 18% 93%;
+    --muted: 158 32% 6%;
+    --muted-foreground: 156 5% 56%;
+    --accent: 162 80% 10%;
+    --accent-foreground: 162 55% 48%;
+    --destructive: 3 78% 68%;
+    --destructive-foreground: 158 39% 5%;
+    --border: 157 15% 16%;
+    --input: 157 15% 16%;
+    --ring: 162 55% 48%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 158 32% 6%;
+    --sidebar-foreground: 153 18% 93%;
+    --sidebar-primary: 162 55% 48%;
+    --sidebar-primary-foreground: 158 39% 5%;
+    --sidebar-accent: 162 80% 10%;
+    --sidebar-accent-foreground: 162 55% 48%;
+    --sidebar-border: 157 15% 16%;
+    --sidebar-ring: 162 55% 48%;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --background: 133 41% 3%;
+      --foreground: 153 18% 93%;
+      --card: 135 28% 7%;
+      --card-foreground: 153 18% 93%;
+      --popover: 135 28% 7%;
+      --popover-foreground: 153 18% 93%;
+      --primary: 162 55% 48%;
+      --primary-foreground: 158 39% 5%;
+      --secondary: 158 32% 6%;
+      --secondary-foreground: 153 18% 93%;
+      --muted: 158 32% 6%;
+      --muted-foreground: 156 5% 56%;
+      --accent: 162 80% 10%;
+      --accent-foreground: 162 55% 48%;
+      --destructive: 3 78% 68%;
+      --destructive-foreground: 158 39% 5%;
+      --border: 157 15% 16%;
+      --input: 157 15% 16%;
+      --ring: 162 55% 48%;
+      --sidebar-background: 158 32% 6%;
+      --sidebar-foreground: 153 18% 93%;
+      --sidebar-primary: 162 55% 48%;
+      --sidebar-primary-foreground: 158 39% 5%;
+      --sidebar-accent: 162 80% 10%;
+      --sidebar-accent-foreground: 162 55% 48%;
+      --sidebar-border: 157 15% 16%;
+      --sidebar-ring: 162 55% 48%;
+    }
   }
 }
 

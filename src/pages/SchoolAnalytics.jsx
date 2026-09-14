@@ -389,7 +389,7 @@ export default function SchoolAnalytics() {
       <div className="min-h-screen bg-slate-50">
         <AppSidebar links={SCHOOL_ADMIN_SIDEBAR_LINKS} role="school_admin" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
 
-        <main className="md:ml-64 min-h-screen flex flex-col">
+        <main className="app-offset min-h-screen flex flex-col">
           <div className="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-10 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-4 max-w-7xl mx-auto">
               <div>

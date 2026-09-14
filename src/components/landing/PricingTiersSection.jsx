@@ -4,18 +4,34 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Loader2, Monitor } from 'lucide-react';
 import PricingTierSwitch from './PricingTierSwitch';
-import { getCurrentUser, redirectToLogin } from '@/data/session';
+import { getCurrentUser, isAuthenticated, redirectToLogin } from '@/data/session';
 import * as fns from '@/data/functions';
 
+/**
+ * Every line here is a thing the software does today.
+ *
+ * "PDF & Excel export" and "Priority support" were removed: exportReportPDF
+ * isn't ported yet (it throws FunctionNotPortedError), and there is no
+ * support tier — inventing one on a pricing page is a claim a school's
+ * procurement team will hold you to.
+ */
 const SHARED_FEATURES = [
   'Full platform access — every feature included',
   'Complete IB Core suite (CAS, EE, TOK)',
   'Advanced multi-curricular gradebooks',
   'Parent & student portals',
   'Unlimited admin accounts',
-  'PDF & Excel export',
-  'Priority support',
+  'Migration from your current system as part of onboarding',
 ];
+
+/**
+ * Self-serve checkout is off until Stripe is configured on the server — the
+ * keys aren't set on production, so createCheckoutSession returns a 503 and
+ * the buyer hits a dead end at the exact moment they decided to pay. Until
+ * then, the tier action starts a conversation instead. Flip this to true
+ * once STRIPE_SECRET_KEY is live; handleCheckout below is intact and tested.
+ */
+const CHECKOUT_ENABLED = false;
 
 const TIERS = {
   tier1: {
@@ -80,10 +96,6 @@ const SYSTEM_RULES = [
     title: 'Unlimited admins, always',
     description: 'Add as many school admin accounts as you need on any tier.',
   },
-  {
-    title: 'Priority support included',
-    description: 'Every school gets priority support — no paywalled help desk.',
-  },
 ];
 
 const panelTransition = {
@@ -107,7 +119,7 @@ export default function PricingTiersSection() {
       ? 'No cap on student enrollment.'
       : `Student capacity is capped at ${selectedTier.capacityLabel.replace('Up to ', '')}.`,
     'IB Core (CAS, EE, TOK), gradebooks, reports and parent portal are always on.',
-    'Unlimited admin accounts and priority support on all tiers.',
+    'Unlimited admin accounts on all tiers.',
     'Billed yearly. The per‑student rate decreases as your tier grows.',
   ];
 
@@ -117,8 +129,10 @@ export default function PricingTiersSection() {
       return;
     }
 
-    const isAuthenticated = await isAuthenticated();
-    if (!isAuthenticated) {
+    // The previous version wrote `const isAuthenticated = await isAuthenticated()`,
+    // which shadows the imported function and throws a ReferenceError before
+    // it can do anything — every click on this button was dead.
+    if (!(await isAuthenticated())) {
       redirectToLogin(window.location.href);
       return;
     }
@@ -232,7 +246,7 @@ export default function PricingTiersSection() {
               </div>
 
               <div className="mt-8 rounded-xl border border-white/10 bg-white/5 p-4">
-                <p className="text-sm text-[var(--coral-dark-ink-2)]">Already have an account? You’ll go straight to payment. New user? You’ll create your account first.</p>
+                <p className="text-sm text-[var(--coral-dark-ink-2)]">We set this up with you directly — most schools buy on a purchase order, not a card.</p>
               </div>
 
               <div className="mt-auto pt-8">
@@ -260,26 +274,38 @@ export default function PricingTiersSection() {
                   </div>
                 </div>
 
-                <Button
-                  type="button"
-                  className="h-12 text-base w-full rounded-lg bg-[var(--coral-paper)] text-[var(--coral-dark)] font-medium hover:bg-[var(--coral-paper)]/90 shadow-none transition-colors whitespace-nowrap"
-                  onClick={async () => {
-                    await handleCheckout(selectedTier.priceId, expandedTier);
-                  }}
-                  disabled={loadingTier === expandedTier}
-                >
-                  {loadingTier === expandedTier ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Redirecting…
-                    </>
-                  ) : (
-                    <>
-                      <span>Choose {selectedTier.name} plan</span>
+                {CHECKOUT_ENABLED ? (
+                  <Button
+                    type="button"
+                    className="h-12 text-base w-full rounded-lg bg-[var(--coral-paper)] text-[var(--coral-dark)] font-medium hover:bg-[var(--coral-paper)]/90 shadow-none transition-colors whitespace-nowrap"
+                    onClick={async () => {
+                      await handleCheckout(selectedTier.priceId, expandedTier);
+                    }}
+                    disabled={loadingTier === expandedTier}
+                  >
+                    {loadingTier === expandedTier ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Redirecting…
+                      </>
+                    ) : (
+                      <>
+                        <span>Choose {selectedTier.name} plan</span>
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </>
+                    )}
+                  </Button>
+                ) : (
+                  <a href="/BookDemo">
+                    <Button
+                      type="button"
+                      className="h-12 text-base w-full rounded-lg bg-[var(--coral-paper)] text-[var(--coral-dark)] font-medium hover:bg-[var(--coral-paper)]/90 shadow-none transition-colors whitespace-nowrap"
+                    >
+                      <span>Talk to us about {selectedTier.name}</span>
                       <ArrowRight className="ml-2 h-5 w-5" />
-                    </>
-                  )}
-                </Button>
+                    </Button>
+                  </a>
+                )}
               </div>
             </motion.div>
           </AnimatePresence>

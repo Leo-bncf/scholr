@@ -6,7 +6,7 @@ const LINKS = [
   { to: '/#pricing', label: 'Pricing' },
   { to: '/Security', label: 'Security' },
   { to: '/SecurityAndCompliance', label: 'Compliance' },
-  { to: '/Demo', label: 'Demo' },
+  { to: '/demo', label: 'Demo' },
   { to: '/Contact', label: 'Contact' },
   { to: '/PrivacyPolicy', label: 'Privacy policy' },
   { to: '/TermsOfService', label: 'Terms of service' },

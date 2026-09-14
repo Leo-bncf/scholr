@@ -86,7 +86,10 @@ const AuthenticatedApp = () => {
           <MainPage />
         </LayoutWrapper>
       } />
-      {/* Demo sandbox routes — must come before the pagesConfig loop so /demo wins over legacy /Demo */}
+      {/* The interactive sandbox. These come before the pagesConfig loop, and
+          because React Router matches case-insensitively they also claim /Demo,
+          /DEMO and so on. The lead-capture form is therefore registered as
+          'BookDemo' — naming it 'Demo' made it permanently unreachable. */}
       <Route path="/demo" element={<DemoHub />} />
       <Route path="/demo/student" element={<DemoStudent />} />
       <Route path="/demo/student/assignment/:assignmentId" element={<DemoStudentAssignment />} />

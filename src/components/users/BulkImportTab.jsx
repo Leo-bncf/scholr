@@ -229,7 +229,7 @@ export default function BulkImportTab({ schoolId, schoolName }) {
                   <td className="px-4 py-2 text-slate-600">{row.name || '—'}</td>
                   <td className="px-4 py-2">
                     {ROLE_CONFIG[row.role]
-                      ? <span className={`px-2 py-0.5 rounded-full border text-[11px] ${ROLE_CONFIG[row.role].color}`}>{ROLE_CONFIG[row.role].label}</span>
+                      ? <span className={`px-2 py-0.5 rounded-full border text-[11px] role-chip`}>{ROLE_CONFIG[row.role].label}</span>
                       : <span className="text-red-600">{row.role || '—'}</span>}
                   </td>
                   <td className="px-4 py-2 text-slate-400">{row.grade_level || row.department || '—'}</td>
