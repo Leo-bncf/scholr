@@ -1,13 +1,23 @@
 import React from 'react';
+import { Group } from '@/components/app/AppShell';
 
+/**
+ * A section of the platform settings.
+ *
+ * This is now just a Group with its description as the first row, so settings
+ * sections look like every other grouped list in the product. It used to draw
+ * its own white card with a slate border and a slate divider, which is why
+ * this page stayed grey while the rest moved to the tokens.
+ */
 export default function ConfigSectionCard({ title, description, children }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-      <div className="px-5 py-4 border-b border-slate-200">
-        <h2 className="text-sm font-semibold text-slate-900">{title}</h2>
-        {description ? <p className="text-xs text-slate-500 mt-1">{description}</p> : null}
-      </div>
-      <div className="p-5">{children}</div>
-    </div>
+    <Group title={title}>
+      {description ? (
+        <p style={{ margin: 0, padding: '.7rem .9rem 0', fontSize: '.8rem', color: 'var(--muted)' }}>
+          {description}
+        </p>
+      ) : null}
+      <div style={{ padding: 'var(--space-md) .9rem' }}>{children}</div>
+    </Group>
   );
 }

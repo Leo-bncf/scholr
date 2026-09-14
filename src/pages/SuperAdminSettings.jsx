@@ -1,16 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { CheckCircle2, Loader2, Palette, Settings } from 'lucide-react';
+import { Loader2, Palette } from 'lucide-react';
 import SuperAdminLoadingState from '@/components/admin/super-admin/SuperAdminLoadingState';
-import SuperAdminPageHeader from '@/components/admin/super-admin/SuperAdminPageHeader';
 import SuperAdminShell from '@/components/admin/super-admin/SuperAdminShell';
 import ConfigSectionCard from '@/components/admin/super-admin/settings/ConfigSectionCard';
+import { Segmented } from '@/components/app/AppShell';
 import FeatureFlagToggleGroup from '@/components/admin/super-admin/settings/FeatureFlagToggleGroup';
 import SchoolOverridesTable from '@/components/admin/super-admin/settings/SchoolOverridesTable';
 import IntegrationStatusCard from '@/components/admin/super-admin/operational/IntegrationStatusCard';
@@ -180,46 +178,46 @@ export default function SuperAdminSettings() {
   }
 
   return (
-    <SuperAdminShell activeItem="settings" currentUser={currentUser}>
-      <SuperAdminPageHeader
-        title="Platform Settings"
-        subtitle="Configuration, customization, and operational tools"
-        actions={
-          activeTab === 'config' ? (
-            <Button
-              onClick={() => saveMutation.mutate()}
-              disabled={saveMutation.isPending}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2"
-            >
-              {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Settings className="w-4 h-4" />}
-              Save Changes
-            </Button>
-          ) : null
-        }
-      />
-
-      {/* Tab Bar */}
-      <div className="flex gap-1 mb-6 border-b border-slate-200">
-        {TABS.map((tab) => (
+    <SuperAdminShell
+      activeItem="settings"
+      currentUser={currentUser}
+      title="Settings"
+      eyebrow="Platform-wide defaults"
+      actions={
+        activeTab === 'config' ? (
           <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
-              activeTab === tab.key
-                ? 'border-indigo-600 text-indigo-600'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
+            type="button"
+            onClick={() => saveMutation.mutate()}
+            disabled={saveMutation.isPending}
+            className="pub-btn pub-btn-gold scholr-focus"
           >
-            {tab.label}
+            {saveMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+            Save changes
           </button>
-        ))}
+        ) : null
+      }
+    >
+      <div style={{ marginBottom: 'var(--space-lg)' }}>
+        <Segmented
+          label="Settings section"
+          value={activeTab}
+          onChange={setActiveTab}
+          options={TABS.map((t) => ({ value: t.key, label: t.label }))}
+        />
       </div>
 
       {saved && (
-        <Alert className="mb-5 bg-green-50 border-green-200">
-          <CheckCircle2 className="w-4 h-4 text-green-600" />
-          <AlertDescription className="text-green-800 ml-3 text-sm">Platform settings saved successfully.</AlertDescription>
-        </Alert>
+        <p
+          role="status"
+          style={{
+            margin: '0 0 var(--space-md)', padding: '.55rem .8rem',
+            fontSize: '.83rem', color: 'var(--good)',
+            background: 'var(--good-sf)', border: '1px solid var(--good)',
+            borderRadius: 'var(--radius-control)',
+          }}
+        >
+          Platform settings saved.
+        </p>
       )}
 
       {activeTab === 'config' && (
@@ -231,20 +229,20 @@ export default function SuperAdminSettings() {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
-              <Label className="text-sm font-medium text-slate-900">Default Trial Days</Label>
+              <Label className="scholr-label">Default Trial Days</Label>
               <Input
                 type="number"
                 value={formData.default_trial_days}
                 onChange={(e) => setFormData((prev) => ({ ...prev, default_trial_days: Number(e.target.value || 0) }))}
-                className="mt-1.5"
+                className="app-input scholr-focus"
               />
             </div>
             <div>
-              <Label className="text-sm font-medium text-slate-900">Default School Plan</Label>
+              <Label className="scholr-label">Default School Plan</Label>
               <select
                 value={DEFAULT_SCHOOL_PLAN}
                 disabled
-                className="w-full mt-1.5 px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 text-sm text-slate-500"
+                className="app-input scholr-focus"
               >
                 {SCHOOL_PLAN_OPTIONS.map((option) => (
                   <option key={option.value} value={option.value}>{option.label}</option>
@@ -252,31 +250,31 @@ export default function SuperAdminSettings() {
               </select>
             </div>
             <div className="md:col-span-2">
-              <Label className="text-sm font-medium text-slate-900">Notification Email</Label>
+              <Label className="scholr-label">Notification Email</Label>
               <Input
                 type="email"
                 value={formData.default_notification_email}
                 onChange={(e) => setFormData((prev) => ({ ...prev, default_notification_email: e.target.value }))}
                 placeholder="ops@yourplatform.com"
-                className="mt-1.5"
+                className="app-input scholr-focus"
               />
             </div>
             <div>
-              <Label className="text-sm font-medium text-slate-900">Theme Mode</Label>
+              <Label className="scholr-label">Theme Mode</Label>
               <select
                 value={formData.theme_mode}
                 onChange={(e) => setFormData((prev) => ({ ...prev, theme_mode: e.target.value }))}
-                className="w-full mt-1.5 px-3 py-2 border border-slate-200 rounded-lg bg-white text-sm text-slate-700"
+                className="app-input scholr-focus"
               >
                 <option value="light">Light</option>
                 <option value="dark">Dark</option>
                 <option value="system">System</option>
               </select>
             </div>
-            <div className="flex items-center justify-between border border-slate-200 rounded-lg px-3 py-2 mt-7 md:mt-0">
+            <div className="flex items-center justify-between rounded-lg px-3 py-2 mt-7 md:mt-0" style={{ border: '1px solid var(--rule)' }}>
               <div>
-                <p className="text-sm font-medium text-slate-900">Allow School Branding Overrides</p>
-                <p className="text-xs text-slate-500">Schools can customize their own branding.</p>
+                <p className="scholr-label">Allow School Branding Overrides</p>
+                <p className="text-xs" style={{ color: 'var(--muted)' }}>Schools can customize their own branding.</p>
               </div>
               <Switch
                 checked={!!formData.allow_school_brand_overrides}
@@ -299,40 +297,40 @@ export default function SuperAdminSettings() {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
-              <Label className="text-sm font-medium text-slate-900">Primary Color</Label>
+              <Label className="scholr-label">Primary Color</Label>
               <Input
                 value={formData.default_primary_color}
                 onChange={(e) => setFormData((prev) => ({ ...prev, default_primary_color: e.target.value }))}
-                className="mt-1.5"
+                className="app-input scholr-focus"
               />
             </div>
             <div>
-              <Label className="text-sm font-medium text-slate-900">Accent Color</Label>
+              <Label className="scholr-label">Accent Color</Label>
               <Input
                 value={formData.default_accent_color}
                 onChange={(e) => setFormData((prev) => ({ ...prev, default_accent_color: e.target.value }))}
-                className="mt-1.5"
+                className="app-input scholr-focus"
               />
             </div>
             <div className="md:col-span-2">
-              <Label className="text-sm font-medium text-slate-900">Logo URL</Label>
+              <Label className="scholr-label">Logo URL</Label>
               <Input
                 value={formData.default_logo_url}
                 onChange={(e) => setFormData((prev) => ({ ...prev, default_logo_url: e.target.value }))}
                 placeholder="https://example.com/logo.png"
-                className="mt-1.5"
+                className="app-input scholr-focus"
               />
             </div>
           </div>
 
-          <div className="rounded-xl border border-slate-200 p-5 bg-slate-50">
+          <div className="rounded-xl p-5" style={{ border: '1px solid var(--rule)', background: 'var(--surface-sunk)' }}>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white" style={{ backgroundColor: formData.default_primary_color }}>
                 <Palette className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-900">Brand Preview</p>
-                <p className="text-xs text-slate-500">Inherited baseline style for schools</p>
+                <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>Brand Preview</p>
+                <p className="text-xs" style={{ color: 'var(--muted)' }}>Inherited baseline style for schools</p>
               </div>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -383,7 +381,7 @@ export default function SuperAdminSettings() {
           onReset={resetSchoolOverride}
         />
 
-        <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-500">
+        <div className="mt-5 rounded-lg px-4 py-3 text-xs" style={{ border: '1px solid var(--rule)', background: 'var(--surface-sunk)', color: 'var(--muted)' }}>
           Use this for staged rollouts, pilot groups, and temporary school-specific experiments.
         </div>
       </ConfigSectionCard>

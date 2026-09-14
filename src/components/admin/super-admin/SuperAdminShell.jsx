@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-  Activity, BarChart3, BookOpen, CalendarClock, CreditCard, FileText,
-  Headphones, HeartPulse, School, Settings, Users, Zap,
+  Activity, BarChart3, CalendarClock, CreditCard, FileText,
+  Headphones, HeartPulse, School, Settings, Users,
 } from 'lucide-react';
 import AppSidebar from '@/components/app/AppSidebar';
 import AppShell from '@/components/app/AppShell';
@@ -26,8 +26,6 @@ const NAV = [
   { key: 'timetables', label: 'Timetables', page: 'SuperAdminTimetables', icon: CalendarClock },
   { key: 'billing',    label: 'Billing',    page: 'SuperAdminBilling',    icon: CreditCard },
   { key: 'analytics',  label: 'Analytics',  page: 'SuperAdminAnalytics',  icon: BarChart3 },
-  { key: 'automation', label: 'Automation', page: 'SuperAdminAutomation', icon: Zap },
-  { key: 'plans',      label: 'Plans',      page: 'SuperAdminPlans',      icon: BookOpen },
   { key: 'health',     label: 'Health',     page: 'SuperAdminHealth',     icon: HeartPulse },
   { key: 'audit-logs', label: 'Audit log',  page: 'SuperAdminAuditLogs',  icon: FileText },
   { key: 'support',    label: 'Support',    page: 'SuperAdminSupport',    icon: Headphones },

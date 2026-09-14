@@ -4,30 +4,24 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Cell,
   Legend,
   Line,
   LineChart,
-  Pie,
-  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
-import {
-  BarChart3,
-  Download,
-  DollarSign,
-  Users,
-  Building2,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Download } from 'lucide-react';
 import SuperAdminLoadingState from '@/components/admin/super-admin/SuperAdminLoadingState';
-import SuperAdminPageHeader from '@/components/admin/super-admin/SuperAdminPageHeader';
 import SuperAdminShell from '@/components/admin/super-admin/SuperAdminShell';
-import AnalyticsKpiCard from '@/components/admin/super-admin/AnalyticsKpiCard';
-import AnalyticsChartCard from '@/components/admin/super-admin/AnalyticsChartCard';
+import { Group, GroupEmpty, Segmented } from '@/components/app/AppShell';
+import StatCard from '@/components/app/StatCard';
+import StatRow from '@/components/app/StatRow';
+import StatusChip from '@/components/app/StatusChip';
+import Meter from '@/components/app/Meter';
+import DataTable from '@/components/app/DataTable';
+import { SelectField } from '@/components/app/Field';
 import { useSuperAdminAccess } from '@/components/hooks/useSuperAdminAccess';
 import { useSuperAdminAnalyticsQuery } from '@/components/hooks/useSuperAdminData';
 import {
@@ -38,19 +32,18 @@ import {
 } from '@/components/admin/super-admin/superAdminConfig';
 
 const RANGE_OPTIONS = [
-  { value: 90, label: 'Last 90 days' },
-  { value: 180, label: 'Last 6 months' },
-  { value: 365, label: 'Last 12 months' },
+  { value: 90, label: '90 days' },
+  { value: 180, label: '6 months' },
+  { value: 365, label: '12 months' },
 ];
 
 const REPORT_OPTIONS = [
   { value: 'schools', label: 'Schools' },
   { value: 'billing', label: 'Billing' },
-  { value: 'adoption', label: 'Feature Adoption' },
-  { value: 'growth', label: 'Growth Trends' },
+  { value: 'adoption', label: 'Feature adoption' },
+  { value: 'growth', label: 'Growth trends' },
 ];
 
-const CHART_COLORS = ['#4f46e5', '#0f766e', '#d97706', '#dc2626', '#7c3aed', '#2563eb'];
 
 function startOfMonth(date) {
   return new Date(date.getFullYear(), date.getMonth(), 1);
@@ -143,7 +136,7 @@ export default function SuperAdminAnalytics() {
 
     const billingMix = ['trial', 'active', 'past_due', 'incomplete', 'canceled']
       .map((status) => ({
-        name: getBillingStatusMeta(status, 'light').label,
+        name: getBillingStatusMeta(status).label,
         value: schools.filter((school) => (school.billing_status || 'trial') === status).length,
       }))
       .filter((item) => item.value > 0);
@@ -225,172 +218,213 @@ export default function SuperAdminAnalytics() {
   const reportRows = analytics.reportRows[reportType] || [];
   const reportPreview = reportRows.slice(0, 8);
 
+  const money = (n) => `€${Math.round(n).toLocaleString('en-IE')}`;
+
+  // Recharts draws into SVG, and SVG resolves CSS custom properties in fill
+  // and stroke — so the series follow the theme with no JS and no re-render.
+  const axis = { stroke: 'var(--chart-axis)', fontSize: 11, tickLine: false, axisLine: false };
+  const tooltip = {
+    contentStyle: {
+      background: 'var(--surface)',
+      border: '1px solid var(--rule)',
+      borderRadius: 'var(--radius-control)',
+      fontSize: '.8rem',
+      color: 'var(--ink)',
+      boxShadow: 'var(--lift-md)',
+    },
+    labelStyle: { color: 'var(--muted)' },
+    cursor: { fill: 'color-mix(in oklab, var(--ink) 5%, transparent)' },
+  };
+
+  const billingTotal = analytics.billingMix.reduce((sum, item) => sum + item.value, 0);
+
   return (
-    <SuperAdminShell activeItem="analytics" currentUser={currentUser}>
-      <SuperAdminPageHeader
-        title="Advanced Analytics & Reporting"
-        subtitle="Deep dive dashboards, custom reports, and lightweight forecasting"
-        actions={
-          <div className="flex flex-wrap items-center gap-2">
-            <select
-              value={rangeDays}
-              onChange={(e) => setRangeDays(Number(e.target.value))}
-              className="px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700"
-            >
-              {RANGE_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>{option.label}</option>
+    <SuperAdminShell
+      activeItem="analytics"
+      currentUser={currentUser}
+      title="Analytics"
+      eyebrow="How the platform is moving"
+      actions={
+        <div style={{ display: 'flex', alignItems: 'center', gap: '.6rem' }}>
+          <Segmented
+            label="Time range"
+            value={rangeDays}
+            onChange={(v) => setRangeDays(Number(v))}
+            options={RANGE_OPTIONS}
+          />
+          <button
+            type="button"
+            className="pub-btn pub-btn-line scholr-focus"
+            onClick={() => downloadCsv(`scholr-${reportType}-report.csv`, reportRows)}
+          >
+            <Download className="w-4 h-4" />
+            Export CSV
+          </button>
+        </div>
+      }
+    >
+      <StatRow>
+        <StatCard label="Schools added" value={analytics.rangedSchools.length} hint={`in the last ${rangeDays} days`} />
+        <StatCard label="People added" value={analytics.rangedMemberships.length} hint="new memberships" />
+        <StatCard label="Activity" value={analytics.rangedAuditLogs.length} hint="audited events" />
+        <StatCard
+          label="Est. MRR"
+          value={money(schools.filter((s) => s.billing_status === 'active').reduce((sum, s) => sum + getPlanPrice(s.plan), 0))}
+          hint="from list prices, not Stripe"
+        />
+      </StatRow>
+
+      <Group title="Growth" action={<span className="scholr-label">new schools and people per month</span>}>
+        <div style={{ height: '17rem', padding: 'var(--space-md) .6rem var(--space-sm) 0' }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={analytics.schoolGrowthSeries} barGap={2}>
+              <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
+              <XAxis dataKey="month" {...axis} />
+              <YAxis allowDecimals={false} width={32} {...axis} />
+              <Tooltip {...tooltip} />
+              <Legend wrapperStyle={{ fontSize: '.78rem', color: 'var(--muted)' }} />
+              <Bar name="Schools" dataKey="newSchools" fill="var(--series-1)" radius={[3, 3, 0, 0]} />
+              <Bar name="People" dataKey="newUsers" fill="var(--series-2)" radius={[3, 3, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </Group>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6">
+        <Group title="Feature adoption" action={<span className="scholr-label">schools using each area</span>}>
+          {analytics.featureAdoption.length === 0 ? (
+            <GroupEmpty>Nothing has been used yet.</GroupEmpty>
+          ) : (
+            <div style={{ height: '17rem', padding: 'var(--space-md) .9rem var(--space-sm) 0' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                {/* One series, so no legend — the group title names it. */}
+                <BarChart data={analytics.featureAdoption} layout="vertical" margin={{ left: 8 }}>
+                  <CartesianGrid stroke="var(--chart-grid)" horizontal={false} />
+                  <XAxis type="number" allowDecimals={false} {...axis} />
+                  <YAxis type="category" dataKey="feature" width={110} {...axis} />
+                  <Tooltip {...tooltip} />
+                  <Bar dataKey="schools" fill="var(--series-1)" radius={[0, 3, 3, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </Group>
+
+        {/* Billing state is a status, so it keeps the reserved palette and is
+            read as parts of one whole. A pie would have made five slices of a
+            handful of schools harder to compare, not easier. */}
+        <Group title="Billing mix" action={<span className="scholr-label">{billingTotal} schools</span>}>
+          {analytics.billingMix.length === 0 ? (
+            <GroupEmpty>No school has a billing state yet.</GroupEmpty>
+          ) : (
+            <div className="px-4 py-3.5 flex flex-col gap-2.5">
+              {analytics.billingMix.map((item) => (
+                <div key={item.name}>
+                  <div className="flex items-center gap-2">
+                    <StatusChip tone={item.tone}>{item.name}</StatusChip>
+                    <span
+                      className="ml-auto text-sm scholr-num"
+                      style={{ fontFamily: 'var(--font-mono)', color: 'var(--body)' }}
+                    >
+                      {item.value}
+                    </span>
+                  </div>
+                  <div className="mt-1">
+                    <Meter value={billingTotal ? (item.value / billingTotal) * 100 : 0} height={4} />
+                  </div>
+                </div>
               ))}
-            </select>
-            <Button
-              variant="outline"
-              className="gap-2"
-              onClick={() => downloadCsv(`super-admin-${reportType}-report.csv`, reportRows)}
-            >
-              <Download className="w-4 h-4" />
-              Export CSV
-            </Button>
-          </div>
-        }
-      />
-
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <AnalyticsKpiCard
-          title="Schools Added"
-          value={analytics.rangedSchools.length}
-          description={`Created in last ${rangeDays} days`}
-          icon={Building2}
-          iconClassName="text-indigo-500"
-        />
-        <AnalyticsKpiCard
-          title="New Users"
-          value={analytics.rangedMemberships.length}
-          description={`Memberships created in last ${rangeDays} days`}
-          icon={Users}
-          iconClassName="text-emerald-500"
-        />
-        <AnalyticsKpiCard
-          title="Activity Events"
-          value={analytics.rangedAuditLogs.length}
-          description="Audit events in selected period"
-          icon={BarChart3}
-          iconClassName="text-blue-500"
-        />
-        <AnalyticsKpiCard
-          title="Current MRR"
-          value={`$${schools.filter((school) => school.billing_status === 'active').reduce((sum, school) => sum + getPlanPrice(school.plan), 0).toLocaleString()}`}
-          description="Estimated recurring revenue"
-          icon={DollarSign}
-          iconClassName="text-amber-500"
-        />
+            </div>
+          )}
+        </Group>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
-        <AnalyticsChartCard title="Platform Growth" subtitle="New schools, users, and activity over time">
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={analytics.schoolGrowthSeries}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="newSchools" fill="#4f46e5" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="newUsers" fill="#0f766e" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </AnalyticsChartCard>
-
-        <AnalyticsChartCard title="Feature Adoption" subtitle="How many schools are using each platform area">
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={analytics.featureAdoption} layout="vertical" margin={{ left: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                <XAxis type="number" />
-                <YAxis type="category" dataKey="feature" width={120} />
-                <Tooltip />
-                <Bar dataKey="schools" fill="#7c3aed" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </AnalyticsChartCard>
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
-        <AnalyticsChartCard title="Billing Mix" subtitle="Current subscription status distribution">
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={analytics.billingMix} dataKey="value" nameKey="name" outerRadius={110} label>
-                  {analytics.billingMix.map((entry, index) => (
-                    <Cell key={entry.name} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </AnalyticsChartCard>
-
-        <AnalyticsChartCard title="Forecasting" subtitle="Simple projection of school growth and revenue run rate">
-          <div className="h-80">
+      {/* Two charts, not one with two y-axes. The old version plotted schools
+          and euros against a left and a right scale, which lets you draw any
+          crossing you like by choosing the ranges — it says nothing true. */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6">
+        <Group
+          title="Schools, if the last three months repeat"
+          action={<span className="scholr-label">not a forecast</span>}
+        >
+          <div style={{ height: '13rem', padding: 'var(--space-md) .6rem var(--space-sm) 0' }}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={analytics.forecastSeries}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="month" />
-                <YAxis yAxisId="left" />
-                <YAxis yAxisId="right" orientation="right" />
-                <Tooltip />
-                <Legend />
-                <Line yAxisId="left" type="monotone" dataKey="projectedSchools" stroke="#4f46e5" strokeWidth={2} />
-                <Line yAxisId="right" type="monotone" dataKey="projectedMRR" stroke="#d97706" strokeWidth={2} />
+                <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
+                <XAxis dataKey="month" {...axis} />
+                <YAxis allowDecimals={false} width={32} {...axis} />
+                <Tooltip {...tooltip} />
+                <Line
+                  type="monotone"
+                  dataKey="projectedSchools"
+                  name="Schools"
+                  stroke="var(--series-1)"
+                  strokeWidth={2}
+                  dot={{ r: 3, strokeWidth: 0, fill: 'var(--series-1)' }}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
-        </AnalyticsChartCard>
+        </Group>
+
+        <Group
+          title="Run rate, on the same assumption"
+          action={<span className="scholr-label">list prices</span>}
+        >
+          <div style={{ height: '13rem', padding: 'var(--space-md) .6rem var(--space-sm) 0' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={analytics.forecastSeries}>
+                <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
+                <XAxis dataKey="month" {...axis} />
+                <YAxis width={48} tickFormatter={(v) => money(v)} {...axis} />
+                <Tooltip {...tooltip} formatter={(v) => money(v)} />
+                <Line
+                  type="monotone"
+                  dataKey="projectedMRR"
+                  name="MRR"
+                  stroke="var(--series-3)"
+                  strokeWidth={2}
+                  dot={{ r: 3, strokeWidth: 0, fill: 'var(--series-3)' }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </Group>
       </div>
 
-      <AnalyticsChartCard
-        title="Custom Reports"
-        subtitle="Choose a report type, preview it, and export the full dataset"
-        actions={
-          <select
-            value={reportType}
-            onChange={(e) => setReportType(e.target.value)}
-            className="px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700"
-          >
-            {REPORT_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>{option.label}</option>
-            ))}
-          </select>
+      <Group
+        title="Export"
+        action={
+          <span style={{ minWidth: '11rem' }}>
+            <SelectField
+              value={reportType}
+              onChange={setReportType}
+              label="Report"
+              options={REPORT_OPTIONS}
+            />
+          </span>
         }
       >
-        {!reportPreview || reportPreview.length === 0 ? (
-          <div className="text-sm text-slate-500 py-8 text-center">No report data available.</div>
+        {reportPreview.length === 0 ? (
+          <GroupEmpty>That report has no rows yet.</GroupEmpty>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-200">
-                  {reportPreview[0] && Object.keys(reportPreview[0]).map((key) => (
-                    <th key={key} className="text-left py-2 pr-4 text-xs uppercase tracking-wide text-slate-500">{key.replaceAll('_', ' ')}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {reportPreview.map((row, index) => (
-                  <tr key={index} className="border-b border-slate-100">
-                    {row && Object.values(row).map((value, cellIndex) => (
-                      <td key={cellIndex} className="py-2 pr-4 text-slate-700 whitespace-nowrap">{String(value)}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <>
+            <DataTable
+              columns={Object.keys(reportPreview[0]).map((key) => ({
+                key,
+                header: key.replaceAll('_', ' '),
+                render: (row) => String(row[key] ?? '—'),
+              }))}
+              rows={reportPreview}
+              rowKey={(_, i) => i}
+              empty="No rows."
+            />
+            <div style={{ padding: '.6rem .9rem', fontSize: '.78rem', color: 'var(--muted)' }}>
+              Showing {reportPreview.length} of {reportRows.length}. Export CSV takes all of them.
+            </div>
+          </>
         )}
-      </AnalyticsChartCard>
+      </Group>
     </SuperAdminShell>
   );
 }

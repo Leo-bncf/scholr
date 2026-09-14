@@ -1,32 +1,41 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button';
-import { Search, Users, Trash2, UserX } from 'lucide-react';
+import { Trash2, UserX } from 'lucide-react';
 import ManageUserDialog from '@/components/admin/ManageUserDialog';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
 import SuperAdminLoadingState from '@/components/admin/super-admin/SuperAdminLoadingState';
-import SuperAdminPageHeader from '@/components/admin/super-admin/SuperAdminPageHeader';
 import SuperAdminPagination from '@/components/admin/super-admin/SuperAdminPagination';
 import SuperAdminShell from '@/components/admin/super-admin/SuperAdminShell';
 import { useSuperAdminAccess } from '@/components/hooks/useSuperAdminAccess';
 import { usePaginatedItems, useSuperAdminUsersQuery } from '@/components/hooks/useSuperAdminData';
 import { useToast } from '@/components/ui/use-toast';
+import { Group, GroupEmpty } from '@/components/app/AppShell';
+import StatusChip from '@/components/app/StatusChip';
+import DataTable from '@/components/app/DataTable';
+import { Field, FilterBar, SearchField, SelectField } from '@/components/app/Field';
 import * as fns from '@/data/functions';
 
 const PAGE_SIZE = 25;
 
-const roleColors = {
-  super_admin: 'bg-red-900/50 text-red-300 border-red-800',
-  school_admin: 'bg-purple-900/50 text-purple-300 border-purple-800',
-  ib_coordinator: 'bg-blue-900/50 text-blue-300 border-blue-800',
-  teacher: 'bg-emerald-900/50 text-emerald-300 border-emerald-800',
-  student: 'bg-indigo-900/50 text-indigo-300 border-indigo-800',
-  parent: 'bg-amber-900/50 text-amber-300 border-amber-800',
-  user: 'bg-slate-700/50 text-slate-400 border-slate-600',
+/* A role is an attribute, not a health state, so it wears the neutral chip —
+ * this was seven Tailwind hues, all of them the dark variant, on a light page.
+ * super_admin is the one exception: it is worth noticing in a list, so it gets
+ * the filled neutral rather than a colour that would read as "broken". */
+const ROLE_LABELS = {
+  super_admin: 'Super admin',
+  school_admin: 'School admin',
+  ib_coordinator: 'Coordinator',
+  teacher: 'Teacher',
+  student: 'Student',
+  parent: 'Parent',
+  user: 'No role',
 };
 
-const ROLES = ['all', 'super_admin', 'school_admin', 'ib_coordinator', 'teacher', 'student', 'parent', 'user'];
+const ROLE_OPTIONS = [
+  { value: 'all', label: 'Any role' },
+  ...Object.entries(ROLE_LABELS).map(([value, label]) => ({ value, label })),
+];
 
 export default function SuperAdminUsers() {
   const navigate = useNavigate();
@@ -78,7 +87,7 @@ export default function SuperAdminUsers() {
     setIsDeleting(true);
     try {
       const res = await fns.invoke('superAdminDeleteUser', { userId: userToDelete.id });
-      const errMsg = res?.error || res?.error;
+      const errMsg = res?.error;
       const failures = res?.failures || [];
       if (errMsg) throw new Error(errMsg);
       if (failures.length > 0) throw new Error(failures[0].error || 'Delete failed');
@@ -136,180 +145,162 @@ export default function SuperAdminUsers() {
     return null;
   }
 
+  const iconBtn = {
+    padding: '.3rem', borderRadius: 'var(--radius-control)', border: 'none',
+    background: 'transparent', color: 'var(--faint)', cursor: 'pointer', lineHeight: 0,
+  };
+
+  const columns = [
+    {
+      key: 'user',
+      header: 'User',
+      render: (user) => (
+        <span style={{ display: 'flex', alignItems: 'center', gap: '.6rem', minWidth: 0 }}>
+          <span
+            aria-hidden="true"
+            style={{
+              width: '1.75rem', height: '1.75rem', flex: 'none', borderRadius: '999px',
+              display: 'grid', placeItems: 'center',
+              background: 'var(--surface-sunk)', color: 'var(--muted)',
+              fontSize: '.7rem', fontWeight: 600,
+            }}
+          >
+            {(user.full_name || user.email || '?')[0].toUpperCase()}
+          </span>
+          <span style={{ minWidth: 0 }}>
+            <span style={{ display: 'block', color: 'var(--ink)', overflowWrap: 'anywhere' }}>
+              {user.full_name || 'No name on file'}
+            </span>
+            <span style={{ display: 'block', fontSize: '.76rem', color: 'var(--muted)', overflowWrap: 'anywhere' }}>
+              {user.email || 'No email'}
+            </span>
+          </span>
+        </span>
+      ),
+    },
+    { key: 'school', header: 'School', render: (user) => user.school_name || '—' },
+    {
+      key: 'role',
+      header: 'Role',
+      render: (user) => (
+        <StatusChip tone={user.role === 'super_admin' ? 'info' : 'mute'}>
+          {ROLE_LABELS[user.role] || user.role || 'No role'}
+        </StatusChip>
+      ),
+    },
+    {
+      key: 'joined',
+      header: 'Joined',
+      render: (user) =>
+        user.created_at
+          ? new Date(user.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+          : '—',
+    },
+    {
+      key: 'actions',
+      header: '',
+      width: '7.5rem',
+      render: (user) => (
+        <span style={{ display: 'flex', gap: '.3rem', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <button
+            type="button"
+            className="pub-btn pub-btn-line scholr-focus"
+            style={{ fontSize: '.75rem', padding: '.22rem .6rem' }}
+            onClick={() => { setSelectedUser(user); setManageDialogOpen(true); }}
+          >
+            Manage
+          </button>
+          <button
+            type="button"
+            className="scholr-focus"
+            style={iconBtn}
+            aria-label={`Delete ${user.email || user.id}`}
+            onClick={() => setUserToDelete(user)}
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </span>
+      ),
+    },
+  ];
+
   return (
     <>
-      <SuperAdminShell activeItem="users" currentUser={currentUser}>
-        <SuperAdminPageHeader
-          title="User Management"
-          subtitle={`${users.length} total users across all schools`}
-          rightContent={
-            blankUserCount > 0 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setBulkDeleteOpen(true)}
-                className="text-xs gap-1.5 border-amber-200 text-amber-700 hover:bg-amber-50"
-              >
-                <UserX className="w-3.5 h-3.5" />
-                Clean up {blankUserCount} blank account{blankUserCount === 1 ? '' : 's'}
-              </Button>
-            )
-          }
-        />
-
+      <SuperAdminShell
+        activeItem="users"
+        currentUser={currentUser}
+        title="Users"
+        eyebrow={`${users.length} across every school`}
+        actions={
+          blankUserCount > 0 ? (
+            <button
+              type="button"
+              onClick={() => setBulkDeleteOpen(true)}
+              className="pub-btn pub-btn-line scholr-focus"
+            >
+              <UserX className="w-4 h-4" />
+              Clean up {blankUserCount} blank account{blankUserCount === 1 ? '' : 's'}
+            </button>
+          ) : null
+        }
+      >
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 mb-5">
-            {error?.response?.data?.error || error.message || 'Failed to load users'}
-          </div>
+          <Group title="Could not load users">
+            <GroupEmpty>
+              {error?.response?.data?.error || error.message || 'The user list failed to load.'}
+            </GroupEmpty>
+          </Group>
         )}
 
-        <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-4 mb-5 space-y-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search by name or email..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <div>
-              <p className="text-xs text-slate-500 mb-1 font-medium">Role</p>
-              <div className="flex flex-wrap gap-1">
-                {ROLES.map((role) => (
-                  <button
-                    key={role}
-                    onClick={() => setFilterRole(role)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
-                      filterRole === role
-                        ? 'bg-indigo-600 text-white'
-                        : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                    }`}
-                  >
-                    {role === 'all' ? 'All Roles' : role.replace('_', ' ')}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="text-xs text-slate-500 mb-1 font-medium">School</p>
-              <select
-                value={filterSchool}
-                onChange={(e) => setFilterSchool(e.target.value)}
-                className="px-3 py-1 bg-white border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        <Group
+          title={`Users · ${totalItems}`}
+          action={
+            blankUserCount > 0 ? (
+              <button
+                type="button"
+                onClick={() => setShowBlankOnly(!showBlankOnly)}
+                className="scholr-focus scholr-label"
+                style={{
+                  border: 'none', background: 'transparent', cursor: 'pointer',
+                  color: showBlankOnly ? 'var(--brand)' : 'var(--muted)',
+                }}
               >
-                <option value="all">All Schools</option>
-                {schools.map((school) => (
-                  <option key={school.id} value={school.id}>{school.name}</option>
-                ))}
-              </select>
-            </div>
-
-            {blankUserCount > 0 && (
-              <div>
-                <p className="text-xs text-slate-500 mb-1 font-medium">Flagged</p>
-                <button
-                  onClick={() => setShowBlankOnly(!showBlankOnly)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
-                    showBlankOnly
-                      ? 'bg-amber-600 text-white'
-                      : 'bg-white border border-amber-200 text-amber-700 hover:bg-amber-50'
-                  }`}
-                >
-                  Blank accounts only ({blankUserCount})
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden">
-          <div className="px-5 py-3 border-b border-slate-200 flex items-center justify-between">
-            <span className="text-sm text-slate-500">
-              Showing <strong className="text-slate-900">{totalItems}</strong> matching users
-            </span>
+                {showBlankOnly ? 'Showing blank only' : `${blankUserCount} blank`}
+              </button>
+            ) : null
+          }
+        >
+          <div className="px-4 pt-3.5">
+            <FilterBar>
+              <Field label="Find" htmlFor="users-search">
+                <SearchField
+                  id="users-search"
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  placeholder="Name or email"
+                />
+              </Field>
+              <Field label="Role" htmlFor="users-role">
+                <SelectField id="users-role" value={filterRole} onChange={setFilterRole} label="Role" options={ROLE_OPTIONS} />
+              </Field>
+              <Field label="School" htmlFor="users-school">
+                <SelectField
+                  id="users-school"
+                  value={filterSchool}
+                  onChange={setFilterSchool}
+                  label="School"
+                  options={[{ value: 'all', label: 'Any school' }, ...schools.map((s) => ({ value: s.id, label: s.name }))]}
+                />
+              </Field>
+            </FilterBar>
           </div>
 
-          {paginatedItems.length === 0 ? (
-            <div className="text-center py-16 text-slate-500">
-              <Users className="w-10 h-10 mx-auto mb-3 opacity-30" />
-              <p className="text-sm">No users found</p>
-            </div>
-          ) : (
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left text-xs font-medium text-slate-500 uppercase tracking-wide px-5 py-3">User</th>
-                  <th className="text-left text-xs font-medium text-slate-500 uppercase tracking-wide px-4 py-3 hidden md:table-cell">School</th>
-                  <th className="text-left text-xs font-medium text-slate-500 uppercase tracking-wide px-4 py-3">Role</th>
-                  <th className="text-left text-xs font-medium text-slate-500 uppercase tracking-wide px-4 py-3 hidden lg:table-cell">Joined</th>
-                  <th className="px-4 py-3"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {paginatedItems.map((user) => (
-                  <tr key={user.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
-                          <span className="text-xs font-semibold text-slate-600">
-                            {(user.full_name || user.email || '?')[0].toUpperCase()}
-                          </span>
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium text-slate-900 truncate">{user.full_name || '—'}</p>
-                          <p className="text-xs text-slate-500 truncate">{user.email}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 hidden md:table-cell">
-                      <span className="text-sm text-slate-600">{user.school_name}</span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${roleColors[user.role] || roleColors.user}`}>
-                        {user.role || 'user'}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 hidden lg:table-cell">
-                      <span className="text-xs text-slate-500">
-                        {user.created_at
-                          ? new Date(user.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-                          : '—'}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <Button
-                          onClick={() => {
-                            setSelectedUser(user);
-                            setManageDialogOpen(true);
-                          }}
-                          variant="outline"
-                          size="sm"
-                          className="text-xs bg-white border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-50"
-                        >
-                          Manage
-                        </Button>
-                        <Button
-                          onClick={() => setUserToDelete(user)}
-                          variant="outline"
-                          size="sm"
-                          className="text-xs bg-white border-red-200 text-red-600 hover:text-red-700 hover:bg-red-50 h-8 w-8 p-0"
-                          title="Delete user"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+          <DataTable
+            columns={columns}
+            rows={paginatedItems}
+            rowKey={(user) => user.id}
+            empty="No user matches those filters."
+          />
 
           <SuperAdminPagination
             page={safePage}
@@ -318,7 +309,7 @@ export default function SuperAdminUsers() {
             pageSize={PAGE_SIZE}
             onPageChange={setPage}
           />
-        </div>
+        </Group>
       </SuperAdminShell>
 
       {selectedUser && (
