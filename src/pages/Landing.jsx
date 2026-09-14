@@ -174,7 +174,7 @@ function RoleExplorer({ sectionRef }) {
   };
 
   return (
-    <section ref={sectionRef} className="py-20 sm:py-28 border-t border-[var(--mkt-rule)]">
+    <section ref={sectionRef} className="py-20 sm:py-28">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
           <h2 className="text-2xl sm:text-[1.75rem] font-semibold tracking-[-0.02em] text-[var(--mkt-ink)]">
@@ -381,8 +381,19 @@ export default function Landing() {
           document, so they stay put at the top of the screen as the page
           scrolls beneath them rather than scrolling away with the hero.
           pointer-events-none so they never block clicks on the nav/content
-          that scrolls under them. */}
-      <div aria-hidden="true" className="pointer-events-none fixed inset-x-0 top-0 h-[28rem] overflow-hidden">
+          that scrolls under them. A mask fade (not overflow-hidden) closes
+          out the bottom edge, so the blur dissolves smoothly instead of
+          getting clipped into a hard rectangle as content scrolls behind
+          it — horizontal overflow is still caught by the global
+          `overflow-x: clip` on html/body. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-x-0 top-0 h-[28rem]"
+        style={{
+          WebkitMaskImage: 'linear-gradient(to bottom, black, black 45%, transparent 85%)',
+          maskImage: 'linear-gradient(to bottom, black, black 45%, transparent 85%)',
+        }}
+      >
         <div className="mkt-bloom-a absolute -top-24 left-[8%] h-96 w-96 rounded-full bg-[var(--mkt-accent)] opacity-[0.55] blur-2xl sm:h-[28rem] sm:w-[28rem]" />
         <div className="mkt-bloom-b absolute -top-16 right-[8%] h-80 w-80 rounded-full bg-[var(--mkt-accent)] opacity-[0.46] blur-2xl sm:h-[30rem] sm:w-[30rem]" />
       </div>
