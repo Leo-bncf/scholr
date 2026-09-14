@@ -55,6 +55,30 @@
      of our light page — which reads as "the dashboard is in night mode" even
      though every one of our own surfaces is light. */
   color-scheme: light;
+
+  /* ── Chart series ───────────────────────────────────────────────────────
+     Five categorical slots, assigned in fixed order and never cycled: a
+     sixth series folds into "Other" rather than inventing a hue.
+
+     These are not eyeballed. They were run through the palette validator for
+     lightness band, chroma floor, adjacent-pair separation under deuteranopia,
+     protanopia and tritanopia, and contrast against this surface, in both
+     modes. The previous set (#4f46e5 indigo, #0f766e teal, #d97706, #dc2626,
+     #7c3aed, #2563eb) failed three of those: two near-identical blues, a teal
+     that read grey, and #dc2626 — the reserved critical red — used as
+     decoration for whatever happened to be fourth.
+
+     --series-3 lands at 2.97:1 against the light surface, just under the 3:1
+     line, so every chart using it carries direct labels or a table view. That
+     is a requirement, not a preference. */
+  --series-1: #1E7A3E;
+  --series-2: #1C5FC9;
+  --series-3: #C08A00;
+  --series-4: #A6297E;
+  --series-5: #C2521A;
+  /* Chart furniture: recessive, never competing with the marks. */
+  --chart-grid: color-mix(in oklab, var(--ink) 8%, transparent);
+  --chart-axis: var(--faint);
   --paper:        oklch(98.8% 0.007 120);
   /* Never oklch(100% 0 0). Pure white reads flat and synthetic; the surface
      is tinted a trace toward the anchor hue so paper and card belong to the
@@ -212,6 +236,14 @@
    above; this block only aliases them. */
 :root[data-theme='dark'] {
   color-scheme: dark;
+  /* Re-stepped for the dark surface, not brightened by formula: the light
+     set leaves --series-2 and --series-4 under 3:1 on this ground. */
+  --series-1: #2C8A50;
+  --series-2: #4180E6;
+  --series-3: #C08A00;
+  --series-4: #C0509A;
+  --series-5: #CB5C30;
+
   --paper: var(--d-paper);        --surface: var(--d-surface);
   --surface-sunk: var(--d-sunk);  --ink: var(--d-ink);
   --body: var(--d-body);          --muted: var(--d-muted);
