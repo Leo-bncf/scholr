@@ -40,20 +40,20 @@ function MonthView({ currentDate, events, onSelectEvent }) {
   return (
     <div className="grid grid-cols-7 gap-2">
       {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((label) => (
-        <div key={label} className="px-2 py-2 text-xs font-semibold text-slate-500 uppercase">{label}</div>
+        <div key={label} className="px-2 py-2 text-xs font-semibold scholr-muted uppercase">{label}</div>
       ))}
       {days.map((date) => {
         const dayEvents = events.filter((event) => isSameDay(new Date(event.start_time), date));
         return (
-          <div key={date.toISOString()} className={`min-h-36 rounded-xl border p-2 ${isSameMonth(date, currentDate) ? 'bg-white border-slate-200' : 'bg-slate-50 border-slate-100'}`}>
-            <p className="text-sm font-semibold text-slate-700 mb-2">{format(date, 'd')}</p>
+          <div key={date.toISOString()} className={`min-h-36 rounded-xl border p-2 ${isSameMonth(date, currentDate) ? 'bg-white scholr-rule' : 'scholr-sunk scholr-rule-soft'}`}>
+            <p className="text-sm font-semibold scholr-body mb-2">{format(date, 'd')}</p>
             <div className="space-y-1.5">
               {dayEvents.slice(0, 4).map((event) => (
                 <button key={event.id} onClick={() => onSelectEvent(event)} className={`w-full text-left text-xs rounded-lg px-2 py-1 border truncate ${eventColors[event.type] || eventColors.event}`}>
                   {event.title}
                 </button>
               ))}
-              {dayEvents.length > 4 && <p className="text-xs text-slate-400">+{dayEvents.length - 4} more</p>}
+              {dayEvents.length > 4 && <p className="text-xs scholr-faint">+{dayEvents.length - 4} more</p>}
             </div>
           </div>
         );
@@ -71,11 +71,11 @@ function WeekView({ currentDate, events, onSelectEvent }) {
       {days.map((date) => {
         const dayEvents = events.filter((event) => isSameDay(new Date(event.start_time), date));
         return (
-          <div key={date.toISOString()} className="bg-white rounded-xl border border-slate-200 p-3 min-h-56">
-            <p className="text-xs uppercase text-slate-500 font-semibold">{format(date, 'EEE')}</p>
-            <p className="text-lg font-bold text-slate-900">{format(date, 'd')}</p>
+          <div key={date.toISOString()} className="bg-white rounded-xl border scholr-rule p-3 min-h-56">
+            <p className="text-xs uppercase scholr-muted font-semibold">{format(date, 'EEE')}</p>
+            <p className="text-lg font-bold scholr-ink">{format(date, 'd')}</p>
             <div className="mt-3 space-y-2">
-              {dayEvents.length === 0 ? <p className="text-xs text-slate-400">No events</p> : dayEvents.map((event) => (
+              {dayEvents.length === 0 ? <p className="text-xs scholr-faint">No events</p> : dayEvents.map((event) => (
                 <button key={event.id} onClick={() => onSelectEvent(event)} className={`w-full text-left rounded-lg border px-2.5 py-2 ${eventColors[event.type] || eventColors.event}`}>
                   <p className="text-xs font-semibold truncate">{event.title}</p>
                   <p className="text-[11px] mt-1 opacity-80">{format(new Date(event.start_time), 'h:mm a')}</p>
@@ -190,14 +190,14 @@ export default function UnifiedCalendar() {
 
   return (
     <RoleGuard allowedRoles={['student', 'teacher', 'parent', 'school_admin', 'ib_coordinator', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar links={sidebarLinks} role={role} schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         <main className="app-offset p-4 md:p-8">
           <div className="max-w-7xl mx-auto space-y-6">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Unified Calendar</h1>
-                <p className="text-sm text-slate-600 mt-1">Classes, deadlines, exams, and school events in one place.</p>
+                <h1 className="text-2xl md:text-3xl font-bold scholr-ink">Unified Calendar</h1>
+                <p className="text-sm scholr-muted mt-1">Classes, deadlines, exams, and school events in one place.</p>
               </div>
               {canCreate && (
                 <Button onClick={() => setCreateOpen(true)}>
@@ -206,11 +206,11 @@ export default function UnifiedCalendar() {
               )}
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-5 space-y-4">
+            <div className="bg-white rounded-2xl border scholr-rule shadow-sm p-4 md:p-5 space-y-4">
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="icon" onClick={() => setCurrentDate(view === 'month' ? subMonths(currentDate, 1) : addDays(currentDate, -7))}><ChevronLeft className="w-4 h-4" /></Button>
-                  <div className="min-w-[180px] text-center font-semibold text-slate-900">{view === 'month' ? format(currentDate, 'MMMM yyyy') : `Week of ${format(startOfWeek(currentDate, { weekStartsOn: 1 }), 'MMM d')}`}</div>
+                  <div className="min-w-[180px] text-center font-semibold scholr-ink">{view === 'month' ? format(currentDate, 'MMMM yyyy') : `Week of ${format(startOfWeek(currentDate, { weekStartsOn: 1 }), 'MMM d')}`}</div>
                   <Button variant="outline" size="icon" onClick={() => setCurrentDate(view === 'month' ? addMonths(currentDate, 1) : addDays(currentDate, 7))}><ChevronRight className="w-4 h-4" /></Button>
                 </div>
                 <div className="flex flex-wrap gap-3">

@@ -22,7 +22,7 @@ const statusExplanation = {
   graded: {
     label: 'Graded',
     icon: CheckCircle2,
-    color: 'bg-violet-50 text-violet-700',
+    color: 'scholr-accent-sf scholr-accent',
     explanation: 'The teacher has graded this work. You can read their feedback below.',
   },
   in_progress: {
@@ -68,7 +68,7 @@ export default function DemoParentAssignment() {
     return (
       <DemoShell roleKey="parent">
         <p className="text-sm text-slate-500">Assignment not found.</p>
-        <Link to="/demo/parent" className="text-sm font-semibold text-indigo-700 hover:underline">
+        <Link to="/demo/parent" className="text-sm font-semibold scholr-accent hover:underline">
           ← Back to overview
         </Link>
       </DemoShell>
@@ -87,14 +87,14 @@ export default function DemoParentAssignment() {
     <DemoShell roleKey="parent">
       <Link
         to="/demo/parent"
-        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900 mb-4"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 scholr-ink mb-4"
       >
         <ArrowLeft className="w-4 h-4" /> Back to overview
       </Link>
 
       {/* Header */}
       <div className="bg-white rounded-md border border-slate-200 shadow-sm p-5 md:p-6 mb-6">
-        <p className="text-[10px] font-bold uppercase tracking-wide text-indigo-600 mb-1">
+        <p className="text-[10px] font-bold uppercase tracking-wide scholr-accent mb-1">
           {child.name}'s assignment
         </p>
         <h1 className="text-xl md:text-2xl font-bold text-slate-900 mb-2">{assignment.title}</h1>
@@ -140,14 +140,14 @@ export default function DemoParentAssignment() {
                 No feedback yet — the teacher will share notes once this work is reviewed.
               </div>
             ) : (
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y scholr-divide">
                 {feedback.map((f) => {
                   const t = getTeacher(f.teacherId);
                   const { headline, rest } = simplifyFeedback(f.body);
                   return (
                     <div key={f.id} className="px-5 md:px-6 py-5">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="h-9 w-9 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[11px] font-bold">
+                        <div className="h-9 w-9 rounded-full scholr-accent-sf scholr-accent flex items-center justify-center text-[11px] font-bold">
                           {t?.initials}
                         </div>
                         <div>
@@ -156,8 +156,8 @@ export default function DemoParentAssignment() {
                         </div>
                       </div>
                       {/* Headline callout */}
-                      <div className="rounded-md bg-indigo-50 border-l-4 border-indigo-400 p-3 mb-3">
-                        <p className="text-sm font-semibold text-indigo-900 leading-snug">
+                      <div className="rounded-md scholr-accent-sf border-l-4 scholr-accent-rule p-3 mb-3">
+                        <p className="text-sm font-semibold scholr-accent leading-snug">
                           “{headline}”
                         </p>
                       </div>

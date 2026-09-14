@@ -8,17 +8,17 @@ import * as fns from '@/data/functions';
 const PLANS = [
   {
     key: 'starter',
-    color: 'border-slate-200',
+    color: 'scholr-rule',
     highlight: false,
   },
   {
     key: 'growth',
-    color: 'border-indigo-300',
+    color: 'scholr-accent-rule',
     highlight: true,
   },
   {
     key: 'enterprise',
-    color: 'border-slate-200',
+    color: 'scholr-rule',
     highlight: false,
   },
 ];
@@ -81,24 +81,24 @@ export default function StudentPricingUpgrade({ schoolId, currentPlan, currentSt
             <button
               key={key}
               onClick={() => handlePlanSelect(key)}
-              className={`text-left p-5 rounded-xl border-2 transition-all ${
-                isSelected ? 'border-indigo-500 bg-indigo-50 shadow-md' : `${color} bg-white hover:border-indigo-200 hover:shadow-sm`
+              className={`text-left p-5 rounded-xl border-2 transition-colors ${
+                isSelected ? 'scholr-accent-rule scholr-accent-sf shadow-md' : `${color} bg-white hover:scholr-accent-rule hover:shadow-sm`
               }`}
             >
               {badge && (
                 <div className="flex justify-end mb-2">
-                  <Badge className="bg-indigo-100 text-indigo-700 border-0 text-xs">{badge}</Badge>
+                  <Badge className="scholr-accent-sf scholr-accent border-0 text-xs">{badge}</Badge>
                 </div>
               )}
               <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-3xl font-black text-slate-900">€{l.price_per_student}</span>
-                <span className="text-slate-400 text-sm">/student/yr</span>
+                <span className="text-3xl font-black scholr-ink">€{l.price_per_student}</span>
+                <span className="scholr-faint text-sm">/student/yr</span>
               </div>
-              <p className="text-xs text-slate-500">{PLAN_DESCRIPTIONS[key]}</p>
+              <p className="text-xs scholr-muted">{PLAN_DESCRIPTIONS[key]}</p>
 
-              <div className="mt-4 space-y-1.5 text-xs text-slate-600">
+              <div className="mt-4 space-y-1.5 text-xs scholr-muted">
                 <div className="flex items-center gap-1.5">
-                  <GraduationCap className="w-3.5 h-3.5 text-indigo-500" />
+                  <GraduationCap className="w-3.5 h-3.5 scholr-accent" />
                   <span>{l.max_students === -1 ? 'Unlimited students' : `Up to ${l.max_students} students`}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -118,7 +118,7 @@ export default function StudentPricingUpgrade({ schoolId, currentPlan, currentSt
               </div>
 
               {isSelected && (
-                <div className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-indigo-700">
+                <div className="mt-3 flex items-center gap-1.5 text-xs font-semibold scholr-accent">
                   <CheckCircle2 className="w-4 h-4" /> Selected
                 </div>
               )}
@@ -128,13 +128,13 @@ export default function StudentPricingUpgrade({ schoolId, currentPlan, currentSt
       </div>
 
       {/* Student count configurator */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <p className="text-sm font-semibold text-slate-700 mb-4">How many students does your school have?</p>
+      <div className="bg-white rounded-xl border scholr-rule p-6">
+        <p className="text-sm font-semibold scholr-body mb-4">How many students does your school have?</p>
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setStudentCount(v => clampStudentCount(selectedPlan, v - 10))}
-              className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 font-bold text-lg leading-none"
+              className="w-8 h-8 rounded-lg border scholr-rule flex items-center justify-center scholr-muted hover:scholr-sunk font-bold text-lg leading-none"
             >−</button>
             <input
               type="number"
@@ -142,32 +142,32 @@ export default function StudentPricingUpgrade({ schoolId, currentPlan, currentSt
               max={PLAN_MAX_STUDENTS[selectedPlan]}
               value={studentCount}
               onChange={e => setStudentCount(clampStudentCount(selectedPlan, parseInt(e.target.value) || PLAN_MIN_STUDENTS[selectedPlan]))}
-              className="w-24 text-center text-xl font-bold text-slate-900 border border-slate-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-24 text-center text-xl font-bold scholr-ink border scholr-rule rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:scholr-accent-rule"
             />
             <button
               onClick={() => setStudentCount(v => clampStudentCount(selectedPlan, v + 10))}
-              className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 font-bold text-lg leading-none"
+              className="w-8 h-8 rounded-lg border scholr-rule flex items-center justify-center scholr-muted hover:scholr-sunk font-bold text-lg leading-none"
             >+</button>
-            <span className="text-slate-500 text-sm">students</span>
+            <span className="scholr-muted text-sm">students</span>
           </div>
 
           {/* Quick-select buttons */}
           <div className="flex gap-2 flex-wrap">
             {selectedPlan === 'starter' && [50, 100, 150, 200].map(n => (
               <button key={n} onClick={() => setStudentCount(n)}
-                className={`px-3 py-1 text-xs rounded-full border transition-colors ${studentCount === n ? 'bg-indigo-600 text-white border-indigo-600' : 'border-slate-200 text-slate-600 hover:border-indigo-300'}`}>
+                className={`px-3 py-1 text-xs rounded-full border transition-colors ${studentCount === n ? 'pub-btn pub-btn-gold scholr-accent-rule' : 'scholr-rule scholr-muted hover:scholr-accent-rule'}`}>
                 {n}
               </button>
             ))}
             {selectedPlan === 'growth' && [250, 300, 400, 500, 600].map(n => (
               <button key={n} onClick={() => setStudentCount(n)}
-                className={`px-3 py-1 text-xs rounded-full border transition-colors ${studentCount === n ? 'bg-indigo-600 text-white border-indigo-600' : 'border-slate-200 text-slate-600 hover:border-indigo-300'}`}>
+                className={`px-3 py-1 text-xs rounded-full border transition-colors ${studentCount === n ? 'pub-btn pub-btn-gold scholr-accent-rule' : 'scholr-rule scholr-muted hover:scholr-accent-rule'}`}>
                 {n}
               </button>
             ))}
             {selectedPlan === 'enterprise' && [700, 800, 1000, 1500, 2000].map(n => (
               <button key={n} onClick={() => setStudentCount(n)}
-                className={`px-3 py-1 text-xs rounded-full border transition-colors ${studentCount === n ? 'bg-indigo-600 text-white border-indigo-600' : 'border-slate-200 text-slate-600 hover:border-indigo-300'}`}>
+                className={`px-3 py-1 text-xs rounded-full border transition-colors ${studentCount === n ? 'pub-btn pub-btn-gold scholr-accent-rule' : 'scholr-rule scholr-muted hover:scholr-accent-rule'}`}>
                 {n}
               </button>
             ))}
@@ -177,18 +177,18 @@ export default function StudentPricingUpgrade({ schoolId, currentPlan, currentSt
         {/* Pricing summary */}
         <div className="mt-5 flex items-end gap-6 flex-wrap">
           <div>
-            <p className="text-xs text-slate-400">Annual total</p>
-            <p className="text-3xl font-black text-slate-900">€{annualTotal.toLocaleString()}</p>
-            <p className="text-xs text-slate-400 mt-0.5">≈ €{monthlyEstimate.toLocaleString()}/month</p>
+            <p className="text-xs scholr-faint">Annual total</p>
+            <p className="text-3xl font-black scholr-ink">€{annualTotal.toLocaleString()}</p>
+            <p className="text-xs scholr-faint mt-0.5">≈ €{monthlyEstimate.toLocaleString()}/month</p>
           </div>
-          <div className="pb-1 text-sm text-slate-500">
+          <div className="pb-1 text-sm scholr-muted">
             {studentCount} students × €{PLAN_LIMITS[selectedPlan].price_per_student}/student/yr
           </div>
           <div className="ml-auto">
             <Button
               onClick={handleCheckout}
               disabled={loading}
-              className="bg-indigo-600 hover:bg-indigo-700 gap-2 px-6"
+              className="scholr-accent-sf hover:scholr-accent-sf gap-2 px-6"
               size="lg"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className="w-4 h-4" />}
@@ -198,7 +198,7 @@ export default function StudentPricingUpgrade({ schoolId, currentPlan, currentSt
         </div>
       </div>
 
-      <p className="text-xs text-slate-400 text-center">
+      <p className="text-xs scholr-faint text-center">
         14-day free trial included. Annual billing. Cancel anytime via Stripe portal. Prices in EUR, excl. VAT.
       </p>
     </div>

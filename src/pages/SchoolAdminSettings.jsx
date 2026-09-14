@@ -121,7 +121,7 @@ export default function SchoolAdminSettings() {
 
   return (
     <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar
           links={SCHOOL_ADMIN_SIDEBAR_LINKS}
           role="school_admin"
@@ -165,13 +165,13 @@ export default function SchoolAdminSettings() {
               {/* ── SCHOOL PROFILE TAB ── */}
               {settingsTab === 'school' && <div>
                 {isLoading || !profileForm ? (
-                  <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-slate-400" /></div>
+                  <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin scholr-faint" /></div>
                 ) : (
                   <form onSubmit={e => { e.preventDefault(); updateSchoolMutation.mutate(profileForm); }} className="space-y-5 max-w-2xl">
-                    <Card className="shadow-none border-slate-200">
+                    <Card className="shadow-none scholr-rule">
                       <CardHeader className="pb-3">
                         <div className="flex items-center gap-2">
-                          <Building2 className="w-4 h-4 text-slate-500" />
+                          <Building2 className="w-4 h-4 scholr-muted" />
                           <CardTitle className="text-sm">School Profile</CardTitle>
                         </div>
                         <CardDescription className="text-xs">Basic information about your school</CardDescription>
@@ -208,10 +208,10 @@ export default function SchoolAdminSettings() {
                       </CardContent>
                     </Card>
 
-                    <Card className="shadow-none border-slate-200">
+                    <Card className="shadow-none scholr-rule">
                       <CardHeader className="pb-3">
                         <div className="flex items-center gap-2">
-                          <Globe className="w-4 h-4 text-slate-500" />
+                          <Globe className="w-4 h-4 scholr-muted" />
                           <CardTitle className="text-sm">Academic Configuration</CardTitle>
                         </div>
                       </CardHeader>
@@ -237,10 +237,10 @@ export default function SchoolAdminSettings() {
                       </CardContent>
                     </Card>
 
-                    <Card className="shadow-none border-slate-200">
+                    <Card className="shadow-none scholr-rule">
                       <CardHeader className="pb-3">
                         <div className="flex items-center gap-2">
-                          <Bell className="w-4 h-4 text-slate-500" />
+                          <Bell className="w-4 h-4 scholr-muted" />
                           <CardTitle className="text-sm">Billing Contact</CardTitle>
                         </div>
                       </CardHeader>
@@ -251,7 +251,7 @@ export default function SchoolAdminSettings() {
                     </Card>
 
                     <div className="flex justify-end">
-                      <Button type="submit" disabled={updateSchoolMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                      <Button type="submit" disabled={updateSchoolMutation.isPending} className="pub-btn pub-btn-gold">
                         {updateSchoolMutation.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                         Save School Settings
                       </Button>
@@ -264,14 +264,14 @@ export default function SchoolAdminSettings() {
               {settingsTab === 'submissions' && (
                 <div>
                   {policyLoading ? (
-                    <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-slate-400" /></div>
+                    <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin scholr-faint" /></div>
                   ) : (
                     <div className="max-w-2xl space-y-5">
-                      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
+                      <div className="app-group p-5">
                         <SubmissionRulesPanel form={policyForm} onChange={policyOnChange} />
                       </div>
                       <div className="flex justify-end">
-                        <Button onClick={() => updatePolicyMutation.mutate(policyForm)} disabled={updatePolicyMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                        <Button onClick={() => updatePolicyMutation.mutate(policyForm)} disabled={updatePolicyMutation.isPending} className="pub-btn pub-btn-gold">
                           {updatePolicyMutation.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                           Save Submission Policy
                         </Button>
@@ -285,14 +285,14 @@ export default function SchoolAdminSettings() {
               {settingsTab === 'files' && (
                 <div>
                   {policyLoading ? (
-                    <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-slate-400" /></div>
+                    <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin scholr-faint" /></div>
                   ) : (
                     <div className="max-w-2xl space-y-5">
-                      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
+                      <div className="app-group p-5">
                         <FileSecurityPanel form={policyForm} onChange={policyOnChange} schoolId={schoolId} plan={school?.plan} />
                       </div>
                       <div className="flex justify-end">
-                        <Button onClick={() => updatePolicyMutation.mutate(policyForm)} disabled={updatePolicyMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                        <Button onClick={() => updatePolicyMutation.mutate(policyForm)} disabled={updatePolicyMutation.isPending} className="pub-btn pub-btn-gold">
                           {updatePolicyMutation.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                           Save File Policy
                         </Button>
@@ -306,14 +306,14 @@ export default function SchoolAdminSettings() {
               {settingsTab === 'integrity' && (
                 <div>
                   {policyLoading ? (
-                    <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-slate-400" /></div>
+                    <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin scholr-faint" /></div>
                   ) : (
                     <div className="max-w-2xl space-y-5">
-                      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
+                      <div className="app-group p-5">
                         <AcademicIntegrityPanel form={policyForm} onChange={policyOnChange} />
                       </div>
                       <div className="flex justify-end">
-                        <Button onClick={() => updatePolicyMutation.mutate(policyForm)} disabled={updatePolicyMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                        <Button onClick={() => updatePolicyMutation.mutate(policyForm)} disabled={updatePolicyMutation.isPending} className="pub-btn pub-btn-gold">
                           {updatePolicyMutation.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                           Save Integrity Policy
                         </Button>
@@ -327,13 +327,13 @@ export default function SchoolAdminSettings() {
               {settingsTab === 'curriculum' && (
                 <div>
                   {isLoading || !school ? (
-                    <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-slate-400" /></div>
+                    <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin scholr-faint" /></div>
                   ) : (
                     <div className="max-w-2xl space-y-5">
-                      <Card className="shadow-none border-slate-200">
+                      <Card className="shadow-none scholr-rule">
                         <CardHeader className="pb-3">
                           <div className="flex items-center gap-2">
-                            <BookOpen className="w-4 h-4 text-slate-500" />
+                            <BookOpen className="w-4 h-4 scholr-muted" />
                             <CardTitle className="text-sm">Curriculum System</CardTitle>
                           </div>
                           <CardDescription className="text-xs">
@@ -347,8 +347,8 @@ export default function SchoolAdminSettings() {
                                 key={opt.value}
                                 className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-colors ${
                                   school.curriculum === opt.value
-                                    ? 'border-indigo-300 bg-indigo-50'
-                                    : 'border-slate-200 bg-white hover:bg-slate-50'
+                                    ? 'scholr-accent-rule scholr-accent-sf'
+                                    : 'scholr-rule bg-white hover:scholr-sunk'
                                 }`}
                               >
                                 <input
@@ -360,14 +360,14 @@ export default function SchoolAdminSettings() {
                                   className="mt-0.5 accent-indigo-600"
                                 />
                                 <div>
-                                  <p className={`text-sm font-semibold ${school.curriculum === opt.value ? 'text-indigo-800' : 'text-slate-800'}`}>{opt.label}</p>
-                                  <p className="text-xs text-slate-500 mt-0.5">{opt.description}</p>
+                                  <p className={`text-sm font-semibold ${school.curriculum === opt.value ? 'scholr-accent' : 'scholr-ink'}`}>{opt.label}</p>
+                                  <p className="text-xs scholr-muted mt-0.5">{opt.description}</p>
                                 </div>
                               </label>
                             ))}
                           </div>
                           {updateSchoolMutation.isPending && (
-                            <div className="flex items-center gap-2 text-sm text-slate-500">
+                            <div className="flex items-center gap-2 text-sm scholr-muted">
                               <Loader2 className="w-4 h-4 animate-spin" /> Saving…
                             </div>
                           )}

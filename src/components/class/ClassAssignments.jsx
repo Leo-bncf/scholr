@@ -20,7 +20,7 @@ export default function ClassAssignments({ classData, isTeacher, userId }) {
 
   const typeColors = {
     homework: 'bg-blue-50 text-blue-700',
-    essay: 'bg-purple-50 text-purple-700',
+    essay: 'scholr-accent-sf scholr-accent',
     exam: 'bg-red-50 text-red-700',
     project: 'bg-emerald-50 text-emerald-700',
     quiz: 'bg-amber-50 text-amber-700',
@@ -29,32 +29,32 @@ export default function ClassAssignments({ classData, isTeacher, userId }) {
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-slate-900">Assignments</h2>
+        <h2 className="text-xl font-bold scholr-ink">Assignments</h2>
         {isTeacher && <CreateAssignment classData={classData} userId={userId} />}
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12"><Loader2 className="w-6 h-6 animate-spin text-indigo-600 mx-auto" /></div>
+        <div className="text-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent mx-auto" /></div>
       ) : assignments.length === 0 ? (
-        <div className="text-center py-16 text-slate-400">
-          <FileText className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+        <div className="text-center py-16 scholr-faint">
+          <FileText className="w-12 h-12 mx-auto mb-3 scholr-faint" />
           <p>No assignments yet</p>
         </div>
       ) : (
         <div className="grid gap-4">
           {assignments.map(a => (
             <a key={a.id} href={createPageUrl('AssignmentDetail') + `?assignment_id=${a.id}`}>
-              <div className="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md transition-shadow cursor-pointer">
+              <div className="bg-white rounded-xl border scholr-rule p-5 hover:shadow-md transition-shadow cursor-pointer">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-semibold text-slate-900 text-lg">{a.title}</h3>
-                      <Badge className={`${typeColors[a.type] || 'bg-slate-100 text-slate-700'} border-0 text-xs capitalize`}>
+                      <h3 className="font-semibold scholr-ink text-lg">{a.title}</h3>
+                      <Badge className={`${typeColors[a.type] || 'scholr-sunk scholr-body'} border-0 text-xs capitalize`}>
                         {a.type?.replace('_', ' ')}
                       </Badge>
                     </div>
-                    {a.description && <p className="text-slate-600 text-sm mb-3 line-clamp-2">{a.description}</p>}
-                    <div className="flex items-center gap-4 text-xs text-slate-500">
+                    {a.description && <p className="scholr-muted text-sm mb-3 line-clamp-2">{a.description}</p>}
+                    <div className="flex items-center gap-4 text-xs scholr-muted">
                       {a.due_date && (
                         <span className="flex items-center gap-1">
                           <Calendar className="w-3.5 h-3.5" />

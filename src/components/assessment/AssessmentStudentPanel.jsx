@@ -153,19 +153,19 @@ export default function AssessmentStudentPanel({ assignment, studentId, studentN
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="font-semibold text-slate-900">Assessment Results</h2>
+          <h2 className="font-semibold scholr-ink">Assessment Results</h2>
           <Badge>{submission.total_score || 0} / {submission.max_score || assessment.max_score}</Badge>
         </div>
         {reviewItems.map((item, index) => (
           <div key={item.question_id} className="border rounded-xl p-4">
-            <p className="font-medium text-slate-900 mb-2">Q{index + 1}. {item.question?.prompt}</p>
-            <p className="text-sm text-slate-700 mb-2">Your answer: {item.answer || '—'}</p>
+            <p className="font-medium scholr-ink mb-2">Q{index + 1}. {item.question?.prompt}</p>
+            <p className="text-sm scholr-body mb-2">Your answer: {item.answer || '—'}</p>
             {item.question?.type === 'multiple_choice' && (
               <p className={`text-sm font-medium ${item.is_correct ? 'text-emerald-700' : 'text-red-700'}`}>
                 {item.is_correct ? 'Correct' : 'Incorrect'}
               </p>
             )}
-            <p className="text-xs text-slate-500 mt-2">Score: {(item.teacher_score ?? item.auto_score) || 0} / {item.question?.points || 0}</p>
+            <p className="text-xs scholr-muted mt-2">Score: {(item.teacher_score ?? item.auto_score) || 0} / {item.question?.points || 0}</p>
           </div>
         ))}
       </div>
@@ -176,8 +176,8 @@ export default function AssessmentStudentPanel({ assignment, studentId, studentN
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-semibold text-slate-900">Assessment</h2>
-          <p className="text-sm text-slate-500">Single submission only. Auto-submit when the timer ends.</p>
+          <h2 className="font-semibold scholr-ink">Assessment</h2>
+          <p className="text-sm scholr-muted">Single submission only. Auto-submit when the timer ends.</p>
         </div>
         {typeof timeLeft === 'number' && <Badge>{Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}</Badge>}
       </div>
@@ -188,8 +188,8 @@ export default function AssessmentStudentPanel({ assignment, studentId, studentN
           {(assessment.questions || []).map((question, index) => (
             <div key={question.id} className="border rounded-xl p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <p className="font-medium text-slate-900">Q{index + 1}. {question.prompt}</p>
-                <span className="text-xs text-slate-500">{question.points} pts</span>
+                <p className="font-medium scholr-ink">Q{index + 1}. {question.prompt}</p>
+                <span className="text-xs scholr-muted">{question.points} pts</span>
               </div>
               {question.type === 'multiple_choice' ? (
                 <RadioGroup value={answers[question.id] || ''} onValueChange={(value) => setAnswers({ ...answers, [question.id]: value })}>

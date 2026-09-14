@@ -13,13 +13,13 @@ export default function ChildSwitcher({ children, selectedId, onSelect }) {
             onClick={() => onSelect(child)}
             className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-md border text-sm font-medium transition ${
               active
-                ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
-                : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
+                ? 'scholr-accent-sf text-white scholr-accent-rule shadow-sm'
+                : 'bg-white text-slate-700 border-slate-200 hover:scholr-rule'
             }`}
           >
             <span
               className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                active ? 'bg-white/20 text-white' : 'bg-indigo-100 text-indigo-700'
+                active ? 'bg-white/20 text-white' : 'scholr-accent-sf scholr-accent'
               }`}
             >
               {child.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}

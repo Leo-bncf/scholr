@@ -57,17 +57,17 @@ export default function MaintenanceModePanel({ schools }) {
       </div>
 
       <div>
-        <p className="text-sm font-semibold text-slate-900 mb-1">School-Level Maintenance</p>
-        <p className="text-xs text-slate-500 mb-3">Toggle individual schools into suspended state. This will prevent logins for users of that school.</p>
-        <div className="border border-slate-200 rounded-lg divide-y divide-slate-100 max-h-64 overflow-y-auto">
+        <p className="text-sm font-semibold scholr-ink mb-1">School-Level Maintenance</p>
+        <p className="text-xs scholr-muted mb-3">Toggle individual schools into suspended state. This will prevent logins for users of that school.</p>
+        <div className="border scholr-rule rounded-lg divide-y scholr-divide max-h-64 overflow-y-auto">
           {schools.length === 0 ? (
-            <p className="text-sm text-slate-500 p-4">No schools found.</p>
+            <p className="text-sm scholr-muted p-4">No schools found.</p>
           ) : (
             schools.map((school) => (
               <div key={school.id} className="flex items-center justify-between px-4 py-3">
                 <div>
-                  <p className="text-sm font-medium text-slate-800">{school.name}</p>
-                  <p className="text-xs text-slate-500 capitalize">{school.status}</p>
+                  <p className="text-sm font-medium scholr-ink">{school.name}</p>
+                  <p className="text-xs scholr-muted capitalize">{school.status}</p>
                 </div>
                 <Switch
                   checked={

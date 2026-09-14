@@ -34,16 +34,16 @@ export default function ClassGradebook() {
 
   if (loadingClass) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+      <div className="min-h-screen scholr-sunk flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
       </div>
     );
   }
 
   if (!classData) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <p className="text-slate-500">Class not found</p>
+      <div className="min-h-screen scholr-sunk flex items-center justify-center">
+        <p className="scholr-muted">Class not found</p>
       </div>
     );
   }
@@ -52,24 +52,24 @@ export default function ClassGradebook() {
 
   if (!isTeacher) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <p className="text-slate-500">You don't have access to this gradebook</p>
+      <div className="min-h-screen scholr-sunk flex items-center justify-center">
+        <p className="scholr-muted">You don't have access to this gradebook</p>
       </div>
     );
   }
 
   return (
     <RoleGuard allowedRoles={['teacher', 'school_admin', 'ib_coordinator', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
-        <div className="bg-white border-b border-slate-200">
+      <div className="min-h-screen scholr-sunk">
+        <div className="bg-white border-b scholr-rule">
           <div className="max-w-7xl mx-auto px-6 py-4">
             <a href={createPageUrl('ClassWorkspace') + `?class_id=${classId}&tab=grades`}>
               <Button variant="ghost" size="sm" className="mb-3">
                 <ArrowLeft className="w-4 h-4 mr-2" /> Back to Class
               </Button>
             </a>
-            <h1 className="text-2xl font-bold text-slate-900">{classData.name} - Gradebook</h1>
-            <p className="text-sm text-slate-500 mt-1">
+            <h1 className="text-2xl font-bold scholr-ink">{classData.name} - Gradebook</h1>
+            <p className="text-sm scholr-muted mt-1">
               {classData.section ? `Section ${classData.section}` : ''} 
               {classData.room ? ` · Room ${classData.room}` : ''}
             </p>

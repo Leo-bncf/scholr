@@ -16,7 +16,7 @@ import {
 
 function StatCard({ label, value, icon: Icon, color, sub }) {
   const colors = {
-    indigo:  'bg-indigo-50 text-indigo-600',
+    indigo:  'scholr-accent-sf scholr-accent',
     amber:   'bg-amber-50 text-amber-600',
     emerald: 'bg-emerald-50 text-emerald-600',
     rose:    'bg-rose-50 text-rose-600',

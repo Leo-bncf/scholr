@@ -43,7 +43,7 @@ export default function ProductionLaunch() {
   if (loading || !launchStatus) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6 flex items-center justify-center">
-        <p className="text-slate-600">Loading launch status...</p>
+        <p className="scholr-muted">Loading launch status...</p>
       </div>
     );
   }
@@ -55,7 +55,7 @@ export default function ProductionLaunch() {
       case 'pending':
         return 'bg-amber-100 text-amber-800';
       default:
-        return 'bg-slate-100 text-slate-800';
+        return 'scholr-sunk scholr-ink';
     }
   };
 
@@ -81,10 +81,10 @@ export default function ProductionLaunch() {
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">
+          <h1 className="text-3xl font-bold scholr-ink">
             Production Launch Center
           </h1>
-          <p className="text-slate-600 mt-2">
+          <p className="scholr-muted mt-2">
             Coordinating your go-live to production
           </p>
         </div>
@@ -108,12 +108,12 @@ export default function ProductionLaunch() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-slate-600">Overall Readiness</span>
+                <span className="scholr-muted">Overall Readiness</span>
                 <span className="font-semibold">{readinessPercent}%</span>
               </div>
-              <div className="w-full bg-slate-200 rounded-full h-3">
+              <div className="w-full scholr-sunk rounded-full h-3">
                 <div
-                  className={`h-3 rounded-full transition-all ${
+                  className={`h-3 rounded-full transition-colors ${
                     canLaunch ? 'bg-emerald-600' : 'bg-amber-600'
                   }`}
                   style={{ width: `${readinessPercent}%` }}
@@ -164,10 +164,10 @@ export default function ProductionLaunch() {
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-semibold text-slate-900">
+                      <p className="font-semibold scholr-ink">
                         {signOff.role}
                       </p>
-                      <p className="text-xs text-slate-600 mt-1">
+                      <p className="text-xs scholr-muted mt-1">
                         {signOff.status === 'signed-off'
                           ? `Signed off by ${signOff.signedBy}`
                           : signOff.notes || 'Pending approval'}
@@ -216,7 +216,7 @@ export default function ProductionLaunch() {
                   <CardContent>
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-slate-600">Progress</span>
+                        <span className="scholr-muted">Progress</span>
                         <span className="font-semibold">
                           {Math.round(
                             (check.completed / check.checklist) * 100
@@ -224,9 +224,9 @@ export default function ProductionLaunch() {
                           %
                         </span>
                       </div>
-                      <div className="w-full bg-slate-200 rounded-full h-2">
+                      <div className="w-full scholr-sunk rounded-full h-2">
                         <div
-                          className="bg-indigo-600 h-2 rounded-full"
+                          className="scholr-accent-sf h-2 rounded-full"
                           style={{
                             width: `${
                               (check.completed / check.checklist) * 100
@@ -243,12 +243,12 @@ export default function ProductionLaunch() {
         </Tabs>
 
         {/* Launch Actions */}
-        <Card className="bg-gradient-to-r from-indigo-50 to-blue-50 border-indigo-200">
+        <Card className="bg-gradient-to-r from-indigo-50 to-blue-50 scholr-accent-rule">
           <CardHeader>
             <CardTitle>Launch Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <p className="text-sm text-slate-700">
+            <p className="text-sm scholr-body">
               When all requirements are met, use these controls to proceed with
               deployment:
             </p>
@@ -330,13 +330,13 @@ export default function ProductionLaunch() {
                     <Clock className="w-5 h-5 text-blue-600 animate-spin flex-shrink-0" />
                   )}
                   {item.status === 'pending' && (
-                    <AlertCircle className="w-5 h-5 text-slate-400 flex-shrink-0" />
+                    <AlertCircle className="w-5 h-5 scholr-faint flex-shrink-0" />
                   )}
                   <div className="flex-1">
-                    <p className="font-semibold text-slate-900">
+                    <p className="font-semibold scholr-ink">
                       {item.phase}
                     </p>
-                    <p className="text-xs text-slate-600">
+                    <p className="text-xs scholr-muted">
                       Estimated: {item.time}
                     </p>
                   </div>
@@ -346,7 +346,7 @@ export default function ProductionLaunch() {
                         ? 'bg-emerald-100 text-emerald-800'
                         : item.status === 'in-progress'
                         ? 'bg-blue-100 text-blue-800'
-                        : 'bg-slate-100 text-slate-800'
+                        : 'scholr-sunk scholr-ink'
                     }
                   >
                     {item.status === 'completed'

@@ -63,7 +63,7 @@ export default function GoogleDocCreator({ type, open, onClose, onDocumentCreate
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Icon className="w-5 h-5 text-indigo-600" />
+            <Icon className="w-5 h-5 scholr-accent" />
             Create {typeInfo.label}
           </DialogTitle>
         </DialogHeader>
@@ -86,7 +86,7 @@ export default function GoogleDocCreator({ type, open, onClose, onDocumentCreate
                 }
               }}
             />
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs scholr-muted mt-1">
               The document will be created in your Google Drive and linked to your submission.
             </p>
           </div>
@@ -109,7 +109,7 @@ export default function GoogleDocCreator({ type, open, onClose, onDocumentCreate
             <Button
               onClick={handleCreateDocument}
               disabled={loading || !title.trim()}
-              className="bg-indigo-600 hover:bg-indigo-700"
+              className="scholr-accent-sf hover:scholr-accent-sf"
             >
               {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               {loading ? 'Creating...' : 'Create Document'}

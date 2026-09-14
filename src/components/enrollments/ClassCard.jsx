@@ -32,22 +32,22 @@ export default function ClassCard({
   const studentName = (id) => studentsByUserId[id]?.user_name || 'Unknown';
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border scholr-rule shadow-sm overflow-hidden">
       <Collapsible open={expanded} onOpenChange={onToggleExpand}>
-        <div className="flex items-center justify-between pr-3 hover:bg-slate-50 transition-colors">
+        <div className="flex items-center justify-between pr-3 hover:scholr-sunk transition-colors">
           <CollapsibleTrigger asChild>
             <button className="flex-1 px-5 py-4 flex items-center justify-between text-left">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="font-semibold text-slate-900 text-sm">{classItem.name}</h3>
+                  <h3 className="font-semibold scholr-ink text-sm">{classItem.name}</h3>
                   {classItem.section && (
                     <Badge variant="secondary" className="text-[10px] py-0">§ {classItem.section}</Badge>
                   )}
                   {classItem.room && (
-                    <span className="text-xs text-slate-400">Room {classItem.room}</span>
+                    <span className="text-xs scholr-faint">Room {classItem.room}</span>
                   )}
                 </div>
-                <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
+                <div className="flex items-center gap-3 mt-1 text-xs scholr-muted">
                   <span className="flex items-center gap-1">
                     <GraduationCap className="w-3 h-3" />
                     {studentIds.length} students
@@ -63,7 +63,7 @@ export default function ClassCard({
                 </div>
               </div>
               <ChevronDown
-                className={`w-4 h-4 text-slate-400 transition-transform flex-shrink-0 ml-3 ${
+                className={`w-4 h-4 scholr-faint transition-transform flex-shrink-0 ml-3 ${
                   expanded ? 'rotate-180' : ''
                 }`}
               />
@@ -73,7 +73,7 @@ export default function ClassCard({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-                <MoreVertical className="w-4 h-4 text-slate-500" />
+                <MoreVertical className="w-4 h-4 scholr-muted" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -98,7 +98,7 @@ export default function ClassCard({
           </DropdownMenu>
         </div>
 
-        <CollapsibleContent className="border-t border-slate-100 bg-slate-50 p-5 space-y-5">
+        <CollapsibleContent className="border-t scholr-rule-soft scholr-sunk p-5 space-y-5">
           {/* Class teachers */}
           <SectionHeader
             icon={<UserCheck className="w-3.5 h-3.5" />}
@@ -145,17 +145,17 @@ export default function ClassCard({
           ) : (
             <div className="space-y-2">
               {subjectAssignments.map((a) => (
-                <div key={a.id} className="bg-white rounded-lg border border-slate-200 p-3 flex items-center justify-between">
+                <div key={a.id} className="bg-white rounded-lg border scholr-rule p-3 flex items-center justify-between">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-slate-900 truncate">{subjectName(a.subject_id)}</p>
-                    <p className="text-xs text-slate-500 mt-0.5 truncate">
+                    <p className="text-sm font-medium scholr-ink truncate">{subjectName(a.subject_id)}</p>
+                    <p className="text-xs scholr-muted mt-0.5 truncate">
                       {a.teacher_ids?.length
                         ? a.teacher_ids.map(teacherName).join(', ')
                         : 'No teachers assigned'}
                     </p>
                   </div>
                   <Button
-                    size="sm" variant="ghost" className="h-7 w-7 p-0 text-slate-400 hover:text-red-600"
+                    size="sm" variant="ghost" className="h-7 w-7 p-0 scholr-faint hover:text-red-600"
                     onClick={() => onRemoveSubjectAssignment(classItem.id, a.id)}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -185,18 +185,18 @@ export default function ClassCard({
               {studentIds.map((studentId) => {
                 const s = studentsByUserId[studentId];
                 return (
-                  <div key={studentId} className="bg-white rounded-lg border border-slate-200 p-2.5 flex items-center justify-between">
+                  <div key={studentId} className="bg-white rounded-lg border scholr-rule p-2.5 flex items-center justify-between">
                     <div className="flex items-center gap-2 min-w-0">
                       <div className="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-700 flex-shrink-0">
                         {s?.user_name?.[0]?.toUpperCase() || '?'}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-medium text-slate-900 truncate">{studentName(studentId)}</p>
-                        <p className="text-xs text-slate-500 truncate">{s?.grade_level || 'Grade —'}</p>
+                        <p className="text-sm font-medium scholr-ink truncate">{studentName(studentId)}</p>
+                        <p className="text-xs scholr-muted truncate">{s?.grade_level || 'Grade —'}</p>
                       </div>
                     </div>
                     <Button
-                      size="sm" variant="ghost" className="h-7 w-7 p-0 text-slate-400 hover:text-red-600 flex-shrink-0"
+                      size="sm" variant="ghost" className="h-7 w-7 p-0 scholr-faint hover:text-red-600 flex-shrink-0"
                       onClick={() => onRemoveStudent(classItem.id, studentId)}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -215,8 +215,8 @@ export default function ClassCard({
 function SectionHeader({ icon, title, action }) {
   return (
     <div className="flex items-center justify-between mb-2">
-      <h4 className="font-semibold text-slate-900 text-sm flex items-center gap-1.5">
-        <span className="text-slate-500">{icon}</span>
+      <h4 className="font-semibold scholr-ink text-sm flex items-center gap-1.5">
+        <span className="scholr-muted">{icon}</span>
         {title}
       </h4>
       {action}
@@ -225,5 +225,5 @@ function SectionHeader({ icon, title, action }) {
 }
 
 function EmptyInlineNote({ text }) {
-  return <p className="text-xs text-slate-500 italic">{text}</p>;
+  return <p className="text-xs scholr-muted italic">{text}</p>;
 }

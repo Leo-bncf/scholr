@@ -17,13 +17,13 @@ export default function ChildGradesOverview({ schoolId, studentId }) {
   });
 
   if (isLoading) {
-    return <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>;
+    return <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>;
   }
 
   if (grades.length === 0) {
     return (
-      <div className="text-center py-8 text-slate-400">
-        <BarChart3 className="w-10 h-10 mx-auto mb-2 text-slate-300" />
+      <div className="text-center py-8 scholr-faint">
+        <BarChart3 className="w-10 h-10 mx-auto mb-2 scholr-faint" />
         <p className="text-sm">No grades available yet</p>
       </div>
     );
@@ -37,46 +37,46 @@ export default function ChildGradesOverview({ schoolId, studentId }) {
   return (
     <div className="space-y-4">
       {average && (
-        <div className="bg-indigo-50 rounded-xl border border-indigo-200 p-4 flex items-center justify-between">
+        <div className="scholr-accent-sf rounded-xl border scholr-accent-rule p-4 flex items-center justify-between">
           <div>
-            <p className="text-sm text-indigo-700 font-medium">Overall Average</p>
-            <p className="text-3xl font-bold text-indigo-900 mt-1">{average}%</p>
+            <p className="text-sm scholr-accent font-medium">Overall Average</p>
+            <p className="text-3xl font-bold scholr-accent mt-1">{average}%</p>
           </div>
-          <TrendingUp className="w-10 h-10 text-indigo-400" />
+          <TrendingUp className="w-10 h-10 scholr-accent" />
         </div>
       )}
 
       <div className="space-y-3">
         {grades.map(grade => (
-          <div key={grade.id} className="bg-white rounded-lg border border-slate-200 p-4">
+          <div key={grade.id} className="bg-white rounded-lg border scholr-rule p-4">
             <div className="flex items-start justify-between mb-2">
               <div className="flex-1">
-                <h4 className="font-semibold text-slate-900">{grade.title}</h4>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <h4 className="font-semibold scholr-ink">{grade.title}</h4>
+                <p className="text-xs scholr-muted mt-0.5">
                   {grade.created_at ? format(new Date(grade.created_at), 'MMM d, yyyy') : ''}
                 </p>
               </div>
               <div className="text-right">
                 {grade.score != null && (
                   <div>
-                    <span className="text-2xl font-bold text-slate-900">{grade.score}</span>
-                    <span className="text-slate-400 ml-1">/ {grade.max_score}</span>
+                    <span className="text-2xl font-bold scholr-ink">{grade.score}</span>
+                    <span className="scholr-faint ml-1">/ {grade.max_score}</span>
                     {grade.percentage && (
-                      <p className="text-sm text-slate-500">{grade.percentage}%</p>
+                      <p className="text-sm scholr-muted">{grade.percentage}%</p>
                     )}
                   </div>
                 )}
                 {grade.ib_grade && (
-                  <Badge className="bg-violet-50 text-violet-700 border-0 mt-2">
+                  <Badge className="scholr-accent-sf scholr-accent border-0 mt-2">
                     IB {grade.ib_grade}/7
                   </Badge>
                 )}
               </div>
             </div>
             {grade.comment && (
-              <div className="mt-3 pt-3 border-t border-slate-100">
-                <p className="text-xs font-semibold text-slate-700 mb-1">Teacher Feedback</p>
-                <p className="text-sm text-slate-600">{grade.comment}</p>
+              <div className="mt-3 pt-3 border-t scholr-rule-soft">
+                <p className="text-xs font-semibold scholr-body mb-1">Teacher Feedback</p>
+                <p className="text-sm scholr-muted">{grade.comment}</p>
               </div>
             )}
           </div>

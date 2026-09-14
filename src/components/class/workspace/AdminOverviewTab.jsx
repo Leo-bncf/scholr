@@ -78,7 +78,7 @@ export default function AdminOverviewTab({ classData, onNavigate }) {
   if (isLoading) {
     return (
       <div className="p-10 text-center">
-        <Loader2 className="w-5 h-5 animate-spin text-slate-300 mx-auto" />
+        <Loader2 className="w-5 h-5 animate-spin scholr-faint mx-auto" />
       </div>
     );
   }
@@ -87,8 +87,8 @@ export default function AdminOverviewTab({ classData, onNavigate }) {
     <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div>
-          <h2 className="text-sm font-semibold text-slate-800">Class overview</h2>
-          <p className="text-xs text-slate-500">Read-only health summary. Drill into any tab to make changes.</p>
+          <h2 className="text-sm font-semibold scholr-ink">Class overview</h2>
+          <p className="text-xs scholr-muted">Read-only health summary. Drill into any tab to make changes.</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => onNavigate('people')}>
@@ -163,30 +163,30 @@ export default function AdminOverviewTab({ classData, onNavigate }) {
       </div>
 
       {/* Teacher list */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5">
+      <div className="bg-white rounded-xl border scholr-rule p-5">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold text-slate-800">Assigned staff</h3>
-          <Button variant="ghost" size="sm" className="h-7 text-xs text-slate-500" onClick={() => onNavigate('people')}>
+          <h3 className="text-sm font-semibold scholr-ink">Assigned staff</h3>
+          <Button variant="ghost" size="sm" className="h-7 text-xs scholr-muted" onClick={() => onNavigate('people')}>
             Manage <ArrowRight className="w-3 h-3 ml-1" />
           </Button>
         </div>
         {memberships.length === 0 ? (
-          <p className="text-xs text-slate-400 py-4 text-center">No teachers assigned to this class.</p>
+          <p className="text-xs scholr-faint py-4 text-center">No teachers assigned to this class.</p>
         ) : (
           <div className="space-y-2">
             {memberships.map(m => (
               <div key={m.id} className="flex items-center justify-between py-1.5">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 text-xs font-semibold flex items-center justify-center">
+                  <div className="w-7 h-7 rounded-full scholr-accent-sf scholr-accent text-xs font-semibold flex items-center justify-center">
                     {m.user_name?.[0]?.toUpperCase() || '?'}
                   </div>
                   <div>
-                    <p className="text-sm text-slate-800">{m.user_name}</p>
-                    <p className="text-[11px] text-slate-500">{m.user_email}</p>
+                    <p className="text-sm scholr-ink">{m.user_name}</p>
+                    <p className="text-[11px] scholr-muted">{m.user_email}</p>
                   </div>
                 </div>
                 {m.user_id === classData.primary_teacher_id && (
-                  <span className="text-[10px] font-semibold uppercase tracking-wide text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
+                  <span className="text-[10px] font-semibold uppercase tracking-wide scholr-accent scholr-accent-sf px-2 py-0.5 rounded">
                     Primary
                   </span>
                 )}
@@ -203,14 +203,14 @@ function KpiCard({ icon: Icon, label, value, sub, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="bg-white rounded-xl border border-slate-200 p-4 text-left hover:border-indigo-300 hover:shadow-sm transition"
+      className="bg-white rounded-xl border scholr-rule p-4 text-left hover:scholr-accent-rule hover:shadow-sm transition"
     >
       <div className="flex items-center gap-2 mb-2">
-        <Icon className="w-3.5 h-3.5 text-slate-400" />
-        <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">{label}</span>
+        <Icon className="w-3.5 h-3.5 scholr-faint" />
+        <span className="text-[11px] font-medium scholr-muted uppercase tracking-wide">{label}</span>
       </div>
-      <p className="text-2xl font-semibold text-slate-900">{value}</p>
-      <p className="text-[11px] text-slate-500 mt-0.5 truncate">{sub}</p>
+      <p className="text-2xl font-semibold scholr-ink">{value}</p>
+      <p className="text-[11px] scholr-muted mt-0.5 truncate">{sub}</p>
     </button>
   );
 }

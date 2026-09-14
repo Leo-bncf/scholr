@@ -120,7 +120,7 @@ export default function AddMaterialDialog({ open, onOpenChange, classData, user,
             <TabsContent value="file" className="m-0">
               <Label>File</Label>
               <Input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
-              {file && <p className="text-xs text-slate-500 mt-1">{file.name} · {(file.size / 1024).toFixed(1)} KB</p>}
+              {file && <p className="text-xs scholr-muted mt-1">{file.name} · {(file.size / 1024).toFixed(1)} KB</p>}
             </TabsContent>
 
             <TabsContent value="link" className="m-0">
@@ -138,7 +138,7 @@ export default function AddMaterialDialog({ open, onOpenChange, classData, user,
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={busy}>Cancel</Button>
-          <Button onClick={handleSubmit} disabled={busy} className="bg-indigo-600 hover:bg-indigo-700 gap-2">
+          <Button onClick={handleSubmit} disabled={busy} className="scholr-accent-sf hover:scholr-accent-sf gap-2">
             {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
             {uploading ? 'Uploading…' : 'Add Material'}
           </Button>

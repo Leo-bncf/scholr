@@ -11,7 +11,7 @@ export default function AppStyleCard({ title, icon: Icon, action, children, clas
         <div className="px-4 md:px-6 py-3 md:py-4 border-b border-slate-200 bg-slate-50 rounded-t-md flex items-center justify-between gap-3">
           {title && (
             <h2 className="font-bold text-sm md:text-base text-slate-900 flex items-center gap-2 uppercase tracking-wide">
-              {Icon && <Icon className="w-4 md:w-5 h-4 md:h-5 text-indigo-600 flex-shrink-0" />}
+              {Icon && <Icon className="w-4 md:w-5 h-4 md:h-5 scholr-accent flex-shrink-0" />}
               <span>{title}</span>
             </h2>
           )}

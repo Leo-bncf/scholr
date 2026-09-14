@@ -59,13 +59,13 @@ export default function WizardStepTerms({ schoolId, academicYearId, onDone }) {
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="text-base font-bold text-slate-900 mb-1">Terms & Reporting Periods</h3>
-        <p className="text-sm text-slate-500">Define the terms within your academic year. These are used for grade locks, reporting windows, and attendance tracking.</p>
+        <h3 className="text-base font-bold scholr-ink mb-1">Terms & Reporting Periods</h3>
+        <p className="text-sm scholr-muted">Define the terms within your academic year. These are used for grade locks, reporting windows, and attendance tracking.</p>
       </div>
 
       {academicYears.length > 1 && (
         <div>
-          <Label className="text-xs text-slate-600 mb-1 block">Select Academic Year</Label>
+          <Label className="text-xs scholr-muted mb-1 block">Select Academic Year</Label>
           <Select value={activeYearId} onValueChange={setSelectedYearId}>
             <SelectTrigger className="w-64">
               <SelectValue placeholder="Choose year" />
@@ -81,13 +81,13 @@ export default function WizardStepTerms({ schoolId, academicYearId, onDone }) {
 
       {termsForYear.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Existing Terms</p>
+          <p className="text-xs font-semibold scholr-muted uppercase tracking-wide">Existing Terms</p>
           {termsForYear.map(t => (
             <div key={t.id} className="flex items-center gap-3 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
               <div>
-                <p className="text-sm font-semibold text-slate-800">{t.name}</p>
-                <p className="text-xs text-slate-500">{t.start_date} → {t.end_date}</p>
+                <p className="text-sm font-semibold scholr-ink">{t.name}</p>
+                <p className="text-xs scholr-muted">{t.start_date} → {t.end_date}</p>
               </div>
             </div>
           ))}
@@ -97,15 +97,15 @@ export default function WizardStepTerms({ schoolId, academicYearId, onDone }) {
         </div>
       )}
 
-      <div className="bg-slate-50 rounded-xl border border-slate-200 p-5 space-y-4">
+      <div className="scholr-sunk rounded-xl border scholr-rule p-5 space-y-4">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Add Terms</p>
+          <p className="text-xs font-semibold scholr-muted uppercase tracking-wide">Add Terms</p>
           <div className="flex gap-1.5">
             {TERM_PRESETS.map(p => (
               <button
                 key={p.label}
                 onClick={() => applyPreset(p)}
-                className="text-xs text-indigo-600 bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 px-2 py-0.5 rounded-full"
+                className="text-xs scholr-accent scholr-accent-sf hover:scholr-accent-sf border border-indigo-100 px-2 py-0.5 rounded-full"
               >
                 {p.label}
               </button>
@@ -117,18 +117,18 @@ export default function WizardStepTerms({ schoolId, academicYearId, onDone }) {
           {newTerms.map((term, i) => (
             <div key={i} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2 items-end">
               <div>
-                <Label className="text-xs text-slate-600 mb-1 block">Term Name</Label>
+                <Label className="text-xs scholr-muted mb-1 block">Term Name</Label>
                 <Input value={term.name} onChange={e => updateTerm(i, 'name', e.target.value)} placeholder="Term 1" />
               </div>
               <div>
-                <Label className="text-xs text-slate-600 mb-1 block">Start Date</Label>
+                <Label className="text-xs scholr-muted mb-1 block">Start Date</Label>
                 <Input type="date" value={term.start_date} onChange={e => updateTerm(i, 'start_date', e.target.value)} />
               </div>
               <div>
-                <Label className="text-xs text-slate-600 mb-1 block">End Date</Label>
+                <Label className="text-xs scholr-muted mb-1 block">End Date</Label>
                 <Input type="date" value={term.end_date} onChange={e => updateTerm(i, 'end_date', e.target.value)} />
               </div>
-              <Button variant="ghost" size="icon" onClick={() => removeTerm(i)} className="text-slate-400 h-9 w-9">
+              <Button variant="ghost" size="icon" onClick={() => removeTerm(i)} className="scholr-faint h-9 w-9">
                 <Trash2 className="w-3.5 h-3.5" />
               </Button>
             </div>
@@ -142,7 +142,7 @@ export default function WizardStepTerms({ schoolId, academicYearId, onDone }) {
           <Button
             onClick={handleSave}
             disabled={saving || newTerms.every(t => !t.name) || !activeYearId}
-            className="bg-indigo-600 hover:bg-indigo-700 gap-1.5"
+            className="scholr-accent-sf hover:scholr-accent-sf gap-1.5"
             size="sm"
           >
             {saving ? 'Saving…' : <><CheckCircle2 className="w-3.5 h-3.5" /> Save Terms &amp; Continue</>}

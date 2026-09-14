@@ -9,7 +9,7 @@ import { useDemoStore, getEffectiveSubmissionStatus } from '@/components/demo-sa
 // Plain-English one-liner so parents don't need to decode the system
 const parentStatusLine = (status) => {
   if (status === 'submitted') return { text: 'Handed in',     color: 'text-emerald-700', Icon: CheckCircle2 };
-  if (status === 'graded')    return { text: 'Graded',        color: 'text-violet-700',  Icon: CheckCircle2 };
+  if (status === 'graded')    return { text: 'Graded',        color: 'scholr-accent',  Icon: CheckCircle2 };
   if (status === 'in_progress') return { text: 'Working on it', color: 'text-amber-700', Icon: Clock };
   if (status === 'late')      return { text: 'Overdue',       color: 'text-red-700',     Icon: AlertTriangle };
   return                       { text: 'Not started yet',    color: 'text-slate-600',   Icon: Clock };
@@ -39,7 +39,7 @@ export default function ParentDeadlinesList({ studentId, limit = 5 }) {
   }
 
   return (
-    <div className="divide-y divide-slate-100">
+    <div className="divide-y scholr-divide">
       {items.map((a) => {
         const { text, color, Icon } = parentStatusLine(a.status);
         const urgent = (a.dueIn || '').toLowerCase().includes('tomorrow');
@@ -47,7 +47,7 @@ export default function ParentDeadlinesList({ studentId, limit = 5 }) {
           <Link
             key={a.id}
             to={`/demo/parent/assignment/${a.id}`}
-            className="group flex items-stretch hover:bg-slate-50/70 transition-colors"
+            className="group flex items-stretch scholr-hover/70 transition-colors"
           >
             <div className={`w-1 flex-shrink-0 ${urgent ? 'bg-red-500' : 'bg-transparent'}`} />
             <div className="flex-1 px-4 md:px-6 py-3.5 flex items-center gap-4">
@@ -64,7 +64,7 @@ export default function ParentDeadlinesList({ studentId, limit = 5 }) {
                   {text}
                 </p>
               </div>
-              <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-0.5 transition" />
+              <ArrowRight className="w-4 h-4 scholr-faint group-scholr-ink group-hover:translate-x-0.5 transition" />
             </div>
           </Link>
         );

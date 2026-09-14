@@ -91,7 +91,7 @@ export default function AcademicYearStep({ schoolId, onComplete }) {
         <CardContent className="pt-6">
           <div className="flex items-center justify-center gap-2">
             <Loader2 className="w-4 h-4 animate-spin" />
-            <span className="text-slate-600">Loading academic years...</span>
+            <span className="scholr-muted">Loading academic years...</span>
           </div>
         </CardContent>
       </Card>
@@ -104,7 +104,7 @@ export default function AcademicYearStep({ schoolId, onComplete }) {
     <Card>
       <CardHeader>
         <CardTitle>Academic Years</CardTitle>
-        <p className="text-sm text-slate-600 mt-1">
+        <p className="text-sm scholr-muted mt-1">
           Set up academic years for your school. You'll create terms within each year.
         </p>
       </CardHeader>
@@ -131,15 +131,15 @@ export default function AcademicYearStep({ schoolId, onComplete }) {
         {/* Existing Years */}
         {years.length > 0 && (
           <div className="space-y-2">
-            <p className="text-sm font-semibold text-slate-700">Your Academic Years</p>
+            <p className="text-sm font-semibold scholr-body">Your Academic Years</p>
             {years.map((year) => (
               <div
                 key={year.id}
                 className="flex items-center justify-between p-3 bg-emerald-50 border border-emerald-200 rounded-lg"
               >
                 <div>
-                  <p className="font-semibold text-sm text-slate-900">{year.name}</p>
-                  <p className="text-xs text-slate-600 mt-0.5">
+                  <p className="font-semibold text-sm scholr-ink">{year.name}</p>
+                  <p className="text-xs scholr-muted mt-0.5">
                     {new Date(year.start_date).toLocaleDateString()} — {new Date(year.end_date).toLocaleDateString()}
                   </p>
                 </div>
@@ -158,7 +158,7 @@ export default function AcademicYearStep({ schoolId, onComplete }) {
 
         {/* Add New Year */}
         <div className="border-t pt-6">
-          <p className="text-sm font-semibold text-slate-700 mb-3">Add an Academic Year</p>
+          <p className="text-sm font-semibold scholr-body mb-3">Add an Academic Year</p>
           <div className="space-y-3">
             <div>
               <Label className="text-sm font-semibold mb-1 block">Academic Year Name</Label>
@@ -209,12 +209,12 @@ export default function AcademicYearStep({ schoolId, onComplete }) {
           <Button
             onClick={onComplete}
             disabled={!canContinue}
-            className="bg-indigo-600 hover:bg-indigo-700"
+            className="scholr-accent-sf hover:scholr-accent-sf"
           >
             Continue to Terms
           </Button>
           {!canContinue && (
-            <p className="text-xs text-slate-600 mt-2">Add at least one academic year to continue</p>
+            <p className="text-xs scholr-muted mt-2">Add at least one academic year to continue</p>
           )}
         </div>
       </CardContent>

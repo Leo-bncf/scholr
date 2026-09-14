@@ -81,7 +81,7 @@ export default function SystemHealthPanel() {
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <p className="text-xs text-slate-500">
+        <p className="text-xs scholr-muted">
           Last refreshed: {lastRefreshed.toLocaleTimeString()}
         </p>
         <Button variant="outline" size="sm" onClick={refresh} disabled={refreshing} className="gap-2 text-xs">
@@ -92,7 +92,7 @@ export default function SystemHealthPanel() {
 
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
         {cards.map((card) => {
-          let colorClass = 'text-slate-700 bg-slate-50';
+          let colorClass = 'scholr-body scholr-sunk';
           if (!card.neutral) {
             const checkVal = card.invert ? 100 - card.raw : card.raw;
             if (checkVal <= card.thresholds.good) colorClass = 'text-green-600 bg-green-50';
@@ -100,16 +100,16 @@ export default function SystemHealthPanel() {
             else colorClass = 'text-red-600 bg-red-50';
           }
           return (
-            <div key={card.label} className={`rounded-xl px-4 py-3 border border-slate-200 ${colorClass.split(' ')[1]}`}>
-              <p className="text-xs text-slate-500 mb-1">{card.label}</p>
+            <div key={card.label} className={`rounded-xl px-4 py-3 border scholr-rule ${colorClass.split(' ')[1]}`}>
+              <p className="text-xs scholr-muted mb-1">{card.label}</p>
               <p className={`text-lg font-bold ${colorClass.split(' ')[0]}`}>{card.value}</p>
             </div>
           );
         })}
       </div>
 
-      <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-        <p className="text-xs font-semibold text-slate-700 mb-2 flex items-center gap-2">
+      <div className="rounded-lg border scholr-rule scholr-sunk p-4">
+        <p className="text-xs font-semibold scholr-body mb-2 flex items-center gap-2">
           <Activity className="w-4 h-4" />
           System Status
         </p>
@@ -125,7 +125,7 @@ export default function SystemHealthPanel() {
               {ok
                 ? <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
                 : <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />}
-              <span className="text-sm text-slate-700">{label}</span>
+              <span className="text-sm scholr-body">{label}</span>
               <span className={`ml-auto text-xs font-medium ${ok ? 'text-green-600' : 'text-red-600'}`}>
                 {ok ? 'Operational' : 'Degraded'}
               </span>

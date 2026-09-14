@@ -29,15 +29,15 @@ const LEVEL_STYLES = {
   HL:   'bg-rose-50 text-rose-700 border-rose-200',
   SL:   'bg-blue-50 text-blue-700 border-blue-200',
   AS:   'bg-sky-50 text-sky-700 border-sky-200',
-  A2:   'bg-indigo-50 text-indigo-700 border-indigo-200',
-  'A Level': 'bg-violet-50 text-violet-700 border-violet-200',
-  Core: 'bg-slate-50 text-slate-600 border-slate-200',
+  A2:   'scholr-accent-sf scholr-accent scholr-accent-rule',
+  'A Level': 'scholr-accent-sf scholr-accent scholr-accent-rule',
+  Core: 'scholr-sunk scholr-muted scholr-rule',
   Extended: 'bg-emerald-50 text-emerald-700 border-emerald-200',
   Standard: 'bg-blue-50 text-blue-700 border-blue-200',
   Honors: 'bg-amber-50 text-amber-700 border-amber-200',
   AP:   'bg-rose-50 text-rose-700 border-rose-200',
   core: 'bg-amber-50 text-amber-700 border-amber-200',
-  na:   'bg-slate-50 text-slate-500 border-slate-200',
+  na:   'scholr-sunk scholr-muted scholr-rule',
 };
 
 const GRADING_TYPES = [
@@ -161,8 +161,8 @@ export default function SubjectCatalogTab({ schoolId, curriculum = 'ib_dp' }) {
     <div className="space-y-5">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h2 className="text-sm font-bold text-slate-900">Subject Catalogue</h2>
-          <p className="text-xs text-slate-500 mt-0.5">Define subjects with level variants, group classifications, departments, and default grading settings for {currConfig.shortLabel}.</p>
+          <h2 className="text-sm font-bold scholr-ink">Subject Catalogue</h2>
+          <p className="text-xs scholr-muted mt-0.5">Define subjects with level variants, group classifications, departments, and default grading settings for {currConfig.shortLabel}.</p>
         </div>
         <div className="flex items-center gap-2">
           {notYetAdded.length > 0 && (
@@ -170,7 +170,7 @@ export default function SubjectCatalogTab({ schoolId, curriculum = 'ib_dp' }) {
               <Library className="w-3.5 h-3.5" /> Quick Add IB Subjects
             </Button>
           )}
-          <Button onClick={openCreate} className="bg-indigo-600 hover:bg-indigo-700 h-8 text-xs gap-1.5">
+          <Button onClick={openCreate} className="scholr-accent-sf hover:scholr-accent-sf h-8 text-xs gap-1.5">
             <Plus className="w-3.5 h-3.5" /> New Subject
           </Button>
         </div>
@@ -179,7 +179,7 @@ export default function SubjectCatalogTab({ schoolId, curriculum = 'ib_dp' }) {
       {/* Filters */}
       <div className="flex flex-wrap gap-2 items-center">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 scholr-faint" />
           <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search subjects…" className="pl-9 bg-white h-8 text-xs w-48" />
         </div>
         {hasSubjectGroups && (
@@ -201,34 +201,34 @@ export default function SubjectCatalogTab({ schoolId, curriculum = 'ib_dp' }) {
             </SelectContent>
           </Select>
         )}
-        <span className="text-xs text-slate-400">{filtered.length} of {subjects.length} subjects</span>
+        <span className="text-xs scholr-faint">{filtered.length} of {subjects.length} subjects</span>
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-slate-400" /></div>
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-faint" /></div>
       ) : subjects.length === 0 ? (
-        <div className="bg-white border border-dashed border-slate-300 rounded-lg p-12 text-center">
-          <Library className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-          <p className="text-sm font-semibold text-slate-500">No subjects yet</p>
-          <p className="text-xs text-slate-400 mt-1 mb-4">Add subjects individually{isIBDP ? ' or use Quick Add to import common IB subjects at once' : ''}.</p>
+        <div className="bg-white border border-dashed scholr-rule rounded-lg p-12 text-center">
+          <Library className="w-10 h-10 scholr-faint mx-auto mb-3" />
+          <p className="text-sm font-semibold scholr-muted">No subjects yet</p>
+          <p className="text-xs scholr-faint mt-1 mb-4">Add subjects individually{isIBDP ? ' or use Quick Add to import common IB subjects at once' : ''}.</p>
           <div className="flex gap-2 justify-center flex-wrap">
             {isIBDP && <Button variant="outline" onClick={() => setShowQuickAdd(true)} className="h-8 text-xs gap-1.5"><Library className="w-3.5 h-3.5" /> Quick Add IB</Button>}
-            <Button onClick={openCreate} className="bg-indigo-600 hover:bg-indigo-700 h-8 text-xs gap-1.5"><Plus className="w-3.5 h-3.5" /> Custom Subject</Button>
+            <Button onClick={openCreate} className="scholr-accent-sf hover:scholr-accent-sf h-8 text-xs gap-1.5"><Plus className="w-3.5 h-3.5" /> Custom Subject</Button>
           </div>
         </div>
       ) : filtered.length === 0 ? (
-        <p className="text-sm text-slate-400 text-center py-8">No subjects match your filters.</p>
+        <p className="text-sm scholr-faint text-center py-8">No subjects match your filters.</p>
       ) : (
         <div className="space-y-5">
           {grouped.map(group => (
             <div key={group.value}>
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded font-mono">{group.short}</span>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">{group.label}</h3>
+                <span className="text-xs font-bold scholr-faint scholr-sunk px-2 py-0.5 rounded font-mono">{group.short}</span>
+                <h3 className="text-xs font-bold uppercase tracking-wider scholr-muted">{group.label}</h3>
               </div>
-              <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+              <div className="app-group overflow-hidden shadow-sm">
                 <table className="w-full">
-                  <tbody className="divide-y divide-slate-50">
+                  <tbody className="divide-y scholr-divide">
                     {group.items.map(s => (
                       <SubjectRow key={s.id} subject={s} classCount={getClassCount(s.id)} onEdit={openEdit} onDelete={handleDelete} />
                     ))}
@@ -239,10 +239,10 @@ export default function SubjectCatalogTab({ schoolId, curriculum = 'ib_dp' }) {
           ))}
           {noGroup.length > 0 && (
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Uncategorised</h3>
-              <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+              <h3 className="text-xs font-bold uppercase tracking-wider scholr-faint mb-2">Uncategorised</h3>
+              <div className="app-group overflow-hidden shadow-sm">
                 <table className="w-full">
-                  <tbody className="divide-y divide-slate-50">
+                  <tbody className="divide-y scholr-divide">
                     {noGroup.map(s => (
                       <SubjectRow key={s.id} subject={s} classCount={getClassCount(s.id)} onEdit={openEdit} onDelete={handleDelete} />
                     ))}
@@ -311,7 +311,7 @@ export default function SubjectCatalogTab({ schoolId, curriculum = 'ib_dp' }) {
             </div>
             <div className="flex gap-2 pt-2">
               <Button type="button" variant="outline" className="flex-1" onClick={closeDialog}>Cancel</Button>
-              <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending} className="flex-1 bg-indigo-600 hover:bg-indigo-700">
+              <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending} className="flex-1 scholr-accent-sf hover:scholr-accent-sf">
                 {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                 {editing ? 'Save Changes' : 'Create Subject'}
               </Button>
@@ -324,21 +324,21 @@ export default function SubjectCatalogTab({ schoolId, curriculum = 'ib_dp' }) {
       <Dialog open={showQuickAdd} onOpenChange={(o) => { if (!o) setShowQuickAdd(false); }}>
         <DialogContent className="max-w-lg max-h-[80vh] flex flex-col">
           <DialogHeader><DialogTitle>Quick Add Common IB Subjects</DialogTitle></DialogHeader>
-          <p className="text-xs text-slate-500 mt-1">Select subjects to add to your catalogue. Already-added subjects are greyed out.</p>
+          <p className="text-xs scholr-muted mt-1">Select subjects to add to your catalogue. Already-added subjects are greyed out.</p>
           <div className="overflow-y-auto flex-1 mt-3 space-y-1.5">
             {IB_QUICK_ADD.map(q => {
               const exists = subjects.some(s => s.code === q.code);
               return (
-                <div key={q.code} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border ${exists ? 'bg-slate-50 border-slate-200 opacity-50' : 'bg-white border-slate-200'}`}>
+                <div key={q.code} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border ${exists ? 'scholr-sunk scholr-rule opacity-50' : 'bg-white scholr-rule'}`}>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-900">{q.name}</p>
+                    <p className="text-sm font-medium scholr-ink">{q.name}</p>
                     <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className="text-xs font-mono text-slate-400">{q.code}</span>
+                      <span className="text-xs font-mono scholr-faint">{q.code}</span>
                       <Badge className={`text-[10px] border ${LEVEL_STYLES[q.level]}`}>{q.level}</Badge>
-                      {q.ib_group && <span className="text-[10px] text-slate-400">{IB_GROUP_MAP[q.ib_group]?.short}</span>}
+                      {q.ib_group && <span className="text-[10px] scholr-faint">{IB_GROUP_MAP[q.ib_group]?.short}</span>}
                     </div>
                   </div>
-                  {exists ? <span className="text-xs text-slate-400">Added</span> : null}
+                  {exists ? <span className="text-xs scholr-faint">Added</span> : null}
                 </div>
               );
             })}
@@ -348,7 +348,7 @@ export default function SubjectCatalogTab({ schoolId, curriculum = 'ib_dp' }) {
             <Button
               disabled={bulkAddMutation.isPending || notYetAdded.length === 0}
               onClick={() => bulkAddMutation.mutate(notYetAdded)}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+              className="flex-1 scholr-accent-sf hover:scholr-accent-sf"
             >
               {bulkAddMutation.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
               Add {notYetAdded.length} Subjects
@@ -362,29 +362,29 @@ export default function SubjectCatalogTab({ schoolId, curriculum = 'ib_dp' }) {
 
 function SubjectRow({ subject, classCount, onEdit, onDelete }) {
   return (
-    <tr className="hover:bg-slate-50 transition-colors">
+    <tr className="hover:scholr-sunk transition-colors">
       <td className="px-4 py-3">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-medium text-slate-900">{subject.name}</span>
-          {subject.code && <span className="text-xs font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-500">{subject.code}</span>}
-          {subject.department && <span className="text-xs text-slate-400 italic">{subject.department}</span>}
+          <span className="text-sm font-medium scholr-ink">{subject.name}</span>
+          {subject.code && <span className="text-xs font-mono scholr-sunk px-1.5 py-0.5 rounded scholr-muted">{subject.code}</span>}
+          {subject.department && <span className="text-xs scholr-faint italic">{subject.department}</span>}
         </div>
         {subject.default_grading_type && (
-          <span className="text-[10px] text-slate-400 mt-0.5 block">Grading: {subject.default_grading_type.replace(/_/g, ' ')}</span>
+          <span className="text-[10px] scholr-faint mt-0.5 block">Grading: {subject.default_grading_type.replace(/_/g, ' ')}</span>
         )}
       </td>
       <td className="px-4 py-3 w-16">
         <Badge className={`text-[11px] border ${LEVEL_STYLES[subject.level] || LEVEL_STYLES.na}`}>{subject.level?.toUpperCase() || '—'}</Badge>
       </td>
-      <td className="px-4 py-3 hidden md:table-cell w-20 text-xs text-slate-400">
+      <td className="px-4 py-3 hidden md:table-cell w-20 text-xs scholr-faint">
         {classCount > 0 ? `${classCount} class${classCount > 1 ? 'es' : ''}` : '—'}
       </td>
       <td className="px-4 py-3 w-20 text-right">
         <div className="flex items-center justify-end gap-0.5">
-          <Button variant="ghost" size="sm" onClick={() => onEdit(subject)} className="h-7 w-7 p-0 text-slate-400 hover:text-indigo-600">
+          <Button variant="ghost" size="sm" onClick={() => onEdit(subject)} className="h-7 w-7 p-0 scholr-faint hover:scholr-accent">
             <Pencil className="w-3.5 h-3.5" />
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => onDelete(subject)} className="h-7 w-7 p-0 text-slate-400 hover:text-red-600">
+          <Button variant="ghost" size="sm" onClick={() => onDelete(subject)} className="h-7 w-7 p-0 scholr-faint hover:text-red-600">
             <Trash2 className="w-3.5 h-3.5" />
           </Button>
         </div>

@@ -123,12 +123,12 @@ export default function SystemStatus({ schoolId, school }) {
 
       {/* Refresh bar */}
       <div className="flex items-center justify-between">
-        <p className="text-xs text-slate-400">
+        <p className="text-xs scholr-faint">
           Last checked: {formatDistanceToNow(lastChecked, { addSuffix: true })}
         </p>
         <button
           onClick={handleRefresh}
-          className="flex items-center gap-1.5 text-xs text-indigo-600 hover:underline"
+          className="flex items-center gap-1.5 text-xs scholr-accent hover:underline"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isRefetching ? 'animate-spin' : ''}`} />
           Refresh status
@@ -136,12 +136,12 @@ export default function SystemStatus({ schoolId, school }) {
       </div>
 
       {/* Service grid */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <div className="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
-          <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">Service Status</p>
-          <Badge className="bg-slate-100 text-slate-500 border-0 text-xs">{Object.values(serviceStatuses).filter(s => s === 'operational').length}/{SERVICES.length} operational</Badge>
+      <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+        <div className="px-5 py-3 border-b scholr-rule-soft flex items-center justify-between">
+          <p className="text-xs font-bold scholr-muted uppercase tracking-wide">Service Status</p>
+          <Badge className="scholr-sunk scholr-muted border-0 text-xs">{Object.values(serviceStatuses).filter(s => s === 'operational').length}/{SERVICES.length} operational</Badge>
         </div>
-        <div className="divide-y divide-slate-50">
+        <div className="divide-y scholr-divide">
           {SERVICES.map(svc => {
             const status = serviceStatuses[svc.id] || 'operational';
             const cfg = STATUS_CONFIG[status];
@@ -149,12 +149,12 @@ export default function SystemStatus({ schoolId, school }) {
             const SvcIcon = svc.icon;
             return (
               <div key={svc.id} className="flex items-center gap-4 px-5 py-3.5">
-                <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center shrink-0">
-                  <SvcIcon className="w-4 h-4 text-slate-500" />
+                <div className="w-8 h-8 scholr-sunk rounded-lg flex items-center justify-center shrink-0">
+                  <SvcIcon className="w-4 h-4 scholr-muted" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-slate-800">{svc.label}</p>
-                  <p className="text-xs text-slate-400 truncate">{svc.description}</p>
+                  <p className="text-sm font-semibold scholr-ink">{svc.label}</p>
+                  <p className="text-xs scholr-faint truncate">{svc.description}</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <span className={`w-2 h-2 rounded-full ${cfg.dot}`} />
@@ -169,7 +169,7 @@ export default function SystemStatus({ schoolId, school }) {
       {/* Incident / maintenance notices */}
       {NOTICES.length > 0 && (
         <div>
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Notices & Incidents</p>
+          <p className="text-xs font-bold scholr-muted uppercase tracking-wide mb-3">Notices & Incidents</p>
           <div className="space-y-3">
             {NOTICES.map(notice => (
               <div key={notice.id} className={`rounded-xl border p-4 ${
@@ -180,9 +180,9 @@ export default function SystemStatus({ schoolId, school }) {
                 <div className="flex items-start gap-3">
                   <Clock className={`w-4 h-4 shrink-0 mt-0.5 ${notice.type === 'info' ? 'text-blue-600' : 'text-amber-600'}`} />
                   <div className="flex-1">
-                    <p className="text-sm font-bold text-slate-900">{notice.title}</p>
-                    <p className="text-xs text-slate-600 mt-1 leading-relaxed">{notice.body}</p>
-                    <p className="text-xs text-slate-400 mt-2">{formatDistanceToNow(new Date(notice.date), { addSuffix: true })}</p>
+                    <p className="text-sm font-bold scholr-ink">{notice.title}</p>
+                    <p className="text-xs scholr-muted mt-1 leading-relaxed">{notice.body}</p>
+                    <p className="text-xs scholr-faint mt-2">{formatDistanceToNow(new Date(notice.date), { addSuffix: true })}</p>
                   </div>
                   {!notice.resolved && (
                     <Badge className="bg-blue-100 text-blue-700 border-0 text-xs shrink-0">Upcoming</Badge>
@@ -212,8 +212,8 @@ export default function SystemStatus({ schoolId, school }) {
 
       {/* Uptime SLA note */}
       <div className="text-center py-4">
-        <p className="text-xs text-slate-400">
-          IB Manager targets 99.9% uptime. For critical incidents, email <span className="font-medium text-slate-600">support@ibmanager.io</span>
+        <p className="text-xs scholr-faint">
+          IB Manager targets 99.9% uptime. For critical incidents, email <span className="font-medium scholr-muted">support@ibmanager.io</span>
         </p>
       </div>
     </div>

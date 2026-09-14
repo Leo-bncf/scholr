@@ -58,10 +58,10 @@ export default function AppHome() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
+    <div className="min-h-screen flex items-center justify-center scholr-sunk">
       <div className="text-center">
-        <Loader2 className="w-10 h-10 animate-spin text-indigo-600 mx-auto mb-4" />
-        <p className="text-slate-500 text-sm">Loading your workspace...</p>
+        <Loader2 className="w-10 h-10 animate-spin scholr-accent mx-auto mb-4" />
+        <p className="scholr-muted text-sm">Loading your workspace...</p>
       </div>
     </div>
   );

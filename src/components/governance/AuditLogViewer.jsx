@@ -28,7 +28,7 @@ const CATEGORY_MAP = {
 const CATEGORIES = ['All', 'Users', 'Grades', 'Attendance', 'Behaviour', 'Classes', 'Data & Exports', 'Settings', 'Security'];
 
 const LEVEL_CONFIG = {
-  info:     { label: 'Info',     color: 'bg-slate-100 text-slate-600',   icon: Info },
+  info:     { label: 'Info',     color: 'scholr-sunk scholr-muted',   icon: Info },
   warning:  { label: 'Warning',  color: 'bg-amber-100 text-amber-700',   icon: AlertTriangle },
   critical: { label: 'Critical', color: 'bg-red-100 text-red-700',       icon: ShieldAlert },
 };
@@ -48,39 +48,39 @@ function LogRow({ log }) {
   const [expanded, setExpanded] = useState(false);
   const category = CATEGORY_MAP[log.action] || 'Other';
   return (
-    <div className="border-b border-slate-100 last:border-0">
+    <div className="border-b scholr-rule-soft last:border-0">
       <div
-        className="flex items-start gap-3 px-4 py-3 hover:bg-slate-50 cursor-pointer"
+        className="flex items-start gap-3 px-4 py-3 hover:scholr-sunk cursor-pointer"
         onClick={() => setExpanded(e => !e)}
       >
         <div className="w-36 shrink-0">
-          <p className="text-xs text-slate-500">{log.created_at ? format(new Date(log.created_at), 'dd MMM yyyy') : '—'}</p>
-          <p className="text-xs text-slate-400">{log.created_at ? format(new Date(log.created_at), 'HH:mm:ss') : ''}</p>
+          <p className="text-xs scholr-muted">{log.created_at ? format(new Date(log.created_at), 'dd MMM yyyy') : '—'}</p>
+          <p className="text-xs scholr-faint">{log.created_at ? format(new Date(log.created_at), 'HH:mm:ss') : ''}</p>
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <code className="text-xs bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded font-mono">{log.action}</code>
+            <code className="text-xs scholr-sunk scholr-body px-1.5 py-0.5 rounded font-mono">{log.action}</code>
             <Badge variant="outline" className="text-xs px-1.5 py-0">{category}</Badge>
             <LevelBadge level={log.level} />
           </div>
-          <p className="text-sm text-slate-700 mt-1 truncate">{log.details || '—'}</p>
-          <p className="text-xs text-slate-400 mt-0.5">{log.user_email || 'system'}</p>
+          <p className="text-sm scholr-body mt-1 truncate">{log.details || '—'}</p>
+          <p className="text-xs scholr-faint mt-0.5">{log.user_email || 'system'}</p>
         </div>
-        <div className="shrink-0 text-slate-300">
+        <div className="shrink-0 scholr-faint">
           {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </div>
       </div>
       {expanded && (
-        <div className="mx-4 mb-3 bg-slate-50 rounded-lg border border-slate-200 p-3 text-xs space-y-1.5">
+        <div className="mx-4 mb-3 scholr-sunk rounded-lg border scholr-rule p-3 text-xs space-y-1.5">
           <div className="grid grid-cols-2 gap-x-6 gap-y-1">
-            <div><span className="text-slate-400 font-medium">Action:</span> <span className="text-slate-700">{log.action}</span></div>
-            <div><span className="text-slate-400 font-medium">Level:</span> <span className="text-slate-700">{log.level}</span></div>
-            <div><span className="text-slate-400 font-medium">User:</span> <span className="text-slate-700">{log.user_email || '—'}</span></div>
-            <div><span className="text-slate-400 font-medium">User ID:</span> <span className="text-slate-700 font-mono">{log.user_id || '—'}</span></div>
-            <div><span className="text-slate-400 font-medium">Entity Type:</span> <span className="text-slate-700">{log.entity_type || '—'}</span></div>
-            <div><span className="text-slate-400 font-medium">Entity ID:</span> <span className="text-slate-700 font-mono truncate">{log.entity_id || '—'}</span></div>
-            <div className="col-span-2"><span className="text-slate-400 font-medium">Details:</span> <span className="text-slate-700">{log.details || '—'}</span></div>
-            <div className="col-span-2"><span className="text-slate-400 font-medium">Timestamp:</span> <span className="text-slate-700">{log.created_at ? format(new Date(log.created_at), "dd MMM yyyy 'at' HH:mm:ss") : '—'}</span></div>
+            <div><span className="scholr-faint font-medium">Action:</span> <span className="scholr-body">{log.action}</span></div>
+            <div><span className="scholr-faint font-medium">Level:</span> <span className="scholr-body">{log.level}</span></div>
+            <div><span className="scholr-faint font-medium">User:</span> <span className="scholr-body">{log.user_email || '—'}</span></div>
+            <div><span className="scholr-faint font-medium">User ID:</span> <span className="scholr-body font-mono">{log.user_id || '—'}</span></div>
+            <div><span className="scholr-faint font-medium">Entity Type:</span> <span className="scholr-body">{log.entity_type || '—'}</span></div>
+            <div><span className="scholr-faint font-medium">Entity ID:</span> <span className="scholr-body font-mono truncate">{log.entity_id || '—'}</span></div>
+            <div className="col-span-2"><span className="scholr-faint font-medium">Details:</span> <span className="scholr-body">{log.details || '—'}</span></div>
+            <div className="col-span-2"><span className="scholr-faint font-medium">Timestamp:</span> <span className="scholr-body">{log.created_at ? format(new Date(log.created_at), "dd MMM yyyy 'at' HH:mm:ss") : '—'}</span></div>
           </div>
         </div>
       )}
@@ -137,24 +137,24 @@ export default function AuditLogViewer({ schoolId }) {
   return (
     <div className="space-y-5">
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4">
+      <div className="bg-white rounded-xl border scholr-rule p-4">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           <div className="lg:col-span-2">
-            <Label className="text-xs text-slate-400 mb-1 block">Search</Label>
+            <Label className="text-xs scholr-faint mb-1 block">Search</Label>
             <div className="relative">
-              <Search className="absolute left-2.5 top-2 w-3.5 h-3.5 text-slate-400" />
+              <Search className="absolute left-2.5 top-2 w-3.5 h-3.5 scholr-faint" />
               <Input className="pl-8 h-8 text-sm" placeholder="Action or details…" value={search} onChange={e => { setSearch(e.target.value); setPage(0); }} />
             </div>
           </div>
           <div>
-            <Label className="text-xs text-slate-400 mb-1 block">Category</Label>
+            <Label className="text-xs scholr-faint mb-1 block">Category</Label>
             <Select value={category} onValueChange={v => { setCategory(v); setPage(0); }}>
               <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
               <SelectContent>{CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div>
-            <Label className="text-xs text-slate-400 mb-1 block">Level</Label>
+            <Label className="text-xs scholr-faint mb-1 block">Level</Label>
             <Select value={level} onValueChange={v => { setLevel(v); setPage(0); }}>
               <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -166,24 +166,24 @@ export default function AuditLogViewer({ schoolId }) {
             </Select>
           </div>
           <div>
-            <Label className="text-xs text-slate-400 mb-1 block">Date From</Label>
+            <Label className="text-xs scholr-faint mb-1 block">Date From</Label>
             <Input type="date" className="h-8 text-sm" value={dateFrom} onChange={e => { setDateFrom(e.target.value); setPage(0); }} />
           </div>
           <div>
-            <Label className="text-xs text-slate-400 mb-1 block">Date To</Label>
+            <Label className="text-xs scholr-faint mb-1 block">Date To</Label>
             <Input type="date" className="h-8 text-sm" value={dateTo} onChange={e => { setDateTo(e.target.value); setPage(0); }} />
           </div>
         </div>
         <div className="flex items-center justify-between mt-3">
           <div>
-            <Label className="text-xs text-slate-400 mb-1 block">Filter by User Email</Label>
+            <Label className="text-xs scholr-faint mb-1 block">Filter by User Email</Label>
             <Input className="h-8 text-sm w-56" placeholder="user@school.edu" value={userFilter} onChange={e => { setUserFilter(e.target.value); setPage(0); }} />
           </div>
           <div className="flex gap-2 items-end">
             <Button size="sm" variant="outline" onClick={() => refetch()} className="gap-1">
               <RefreshCw className="w-3.5 h-3.5" /> Refresh
             </Button>
-            <Button size="sm" onClick={exportCSV} disabled={filtered.length === 0} className="bg-indigo-600 hover:bg-indigo-700 gap-1">
+            <Button size="sm" onClick={exportCSV} disabled={filtered.length === 0} className="scholr-accent-sf hover:scholr-accent-sf gap-1">
               <Download className="w-3.5 h-3.5" /> Export ({filtered.length})
             </Button>
           </div>
@@ -198,32 +198,32 @@ export default function AuditLogViewer({ schoolId }) {
           { label: 'Warnings', value: filtered.filter(l => l.level === 'warning').length, amber: true },
           { label: 'Users Active', value: new Set(filtered.map(l => l.user_email).filter(Boolean)).size },
         ].map(({ label, value, red, amber }) => (
-          <div key={label} className="bg-white border border-slate-200 rounded-lg p-3 text-center">
-            <p className={`text-xl font-bold ${red ? 'text-red-600' : amber ? 'text-amber-600' : 'text-slate-800'}`}>{value}</p>
-            <p className="text-xs text-slate-500 mt-0.5">{label}</p>
+          <div key={label} className="app-group p-3 text-center">
+            <p className={`text-xl font-bold ${red ? 'text-red-600' : amber ? 'text-amber-600' : 'scholr-ink'}`}>{value}</p>
+            <p className="text-xs scholr-muted mt-0.5">{label}</p>
           </div>
         ))}
       </div>
 
       {/* Log table */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50">
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Audit Events</p>
-          <p className="text-xs text-slate-400">Showing {paginated.length} of {filtered.length} results</p>
+      <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b scholr-rule-soft scholr-sunk">
+          <p className="text-xs font-semibold scholr-muted uppercase tracking-wide">Audit Events</p>
+          <p className="text-xs scholr-faint">Showing {paginated.length} of {filtered.length} results</p>
         </div>
         {isLoading ? (
-          <div className="text-center py-16 text-slate-400 text-sm">Loading audit log…</div>
+          <div className="text-center py-16 scholr-faint text-sm">Loading audit log…</div>
         ) : paginated.length === 0 ? (
-          <div className="text-center py-16 text-slate-400 text-sm">No audit events match the current filters.</div>
+          <div className="text-center py-16 scholr-faint text-sm">No audit events match the current filters.</div>
         ) : (
           <div>
             {paginated.map(log => <LogRow key={log.id} log={log} />)}
           </div>
         )}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100">
+          <div className="flex items-center justify-between px-4 py-3 border-t scholr-rule-soft">
             <Button size="sm" variant="outline" disabled={page === 0} onClick={() => setPage(p => p - 1)}>Previous</Button>
-            <span className="text-xs text-slate-500">Page {page + 1} of {totalPages}</span>
+            <span className="text-xs scholr-muted">Page {page + 1} of {totalPages}</span>
             <Button size="sm" variant="outline" disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}>Next</Button>
           </div>
         )}

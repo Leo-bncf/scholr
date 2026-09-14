@@ -169,7 +169,7 @@ export default function SchoolAdminEnrollments() {
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar
           links={SCHOOL_ADMIN_SIDEBAR_LINKS}
           role="school_admin"
@@ -180,19 +180,19 @@ export default function SchoolAdminEnrollments() {
         />
 
         <main className="app-offset min-h-screen flex flex-col">
-          <header className="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-10 shadow-sm">
+          <header className="bg-white border-b scholr-rule px-6 py-4 sticky top-0 z-10 shadow-sm">
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div>
-                <h1 className="text-base font-black text-slate-900 tracking-tight">
+                <h1 className="text-base font-black scholr-ink tracking-tight">
                   Enrollments & Curriculum
                 </h1>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs scholr-faint mt-0.5">
                   Create classes, assign teachers, and enrol students
                 </p>
               </div>
               <Button
                 onClick={() => setCreateOpen(true)}
-                className="gap-2 bg-indigo-600 hover:bg-indigo-700"
+                className="gap-2 scholr-accent-sf hover:scholr-accent-sf"
               >
                 <Plus className="w-4 h-4" />
                 New Class
@@ -208,7 +208,7 @@ export default function SchoolAdminEnrollments() {
             />
 
             <div className="relative max-w-xs">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 scholr-faint" />
               <Input
                 placeholder="Search classes…"
                 value={search}
@@ -219,7 +219,7 @@ export default function SchoolAdminEnrollments() {
 
             {isLoading ? (
               <div className="flex justify-center py-20">
-                <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+                <Loader2 className="w-6 h-6 animate-spin scholr-faint" />
               </div>
             ) : filteredClasses.length === 0 ? (
               <EmptyState
@@ -302,9 +302,9 @@ function StatsBar({ classes, teachers, students }) {
   return (
     <div className="grid grid-cols-3 gap-3">
       {items.map((i) => (
-        <div key={i.label} className="bg-white rounded-xl border border-slate-200 p-4">
-          <p className="text-xs text-slate-500 font-medium">{i.label}</p>
-          <p className="text-2xl font-black text-slate-900 mt-1">{i.value}</p>
+        <div key={i.label} className="bg-white rounded-xl border scholr-rule p-4">
+          <p className="text-xs scholr-muted font-medium">{i.label}</p>
+          <p className="text-2xl font-black scholr-ink mt-1">{i.value}</p>
         </div>
       ))}
     </div>
@@ -314,21 +314,21 @@ function StatsBar({ classes, teachers, students }) {
 function EmptyState({ hasSearch, hasAnyClasses, onCreate }) {
   if (hasSearch && hasAnyClasses) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 p-16 text-center">
-        <p className="text-sm text-slate-500">No classes match your search</p>
+      <div className="bg-white rounded-xl border scholr-rule p-16 text-center">
+        <p className="text-sm scholr-muted">No classes match your search</p>
       </div>
     );
   }
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-16 text-center">
-      <div className="w-12 h-12 rounded-full bg-indigo-50 mx-auto flex items-center justify-center mb-3">
-        <BookOpen className="w-5 h-5 text-indigo-600" />
+    <div className="bg-white rounded-xl border scholr-rule p-16 text-center">
+      <div className="w-12 h-12 rounded-full scholr-accent-sf mx-auto flex items-center justify-center mb-3">
+        <BookOpen className="w-5 h-5 scholr-accent" />
       </div>
-      <h3 className="text-sm font-semibold text-slate-900">No classes yet</h3>
-      <p className="text-xs text-slate-500 mt-1 mb-4">
+      <h3 className="text-sm font-semibold scholr-ink">No classes yet</h3>
+      <p className="text-xs scholr-muted mt-1 mb-4">
         Create your first class to start assigning teachers and students.
       </p>
-      <Button onClick={onCreate} className="gap-2 bg-indigo-600 hover:bg-indigo-700">
+      <Button onClick={onCreate} className="gap-2 scholr-accent-sf hover:scholr-accent-sf">
         <Plus className="w-4 h-4" />
         Create your first class
       </Button>

@@ -126,7 +126,7 @@ export default function SubjectsStep({ schoolId, onComplete }) {
         <CardContent className="pt-6">
           <div className="flex items-center justify-center gap-2">
             <Loader2 className="w-4 h-4 animate-spin" />
-            <span className="text-slate-600">Loading subjects...</span>
+            <span className="scholr-muted">Loading subjects...</span>
           </div>
         </CardContent>
       </Card>
@@ -139,7 +139,7 @@ export default function SubjectsStep({ schoolId, onComplete }) {
     <Card>
       <CardHeader>
         <CardTitle>Subjects</CardTitle>
-        <p className="text-sm text-slate-600 mt-1">
+        <p className="text-sm scholr-muted mt-1">
           Define the subjects your school teaches. You can add custom subjects or choose from common ones.
         </p>
       </CardHeader>
@@ -166,18 +166,18 @@ export default function SubjectsStep({ schoolId, onComplete }) {
         {/* Existing Subjects */}
         {hasSubjects && (
           <div className="space-y-2">
-            <p className="text-sm font-semibold text-slate-700">Your Subjects ({subjects.length})</p>
+            <p className="text-sm font-semibold scholr-body">Your Subjects ({subjects.length})</p>
             <div className="flex flex-wrap gap-2">
               {subjects.map((subject) => (
                 <div
                   key={subject.id}
-                  className="inline-flex items-center gap-2 px-3 py-2 bg-indigo-50 border border-indigo-200 rounded-lg"
+                  className="inline-flex items-center gap-2 px-3 py-2 scholr-accent-sf border scholr-accent-rule rounded-lg"
                 >
-                  <span className="text-sm font-semibold text-indigo-900">
+                  <span className="text-sm font-semibold scholr-accent">
                     {subject.name}
                   </span>
                   {subject.code && (
-                    <span className="text-xs text-indigo-700 opacity-70">{subject.code}</span>
+                    <span className="text-xs scholr-accent opacity-70">{subject.code}</span>
                   )}
                   <Button
                     size="icon"
@@ -195,7 +195,7 @@ export default function SubjectsStep({ schoolId, onComplete }) {
 
         {/* Quick Add Common Subjects */}
         <div className={hasSubjects ? 'border-t pt-6' : ''}>
-          <p className="text-sm font-semibold text-slate-700 mb-3">Add Common Subjects</p>
+          <p className="text-sm font-semibold scholr-body mb-3">Add Common Subjects</p>
           <div className="grid grid-cols-2 gap-2 mb-4">
             {commonSubjects.map((subject) => {
               const exists = subjects.some(s => s.name === subject.name);
@@ -217,7 +217,7 @@ export default function SubjectsStep({ schoolId, onComplete }) {
 
         {/* Custom Subject */}
         <div className="border-t pt-6">
-          <p className="text-sm font-semibold text-slate-700 mb-3">Add Custom Subject</p>
+          <p className="text-sm font-semibold scholr-body mb-3">Add Custom Subject</p>
           <div className="space-y-3">
             <div>
               <Label className="text-sm font-semibold mb-1 block">Subject Name</Label>
@@ -246,7 +246,7 @@ export default function SubjectsStep({ schoolId, onComplete }) {
                   value={newSubject.category}
                   onChange={(e) => setNewSubject({ ...newSubject, category: e.target.value })}
                   disabled={saving}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm"
+                  className="w-full px-3 py-2 border scholr-rule rounded-md bg-white text-sm"
                 >
                   <option value="general">General</option>
                   <option value="ib">IB</option>
@@ -274,12 +274,12 @@ export default function SubjectsStep({ schoolId, onComplete }) {
           <Button
             onClick={onComplete}
             disabled={!hasSubjects}
-            className="bg-indigo-600 hover:bg-indigo-700"
+            className="scholr-accent-sf hover:scholr-accent-sf"
           >
             Continue to Classes
           </Button>
           {!hasSubjects && (
-            <p className="text-xs text-slate-600 mt-2">Add at least one subject to continue</p>
+            <p className="text-xs scholr-muted mt-2">Add at least one subject to continue</p>
           )}
         </div>
       </CardContent>

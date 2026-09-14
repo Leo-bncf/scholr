@@ -9,14 +9,14 @@ import { useDemoStore, getEffectiveSubmissionStatus } from '@/components/demo-sa
 
 const typeColors = {
   homework:           'bg-blue-50 text-blue-700',
-  essay:              'bg-purple-50 text-purple-700',
+  essay:              'scholr-accent-sf scholr-accent',
   exam:               'bg-red-50 text-red-700',
   project:            'bg-emerald-50 text-emerald-700',
   quiz:               'bg-amber-50 text-amber-700',
   lab_report:         'bg-cyan-50 text-cyan-700',
   presentation:       'bg-pink-50 text-pink-700',
-  internal_assessment:'bg-indigo-50 text-indigo-700',
-  extended_essay:     'bg-violet-50 text-violet-700',
+  internal_assessment:'scholr-accent-sf scholr-accent',
+  extended_essay:     'scholr-accent-sf scholr-accent',
 };
 
 const urgencyColor = (dueIn = '') => {
@@ -47,7 +47,7 @@ export default function UpcomingDeadlinesTimeline({ studentId, limit }) {
   }
 
   return (
-    <div className="divide-y divide-slate-100">
+    <div className="divide-y scholr-divide">
       {items.map((a) => {
         const cls = a.classId ? getClass(a.classId) : null;
         const subj = cls ? getSubject(cls.subjectId) : null;
@@ -56,7 +56,7 @@ export default function UpcomingDeadlinesTimeline({ studentId, limit }) {
           <Link
             key={a.id}
             to={`/demo/student/assignment/${a.id}`}
-            className="group flex items-stretch hover:bg-slate-50/70 transition-colors"
+            className="group flex items-stretch scholr-hover/70 transition-colors"
           >
             {/* Urgency rail */}
             <div className={`w-1 flex-shrink-0 ${isUrgent ? 'bg-red-500' : 'bg-transparent'}`} />
@@ -71,7 +71,7 @@ export default function UpcomingDeadlinesTimeline({ studentId, limit }) {
                 </div>
                 <p className="text-xs text-slate-500 truncate">
                   {subj?.name || 'Core'}
-                  {cls && <span className="text-slate-300"> · {cls.name.split(' — ')[1] || ''}</span>}
+                  {cls && <span className="scholr-faint"> · {cls.name.split(' — ')[1] || ''}</span>}
                 </p>
               </div>
               <div className="flex items-center gap-3 flex-shrink-0">
@@ -83,7 +83,7 @@ export default function UpcomingDeadlinesTimeline({ studentId, limit }) {
                   </div>
                   <p className="text-[10px] text-slate-400 mt-0.5">{a.dueLabel}</p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-0.5 transition" />
+                <ArrowRight className="w-4 h-4 scholr-faint group-scholr-ink group-hover:translate-x-0.5 transition" />
               </div>
             </div>
           </Link>

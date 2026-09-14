@@ -41,11 +41,11 @@ export default function ClassMaterials({ classData, isTeacher }) {
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Class Materials</h2>
-          <p className="text-sm text-slate-500">Files and links shared with this class</p>
+          <h2 className="text-xl font-bold scholr-ink">Class Materials</h2>
+          <p className="text-sm scholr-muted">Files and links shared with this class</p>
         </div>
         {isTeacher && (
-          <Button onClick={() => setDialogOpen(true)} className="bg-indigo-600 hover:bg-indigo-700 gap-2">
+          <Button onClick={() => setDialogOpen(true)} className="scholr-accent-sf hover:scholr-accent-sf gap-2">
             <Upload className="w-4 h-4" /> Add Material
           </Button>
         )}
@@ -53,11 +53,11 @@ export default function ClassMaterials({ classData, isTeacher }) {
 
       {isLoading ? (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+          <Loader2 className="w-6 h-6 animate-spin scholr-faint" />
         </div>
       ) : materials.length === 0 ? (
-        <div className="text-center py-16 text-slate-400 border-2 border-dashed border-slate-200 rounded-xl">
-          <FolderOpen className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+        <div className="text-center py-16 scholr-faint border-2 border-dashed scholr-rule rounded-xl">
+          <FolderOpen className="w-12 h-12 mx-auto mb-3 scholr-faint" />
           <p className="font-medium">No materials yet</p>
           {isTeacher && <p className="text-sm mt-1">Upload a file or add a link to get started</p>}
         </div>
@@ -66,15 +66,15 @@ export default function ClassMaterials({ classData, isTeacher }) {
           {materials.map((m) => {
             const Icon = m.type === 'link' ? Link2 : FileText;
             return (
-              <div key={m.id} className="bg-white rounded-xl border border-slate-200 p-4 flex items-center justify-between hover:shadow-md transition-shadow">
+              <div key={m.id} className="bg-white rounded-xl border scholr-rule p-4 flex items-center justify-between hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-                    <Icon className="w-5 h-5 text-indigo-600" />
+                  <div className="w-10 h-10 rounded-lg scholr-accent-sf flex items-center justify-center shrink-0">
+                    <Icon className="w-5 h-5 scholr-accent" />
                   </div>
                   <div className="min-w-0">
-                    <p className="font-medium text-slate-900 truncate">{m.title}</p>
-                    {m.description && <p className="text-xs text-slate-500 truncate">{m.description}</p>}
-                    <p className="text-xs text-slate-400 mt-0.5">
+                    <p className="font-medium scholr-ink truncate">{m.title}</p>
+                    {m.description && <p className="text-xs scholr-muted truncate">{m.description}</p>}
+                    <p className="text-xs scholr-faint mt-0.5">
                       {m.type === 'file' ? (m.file_name || 'File') : 'Link'}
                       {m.file_size ? ` · ${formatSize(m.file_size)}` : ''}
                       {m.uploaded_by_name ? ` · ${m.uploaded_by_name}` : ''}

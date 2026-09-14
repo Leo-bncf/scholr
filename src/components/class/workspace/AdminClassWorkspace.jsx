@@ -52,13 +52,13 @@ export default function AdminClassWorkspace({ classData, user, initialTab }) {
   ];
 
   const adminChip = (
-    <Badge className="bg-indigo-50 text-indigo-700 border border-indigo-200 gap-1 text-[11px]">
+    <Badge className="scholr-accent-sf scholr-accent border scholr-accent-rule gap-1 text-[11px]">
       <ShieldCheck className="w-3 h-3" /> Admin view
     </Badge>
   );
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen scholr-sunk">
       <ClassHeader classData={classData} contextChip={adminChip} />
       <ClassTabBar groups={groups} activeTab={activeTab} onTabChange={setActiveTab} />
 

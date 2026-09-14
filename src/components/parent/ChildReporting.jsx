@@ -116,7 +116,7 @@ export default function ChildReporting({ schoolId, studentId, studentName }) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <FileText className="w-5 h-5 text-indigo-600" />
+            <FileText className="w-5 h-5 scholr-accent" />
             PDF Reports
           </CardTitle>
           <CardDescription>Download term reports, progress snapshots, and assessment summaries</CardDescription>
@@ -124,15 +124,15 @@ export default function ChildReporting({ schoolId, studentId, studentName }) {
         <CardContent>
           {reportsLoading ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
+              <Loader2 className="w-5 h-5 animate-spin scholr-faint" />
             </div>
           ) : reports.length > 0 ? (
             <div className="space-y-3">
               {reports.map((report) => (
-                <div key={report.id} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+                <div key={report.id} className="flex items-center justify-between p-4 border scholr-rule rounded-lg hover:scholr-sunk transition-colors">
                   <div>
-                    <h4 className="font-medium text-slate-900">{report.name || 'Term Report'}</h4>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <h4 className="font-medium scholr-ink">{report.name || 'Term Report'}</h4>
+                    <p className="text-xs scholr-muted mt-1">
                       Generated {new Date(report.created_at).toLocaleDateString()}
                     </p>
                   </div>
@@ -175,25 +175,25 @@ export default function ChildReporting({ schoolId, studentId, studentName }) {
             {trends ? (
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                    <p className="text-xs font-medium text-slate-600 uppercase tracking-wide mb-1">Current Average</p>
-                    <p className="text-2xl font-bold text-slate-900">{trends.current}%</p>
+                  <div className="p-4 scholr-sunk rounded-lg border scholr-rule">
+                    <p className="text-xs font-medium scholr-muted uppercase tracking-wide mb-1">Current Average</p>
+                    <p className="text-2xl font-bold scholr-ink">{trends.current}%</p>
                   </div>
-                  <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                    <p className="text-xs font-medium text-slate-600 uppercase tracking-wide mb-1">Grade Trend</p>
+                  <div className="p-4 scholr-sunk rounded-lg border scholr-rule">
+                    <p className="text-xs font-medium scholr-muted uppercase tracking-wide mb-1">Grade Trend</p>
                     <div className="flex items-center gap-2">
-                      <p className="text-2xl font-bold text-slate-900">{trends.trend}%</p>
+                      <p className="text-2xl font-bold scholr-ink">{trends.trend}%</p>
                       <TrendingUp 
                         className={`w-5 h-5 ${
                           trends.direction === 'up' ? 'text-emerald-600 rotate-0' : 
                           trends.direction === 'down' ? 'text-red-600 rotate-180' : 
-                          'text-slate-400'
+                          'scholr-faint'
                         }`}
                       />
                     </div>
                   </div>
                 </div>
-                <p className="text-xs text-slate-500 mt-4">
+                <p className="text-xs scholr-muted mt-4">
                   Based on recent grade submissions and assessments
                 </p>
               </div>
@@ -219,14 +219,14 @@ export default function ChildReporting({ schoolId, studentId, studentName }) {
           <CardContent>
             {cohortsLoading ? (
               <div className="flex items-center justify-center py-8">
-                <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
+                <Loader2 className="w-5 h-5 animate-spin scholr-faint" />
               </div>
             ) : cohorts.length > 0 ? (
               <div className="space-y-3">
                 {cohorts.map((cohort) => (
-                  <div key={cohort.id} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
-                    <h4 className="font-medium text-slate-900">{cohort.name}</h4>
-                    <p className="text-xs text-slate-500 mt-1">
+                  <div key={cohort.id} className="p-4 border scholr-rule rounded-lg hover:scholr-sunk transition-colors">
+                    <h4 className="font-medium scholr-ink">{cohort.name}</h4>
+                    <p className="text-xs scholr-muted mt-1">
                       {cohort.student_count || 0} students • Avg grade: {cohort.average_grade || 'N/A'}
                     </p>
                   </div>
@@ -246,7 +246,7 @@ export default function ChildReporting({ schoolId, studentId, studentName }) {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Briefcase className="w-5 h-5 text-purple-600" />
+              <Briefcase className="w-5 h-5 scholr-accent" />
               Student Portfolio
             </CardTitle>
             <CardDescription>Submitted work and completed assignments</CardDescription>
@@ -254,20 +254,20 @@ export default function ChildReporting({ schoolId, studentId, studentName }) {
           <CardContent>
             {submissionsLoading ? (
               <div className="flex items-center justify-center py-8">
-                <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
+                <Loader2 className="w-5 h-5 animate-spin scholr-faint" />
               </div>
             ) : submissions.length > 0 ? (
               <div className="space-y-3">
                 {submissions.slice(0, 10).map((submission) => (
-                  <div key={submission.id} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+                  <div key={submission.id} className="p-4 border scholr-rule rounded-lg hover:scholr-sunk transition-colors">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h4 className="font-medium text-slate-900">{submission.assignment_id}</h4>
-                        <p className="text-xs text-slate-500 mt-1">
+                        <h4 className="font-medium scholr-ink">{submission.assignment_id}</h4>
+                        <p className="text-xs scholr-muted mt-1">
                           Submitted {new Date(submission.submitted_at).toLocaleDateString()}
                         </p>
                         {submission.score && (
-                          <p className="text-sm font-medium text-slate-900 mt-2">
+                          <p className="text-sm font-medium scholr-ink mt-2">
                             Score: {submission.score}{submission.max_score ? `/${submission.max_score}` : ''}
                           </p>
                         )}

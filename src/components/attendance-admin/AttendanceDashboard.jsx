@@ -15,7 +15,7 @@ function StatCard({ label, value, sub, accent = 'slate', icon: Icon, onClick }) 
     red:     'bg-red-50 border-red-200 text-red-900',
     amber:   'bg-amber-50 border-amber-200 text-amber-900',
     blue:    'bg-blue-50 border-blue-200 text-blue-900',
-    slate:   'bg-slate-50 border-slate-200 text-slate-900',
+    slate:   'scholr-sunk scholr-rule scholr-ink',
   };
   return (
     <div
@@ -57,13 +57,13 @@ function StudentDrilldown({ student, records, onBack }) {
 
   return (
     <div className="space-y-5">
-      <button onClick={onBack} className="flex items-center gap-1.5 text-sm text-indigo-600 hover:text-indigo-800 font-medium">
+      <button onClick={onBack} className="flex items-center gap-1.5 text-sm scholr-accent hover:scholr-accent font-medium">
         <ArrowLeft className="w-4 h-4" /> Back to dashboard
       </button>
 
-      <div className="bg-white rounded-xl border border-slate-200 p-5">
-        <h2 className="text-lg font-bold text-slate-900 mb-1">{student.name}</h2>
-        <p className="text-sm text-slate-500 mb-5">{total} records in selected period</p>
+      <div className="bg-white rounded-xl border scholr-rule p-5">
+        <h2 className="text-lg font-bold scholr-ink mb-1">{student.name}</h2>
+        <p className="text-sm scholr-muted mb-5">{total} records in selected period</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatCard label="Attendance Rate" value={`${rate}%`} accent={parseFloat(rate) >= 90 ? 'emerald' : parseFloat(rate) >= 75 ? 'amber' : 'red'} icon={CheckCircle2} />
           <StatCard label="Present" value={counts.present || 0} accent="emerald" icon={CheckCircle2} />
@@ -73,8 +73,8 @@ function StudentDrilldown({ student, records, onBack }) {
       </div>
 
       {weeklyData.length > 0 && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6">
-          <h3 className="font-bold text-slate-900 mb-4">Weekly Breakdown</h3>
+        <div className="bg-white rounded-xl border scholr-rule p-6">
+          <h3 className="font-bold scholr-ink mb-4">Weekly Breakdown</h3>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={weeklyData} barSize={14}>
               <XAxis dataKey="week" tick={{ fontSize: 10 }} />
@@ -90,19 +90,19 @@ function StudentDrilldown({ student, records, onBack }) {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200">
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Date</th>
-              <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase">Status</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Note</th>
+            <tr className="scholr-sunk border-b scholr-rule">
+              <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">Date</th>
+              <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">Status</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">Note</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y scholr-divide">
             {studentRecords.slice().reverse().map(r => (
-              <tr key={r.id} className="hover:bg-slate-50">
-                <td className="px-4 py-2.5 text-slate-700">{r.date}</td>
+              <tr key={r.id} className="hover:scholr-sunk">
+                <td className="px-4 py-2.5 scholr-body">{r.date}</td>
                 <td className="px-4 py-2.5 text-center">
                   <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${
                     r.status === 'present' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
@@ -113,7 +113,7 @@ function StudentDrilldown({ student, records, onBack }) {
                     {r.status}
                   </span>
                 </td>
-                <td className="px-4 py-2.5 text-slate-500 text-xs italic">{r.note || '—'}</td>
+                <td className="px-4 py-2.5 scholr-muted text-xs italic">{r.note || '—'}</td>
               </tr>
             ))}
           </tbody>
@@ -224,25 +224,25 @@ export default function AttendanceDashboard({ schoolId }) {
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 flex flex-wrap gap-4 items-end">
+      <div className="bg-white rounded-xl border scholr-rule p-4 flex flex-wrap gap-4 items-end">
         <div>
-          <label className="text-xs font-semibold text-slate-600 block mb-1">From</label>
-          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm" />
+          <label className="text-xs font-semibold scholr-muted block mb-1">From</label>
+          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm" />
         </div>
         <div>
-          <label className="text-xs font-semibold text-slate-600 block mb-1">To</label>
-          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm" />
+          <label className="text-xs font-semibold scholr-muted block mb-1">To</label>
+          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm" />
         </div>
         <div>
-          <label className="text-xs font-semibold text-slate-600 block mb-1">Cohort</label>
-          <select value={filterCohort} onChange={e => setFilterCohort(e.target.value)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm bg-white">
+          <label className="text-xs font-semibold scholr-muted block mb-1">Cohort</label>
+          <select value={filterCohort} onChange={e => setFilterCohort(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm bg-white">
             <option value="all">All Cohorts</option>
             {cohorts.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </div>
         <div>
-          <label className="text-xs font-semibold text-slate-600 block mb-1">Class</label>
-          <select value={filterClass} onChange={e => setFilterClass(e.target.value)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm bg-white">
+          <label className="text-xs font-semibold scholr-muted block mb-1">Class</label>
+          <select value={filterClass} onChange={e => setFilterClass(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm bg-white">
             <option value="all">All Classes</option>
             {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
@@ -250,7 +250,7 @@ export default function AttendanceDashboard({ schoolId }) {
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>
+        <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>
       ) : (
         <>
           {/* KPI Cards */}
@@ -263,8 +263,8 @@ export default function AttendanceDashboard({ schoolId }) {
 
           {/* Daily Trend Chart */}
           {dailyData.length > 0 && (
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
-              <h3 className="font-bold text-slate-900 mb-4">Daily Attendance Rate (%)</h3>
+            <div className="bg-white rounded-xl border scholr-rule p-6">
+              <h3 className="font-bold scholr-ink mb-4">Daily Attendance Rate (%)</h3>
               <ResponsiveContainer width="100%" height={180}>
                 <BarChart data={dailyData} barSize={14}>
                   <XAxis dataKey="date" tick={{ fontSize: 11 }} />
@@ -282,14 +282,14 @@ export default function AttendanceDashboard({ schoolId }) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Chronic Absence */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
+            <div className="bg-white rounded-xl border scholr-rule p-6">
               <div className="flex items-center gap-2 mb-4">
                 <TrendingDown className="w-5 h-5 text-red-600" />
-                <h3 className="font-bold text-slate-900">Chronic Absence</h3>
+                <h3 className="font-bold scholr-ink">Chronic Absence</h3>
                 <Badge className="bg-red-50 text-red-700 border border-red-200">{chronicAbsent.length}</Badge>
               </div>
               {chronicAbsent.length === 0 ? (
-                <p className="text-sm text-slate-400 text-center py-6">No students flagged in this period.</p>
+                <p className="text-sm scholr-faint text-center py-6">No students flagged in this period.</p>
               ) : (
                 <div className="space-y-2">
                   {chronicAbsent.map((s, i) => (
@@ -298,7 +298,7 @@ export default function AttendanceDashboard({ schoolId }) {
                       onClick={() => setDrilldownStudent(s)}
                       className="w-full flex items-center justify-between p-2.5 bg-red-50 rounded-lg border border-red-100 hover:bg-red-100 transition-colors text-left"
                     >
-                      <span className="text-sm font-medium text-slate-900">{s.name}</span>
+                      <span className="text-sm font-medium scholr-ink">{s.name}</span>
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-red-700">{Math.round(s.absent / s.total * 100)}% absent</span>
                         <ChevronRight className="w-3.5 h-3.5 text-red-400" />
@@ -310,14 +310,14 @@ export default function AttendanceDashboard({ schoolId }) {
             </div>
 
             {/* Frequent Lateness */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
+            <div className="bg-white rounded-xl border scholr-rule p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Clock className="w-5 h-5 text-amber-600" />
-                <h3 className="font-bold text-slate-900">Frequent Lateness</h3>
+                <h3 className="font-bold scholr-ink">Frequent Lateness</h3>
                 <Badge className="bg-amber-50 text-amber-700 border border-amber-200">{frequentLate.length}</Badge>
               </div>
               {frequentLate.length === 0 ? (
-                <p className="text-sm text-slate-400 text-center py-6">No students flagged in this period.</p>
+                <p className="text-sm scholr-faint text-center py-6">No students flagged in this period.</p>
               ) : (
                 <div className="space-y-2">
                   {frequentLate.map((s, i) => (
@@ -326,7 +326,7 @@ export default function AttendanceDashboard({ schoolId }) {
                       onClick={() => setDrilldownStudent(s)}
                       className="w-full flex items-center justify-between p-2.5 bg-amber-50 rounded-lg border border-amber-100 hover:bg-amber-100 transition-colors text-left"
                     >
-                      <span className="text-sm font-medium text-slate-900">{s.name}</span>
+                      <span className="text-sm font-medium scholr-ink">{s.name}</span>
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-amber-700">{s.late} late</span>
                         <ChevronRight className="w-3.5 h-3.5 text-amber-400" />
@@ -338,19 +338,19 @@ export default function AttendanceDashboard({ schoolId }) {
             </div>
 
             {/* Attendance by Class */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 md:col-span-2">
+            <div className="bg-white rounded-xl border scholr-rule p-6 md:col-span-2">
               <div className="flex items-center gap-2 mb-4">
-                <Users className="w-5 h-5 text-indigo-600" />
-                <h3 className="font-bold text-slate-900">Attendance by Class</h3>
+                <Users className="w-5 h-5 scholr-accent" />
+                <h3 className="font-bold scholr-ink">Attendance by Class</h3>
               </div>
               {classBreakdown.length === 0 ? (
-                <p className="text-sm text-slate-400 text-center py-6">No class data in this period.</p>
+                <p className="text-sm scholr-faint text-center py-6">No class data in this period.</p>
               ) : (
                 <div className="space-y-2">
                   {classBreakdown.map((c, i) => (
                     <div key={i} className="flex items-center gap-3">
-                      <span className="text-sm text-slate-700 w-48 truncate">{c.name}</span>
-                      <div className="flex-1 bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                      <span className="text-sm scholr-body w-48 truncate">{c.name}</span>
+                      <div className="flex-1 scholr-sunk rounded-full h-2.5 overflow-hidden">
                         <div
                           className={`h-full rounded-full ${c.rate >= 90 ? 'bg-emerald-500' : c.rate >= 75 ? 'bg-amber-500' : 'bg-red-500'}`}
                           style={{ width: `${c.rate}%` }}

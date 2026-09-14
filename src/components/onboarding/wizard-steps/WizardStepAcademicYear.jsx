@@ -39,19 +39,19 @@ export default function WizardStepAcademicYear({ schoolId, onDone, onAcademicYea
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="text-base font-bold text-slate-900 mb-1">Academic Year</h3>
-        <p className="text-sm text-slate-500">Define the school year that classes and terms will belong to. You can add more years later.</p>
+        <h3 className="text-base font-bold scholr-ink mb-1">Academic Year</h3>
+        <p className="text-sm scholr-muted">Define the school year that classes and terms will belong to. You can add more years later.</p>
       </div>
 
       {existingYears.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Configured Years</p>
+          <p className="text-xs font-semibold scholr-muted uppercase tracking-wide">Configured Years</p>
           {existingYears.map(y => (
             <div key={y.id} className="flex items-center gap-3 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
               <div>
-                <p className="text-sm font-semibold text-slate-800">{y.name}</p>
-                <p className="text-xs text-slate-500">{y.start_date} → {y.end_date}</p>
+                <p className="text-sm font-semibold scholr-ink">{y.name}</p>
+                <p className="text-xs scholr-muted">{y.start_date} → {y.end_date}</p>
               </div>
             </div>
           ))}
@@ -62,11 +62,11 @@ export default function WizardStepAcademicYear({ schoolId, onDone, onAcademicYea
       )}
 
       {!hasYears && (
-        <div className="bg-slate-50 rounded-xl border border-slate-200 p-5 space-y-4">
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Create First Academic Year</p>
+        <div className="scholr-sunk rounded-xl border scholr-rule p-5 space-y-4">
+          <p className="text-xs font-semibold scholr-muted uppercase tracking-wide">Create First Academic Year</p>
           <div className="grid sm:grid-cols-3 gap-3">
             <div>
-              <Label className="text-xs text-slate-600 mb-1 block">Year Name</Label>
+              <Label className="text-xs scholr-muted mb-1 block">Year Name</Label>
               <Input
                 value={form.name}
                 onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
@@ -74,7 +74,7 @@ export default function WizardStepAcademicYear({ schoolId, onDone, onAcademicYea
               />
             </div>
             <div>
-              <Label className="text-xs text-slate-600 mb-1 block">Start Date</Label>
+              <Label className="text-xs scholr-muted mb-1 block">Start Date</Label>
               <Input
                 type="date"
                 value={form.start_date}
@@ -82,7 +82,7 @@ export default function WizardStepAcademicYear({ schoolId, onDone, onAcademicYea
               />
             </div>
             <div>
-              <Label className="text-xs text-slate-600 mb-1 block">End Date</Label>
+              <Label className="text-xs scholr-muted mb-1 block">End Date</Label>
               <Input
                 type="date"
                 value={form.end_date}
@@ -93,7 +93,7 @@ export default function WizardStepAcademicYear({ schoolId, onDone, onAcademicYea
           <Button
             onClick={handleSave}
             disabled={saving || !form.name || !form.start_date || !form.end_date}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 gap-1.5"
+            className="w-full scholr-accent-sf hover:scholr-accent-sf gap-1.5"
           >
             {saving
               ? <span className="animate-pulse">Saving…</span>
@@ -104,19 +104,19 @@ export default function WizardStepAcademicYear({ schoolId, onDone, onAcademicYea
       )}
 
       {hasYears && (
-        <div className="bg-slate-50 rounded-xl border border-slate-200 p-5 space-y-3">
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Add Another Year (optional)</p>
+        <div className="scholr-sunk rounded-xl border scholr-rule p-5 space-y-3">
+          <p className="text-xs font-semibold scholr-muted uppercase tracking-wide">Add Another Year (optional)</p>
           <div className="grid sm:grid-cols-3 gap-3">
             <div>
-              <Label className="text-xs text-slate-600 mb-1 block">Year Name</Label>
+              <Label className="text-xs scholr-muted mb-1 block">Year Name</Label>
               <Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
             </div>
             <div>
-              <Label className="text-xs text-slate-600 mb-1 block">Start Date</Label>
+              <Label className="text-xs scholr-muted mb-1 block">Start Date</Label>
               <Input type="date" value={form.start_date} onChange={e => setForm(f => ({ ...f, start_date: e.target.value }))} />
             </div>
             <div>
-              <Label className="text-xs text-slate-600 mb-1 block">End Date</Label>
+              <Label className="text-xs scholr-muted mb-1 block">End Date</Label>
               <Input type="date" value={form.end_date} onChange={e => setForm(f => ({ ...f, end_date: e.target.value }))} />
             </div>
           </div>

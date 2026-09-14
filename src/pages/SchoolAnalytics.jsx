@@ -28,34 +28,34 @@ const COLORS = ['#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#f43f5e', '#8b5cf6'
 
 function KpiCard({ icon: Icon, label, value, sub, color = 'indigo' }) {
   const colors = {
-    indigo: 'text-indigo-600 bg-indigo-50',
+    indigo: 'scholr-accent scholr-accent-sf',
     emerald: 'text-emerald-600 bg-emerald-50',
     amber: 'text-amber-600 bg-amber-50',
     rose: 'text-rose-600 bg-rose-50',
-    violet: 'text-violet-600 bg-violet-50',
+    violet: 'scholr-accent scholr-accent-sf',
     sky: 'text-sky-600 bg-sky-50',
   };
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-start gap-4">
+    <div className="bg-white rounded-xl border scholr-rule p-5 flex items-start gap-4">
       <div className={`rounded-lg p-2.5 flex-shrink-0 ${colors[color]}`}>
         <Icon className="w-5 h-5" />
       </div>
       <div className="min-w-0">
-        <p className="text-sm text-slate-500">{label}</p>
-        <p className="text-2xl font-bold text-slate-900 mt-0.5">{value ?? '—'}</p>
-        {sub && <p className="text-xs text-slate-400 mt-0.5">{sub}</p>}
+        <p className="text-sm scholr-muted">{label}</p>
+        <p className="text-2xl font-bold scholr-ink mt-0.5">{value ?? '—'}</p>
+        {sub && <p className="text-xs scholr-faint mt-0.5">{sub}</p>}
       </div>
     </div>
   );
 }
 
 function SectionTitle({ children }) {
-  return <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">{children}</h3>;
+  return <h3 className="text-xs font-semibold scholr-faint uppercase tracking-wider mb-3">{children}</h3>;
 }
 
 function ChartCard({ title, children }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5">
+    <div className="bg-white rounded-xl border scholr-rule p-5">
       <SectionTitle>{title}</SectionTitle>
       {children}
     </div>
@@ -75,7 +75,7 @@ function ClassPerformanceChart({ classes, grades }) {
     }).filter(d => d.avg !== null).sort((a, b) => b.avg - a.avg).slice(0, 12);
   }, [classes, grades]);
 
-  if (data.length === 0) return <p className="text-sm text-slate-400 py-4 text-center">No grade data available</p>;
+  if (data.length === 0) return <p className="text-sm scholr-faint py-4 text-center">No grade data available</p>;
 
   return (
     <ResponsiveContainer width="100%" height={260}>
@@ -116,7 +116,7 @@ function SchoolAttendanceTrend({ attendance }) {
     return weeks;
   }, [attendance]);
 
-  if (data.length < 2) return <p className="text-sm text-slate-400 py-4 text-center">Not enough attendance data for trend</p>;
+  if (data.length < 2) return <p className="text-sm scholr-faint py-4 text-center">Not enough attendance data for trend</p>;
 
   return (
     <ResponsiveContainer width="100%" height={220}>
@@ -143,7 +143,7 @@ function ClassAttendanceComparison({ classes, attendance }) {
     }).filter(d => d.rate !== null).sort((a, b) => b.rate - a.rate).slice(0, 10);
   }, [classes, attendance]);
 
-  if (data.length === 0) return <p className="text-sm text-slate-400 py-4 text-center">No attendance data</p>;
+  if (data.length === 0) return <p className="text-sm scholr-faint py-4 text-center">No attendance data</p>;
 
   return (
     <ResponsiveContainer width="100%" height={240}>
@@ -184,7 +184,7 @@ function SchoolGradeDistribution({ grades }) {
     }));
   }, [grades]);
 
-  if (data.every(d => d.count === 0)) return <p className="text-sm text-slate-400 py-4 text-center">No grade data</p>;
+  if (data.every(d => d.count === 0)) return <p className="text-sm scholr-faint py-4 text-center">No grade data</p>;
 
   return (
     <ResponsiveContainer width="100%" height={200}>
@@ -211,7 +211,7 @@ function PredictedGradeDistribution({ predictedGrades }) {
     return [1, 2, 3, 4, 5, 6, 7].map(g => ({ grade: `Grade ${g}`, count: counts[g] || 0 }));
   }, [predictedGrades]);
 
-  if (data.every(d => d.count === 0)) return <p className="text-sm text-slate-400 py-4 text-center">No predicted grades</p>;
+  if (data.every(d => d.count === 0)) return <p className="text-sm scholr-faint py-4 text-center">No predicted grades</p>;
 
   return (
     <ResponsiveContainer width="100%" height={200}>
@@ -258,34 +258,34 @@ function AtRiskStudents({ memberships, attendance, grades, classes }) {
   }
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-      <div className="px-5 py-4 border-b border-slate-200 flex items-center gap-2">
+    <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+      <div className="px-5 py-4 border-b scholr-rule flex items-center gap-2">
         <AlertTriangle className="w-4 h-4 text-amber-500" />
-        <h3 className="font-semibold text-slate-800">At-Risk Students</h3>
+        <h3 className="font-semibold scholr-ink">At-Risk Students</h3>
         <Badge variant="outline" className="text-xs ml-auto">{atRisk.length} flagged</Badge>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 border-b border-slate-200">
+          <thead className="scholr-sunk border-b scholr-rule">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Student</th>
-              <th className="px-4 py-3 text-center text-xs font-semibold text-slate-500 uppercase">Att. Rate</th>
-              <th className="px-4 py-3 text-center text-xs font-semibold text-slate-500 uppercase">Avg Score</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Flags</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">Student</th>
+              <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">Att. Rate</th>
+              <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">Avg Score</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">Flags</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y scholr-divide">
             {atRisk.map(s => (
-              <tr key={s.user_id} className="hover:bg-slate-50">
+              <tr key={s.user_id} className="hover:scholr-sunk">
                 <td className="px-4 py-3">
-                  <p className="font-medium text-slate-900">{s.user_name || s.user_email}</p>
-                  <p className="text-xs text-slate-400">{s.grade_level || ''}</p>
+                  <p className="font-medium scholr-ink">{s.user_name || s.user_email}</p>
+                  <p className="text-xs scholr-faint">{s.grade_level || ''}</p>
                 </td>
                 <td className="px-4 py-3 text-center">
-                  <span className={`font-semibold ${s.attRate < 80 ? 'text-red-600' : 'text-slate-700'}`}>{s.attRate.toFixed(1)}%</span>
+                  <span className={`font-semibold ${s.attRate < 80 ? 'text-red-600' : 'scholr-body'}`}>{s.attRate.toFixed(1)}%</span>
                 </td>
                 <td className="px-4 py-3 text-center">
-                  {s.avgScore !== null ? <span className={`font-semibold ${s.avgScore < 50 ? 'text-amber-600' : 'text-slate-700'}`}>{s.avgScore.toFixed(1)}%</span> : <span className="text-slate-400">—</span>}
+                  {s.avgScore !== null ? <span className={`font-semibold ${s.avgScore < 50 ? 'text-amber-600' : 'scholr-body'}`}>{s.avgScore.toFixed(1)}%</span> : <span className="scholr-faint">—</span>}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex flex-wrap gap-1">
@@ -386,19 +386,19 @@ export default function SchoolAnalytics() {
 
   return (
     <RoleGuard allowedRoles={['school_admin', 'ib_coordinator', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar links={SCHOOL_ADMIN_SIDEBAR_LINKS} role="school_admin" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
 
         <main className="app-offset min-h-screen flex flex-col">
-          <div className="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-10 shadow-sm">
+          <div className="bg-white border-b scholr-rule px-6 py-4 sticky top-0 z-10 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-4 max-w-7xl mx-auto">
               <div>
-                <h1 className="text-base font-black text-slate-900 tracking-tight">School Analytics</h1>
-                <p className="text-xs text-slate-400 mt-0.5">Performance, attendance, and pastoral trends across your school.</p>
+                <h1 className="text-base font-black scholr-ink tracking-tight">School Analytics</h1>
+                <p className="text-xs scholr-faint mt-0.5">Performance, attendance, and pastoral trends across your school.</p>
               </div>
               <div className="flex flex-wrap gap-3 items-end">
                 <div>
-                  <p className="text-xs text-slate-500 mb-1">Cohort</p>
+                  <p className="text-xs scholr-muted mb-1">Cohort</p>
                   <Select value={cohortFilter} onValueChange={setCohortFilter}>
                     <SelectTrigger className="h-9 w-44 text-sm"><SelectValue placeholder="All cohorts" /></SelectTrigger>
                     <SelectContent>
@@ -408,7 +408,7 @@ export default function SchoolAnalytics() {
                   </Select>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500 mb-1">Class</p>
+                  <p className="text-xs scholr-muted mb-1">Class</p>
                   <Select value={classFilter} onValueChange={setClassFilter}>
                     <SelectTrigger className="h-9 w-44 text-sm"><SelectValue placeholder="All classes" /></SelectTrigger>
                     <SelectContent>
@@ -424,7 +424,7 @@ export default function SchoolAnalytics() {
           <div className="flex-1 p-6 max-w-7xl mx-auto w-full">
             {isLoading ? (
               <div className="flex items-center justify-center py-32">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+                <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
               </div>
             ) : (
               <div className="space-y-8">
@@ -471,7 +471,7 @@ export default function SchoolAnalytics() {
                     { label: 'Positive', type: 'positive', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
                     { label: 'Concerns', type: 'concern', color: 'bg-amber-50 text-amber-700 border-amber-200' },
                     { label: 'Incidents', type: 'incident', color: 'bg-red-50 text-red-700 border-red-200' },
-                    { label: 'Notes', type: 'note', color: 'bg-slate-50 text-slate-600 border-slate-200' },
+                    { label: 'Notes', type: 'note', color: 'scholr-sunk scholr-muted scholr-rule' },
                   ].map(({ label, type, color }) => (
                     <div key={type} className={`rounded-xl border p-4 text-center ${color}`}>
                       <p className="text-2xl font-bold">{filteredBehavior.filter(b => b.type === type).length}</p>

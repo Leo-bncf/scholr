@@ -81,15 +81,15 @@ export default function DemoShowcase() {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-block mb-4">
-            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/50">
-              <Zap className="w-4 h-4 text-indigo-400" />
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border scholr-accent-rule/50">
+              <Zap className="w-4 h-4 scholr-accent" />
               <span className="text-xs font-semibold text-indigo-300">DEMO SHOWCASE</span>
             </div>
           </div>
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
             AtlasIB Platform Demo
           </h1>
-          <p className="text-base md:text-lg text-slate-300 max-w-2xl mx-auto">
+          <p className="text-base md:text-lg scholr-faint max-w-2xl mx-auto">
             Experience a fully functional school management platform with realistic sample data and role-based demonstrations
           </p>
         </div>
@@ -117,18 +117,18 @@ export default function DemoShowcase() {
 
         {/* Seed Demo Data Button */}
         {!seedStatus && (
-          <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 md:p-8 mb-12">
+          <div className="scholr-sunk/50 border border-slate-700 rounded-xl p-6 md:p-8 mb-12">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div>
                 <h2 className="text-lg font-bold text-white mb-2">Set Up Demo Data</h2>
-                <p className="text-sm text-slate-300">
+                <p className="text-sm scholr-faint">
                   Create a sample school with realistic data across all roles and workflows
                 </p>
               </div>
               <Button
                 onClick={handleSeedDemo}
                 disabled={isSeeding}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white whitespace-nowrap"
+                className="pub-btn pub-btn-gold whitespace-nowrap"
               >
                 {isSeeding ? (
                   <>
@@ -149,7 +149,7 @@ export default function DemoShowcase() {
         {/* Demo Roles */}
         <div>
           <h2 className="text-2xl font-bold text-white mb-2">Demo Accounts</h2>
-          <p className="text-slate-300 mb-8">Click any role to explore that dashboard experience</p>
+          <p className="scholr-faint mb-8">Click any role to explore that dashboard experience</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {DEMO_ROLES.map((role) => {
@@ -157,7 +157,7 @@ export default function DemoShowcase() {
               return (
                 <Card
                   key={role.id}
-                  className="bg-slate-800/50 border-slate-700 hover:border-slate-600 transition-all hover:shadow-lg cursor-pointer group"
+                  className="scholr-sunk/50 border-slate-700 hover:border-slate-600 transition-colors hover:shadow-lg cursor-pointer group"
                 >
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-3 mb-3">
@@ -166,43 +166,43 @@ export default function DemoShowcase() {
                       </div>
                     </div>
                     <CardTitle className="text-white text-lg">{role.label}</CardTitle>
-                    <CardDescription className="text-slate-400 text-sm">
+                    <CardDescription className="scholr-faint text-sm">
                       {role.description}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {/* Email Display */}
-                    <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-700">
-                      <p className="text-xs text-slate-500 mb-1">Demo Email</p>
+                    <div className="scholr-sunk/50 rounded-lg p-3 border border-slate-700">
+                      <p className="text-xs scholr-muted mb-1">Demo Email</p>
                       <div className="flex items-center justify-between gap-2">
-                        <p className="text-xs font-mono text-slate-300 truncate">
+                        <p className="text-xs font-mono scholr-faint truncate">
                           {role.email}
                         </p>
                         <button
                           onClick={() => copyToClipboard(role.email, role.email)}
-                          className="p-1 hover:bg-slate-700 rounded transition-colors"
+                          className="p-1 hover:scholr-sunk rounded transition-colors"
                           title="Copy email"
                         >
                           {copiedEmail === role.email ? (
                             <Check className="w-4 h-4 text-emerald-400" />
                           ) : (
-                            <Copy className="w-4 h-4 text-slate-400" />
+                            <Copy className="w-4 h-4 scholr-faint" />
                           )}
                         </button>
                       </div>
                     </div>
 
                     {/* Info Box */}
-                    <div className="bg-slate-900/30 rounded-lg p-3 border border-slate-700/50 text-xs text-slate-400 space-y-1">
+                    <div className="scholr-sunk/30 rounded-lg p-3 border border-slate-700/50 text-xs scholr-faint space-y-1">
                       <p>
-                        <strong className="text-slate-300">Note:</strong> Demo accounts are pre-configured. Login with your preferred method.
+                        <strong className="scholr-faint">Note:</strong> Demo accounts are pre-configured. Login with your preferred method.
                       </p>
                     </div>
 
                     {/* Launch Button */}
                     <Button
                       onClick={() => navigate('/app-home')}
-                      className="w-full bg-slate-700 hover:bg-slate-600 text-white"
+                      className="w-full scholr-sunk hover:bg-slate-600 text-white"
                       size="sm"
                     >
                       Launch Demo
@@ -230,14 +230,14 @@ export default function DemoShowcase() {
               return (
                 <div
                   key={idx}
-                  className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-4 flex gap-3"
+                  className="scholr-sunk/30 border border-slate-700/50 rounded-lg p-4 flex gap-3"
                 >
                   <div className="p-2 rounded-lg bg-indigo-500/20 h-fit">
-                    <ItemIcon className="w-5 h-5 text-indigo-400" />
+                    <ItemIcon className="w-5 h-5 scholr-accent" />
                   </div>
                   <div className="min-w-0">
                     <p className="font-semibold text-white text-sm">{item.title}</p>
-                    <p className="text-xs text-slate-400 mt-1">{item.desc}</p>
+                    <p className="text-xs scholr-faint mt-1">{item.desc}</p>
                   </div>
                 </div>
               );
@@ -247,7 +247,7 @@ export default function DemoShowcase() {
 
         {/* Footer */}
         <div className="mt-12 md:mt-16 text-center">
-          <p className="text-sm text-slate-400 max-w-xl mx-auto">
+          <p className="text-sm scholr-faint max-w-xl mx-auto">
             This demo environment contains realistic sample data designed to showcase platform capabilities. Reset and reseed data anytime to start fresh.
           </p>
         </div>

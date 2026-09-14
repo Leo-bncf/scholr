@@ -195,14 +195,14 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
       icon: UploadIcon,
       label: 'Upload File',
       shortLabel: 'File Upload',
-      color: 'bg-slate-600 hover:bg-slate-700',
+      color: 'bg-slate-600 hover:scholr-sunk',
       action: () => setDocumentPickerOpen(true),
     },
     link: {
       icon: LinkIcon,
       label: 'Add Link',
       shortLabel: 'Link',
-      color: 'bg-indigo-600 hover:bg-indigo-700',
+      color: 'scholr-accent-sf hover:scholr-accent-sf',
       action: () => setDocumentPickerOpen(true),
     },
   };
@@ -284,28 +284,28 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
       <SubmissionHistory submissions={[...submissionHistory].sort((a, b) => (b.version_number || 0) - (a.version_number || 0))} currentId={activeSubmission?.id} onSelect={setSelectedSubmission} />
 
       {activeSubmission && (
-        <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+        <div className="scholr-sunk rounded-xl p-4 border scholr-rule">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-semibold text-slate-700">Submission Status</span>
+            <span className="text-sm font-semibold scholr-body">Submission Status</span>
             <Badge className={`${
               activeSubmission.status === 'submitted' ? 'bg-emerald-50 text-emerald-700' :
               activeSubmission.status === 'late' ? 'bg-amber-50 text-amber-700' :
               activeSubmission.status === 'returned' ? 'bg-blue-50 text-blue-700' :
-              'bg-slate-100 text-slate-600'
+              'scholr-sunk scholr-muted'
             } border-0`}>
               {activeSubmission.status}
             </Badge>
           </div>
-          <p className="text-xs text-slate-500">Version {activeSubmission.version_number || 1}</p>
+          <p className="text-xs scholr-muted">Version {activeSubmission.version_number || 1}</p>
           {activeSubmission.submitted_at && (
-            <p className="text-xs text-slate-500">
+            <p className="text-xs scholr-muted">
               Submitted {format(new Date(activeSubmission.submitted_at), 'MMM d, yyyy h:mm a')}
             </p>
           )}
           {activeSubmission.feedback && (
-            <div className="mt-3 pt-3 border-t border-slate-200">
-              <p className="text-sm font-semibold text-slate-700 mb-1">Teacher Feedback</p>
-              <p className="text-sm text-slate-600">{activeSubmission.feedback}</p>
+            <div className="mt-3 pt-3 border-t scholr-rule">
+              <p className="text-sm font-semibold scholr-body mb-1">Teacher Feedback</p>
+              <p className="text-sm scholr-muted">{activeSubmission.feedback}</p>
             </div>
           )}
         </div>
@@ -331,11 +331,11 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
         </div>
 
         {hasFormatGuidance && isEditable && documents.length === 0 && (
-          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 mb-4">
-            <p className="text-sm font-semibold text-indigo-900 mb-1">
+          <div className="scholr-accent-sf border scholr-accent-rule rounded-xl p-4 mb-4">
+            <p className="text-sm font-semibold scholr-accent mb-1">
               {allowAlternatives ? 'Submission Format' : 'Required Format'}
             </p>
-            <p className="text-sm text-indigo-700">
+            <p className="text-sm scholr-accent">
               {allowAlternatives
                 ? `Your teacher expects a ${formatActions[primaryFormat]?.shortLabel || primaryFormat}, but also accepts: ${alternativeFormats.map(f => formatActions[f]?.shortLabel || f).join(', ')}.`
                 : `Your teacher requires this assignment to be submitted as a ${formatActions[primaryFormat]?.shortLabel || primaryFormat}.`}
@@ -344,11 +344,11 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
         )}
 
         {documents.length === 0 ? (
-          <div className="border-2 border-dashed border-slate-200 rounded-xl p-6">
+          <div className="border-2 border-dashed scholr-rule rounded-xl p-6">
             {isEditable ? (
               hasFormatGuidance ? (
                 <div className="space-y-3">
-                  <p className="text-sm text-slate-600 text-center mb-4">
+                  <p className="text-sm scholr-muted text-center mb-4">
                     {allowAlternatives ? 'Start your work (recommended format):' : 'Start your work:'}
                   </p>
                   {/* Primary format - always prominent */}
@@ -364,10 +364,10 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
                     <>
                       <div className="relative">
                         <div className="absolute inset-0 flex items-center">
-                          <div className="w-full border-t border-slate-200" />
+                          <div className="w-full border-t scholr-rule" />
                         </div>
                         <div className="relative flex justify-center text-xs">
-                          <span className="bg-white px-2 text-slate-500">or use alternative format</span>
+                          <span className="bg-white px-2 scholr-muted">or use alternative format</span>
                         </div>
                       </div>
                       <div className="grid grid-cols-2 gap-2">
@@ -392,14 +392,14 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
                   )}
                   
                   {!allowAlternatives && (
-                    <p className="text-xs text-center text-slate-500 pt-2">
+                    <p className="text-xs text-center scholr-muted pt-2">
                       Only {formatActions[primaryFormat]?.shortLabel} submissions are accepted for this assignment.
                     </p>
                   )}
                 </div>
               ) : (
                 <div className="text-center">
-                  <p className="text-sm text-slate-400 mb-3">No documents attached yet</p>
+                  <p className="text-sm scholr-faint mb-3">No documents attached yet</p>
                   <Button 
                     onClick={() => setDocumentPickerOpen(true)}
                     variant="outline"
@@ -410,7 +410,7 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
                 </div>
               )
             ) : (
-              <p className="text-sm text-slate-400 text-center">No documents attached yet</p>
+              <p className="text-sm scholr-faint text-center">No documents attached yet</p>
             )}
           </div>
         ) : (
@@ -434,7 +434,7 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
                         onClick={action.action}
                         variant={isPrimary ? "default" : "outline"}
                         size="sm"
-                        className={isPrimary ? "bg-indigo-600 hover:bg-indigo-700" : "border-indigo-200 text-indigo-700"}
+                        className={isPrimary ? "scholr-accent-sf hover:scholr-accent-sf" : "scholr-accent-rule scholr-accent"}
                       >
                         <Icon className="w-4 h-4 mr-1.5" />
                         {action.label}
@@ -447,14 +447,14 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
                       onClick={handleGoogleDrivePickerOpen}
                       variant="outline"
                       size="sm"
-                      className="border-indigo-200 text-indigo-700"
+                      className="scholr-accent-rule scholr-accent"
                     >
                       <FileText className="w-4 h-4 mr-1.5" />
                       Link Existing
                     </Button>
                   )}
                   {!allowAlternatives && (
-                    <span className="text-xs text-slate-500 self-center">
+                    <span className="text-xs scholr-muted self-center">
                       Only {formatActions[primaryFormat]?.shortLabel} allowed
                     </span>
                   )}
@@ -504,7 +504,7 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
             <Button
               onClick={() => handleSubmit('submitted')}
               disabled={!canSubmit || submitMutation.isPending}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+              className="flex-1 scholr-accent-sf hover:scholr-accent-sf"
             >
               {submitMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
               {isReturned ? 'Resubmit' : 'Submit Assignment'}

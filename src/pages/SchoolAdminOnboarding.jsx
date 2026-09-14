@@ -45,7 +45,7 @@ export default function SchoolAdminOnboarding() {
 
   return (
     <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar
           links={sidebarLinks}
           role="school_admin"
@@ -56,25 +56,25 @@ export default function SchoolAdminOnboarding() {
         />
 
         <main className="app-offset">
-          <div className="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-10 shadow-sm">
+          <div className="bg-white border-b scholr-rule px-6 py-4 sticky top-0 z-10 shadow-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate('/SchoolAdminDashboard')}
-                  className="gap-1.5 text-slate-500"
+                  className="gap-1.5 scholr-muted"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" /> Dashboard
                 </Button>
-                <div className="w-px h-5 bg-slate-200" />
+                <div className="w-px h-5 scholr-sunk" />
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                  <div className="w-7 h-7 scholr-accent-sf rounded-lg flex items-center justify-center">
+                    <Sparkles className="w-3.5 h-3.5 scholr-accent" />
                   </div>
                   <div>
-                    <h1 className="text-sm font-black text-slate-900">School Setup & Onboarding</h1>
-                    <p className="text-xs text-slate-400">Get your school operational in minutes</p>
+                    <h1 className="text-sm font-black scholr-ink">School Setup & Onboarding</h1>
+                    <p className="text-xs scholr-faint">Get your school operational in minutes</p>
                   </div>
                 </div>
               </div>
@@ -99,20 +99,20 @@ export default function SchoolAdminOnboarding() {
                 <SchoolReadiness schoolId={schoolId} />
 
                 <Tabs defaultValue="wizard">
-                  <TabsList className="bg-white border border-slate-200 flex-wrap h-auto">
-                    <TabsTrigger value="wizard" className="gap-1.5 text-xs data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
+                  <TabsList className="bg-white border scholr-rule flex-wrap h-auto">
+                    <TabsTrigger value="wizard" className="gap-1.5 text-xs data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
                       <Sparkles className="w-3.5 h-3.5" /> Setup Wizard
                     </TabsTrigger>
-                    <TabsTrigger value="invites" className="gap-1.5 text-xs data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
+                    <TabsTrigger value="invites" className="gap-1.5 text-xs data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
                       <Mail className="w-3.5 h-3.5" /> Users & Invites
                     </TabsTrigger>
-                    <TabsTrigger value="parents" className="gap-1.5 text-xs data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
+                    <TabsTrigger value="parents" className="gap-1.5 text-xs data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
                       <Link2 className="w-3.5 h-3.5" /> Parent Links
                     </TabsTrigger>
-                    <TabsTrigger value="checklist" className="gap-1.5 text-xs data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
+                    <TabsTrigger value="checklist" className="gap-1.5 text-xs data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
                       <CheckSquare className="w-3.5 h-3.5" /> Checklist
                     </TabsTrigger>
-                    <TabsTrigger value="demo" className="gap-1.5 text-xs data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
+                    <TabsTrigger value="demo" className="gap-1.5 text-xs data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
                       <FlaskConical className="w-3.5 h-3.5" /> Demo Data
                     </TabsTrigger>
                   </TabsList>
@@ -152,12 +152,12 @@ export default function SchoolAdminOnboarding() {
                 <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
                   <Sparkles className="w-10 h-10 text-emerald-600" />
                 </div>
-                <h2 className="text-2xl font-black text-slate-900 mb-2">Setup Complete!</h2>
-                <p className="text-slate-500 mb-6 max-w-sm mx-auto">
+                <h2 className="text-2xl font-black scholr-ink mb-2">Setup Complete!</h2>
+                <p className="scholr-muted mb-6 max-w-sm mx-auto">
                   Your school is now configured. You can refine settings at any time from the admin panels.
                 </p>
                 <div className="flex gap-3 justify-center">
-                  <Button onClick={() => navigate('/SchoolAdminDashboard')} className="bg-indigo-600 hover:bg-indigo-700 gap-1.5">
+                  <Button onClick={() => navigate('/SchoolAdminDashboard')} className="scholr-accent-sf hover:scholr-accent-sf gap-1.5">
                     <LayoutDashboard className="w-4 h-4" /> Go to Dashboard
                   </Button>
                   <Button variant="outline" onClick={() => setWizardComplete(false)} className="gap-1.5">

@@ -189,7 +189,7 @@ export default function FirstLogin() {
   if (loading) {
     return (
       <div className="min-h-screen scholr-page flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+        <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
       </div>
     );
   }
@@ -202,8 +202,8 @@ export default function FirstLogin() {
             <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 mx-auto mb-4">
               <AlertCircle className="w-6 h-6 text-red-600" />
             </div>
-            <p className="text-center font-semibold text-slate-900 mb-2">Error</p>
-            <p className="text-center text-sm text-slate-600 mb-6">{error}</p>
+            <p className="text-center font-semibold scholr-ink mb-2">Error</p>
+            <p className="text-center text-sm scholr-muted mb-6">{error}</p>
             <Button onClick={() => navigate('/')} className="w-full">
               Return Home
             </Button>
@@ -227,15 +227,15 @@ export default function FirstLogin() {
              <CardTitle className="text-center">Welcome to the Platform</CardTitle>
            </CardHeader>
            <CardContent className="space-y-6">
-             <div className="flex items-center justify-center w-16 h-16 rounded-full bg-indigo-100 mx-auto">
-               <CheckCircle className="w-8 h-8 text-indigo-600" />
+             <div className="flex items-center justify-center w-16 h-16 rounded-full scholr-accent-sf mx-auto">
+               <CheckCircle className="w-8 h-8 scholr-accent" />
              </div>
 
              <div className="text-center space-y-2">
-               <p className="text-lg font-semibold text-slate-900">
+               <p className="text-lg font-semibold scholr-ink">
                  Welcome, {user?.full_name}!
                </p>
-               <p className="text-sm text-slate-600">
+               <p className="text-sm scholr-muted">
                  Your account has been created and is ready to use.
                </p>
              </div>
@@ -243,12 +243,12 @@ export default function FirstLogin() {
              {accountState && (
                <div className="space-y-3 scholr-page p-4 rounded-lg">
                  <div>
-                   <p className="text-xs font-semibold text-slate-600 uppercase">School</p>
-                   <p className="text-slate-900 mt-1">{accountState.school_name}</p>
+                   <p className="text-xs font-semibold scholr-muted uppercase">School</p>
+                   <p className="scholr-ink mt-1">{accountState.school_name}</p>
                  </div>
                  <div>
-                   <p className="text-xs font-semibold text-slate-600 uppercase">Your Role</p>
-                   <p className="text-slate-900 mt-1 capitalize">
+                   <p className="text-xs font-semibold scholr-muted uppercase">Your Role</p>
+                   <p className="scholr-ink mt-1 capitalize">
                      {accountState.role.replace(/_/g, ' ')}
                    </p>
                  </div>
@@ -257,7 +257,7 @@ export default function FirstLogin() {
 
              <Button
                onClick={navigateToDashboard}
-               className="w-full bg-indigo-600 hover:bg-indigo-700"
+               className="w-full scholr-accent-sf hover:scholr-accent-sf"
              >
                Go to Dashboard
              </Button>
@@ -288,7 +288,7 @@ export default function FirstLogin() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <p className="text-xs text-slate-600 mt-1">
+                <p className="text-xs scholr-muted mt-1">
                   Use a mix of uppercase, lowercase, numbers, and symbols for security.
                 </p>
               </div>
@@ -315,7 +315,7 @@ export default function FirstLogin() {
               <Button
                 onClick={handleSetPassword}
                 disabled={isProcessing}
-                className="w-full bg-indigo-600 hover:bg-indigo-700"
+                className="w-full scholr-accent-sf hover:scholr-accent-sf"
               >
                 {isProcessing && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                 Continue
@@ -372,7 +372,7 @@ export default function FirstLogin() {
                 <Button
                   onClick={handleCompleteProfile}
                   disabled={isProcessing}
-                  className="w-full bg-indigo-600 hover:bg-indigo-700"
+                  className="w-full scholr-accent-sf hover:scholr-accent-sf"
                 >
                   {isProcessing && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                   Complete Setup
@@ -400,15 +400,15 @@ export default function FirstLogin() {
               </div>
 
               <div className="text-center space-y-2">
-                <p className="text-lg font-semibold text-slate-900">You're Ready!</p>
-                <p className="text-sm text-slate-600">
+                <p className="text-lg font-semibold scholr-ink">You're Ready!</p>
+                <p className="text-sm scholr-muted">
                   Your account is fully set up and ready to use. Welcome aboard!
                 </p>
               </div>
 
               <Button
                 onClick={navigateToDashboard}
-                className="w-full bg-indigo-600 hover:bg-indigo-700"
+                className="w-full scholr-accent-sf hover:scholr-accent-sf"
               >
                 Go to Dashboard
               </Button>
@@ -419,9 +419,9 @@ export default function FirstLogin() {
         {/* Progress bar */}
         {currentStep !== 'welcome' && (
           <div className="px-6 pb-4">
-            <div className="w-full bg-slate-200 rounded-full h-2">
+            <div className="w-full scholr-sunk rounded-full h-2">
               <div
-                className="bg-indigo-600 h-2 rounded-full transition-all"
+                className="scholr-accent-sf h-2 rounded-full transition-colors"
                 style={{ width: `${progress}%` }}
               />
             </div>

@@ -3,8 +3,8 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Toolti
 
 export default function ReportingChartPanel({ title, data = [], dataKey = 'value', labelKey = 'label' }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5">
-      <h3 className="font-semibold text-slate-900 mb-4">{title}</h3>
+    <div className="bg-white rounded-xl border scholr-rule p-5">
+      <h3 className="font-semibold scholr-ink mb-4">{title}</h3>
       <ResponsiveContainer width="100%" height={280}>
         <BarChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />

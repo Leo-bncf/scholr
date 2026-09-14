@@ -199,12 +199,12 @@ export default function SchoolOnboardingFlow() {
   }, [user]);
 
   if (isLoading || !safeData) {
-    return <div className="min-h-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-700" /></div>;
+    return <div className="min-h-screen scholr-sunk flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-700" /></div>;
   }
 
   return (
     <RoleGuard allowedRoles={['school_admin', 'admin', 'super_admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar links={SCHOOL_ADMIN_SIDEBAR_LINKS} role="school_admin" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         <main className="app-offset min-h-screen p-6 max-w-7xl mx-auto space-y-6">
           <div className="rounded-2xl bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-800 p-6 md:p-8 text-white shadow-lg">
@@ -227,25 +227,25 @@ export default function SchoolOnboardingFlow() {
           <div className="grid grid-cols-1 xl:grid-cols-[340px_minmax(0,1fr)] 2xl:grid-cols-[420px_minmax(0,1fr)] gap-6">
             <div className="space-y-4">
               <SchoolOnboardingProgress steps={steps} currentStep={currentStep} />
-              <div className="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm">
+              <div className="bg-white rounded-2xl border scholr-rule p-5 md:p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
-                  <Sparkles className="w-4 h-4 text-indigo-600" />
-                  <h3 className="font-semibold text-slate-900">Demo / sample data</h3>
+                  <Sparkles className="w-4 h-4 scholr-accent" />
+                  <h3 className="font-semibold scholr-ink">Demo / sample data</h3>
                 </div>
                 <DemoDataControls schoolId={schoolId} onRefresh={() => queryClient.invalidateQueries({ queryKey: ['school-onboarding-flow', schoolId] })} />
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 space-y-6 shadow-sm">
+            <div className="bg-white rounded-2xl border scholr-rule p-6 md:p-8 space-y-6 shadow-sm">
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>
                   <Badge className="bg-emerald-50 text-emerald-700 border-0">{steps[currentStep].label}</Badge>
-                  <h2 className="text-2xl font-bold text-slate-900 mt-3">{steps[currentStep].label}</h2>
-                  <p className="text-sm text-slate-500 mt-2 max-w-2xl">{steps[currentStep].description}</p>
+                  <h2 className="text-2xl font-bold scholr-ink mt-3">{steps[currentStep].label}</h2>
+                  <p className="text-sm scholr-muted mt-2 max-w-2xl">{steps[currentStep].description}</p>
                 </div>
-                <div className="rounded-xl bg-slate-50 border border-slate-200 px-4 py-3 min-w-[180px]">
-                  <p className="text-xs text-slate-500">Current progress</p>
-                  <p className="text-lg font-bold text-slate-900 mt-1">{currentStep + 1} / {steps.length}</p>
+                <div className="rounded-xl scholr-sunk border scholr-rule px-4 py-3 min-w-[180px]">
+                  <p className="text-xs scholr-muted">Current progress</p>
+                  <p className="text-lg font-bold scholr-ink mt-1">{currentStep + 1} / {steps.length}</p>
                 </div>
               </div>
 
@@ -280,8 +280,8 @@ export default function SchoolOnboardingFlow() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-sm font-semibold text-slate-700">Existing classes</p>
-                    {safeData.classes.length === 0 ? <p className="text-sm text-slate-400">No classes yet.</p> : safeData.classes.map((item) => <div key={item.id} className="px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-700">{item.name}</div>)}
+                    <p className="text-sm font-semibold scholr-body">Existing classes</p>
+                    {safeData.classes.length === 0 ? <p className="text-sm scholr-faint">No classes yet.</p> : safeData.classes.map((item) => <div key={item.id} className="px-3 py-2 rounded-lg scholr-sunk border scholr-rule text-sm scholr-body">{item.name}</div>)}
                   </div>
                 </div>
               )}
@@ -294,8 +294,8 @@ export default function SchoolOnboardingFlow() {
                     <div><Label>Department</Label><Input value={teacherDraft.department} onChange={(e) => setTeacherDraft({ ...teacherDraft, department: e.target.value })} className="mt-1" /></div>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-sm font-semibold text-slate-700">Added teachers</p>
-                    {teachers.length === 0 ? <p className="text-sm text-slate-400">No teachers yet.</p> : teachers.map((item) => <div key={item.id} className="px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-700">{item.user_name || item.user_email}</div>)}
+                    <p className="text-sm font-semibold scholr-body">Added teachers</p>
+                    {teachers.length === 0 ? <p className="text-sm scholr-faint">No teachers yet.</p> : teachers.map((item) => <div key={item.id} className="px-3 py-2 rounded-lg scholr-sunk border scholr-rule text-sm scholr-body">{item.user_name || item.user_email}</div>)}
                   </div>
                 </div>
               )}
@@ -332,8 +332,8 @@ export default function SchoolOnboardingFlow() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-sm font-semibold text-slate-700">Current class subject assignments</p>
-                    {safeData.classes.length === 0 ? <p className="text-sm text-slate-400">No classes available.</p> : safeData.classes.map((item) => <div key={item.id} className="px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-700">{item.name} — {safeData.subjects.find((subject) => subject.id === item.subject_id)?.name || 'No subject assigned'}</div>)}
+                    <p className="text-sm font-semibold scholr-body">Current class subject assignments</p>
+                    {safeData.classes.length === 0 ? <p className="text-sm scholr-faint">No classes available.</p> : safeData.classes.map((item) => <div key={item.id} className="px-3 py-2 rounded-lg scholr-sunk border scholr-rule text-sm scholr-body">{item.name} — {safeData.subjects.find((subject) => subject.id === item.subject_id)?.name || 'No subject assigned'}</div>)}
                   </div>
                 </div>
               )}
@@ -348,7 +348,7 @@ export default function SchoolOnboardingFlow() {
                 </div>
               )}
 
-              <div className="flex items-center justify-between pt-6 border-t border-slate-200">
+              <div className="flex items-center justify-between pt-6 border-t scholr-rule">
                 <Button variant="outline" onClick={handleBack} disabled={currentStep === 0 || isSubmitting} className="min-w-[120px]"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
                 <Button onClick={handleNext} disabled={isSubmitting} className="min-w-[160px] bg-emerald-700 hover:bg-emerald-800">{isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}{currentStep === steps.length - 1 ? 'Finish setup' : 'Next'}<ArrowRight className="w-4 h-4 ml-2" /></Button>
               </div>

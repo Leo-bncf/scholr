@@ -10,21 +10,21 @@ import { format } from 'date-fns';
 
 function ReportTypeCard({ icon: Icon, title, description, badge, children, onGenerate, generating }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5">
+    <div className="bg-white rounded-xl border scholr-rule p-5">
       <div className="flex items-start gap-3 mb-4">
-        <div className="bg-indigo-50 rounded-lg p-2">
-          <Icon className="w-5 h-5 text-indigo-600" />
+        <div className="scholr-accent-sf rounded-lg p-2">
+          <Icon className="w-5 h-5 scholr-accent" />
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-slate-900">{title}</h3>
+            <h3 className="font-semibold scholr-ink">{title}</h3>
             {badge && <Badge variant="outline" className="text-xs">{badge}</Badge>}
           </div>
-          <p className="text-sm text-slate-500 mt-0.5">{description}</p>
+          <p className="text-sm scholr-muted mt-0.5">{description}</p>
         </div>
       </div>
       <div className="space-y-3 mb-4">{children}</div>
-      <Button onClick={onGenerate} disabled={generating} className="w-full bg-indigo-600 hover:bg-indigo-700">
+      <Button onClick={onGenerate} disabled={generating} className="w-full scholr-accent-sf hover:scholr-accent-sf">
         {generating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Printer className="w-4 h-4 mr-2" />}
         Generate & Print
       </Button>
@@ -305,7 +305,7 @@ export default function PDFReportBuilder({
           generating={generating === 'progress'}
         >
           <div>
-            <Label className="text-xs text-slate-500 mb-1 block">Student *</Label>
+            <Label className="text-xs scholr-muted mb-1 block">Student *</Label>
             <Select value={progressOpts.studentId} onValueChange={v => setProgressOpt('studentId', v)}>
               <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="Select student..." /></SelectTrigger>
               <SelectContent>
@@ -315,7 +315,7 @@ export default function PDFReportBuilder({
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label className="text-xs text-slate-500 mb-1 block">Class (optional)</Label>
+              <Label className="text-xs scholr-muted mb-1 block">Class (optional)</Label>
               <Select value={progressOpts.classId} onValueChange={v => setProgressOpt('classId', v)}>
                 <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="All classes" /></SelectTrigger>
                 <SelectContent>
@@ -325,7 +325,7 @@ export default function PDFReportBuilder({
               </Select>
             </div>
             <div>
-              <Label className="text-xs text-slate-500 mb-1 block">Term (optional)</Label>
+              <Label className="text-xs scholr-muted mb-1 block">Term (optional)</Label>
               <Select value={progressOpts.termId} onValueChange={v => setProgressOpt('termId', v)}>
                 <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="All terms" /></SelectTrigger>
                 <SelectContent>
@@ -338,7 +338,7 @@ export default function PDFReportBuilder({
           <div className="flex flex-col gap-2 pt-1">
             {[['includeGrades', 'Include Grades'], ['includeAttendance', 'Include Attendance'], ['includeBehavior', 'Include Behavior Notes']].map(([key, label]) => (
               <div key={key} className="flex items-center justify-between">
-                <Label className="text-sm text-slate-700">{label}</Label>
+                <Label className="text-sm scholr-body">{label}</Label>
                 <Switch checked={progressOpts[key]} onCheckedChange={v => setProgressOpt(key, v)} />
               </div>
             ))}
@@ -355,7 +355,7 @@ export default function PDFReportBuilder({
           generating={generating === 'term'}
         >
           <div>
-            <Label className="text-xs text-slate-500 mb-1 block">Term *</Label>
+            <Label className="text-xs scholr-muted mb-1 block">Term *</Label>
             <Select value={termOpts.termId} onValueChange={v => setTermOpt('termId', v)}>
               <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="Select term..." /></SelectTrigger>
               <SelectContent>
@@ -364,7 +364,7 @@ export default function PDFReportBuilder({
             </Select>
           </div>
           <div>
-            <Label className="text-xs text-slate-500 mb-1 block">Cohort (optional)</Label>
+            <Label className="text-xs scholr-muted mb-1 block">Cohort (optional)</Label>
             <Select value={termOpts.cohortId} onValueChange={v => setTermOpt('cohortId', v)}>
               <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="All students" /></SelectTrigger>
               <SelectContent>
@@ -376,7 +376,7 @@ export default function PDFReportBuilder({
           <div className="flex flex-col gap-2 pt-1">
             {[['includeGrades', 'Include Grades'], ['includeAttendance', 'Include Attendance'], ['includePredicted', 'Include Predicted Grades (IB)'], ['includeBehavior', 'Include Behavior']].map(([key, label]) => (
               <div key={key} className="flex items-center justify-between">
-                <Label className="text-sm text-slate-700">{label}</Label>
+                <Label className="text-sm scholr-body">{label}</Label>
                 <Switch checked={termOpts[key]} onCheckedChange={v => setTermOpt(key, v)} />
               </div>
             ))}
@@ -393,7 +393,7 @@ export default function PDFReportBuilder({
           generating={generating === 'class'}
         >
           <div>
-            <Label className="text-xs text-slate-500 mb-1 block">Class *</Label>
+            <Label className="text-xs scholr-muted mb-1 block">Class *</Label>
             <Select value={classOpts.classId} onValueChange={v => setClassOpt('classId', v)}>
               <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="Select class..." /></SelectTrigger>
               <SelectContent>
@@ -404,7 +404,7 @@ export default function PDFReportBuilder({
           <div className="flex flex-col gap-2 pt-1">
             {[['includeGrades', 'Include Grade Records'], ['includeAttendance', 'Include Attendance']].map(([key, label]) => (
               <div key={key} className="flex items-center justify-between">
-                <Label className="text-sm text-slate-700">{label}</Label>
+                <Label className="text-sm scholr-body">{label}</Label>
                 <Switch checked={classOpts[key]} onCheckedChange={v => setClassOpt(key, v)} />
               </div>
             ))}

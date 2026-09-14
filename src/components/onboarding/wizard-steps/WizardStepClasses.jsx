@@ -53,21 +53,21 @@ export default function WizardStepClasses({ schoolId, onDone }) {
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="text-base font-bold text-slate-900 mb-1">Create Classes</h3>
-        <p className="text-sm text-slate-500">Set up your initial class groups. You'll assign teachers and enrol students from the Classes page after setup.</p>
+        <h3 className="text-base font-bold scholr-ink mb-1">Create Classes</h3>
+        <p className="text-sm scholr-muted">Set up your initial class groups. You'll assign teachers and enrol students from the Classes page after setup.</p>
       </div>
 
       {existingClasses.length > 0 && (
         <div>
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Existing Classes ({existingClasses.length})</p>
+          <p className="text-xs font-semibold scholr-muted uppercase tracking-wide mb-2">Existing Classes ({existingClasses.length})</p>
           <div className="space-y-2 mb-3">
             {existingClasses.slice(0, 5).map(c => (
               <div key={c.id} className="flex items-center gap-3 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <p className="text-sm font-semibold text-slate-800">{c.name}{c.section ? ` (${c.section})` : ''}</p>
+                <p className="text-sm font-semibold scholr-ink">{c.name}{c.section ? ` (${c.section})` : ''}</p>
               </div>
             ))}
-            {existingClasses.length > 5 && <p className="text-xs text-slate-400">+{existingClasses.length - 5} more</p>}
+            {existingClasses.length > 5 && <p className="text-xs scholr-faint">+{existingClasses.length - 5} more</p>}
           </div>
           <Button onClick={onDone} className="bg-emerald-600 hover:bg-emerald-700 gap-1.5" size="sm">
             <CheckCircle2 className="w-3.5 h-3.5" /> Continue with existing classes
@@ -75,12 +75,12 @@ export default function WizardStepClasses({ schoolId, onDone }) {
         </div>
       )}
 
-      <div className="bg-slate-50 rounded-xl border border-slate-200 p-5 space-y-4">
-        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">New Classes</p>
+      <div className="scholr-sunk rounded-xl border scholr-rule p-5 space-y-4">
+        <p className="text-xs font-semibold scholr-muted uppercase tracking-wide">New Classes</p>
 
         {academicYears.length > 1 && (
           <div>
-            <Label className="text-xs text-slate-600 mb-1 block">Academic Year</Label>
+            <Label className="text-xs scholr-muted mb-1 block">Academic Year</Label>
             <Select value={activeYearId} onValueChange={setYearId}>
               <SelectTrigger className="w-56">
                 <SelectValue placeholder="Select year" />
@@ -96,7 +96,7 @@ export default function WizardStepClasses({ schoolId, onDone }) {
           {newClasses.map((cls, i) => (
             <div key={i} className="grid grid-cols-[1fr_auto_auto] gap-2 items-end">
               <div>
-                <Label className="text-xs text-slate-600 mb-1 block">Class Name</Label>
+                <Label className="text-xs scholr-muted mb-1 block">Class Name</Label>
                 <Input
                   value={cls.name}
                   onChange={e => updateRow(i, 'name', e.target.value)}
@@ -104,14 +104,14 @@ export default function WizardStepClasses({ schoolId, onDone }) {
                 />
               </div>
               <div className="w-24">
-                <Label className="text-xs text-slate-600 mb-1 block">Section</Label>
+                <Label className="text-xs scholr-muted mb-1 block">Section</Label>
                 <Input
                   value={cls.section}
                   onChange={e => updateRow(i, 'section', e.target.value)}
                   placeholder="A"
                 />
               </div>
-              <Button variant="ghost" size="icon" onClick={() => removeRow(i)} className="text-slate-400 h-9 w-9">
+              <Button variant="ghost" size="icon" onClick={() => removeRow(i)} className="scholr-faint h-9 w-9">
                 <Trash2 className="w-3.5 h-3.5" />
               </Button>
             </div>
@@ -125,7 +125,7 @@ export default function WizardStepClasses({ schoolId, onDone }) {
       <Button
         onClick={handleSave}
         disabled={saving || newClasses.every(c => !c.name.trim())}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 gap-1.5"
+        className="w-full scholr-accent-sf hover:scholr-accent-sf gap-1.5"
       >
         {saving ? 'Saving…' : <><Layers className="w-4 h-4" /> Create Classes &amp; Continue</>}
       </Button>

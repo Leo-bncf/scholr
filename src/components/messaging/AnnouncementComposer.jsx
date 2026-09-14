@@ -74,7 +74,7 @@ export default function AnnouncementComposer({ userId, userName, userRole, schoo
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} variant="outline" className="border-indigo-200 text-indigo-700 hover:bg-indigo-50">
+      <Button onClick={() => setOpen(true)} variant="outline" className="scholr-accent-rule scholr-accent hover:scholr-accent-sf">
         <Megaphone className="w-4 h-4 mr-2" /> New Announcement
       </Button>
 
@@ -92,7 +92,7 @@ export default function AnnouncementComposer({ userId, userName, userRole, schoo
                 {canClassAnnouncement && (
                   <button
                     onClick={() => setForm({ ...form, scope: 'class', class_id: '' })}
-                    className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition-colors ${form.scope === 'class' ? 'bg-indigo-50 border-indigo-300 text-indigo-700' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                    className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition-colors ${form.scope === 'class' ? 'scholr-accent-sf scholr-accent-rule scholr-accent' : 'scholr-rule scholr-muted hover:scholr-sunk'}`}
                   >
                     Class Announcement
                   </button>
@@ -100,7 +100,7 @@ export default function AnnouncementComposer({ userId, userName, userRole, schoo
                 {canSchoolWide && (
                   <button
                     onClick={() => setForm({ ...form, scope: 'school_wide', class_id: '' })}
-                    className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition-colors ${form.scope === 'school_wide' ? 'bg-indigo-50 border-indigo-300 text-indigo-700' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                    className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition-colors ${form.scope === 'school_wide' ? 'scholr-accent-sf scholr-accent-rule scholr-accent' : 'scholr-rule scholr-muted hover:scholr-sunk'}`}
                   >
                     School-wide
                   </button>
@@ -156,7 +156,7 @@ export default function AnnouncementComposer({ userId, userName, userRole, schoo
             <Button
               onClick={handleSend}
               disabled={!canSubmit || sendMutation.isPending}
-              className="w-full bg-indigo-600 hover:bg-indigo-700"
+              className="w-full scholr-accent-sf hover:scholr-accent-sf"
             >
               {sendMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Megaphone className="w-4 h-4 mr-2" />}
               Post Announcement

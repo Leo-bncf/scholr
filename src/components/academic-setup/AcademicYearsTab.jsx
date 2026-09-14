@@ -12,21 +12,21 @@ const EMPTY = { name: '', start_date: '', end_date: '', is_current: false, statu
 function YearCard({ year, onEdit, onDelete, onSetCurrent, isSettingCurrent }) {
   const statusColors = {
     active:   'bg-emerald-50 border-emerald-200 text-emerald-700',
-    archived: 'bg-slate-100 border-slate-200 text-slate-500',
+    archived: 'scholr-sunk scholr-rule scholr-muted',
     planning: 'bg-blue-50 border-blue-200 text-blue-700',
   };
   const fmt = (d) => d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
 
   return (
-    <div className={`bg-white border rounded-lg p-4 shadow-sm flex items-center gap-4 ${year.is_current ? 'border-indigo-300 ring-1 ring-indigo-200' : 'border-slate-200'}`}>
-      <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${year.is_current ? 'bg-indigo-600' : 'bg-slate-100'}`}>
-        <CalendarDays className={`w-5 h-5 ${year.is_current ? 'text-white' : 'text-slate-400'}`} />
+    <div className={`bg-white border rounded-lg p-4 shadow-sm flex items-center gap-4 ${year.is_current ? 'scholr-accent-rule ring-1 scholr-accent-rule' : 'scholr-rule'}`}>
+      <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${year.is_current ? 'scholr-accent-sf' : 'scholr-sunk'}`}>
+        <CalendarDays className={`w-5 h-5 ${year.is_current ? 'text-white' : 'scholr-faint'}`} />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <p className="text-sm font-bold text-slate-900">{year.name}</p>
+          <p className="text-sm font-bold scholr-ink">{year.name}</p>
           {year.is_current && (
-            <span className="inline-flex items-center gap-1 text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-full">
+            <span className="inline-flex items-center gap-1 text-xs font-bold scholr-accent scholr-accent-sf border scholr-accent-rule px-2 py-0.5 rounded-full">
               <Star className="w-3 h-3" /> Current
             </span>
           )}
@@ -34,7 +34,7 @@ function YearCard({ year, onEdit, onDelete, onSetCurrent, isSettingCurrent }) {
             {year.status}
           </span>
         </div>
-        <p className="text-xs text-slate-500 mt-0.5">{fmt(year.start_date)} — {fmt(year.end_date)}</p>
+        <p className="text-xs scholr-muted mt-0.5">{fmt(year.start_date)} — {fmt(year.end_date)}</p>
       </div>
       <div className="flex items-center gap-1 flex-shrink-0">
         {!year.is_current && (
@@ -42,16 +42,16 @@ function YearCard({ year, onEdit, onDelete, onSetCurrent, isSettingCurrent }) {
             variant="ghost" size="sm"
             disabled={isSettingCurrent}
             onClick={() => onSetCurrent(year)}
-            className="h-7 px-2 text-xs text-slate-500 hover:text-indigo-600"
+            className="h-7 px-2 text-xs scholr-muted hover:scholr-accent"
             title="Set as current year"
           >
             <Circle className="w-3.5 h-3.5" />
           </Button>
         )}
-        <Button variant="ghost" size="sm" onClick={() => onEdit(year)} className="h-7 w-7 p-0 text-slate-400 hover:text-slate-700">
+        <Button variant="ghost" size="sm" onClick={() => onEdit(year)} className="h-7 w-7 p-0 scholr-faint hover:scholr-body">
           <Pencil className="w-3.5 h-3.5" />
         </Button>
-        <Button variant="ghost" size="sm" onClick={() => onDelete(year)} className="h-7 w-7 p-0 text-slate-400 hover:text-red-600">
+        <Button variant="ghost" size="sm" onClick={() => onDelete(year)} className="h-7 w-7 p-0 scholr-faint hover:text-red-600">
           <Trash2 className="w-3.5 h-3.5" />
         </Button>
       </div>
@@ -120,22 +120,22 @@ export default function AcademicYearsTab({ schoolId }) {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-sm font-bold text-slate-900">Academic Years</h2>
-          <p className="text-xs text-slate-500 mt-0.5">Define the school's academic calendar. Mark one year as "Current" to drive term and reporting logic.</p>
+          <h2 className="text-sm font-bold scholr-ink">Academic Years</h2>
+          <p className="text-xs scholr-muted mt-0.5">Define the school's academic calendar. Mark one year as "Current" to drive term and reporting logic.</p>
         </div>
-        <Button onClick={openCreate} className="bg-indigo-600 hover:bg-indigo-700 h-8 text-xs gap-1.5">
+        <Button onClick={openCreate} className="scholr-accent-sf hover:scholr-accent-sf h-8 text-xs gap-1.5">
           <Plus className="w-3.5 h-3.5" /> Add Year
         </Button>
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-slate-400" /></div>
+        <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin scholr-faint" /></div>
       ) : years.length === 0 ? (
-        <div className="bg-white border border-dashed border-slate-300 rounded-lg p-12 text-center">
-          <CalendarDays className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-          <p className="text-sm font-semibold text-slate-500">No academic years yet</p>
-          <p className="text-xs text-slate-400 mt-1 mb-4">Create your first academic year to start configuring terms and reporting cycles.</p>
-          <Button onClick={openCreate} className="bg-indigo-600 hover:bg-indigo-700 h-8 text-xs gap-1.5">
+        <div className="bg-white border border-dashed scholr-rule rounded-lg p-12 text-center">
+          <CalendarDays className="w-10 h-10 scholr-faint mx-auto mb-3" />
+          <p className="text-sm font-semibold scholr-muted">No academic years yet</p>
+          <p className="text-xs scholr-faint mt-1 mb-4">Create your first academic year to start configuring terms and reporting cycles.</p>
+          <Button onClick={openCreate} className="scholr-accent-sf hover:scholr-accent-sf h-8 text-xs gap-1.5">
             <Plus className="w-3.5 h-3.5" /> Create First Year
           </Button>
         </div>
@@ -176,7 +176,7 @@ export default function AcademicYearsTab({ schoolId }) {
             </div>
             <div>
               <Label className="text-xs font-semibold">Status</Label>
-              <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} className="mt-1 w-full border border-slate-200 rounded-md px-3 py-2 text-sm bg-white">
+              <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} className="mt-1 w-full border scholr-rule rounded-md px-3 py-2 text-sm bg-white">
                 <option value="planning">Planning</option>
                 <option value="active">Active</option>
                 <option value="archived">Archived</option>
@@ -184,11 +184,11 @@ export default function AcademicYearsTab({ schoolId }) {
             </div>
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={form.is_current} onChange={e => setForm({ ...form, is_current: e.target.checked })} className="rounded" />
-              <span className="text-sm text-slate-700">Set as current academic year</span>
+              <span className="text-sm scholr-body">Set as current academic year</span>
             </label>
             <div className="flex gap-2 pt-2">
               <Button type="button" variant="outline" className="flex-1" onClick={closeDialog}>Cancel</Button>
-              <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending} className="flex-1 bg-indigo-600 hover:bg-indigo-700">
+              <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending} className="flex-1 scholr-accent-sf hover:scholr-accent-sf">
                 {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                 {editing ? 'Save Changes' : 'Create Year'}
               </Button>

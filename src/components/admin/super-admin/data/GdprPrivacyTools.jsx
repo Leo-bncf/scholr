@@ -23,11 +23,11 @@ function UserDataSummary({ result }) {
     { label: 'Behavior Records', count: behavior, icon: FileX },
   ];
   return (
-    <div className="mt-3 border border-slate-200 rounded-md overflow-hidden">
+    <div className="mt-3 border scholr-rule rounded-md overflow-hidden">
       {rows.map(r => (
-        <div key={r.label} className="flex items-center justify-between px-4 py-2.5 border-b border-slate-100 last:border-0 bg-white">
-          <span className="text-sm text-slate-600">{r.label}</span>
-          <span className="text-sm font-semibold text-slate-900">{r.count}</span>
+        <div key={r.label} className="flex items-center justify-between px-4 py-2.5 border-b scholr-rule-soft last:border-0 bg-white">
+          <span className="text-sm scholr-muted">{r.label}</span>
+          <span className="text-sm font-semibold scholr-ink">{r.count}</span>
         </div>
       ))}
     </div>
@@ -144,7 +144,7 @@ export default function GdprPrivacyTools() {
 
       {/* Search */}
       <div>
-        <Label className="text-sm font-semibold text-slate-800 mb-2 block">Look Up User by Email</Label>
+        <Label className="text-sm font-semibold scholr-ink mb-2 block">Look Up User by Email</Label>
         <div className="flex gap-2">
           <Input
             value={email}
@@ -156,7 +156,7 @@ export default function GdprPrivacyTools() {
           <Button
             onClick={handleSearch}
             disabled={searching || !email.trim()}
-            className="bg-slate-800 hover:bg-slate-900 text-white gap-2"
+            className="scholr-sunk hover:scholr-sunk text-white gap-2"
             size="sm"
           >
             {searching ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
@@ -180,26 +180,26 @@ export default function GdprPrivacyTools() {
 
       {/* Found user */}
       {found && summary && (
-        <div className="border border-slate-200 rounded-md overflow-hidden">
-          <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center gap-2">
-            <User className="w-4 h-4 text-slate-500" />
-            <p className="text-sm font-semibold text-slate-800">{found.email}</p>
-            <span className="text-xs text-slate-400 ml-auto">{found.memberships.length} school(s)</span>
+        <div className="border scholr-rule rounded-md overflow-hidden">
+          <div className="px-4 py-3 scholr-sunk border-b scholr-rule flex items-center gap-2">
+            <User className="w-4 h-4 scholr-muted" />
+            <p className="text-sm font-semibold scholr-ink">{found.email}</p>
+            <span className="text-xs scholr-faint ml-auto">{found.memberships.length} school(s)</span>
           </div>
 
           <div className="p-4 bg-white">
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Data Inventory</p>
+            <p className="text-xs font-semibold scholr-muted uppercase tracking-wide mb-2">Data Inventory</p>
             <UserDataSummary result={summary} />
 
             <div className="mt-5 space-y-3">
               {/* Anonymize */}
-              <div className="p-3 border border-slate-200 rounded-md">
+              <div className="p-3 border scholr-rule rounded-md">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+                    <p className="text-sm font-semibold scholr-ink flex items-center gap-1.5">
                       <EyeOff className="w-4 h-4 text-amber-500" /> Anonymize Personal Data
                     </p>
-                    <p className="text-xs text-slate-500 mt-0.5">Replaces name and email fields with placeholder values. Records are retained for audit purposes.</p>
+                    <p className="text-xs scholr-muted mt-0.5">Replaces name and email fields with placeholder values. Records are retained for audit purposes.</p>
                   </div>
                   <Button
                     onClick={handleAnonymize}

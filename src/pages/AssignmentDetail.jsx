@@ -52,24 +52,24 @@ export default function AssignmentDetail() {
 
   if (!assignmentId) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <p className="text-slate-500">No assignment selected</p>
+      <div className="min-h-screen scholr-sunk flex items-center justify-center">
+        <p className="scholr-muted">No assignment selected</p>
       </div>
     );
   }
 
   if (loadingAssignment) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+      <div className="min-h-screen scholr-sunk flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
       </div>
     );
   }
 
   if (!assignment) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <p className="text-slate-500">Assignment not found</p>
+      <div className="min-h-screen scholr-sunk flex items-center justify-center">
+        <p className="scholr-muted">Assignment not found</p>
       </div>
     );
   }
@@ -79,15 +79,15 @@ export default function AssignmentDetail() {
 
   if (!isTeacher && !isStudent) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <p className="text-slate-500">You don't have access to this assignment</p>
+      <div className="min-h-screen scholr-sunk flex items-center justify-center">
+        <p className="scholr-muted">You don't have access to this assignment</p>
       </div>
     );
   }
 
   const typeColors = {
     homework: 'bg-blue-50 text-blue-700',
-    essay: 'bg-purple-50 text-purple-700',
+    essay: 'scholr-accent-sf scholr-accent',
     exam: 'bg-red-50 text-red-700',
     project: 'bg-emerald-50 text-emerald-700',
     quiz: 'bg-amber-50 text-amber-700',
@@ -99,8 +99,8 @@ export default function AssignmentDetail() {
   const isPastDue = new Date() > dueDate;
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="bg-white border-b border-slate-200">
+    <div className="min-h-screen scholr-sunk">
+      <div className="bg-white border-b scholr-rule">
         <div className="max-w-5xl mx-auto px-6 py-4">
           <a href={createPageUrl('ClassWorkspace') + `?class_id=${assignment.class_id}&tab=assignments`}>
             <Button variant="ghost" size="sm" className="mb-3">
@@ -110,12 +110,12 @@ export default function AssignmentDetail() {
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold text-slate-900">{assignment.title}</h1>
-                <Badge className={`${typeColors[assignment.type] || 'bg-slate-100 text-slate-700'} border-0 capitalize`}>
+                <h1 className="text-3xl font-bold scholr-ink">{assignment.title}</h1>
+                <Badge className={`${typeColors[assignment.type] || 'scholr-sunk scholr-body'} border-0 capitalize`}>
                   {assignment.type?.replace('_', ' ')}
                 </Badge>
               </div>
-              <div className="flex items-center gap-4 text-sm text-slate-500">
+              <div className="flex items-center gap-4 text-sm scholr-muted">
                 <span className="flex items-center gap-1.5">
                   <Calendar className="w-4 h-4" />
                   Due {format(dueDate, 'EEEE, MMMM d, yyyy')}
@@ -140,15 +140,15 @@ export default function AssignmentDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             {assignment.description && (
-              <div className="bg-white rounded-xl border border-slate-200 p-6">
-                <h2 className="font-semibold text-slate-900 mb-3">Instructions</h2>
-                <p className="text-slate-700 whitespace-pre-wrap">{assignment.description}</p>
+              <div className="bg-white rounded-xl border scholr-rule p-6">
+                <h2 className="font-semibold scholr-ink mb-3">Instructions</h2>
+                <p className="scholr-body whitespace-pre-wrap">{assignment.description}</p>
               </div>
             )}
 
             {assignment.attachments && assignment.attachments.length > 0 && (
-              <div className="bg-white rounded-xl border border-slate-200 p-6">
-                <h2 className="font-semibold text-slate-900 mb-3">Attachments</h2>
+              <div className="bg-white rounded-xl border scholr-rule p-6">
+                <h2 className="font-semibold scholr-ink mb-3">Attachments</h2>
                 <div className="space-y-2">
                   {assignment.attachments.map((url, i) => (
                     <a
@@ -156,10 +156,10 @@ export default function AssignmentDetail() {
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                      className="flex items-center gap-2 p-3 scholr-sunk rounded-lg hover:scholr-sunk transition-colors"
                     >
-                      <Paperclip className="w-4 h-4 text-slate-400" />
-                      <span className="text-sm text-slate-700">Attachment {i + 1}</span>
+                      <Paperclip className="w-4 h-4 scholr-faint" />
+                      <span className="text-sm scholr-body">Attachment {i + 1}</span>
                     </a>
                   ))}
                 </div>
@@ -167,12 +167,12 @@ export default function AssignmentDetail() {
             )}
 
             {isStudent && (
-              <div className="bg-white rounded-xl border border-slate-200 p-6">
+              <div className="bg-white rounded-xl border scholr-rule p-6">
                 {assignment.type === 'quiz' || assignment.type === 'exam' ? (
                   <AssessmentStudentPanel assignment={assignment} studentId={user.id} studentName={user.full_name} />
                 ) : (
                   <>
-                    <h2 className="font-semibold text-slate-900 mb-4">Your Submission</h2>
+                    <h2 className="font-semibold scholr-ink mb-4">Your Submission</h2>
                     <StudentSubmission
                       assignment={assignment}
                       studentId={user.id}
@@ -185,8 +185,8 @@ export default function AssignmentDetail() {
             )}
 
             {isTeacher && (
-              <div className="bg-white rounded-xl border border-slate-200 p-6">
-                <h2 className="font-semibold text-slate-900 mb-4">Student Submissions</h2>
+              <div className="bg-white rounded-xl border scholr-rule p-6">
+                <h2 className="font-semibold scholr-ink mb-4">Student Submissions</h2>
                 {assignment.type === 'quiz' || assignment.type === 'exam' ? (
                   <AssessmentTeacherReview assignment={assignment} />
                 ) : (
@@ -196,7 +196,7 @@ export default function AssignmentDetail() {
             )}
 
             {/* Comments & Feedback — visible to both teachers and students */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
+            <div className="bg-white rounded-xl border scholr-rule p-6">
               <AssignmentComments
                 assignment={assignment}
                 userId={user.id}
@@ -208,31 +208,31 @@ export default function AssignmentDetail() {
           </div>
 
           <div className="space-y-4">
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
-              <h3 className="font-semibold text-slate-900 mb-3">Details</h3>
+            <div className="bg-white rounded-xl border scholr-rule p-5">
+              <h3 className="font-semibold scholr-ink mb-3">Details</h3>
               <div className="space-y-3 text-sm">
                 <div>
-                  <p className="text-slate-500">Class</p>
-                  <p className="font-medium text-slate-900">{classData?.name || 'Loading...'}</p>
+                  <p className="scholr-muted">Class</p>
+                  <p className="font-medium scholr-ink">{classData?.name || 'Loading...'}</p>
                 </div>
                 <div>
-                  <p className="text-slate-500">Due Date</p>
-                  <p className="font-medium text-slate-900">{format(dueDate, 'MMM d, yyyy')}</p>
+                  <p className="scholr-muted">Due Date</p>
+                  <p className="font-medium scholr-ink">{format(dueDate, 'MMM d, yyyy')}</p>
                   {assignment.due_date.includes('T') && (
-                    <p className="text-slate-600">{format(dueDate, 'h:mm a')}</p>
+                    <p className="scholr-muted">{format(dueDate, 'h:mm a')}</p>
                   )}
                 </div>
                 <div>
-                  <p className="text-slate-500">Points</p>
-                  <p className="font-medium text-slate-900">{assignment.max_score || 'Ungraded'}</p>
+                  <p className="scholr-muted">Points</p>
+                  <p className="font-medium scholr-ink">{assignment.max_score || 'Ungraded'}</p>
                 </div>
                 <div>
-                  <p className="text-slate-500">Late Submissions</p>
-                  <p className="font-medium text-slate-900">{assignment.allow_late ? 'Allowed' : 'Not Allowed'}</p>
+                  <p className="scholr-muted">Late Submissions</p>
+                  <p className="font-medium scholr-ink">{assignment.allow_late ? 'Allowed' : 'Not Allowed'}</p>
                 </div>
                 {assignment.primary_submission_format && (
                   <div>
-                    <p className="text-slate-500 mb-2">Submission Format</p>
+                    <p className="scholr-muted mb-2">Submission Format</p>
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         {(() => {
@@ -243,8 +243,8 @@ export default function AssignmentDetail() {
                           if (format === 'google_doc') { Icon = FileText; color = 'bg-blue-50 text-blue-700'; label = 'Google Doc'; }
                           else if (format === 'google_slides') { Icon = Presentation; color = 'bg-amber-50 text-amber-700'; label = 'Google Slides'; }
                           else if (format === 'google_sheet') { Icon = Table; color = 'bg-emerald-50 text-emerald-700'; label = 'Google Sheet'; }
-                          else if (format === 'file_upload') { Icon = Upload; color = 'bg-slate-100 text-slate-700'; label = 'File Upload'; }
-                          else if (format === 'link') { Icon = LinkIcon; color = 'bg-indigo-50 text-indigo-700'; label = 'Link'; }
+                          else if (format === 'file_upload') { Icon = Upload; color = 'scholr-sunk scholr-body'; label = 'File Upload'; }
+                          else if (format === 'link') { Icon = LinkIcon; color = 'scholr-accent-sf scholr-accent'; label = 'Link'; }
                           return (
                             <Badge className={`${color} border-0 text-xs flex items-center gap-1`}>
                               <Icon className="w-3 h-3" />
@@ -252,21 +252,21 @@ export default function AssignmentDetail() {
                             </Badge>
                           );
                         })()}
-                        <span className="text-xs font-medium text-slate-600">Primary</span>
+                        <span className="text-xs font-medium scholr-muted">Primary</span>
                       </div>
                       {assignment.allow_alternative_formats && assignment.alternative_formats && assignment.alternative_formats.length > 0 && (
                         <div>
-                          <p className="text-xs text-slate-500 mb-1">Also accepts:</p>
+                          <p className="text-xs scholr-muted mb-1">Also accepts:</p>
                           <div className="flex flex-wrap gap-1.5">
                             {assignment.alternative_formats.map(format => {
                               let Icon = FileText;
-                              let color = 'bg-slate-100 text-slate-600';
+                              let color = 'scholr-sunk scholr-muted';
                               let label = format;
                               if (format === 'google_doc') { Icon = FileText; color = 'bg-blue-50 text-blue-600'; label = 'Doc'; }
                               else if (format === 'google_slides') { Icon = Presentation; color = 'bg-amber-50 text-amber-600'; label = 'Slides'; }
                               else if (format === 'google_sheet') { Icon = Table; color = 'bg-emerald-50 text-emerald-600'; label = 'Sheet'; }
-                              else if (format === 'file_upload') { Icon = Upload; color = 'bg-slate-100 text-slate-600'; label = 'File'; }
-                              else if (format === 'link') { Icon = LinkIcon; color = 'bg-indigo-50 text-indigo-600'; label = 'Link'; }
+                              else if (format === 'file_upload') { Icon = Upload; color = 'scholr-sunk scholr-muted'; label = 'File'; }
+                              else if (format === 'link') { Icon = LinkIcon; color = 'scholr-accent-sf scholr-accent'; label = 'Link'; }
                               return (
                                 <Badge key={format} className={`${color} border-0 text-xs flex items-center gap-1`}>
                                   <Icon className="w-3 h-3" />
@@ -278,7 +278,7 @@ export default function AssignmentDetail() {
                         </div>
                       )}
                       {!assignment.allow_alternative_formats && (
-                        <p className="text-xs text-slate-500 italic">Only this format accepted</p>
+                        <p className="text-xs scholr-muted italic">Only this format accepted</p>
                       )}
                     </div>
                   </div>

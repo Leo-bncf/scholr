@@ -24,20 +24,20 @@ const documentTypeConfig = {
   google_drive_file: {
     icon: File,
     label: 'Drive File',
-    color: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-    iconColor: 'text-indigo-600'
+    color: 'scholr-accent-sf scholr-accent scholr-accent-rule',
+    iconColor: 'scholr-accent'
   },
   uploaded_file: {
     icon: File,
     label: 'Uploaded File',
-    color: 'bg-slate-50 text-slate-700 border-slate-200',
-    iconColor: 'text-slate-600'
+    color: 'scholr-sunk scholr-body scholr-rule',
+    iconColor: 'scholr-muted'
   },
   external_link: {
     icon: Link2,
     label: 'Link',
-    color: 'bg-violet-50 text-violet-700 border-violet-200',
-    iconColor: 'text-violet-600'
+    color: 'scholr-accent-sf scholr-accent scholr-accent-rule',
+    iconColor: 'scholr-accent'
   }
 };
 
@@ -54,7 +54,7 @@ export default function DocumentCard({ document, onRemove, onOpen, compact = fal
 
   if (compact) {
     return (
-      <div className={`flex items-center gap-3 p-3 rounded-lg border ${config.color} transition-all hover:shadow-sm`}>
+      <div className={`flex items-center gap-3 p-3 rounded-lg border ${config.color} transition-colors hover:shadow-sm`}>
         <div className={`w-10 h-10 rounded-lg bg-white/50 flex items-center justify-center flex-shrink-0`}>
           <Icon className={`w-5 h-5 ${config.iconColor}`} />
         </div>
@@ -94,9 +94,9 @@ export default function DocumentCard({ document, onRemove, onOpen, compact = fal
   }
 
   return (
-    <div className={`rounded-xl border ${config.color} overflow-hidden transition-all hover:shadow-md`}>
+    <div className={`rounded-xl border ${config.color} overflow-hidden transition-colors hover:shadow-md`}>
       {document.thumbnail_url ? (
-        <div className="aspect-video w-full bg-slate-100 overflow-hidden">
+        <div className="aspect-video w-full scholr-sunk overflow-hidden">
           <img 
             src={document.thumbnail_url} 
             alt={document.name}

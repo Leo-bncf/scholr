@@ -13,7 +13,7 @@ export const SIDEBAR_LINKS = [
 
 export const CLASS_STATUS_CONFIG = {
   active:   { label: 'Active',    classes: 'bg-emerald-50 text-emerald-700 border-emerald-200', dot: 'bg-emerald-500' },
-  archived: { label: 'Archived',  classes: 'bg-slate-100 text-slate-500 border-slate-200',     dot: 'bg-slate-400' },
+  archived: { label: 'Archived',  classes: 'scholr-sunk scholr-muted scholr-rule',     dot: 'bg-slate-400' },
 };
 
 export const CO_TEACHER_PERMS = [

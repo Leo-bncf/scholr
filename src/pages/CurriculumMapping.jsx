@@ -16,7 +16,7 @@ import * as gradebookData from '@/data/gradebook';
 import * as classesData from '@/data/classes';
 
 const indicatorMeta = (avg) => {
-  if (avg === null) return { label: 'No Data', className: 'bg-slate-100 text-slate-700 border-0' };
+  if (avg === null) return { label: 'No Data', className: 'scholr-sunk scholr-body border-0' };
   if (avg >= 75) return { label: 'Strength', className: 'bg-emerald-100 text-emerald-700 border-0' };
   if (avg < 60) return { label: 'Weakness', className: 'bg-red-100 text-red-700 border-0' };
   return { label: 'Monitor', className: 'bg-amber-100 text-amber-700 border-0' };
@@ -118,18 +118,18 @@ export default function CurriculumMapping() {
   }, [data, selectedSubjectId]);
 
   if (isLoading) {
-    return <div className="min-h-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-700" /></div>;
+    return <div className="min-h-screen scholr-sunk flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-700" /></div>;
   }
 
   return (
     <RoleGuard allowedRoles={['teacher', 'school_admin', 'ib_coordinator', 'admin', 'super_admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar links={sidebarLinks} role={sidebarRole} schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         <main className="app-offset p-4 md:p-6">
           <div className="max-w-[1500px] mx-auto space-y-6">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">Curriculum Mapping</h1>
-              <p className="text-sm text-slate-500 mt-1">
+              <h1 className="text-2xl font-bold scholr-ink">Curriculum Mapping</h1>
+              <p className="text-sm scholr-muted mt-1">
                 {isAdminView ? 'School-wide curriculum coverage and topic performance insights.' : 'Track topic coverage and class mastery across your subjects.'}
               </p>
             </div>

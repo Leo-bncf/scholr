@@ -12,9 +12,9 @@ const COLOR_OPTIONS = [
   { value: 'blue',    bg: 'bg-blue-100',    text: 'text-blue-800',    border: 'border-blue-300',    dot: 'bg-blue-500' },
   { value: 'amber',   bg: 'bg-amber-100',   text: 'text-amber-800',   border: 'border-amber-300',   dot: 'bg-amber-500' },
   { value: 'red',     bg: 'bg-red-100',     text: 'text-red-800',     border: 'border-red-300',     dot: 'bg-red-500' },
-  { value: 'violet',  bg: 'bg-violet-100',  text: 'text-violet-800',  border: 'border-violet-300',  dot: 'bg-violet-500' },
+  { value: 'violet',  bg: 'scholr-accent-sf',  text: 'scholr-accent',  border: 'scholr-accent-rule',  dot: 'bg-violet-500' },
   { value: 'rose',    bg: 'bg-rose-100',    text: 'text-rose-800',    border: 'border-rose-300',    dot: 'bg-rose-500' },
-  { value: 'slate',   bg: 'bg-slate-100',   text: 'text-slate-800',   border: 'border-slate-300',   dot: 'bg-slate-500' },
+  { value: 'slate',   bg: 'scholr-sunk',   text: 'scholr-ink',   border: 'scholr-rule',   dot: 'bg-slate-500' },
 ];
 
 const DEFAULT_TYPES = [
@@ -40,7 +40,7 @@ function ColorPicker({ value, onChange }) {
     <div className="flex gap-1 flex-wrap">
       {COLOR_OPTIONS.map(c => (
         <button key={c.value} onClick={() => onChange(c.value)}
-          className={`w-5 h-5 rounded-full border-2 ${c.dot} ${value === c.value ? 'border-slate-700 scale-110' : 'border-transparent'} transition-all`}
+          className={`w-5 h-5 rounded-full border-2 ${c.dot} ${value === c.value ? 'border-slate-700 scale-110' : 'border-transparent'} transition-colors`}
           title={c.value} />
       ))}
     </div>
@@ -95,18 +95,18 @@ export default function BehaviorPolicyConfig({ schoolId }) {
   const removeSev = (id) => setSeverities(severities.filter(s => s.id !== id));
   const addSev = () => setSeverities([...severities, { id: genId(), key: '', label: '', color: 'slate', requires_pastoral_review: false, notify_admin: false, active: true }]);
 
-  if (isLoading || types === null) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>;
+  if (isLoading || types === null) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>;
 
   return (
     <div className="space-y-8">
       {/* Incident Types */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
+      <div className="bg-white rounded-xl border scholr-rule p-6">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
-            <Tag className="w-5 h-5 text-indigo-600" />
+            <Tag className="w-5 h-5 scholr-accent" />
             <div>
-              <h3 className="font-bold text-slate-900">Incident Types</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Define the behavior categories staff can record. Each type carries default visibility rules.</p>
+              <h3 className="font-bold scholr-ink">Incident Types</h3>
+              <p className="text-xs scholr-muted mt-0.5">Define the behavior categories staff can record. Each type carries default visibility rules.</p>
             </div>
           </div>
           <Button variant="outline" size="sm" onClick={addType}><Plus className="w-4 h-4 mr-1" /> Add Type</Button>
@@ -116,42 +116,42 @@ export default function BehaviorPolicyConfig({ schoolId }) {
           {types.map(t => {
             const cm = COLOR_OPTIONS.find(c => c.value === t.color) || COLOR_OPTIONS[6];
             return (
-              <div key={t.id} className="p-3 rounded-lg bg-slate-50 border border-slate-100 space-y-2">
+              <div key={t.id} className="p-3 rounded-lg scholr-sunk border scholr-rule-soft space-y-2">
                 <div className="grid grid-cols-12 gap-3 items-center">
                   <div className="col-span-2">
-                    <p className="text-xs text-slate-500 mb-1">Key</p>
+                    <p className="text-xs scholr-muted mb-1">Key</p>
                     <Input value={t.key} onChange={e => updateType(t.id, 'key', e.target.value)} placeholder="e.g. warning" className="h-8 text-sm" />
                   </div>
                   <div className="col-span-3">
-                    <p className="text-xs text-slate-500 mb-1">Label</p>
+                    <p className="text-xs scholr-muted mb-1">Label</p>
                     <Input value={t.label} onChange={e => updateType(t.id, 'label', e.target.value)} placeholder="Display label" className="h-8 text-sm" />
                   </div>
                   <div className="col-span-2">
-                    <p className="text-xs text-slate-500 mb-1">Colour</p>
+                    <p className="text-xs scholr-muted mb-1">Colour</p>
                     <ColorPicker value={t.color} onChange={v => updateType(t.id, 'color', v)} />
                   </div>
                   <div className="col-span-4 flex flex-col gap-1">
                     <div className="flex items-center gap-2">
                       <Switch checked={t.default_visible_to_student} onCheckedChange={v => updateType(t.id, 'default_visible_to_student', v)} className="scale-75" />
-                      <span className="text-xs text-slate-600">Visible to student (default)</span>
+                      <span className="text-xs scholr-muted">Visible to student (default)</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Switch checked={t.default_visible_to_parent} onCheckedChange={v => updateType(t.id, 'default_visible_to_parent', v)} className="scale-75" />
-                      <span className="text-xs text-slate-600">Visible to parent (default)</span>
+                      <span className="text-xs scholr-muted">Visible to parent (default)</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Switch checked={t.staff_only} onCheckedChange={v => updateType(t.id, 'staff_only', v)} className="scale-75" />
-                      <span className="text-xs text-slate-600 font-medium text-rose-700">🔒 Staff only (locked)</span>
+                      <span className="text-xs scholr-muted font-medium text-rose-700">🔒 Staff only (locked)</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Switch checked={t.requires_action} onCheckedChange={v => updateType(t.id, 'requires_action', v)} className="scale-75" />
-                      <span className="text-xs text-slate-600">Requires action taken</span>
+                      <span className="text-xs scholr-muted">Requires action taken</span>
                     </div>
                   </div>
                   <div className="col-span-1 flex flex-col items-end gap-2">
                     <Badge className={`${cm.bg} ${cm.text} border ${cm.border} text-xs`}>{t.label || 'Preview'}</Badge>
                     <Switch checked={t.active} onCheckedChange={v => updateType(t.id, 'active', v)} className="scale-75" />
-                    <button onClick={() => removeType(t.id)} className="text-slate-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+                    <button onClick={() => removeType(t.id)} className="scholr-faint hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
                   </div>
                 </div>
                 {t.staff_only && (
@@ -166,13 +166,13 @@ export default function BehaviorPolicyConfig({ schoolId }) {
       </div>
 
       {/* Severity Levels */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
+      <div className="bg-white rounded-xl border scholr-rule p-6">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-amber-600" />
             <div>
-              <h3 className="font-bold text-slate-900">Severity Levels</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Define severity tiers and map them to pastoral review and admin notification requirements.</p>
+              <h3 className="font-bold scholr-ink">Severity Levels</h3>
+              <p className="text-xs scholr-muted mt-0.5">Define severity tiers and map them to pastoral review and admin notification requirements.</p>
             </div>
           </div>
           <Button variant="outline" size="sm" onClick={addSev}><Plus className="w-4 h-4 mr-1" /> Add Level</Button>
@@ -181,33 +181,33 @@ export default function BehaviorPolicyConfig({ schoolId }) {
           {severities.map(s => {
             const cm = COLOR_OPTIONS.find(c => c.value === s.color) || COLOR_OPTIONS[6];
             return (
-              <div key={s.id} className="grid grid-cols-12 gap-3 items-center p-3 rounded-lg bg-slate-50 border border-slate-100">
+              <div key={s.id} className="grid grid-cols-12 gap-3 items-center p-3 rounded-lg scholr-sunk border scholr-rule-soft">
                 <div className="col-span-2">
-                  <p className="text-xs text-slate-500 mb-1">Key</p>
+                  <p className="text-xs scholr-muted mb-1">Key</p>
                   <Input value={s.key} onChange={e => updateSev(s.id, 'key', e.target.value)} placeholder="e.g. high" className="h-8 text-sm" />
                 </div>
                 <div className="col-span-3">
-                  <p className="text-xs text-slate-500 mb-1">Label</p>
+                  <p className="text-xs scholr-muted mb-1">Label</p>
                   <Input value={s.label} onChange={e => updateSev(s.id, 'label', e.target.value)} placeholder="Display label" className="h-8 text-sm" />
                 </div>
                 <div className="col-span-2">
-                  <p className="text-xs text-slate-500 mb-1">Colour</p>
+                  <p className="text-xs scholr-muted mb-1">Colour</p>
                   <ColorPicker value={s.color} onChange={v => updateSev(s.id, 'color', v)} />
                 </div>
                 <div className="col-span-4 flex flex-col gap-1">
                   <div className="flex items-center gap-2">
                     <Switch checked={s.requires_pastoral_review} onCheckedChange={v => updateSev(s.id, 'requires_pastoral_review', v)} className="scale-75" />
-                    <span className="text-xs text-slate-600">Requires pastoral review</span>
+                    <span className="text-xs scholr-muted">Requires pastoral review</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Switch checked={s.notify_admin} onCheckedChange={v => updateSev(s.id, 'notify_admin', v)} className="scale-75" />
-                    <span className="text-xs text-slate-600">Notify admin</span>
+                    <span className="text-xs scholr-muted">Notify admin</span>
                   </div>
                 </div>
                 <div className="col-span-1 flex flex-col items-end gap-2">
                   <Badge className={`${cm.bg} ${cm.text} border ${cm.border} text-xs`}>{s.label || 'Preview'}</Badge>
                   <Switch checked={s.active} onCheckedChange={v => updateSev(s.id, 'active', v)} className="scale-75" />
-                  <button onClick={() => removeSev(s.id)} className="text-slate-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+                  <button onClick={() => removeSev(s.id)} className="scholr-faint hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
                 </div>
               </div>
             );
@@ -216,28 +216,28 @@ export default function BehaviorPolicyConfig({ schoolId }) {
       </div>
 
       {/* Global Policy Settings */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <h3 className="font-bold text-slate-900 mb-4">Global Policy Settings</h3>
+      <div className="bg-white rounded-xl border scholr-rule p-6">
+        <h3 className="font-bold scholr-ink mb-4">Global Policy Settings</h3>
         <div className="space-y-4">
           <div className="flex items-start gap-3">
             <Switch checked={allowTeacherOverride} onCheckedChange={setAllowTeacherOverride} />
             <div>
-              <p className="text-sm font-medium text-slate-900">Allow teachers to override visibility defaults</p>
-              <p className="text-xs text-slate-500 mt-0.5">If off, teachers cannot change the visibility settings defined per incident type. Admins and pastoral staff can always override.</p>
+              <p className="text-sm font-medium scholr-ink">Allow teachers to override visibility defaults</p>
+              <p className="text-xs scholr-muted mt-0.5">If off, teachers cannot change the visibility settings defined per incident type. Admins and pastoral staff can always override.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Switch checked={followUpTracking} onCheckedChange={setFollowUpTracking} />
             <div>
-              <p className="text-sm font-medium text-slate-900">Enable follow-up tracking</p>
-              <p className="text-xs text-slate-500 mt-0.5">Track whether required follow-ups have been completed. Surfaced in the pastoral oversight view.</p>
+              <p className="text-sm font-medium scholr-ink">Enable follow-up tracking</p>
+              <p className="text-xs scholr-muted mt-0.5">Track whether required follow-ups have been completed. Surfaced in the pastoral oversight view.</p>
             </div>
           </div>
         </div>
       </div>
 
       <div className="flex justify-end">
-        <Button onClick={handleSave} disabled={saveMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700">
+        <Button onClick={handleSave} disabled={saveMutation.isPending} className="scholr-accent-sf hover:scholr-accent-sf">
           {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
           Save Policy
         </Button>

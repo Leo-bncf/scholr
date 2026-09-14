@@ -8,8 +8,8 @@ const FORMAT_OPTIONS = [
   { value: 'google_doc', label: 'Google Doc', icon: FileText, description: 'Written work, essays, reports', color: 'text-blue-600' },
   { value: 'google_slides', label: 'Google Slides', icon: Presentation, description: 'Presentations, visual projects', color: 'text-amber-600' },
   { value: 'google_sheet', label: 'Google Sheet', icon: Table, description: 'Spreadsheets, data analysis', color: 'text-emerald-600' },
-  { value: 'file_upload', label: 'File Upload', icon: Upload, description: 'PDFs, images, or other files', color: 'text-slate-600' },
-  { value: 'link', label: 'Link', icon: LinkIcon, description: 'External website or resource', color: 'text-indigo-600' },
+  { value: 'file_upload', label: 'File Upload', icon: Upload, description: 'PDFs, images, or other files', color: 'scholr-muted' },
+  { value: 'link', label: 'Link', icon: LinkIcon, description: 'External website or resource', color: 'scholr-accent' },
 ];
 
 export default function SubmissionFormatSelector({ primaryFormat, allowAlternatives, alternativeFormats, onChange }) {
@@ -50,36 +50,36 @@ export default function SubmissionFormatSelector({ primaryFormat, allowAlternati
     <div className="space-y-5">
       <div>
         <Label className="text-sm font-semibold mb-2 block">Primary Expected Format</Label>
-        <p className="text-xs text-slate-500 mb-3">
+        <p className="text-xs scholr-muted mb-3">
           Choose the main format you expect students to use for this assignment.
         </p>
         <div className="grid grid-cols-1 gap-2">
           {FORMAT_OPTIONS.map(({ value, label, icon: Icon, description, color }) => (
             <div
               key={value}
-              className={`flex items-start gap-3 p-3 border rounded-lg cursor-pointer transition-all ${
+              className={`flex items-start gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${
                 primaryFormat === value
-                  ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-200'
-                  : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                  ? 'scholr-accent-rule scholr-accent-sf ring-2 scholr-accent-rule'
+                  : 'scholr-rule hover:scholr-rule hover:scholr-sunk'
               }`}
               onClick={() => handleSetPrimary(value)}
             >
               <div className="mt-0.5">
                 {primaryFormat === value ? (
-                  <CheckCircle className="w-5 h-5 text-indigo-600" />
+                  <CheckCircle className="w-5 h-5 scholr-accent" />
                 ) : (
-                  <div className="w-5 h-5 border-2 border-slate-300 rounded-full" />
+                  <div className="w-5 h-5 border-2 scholr-rule rounded-full" />
                 )}
               </div>
-              <Icon className={`w-5 h-5 mt-0.5 ${primaryFormat === value ? 'text-indigo-600' : color}`} />
+              <Icon className={`w-5 h-5 mt-0.5 ${primaryFormat === value ? 'scholr-accent' : color}`} />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium text-slate-900">{label}</p>
+                  <p className="text-sm font-medium scholr-ink">{label}</p>
                   {primaryFormat === value && (
-                    <Badge className="bg-indigo-100 text-indigo-700 border-0 text-xs">Primary</Badge>
+                    <Badge className="scholr-accent-sf scholr-accent border-0 text-xs">Primary</Badge>
                   )}
                 </div>
-                <p className="text-xs text-slate-500">{description}</p>
+                <p className="text-xs scholr-muted">{description}</p>
               </div>
             </div>
           ))}
@@ -98,7 +98,7 @@ export default function SubmissionFormatSelector({ primaryFormat, allowAlternati
               <Label className="text-sm font-semibold cursor-pointer" onClick={handleToggleAlternatives}>
                 Allow alternative submission formats
               </Label>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs scholr-muted mt-0.5">
                 Students can submit using other formats in addition to your primary format
               </p>
             </div>
@@ -106,14 +106,14 @@ export default function SubmissionFormatSelector({ primaryFormat, allowAlternati
 
           {allowAlternatives && (
             <div className="ml-8 mt-3 space-y-2">
-              <p className="text-xs font-medium text-slate-600 mb-2">Additional allowed formats:</p>
+              <p className="text-xs font-medium scholr-muted mb-2">Additional allowed formats:</p>
               {FORMAT_OPTIONS.filter(opt => opt.value !== primaryFormat).map(({ value, label, icon: Icon, color }) => (
                 <div
                   key={value}
                   className={`flex items-center gap-2 p-2.5 border rounded-lg cursor-pointer transition-colors ${
                     alternativeFormats.includes(value)
-                      ? 'border-slate-300 bg-slate-50'
-                      : 'border-slate-200 hover:border-slate-300'
+                      ? 'scholr-rule scholr-sunk'
+                      : 'scholr-rule hover:scholr-rule'
                   }`}
                   onClick={() => handleToggleAlternative(value)}
                 >
@@ -121,8 +121,8 @@ export default function SubmissionFormatSelector({ primaryFormat, allowAlternati
                     checked={alternativeFormats.includes(value)}
                     onCheckedChange={() => handleToggleAlternative(value)}
                   />
-                  <Icon className={`w-4 h-4 ${alternativeFormats.includes(value) ? 'text-slate-700' : color}`} />
-                  <span className="text-sm text-slate-700">{label}</span>
+                  <Icon className={`w-4 h-4 ${alternativeFormats.includes(value) ? 'scholr-body' : color}`} />
+                  <span className="text-sm scholr-body">{label}</span>
                 </div>
               ))}
             </div>

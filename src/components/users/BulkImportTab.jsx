@@ -134,7 +134,7 @@ export default function BulkImportTab({ schoolId, schoolName }) {
         <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">
           <CheckCircle className="w-8 h-8 text-emerald-600" />
         </div>
-        <h3 className="text-lg font-semibold text-slate-900">Import Complete</h3>
+        <h3 className="text-lg font-semibold scholr-ink">Import Complete</h3>
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-4">
             <p className="text-2xl font-bold text-emerald-700">{result.created}</p>
@@ -168,13 +168,13 @@ export default function BulkImportTab({ schoolId, schoolName }) {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <FileText className="w-4 h-4 text-slate-400" />
-            <span className="text-sm font-medium text-slate-700">{preview.fileName}</span>
-            <Badge className="text-[11px] bg-slate-100 text-slate-600">{preview.validated.length} rows</Badge>
+            <FileText className="w-4 h-4 scholr-faint" />
+            <span className="text-sm font-medium scholr-body">{preview.fileName}</span>
+            <Badge className="text-[11px] scholr-sunk scholr-muted">{preview.validated.length} rows</Badge>
           </div>
           <button
             onClick={() => { setStep('upload'); setPreview(null); if (fileRef.current) fileRef.current.value = ''; }}
-            className="text-xs text-slate-400 hover:text-slate-600"
+            className="text-xs scholr-faint hover:scholr-muted"
           >
             ← Back
           </button>
@@ -189,9 +189,9 @@ export default function BulkImportTab({ schoolId, schoolName }) {
             <p className="text-xl font-bold text-red-700">{invalidRows.length}</p>
             <p className="text-xs text-red-600">Rows with errors</p>
           </div>
-          <div className="bg-slate-50 border border-slate-100 rounded-lg p-3 text-center">
-            <p className="text-xl font-bold text-slate-700">{preview.validated.length}</p>
-            <p className="text-xs text-slate-500">Total rows</p>
+          <div className="scholr-sunk border scholr-rule-soft rounded-lg p-3 text-center">
+            <p className="text-xl font-bold scholr-body">{preview.validated.length}</p>
+            <p className="text-xs scholr-muted">Total rows</p>
           </div>
         </div>
 
@@ -209,30 +209,30 @@ export default function BulkImportTab({ schoolId, schoolName }) {
         )}
 
         {/* Preview table */}
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm max-h-80 overflow-y-auto">
+        <div className="bg-white rounded-xl border scholr-rule overflow-hidden shadow-sm max-h-80 overflow-y-auto">
           <table className="w-full text-xs">
-            <thead className="bg-slate-50 sticky top-0">
-              <tr className="border-b border-slate-100">
-                <th className="px-4 py-2.5 text-left font-semibold text-slate-500 uppercase tracking-wide">#</th>
-                <th className="px-4 py-2.5 text-left font-semibold text-slate-500 uppercase tracking-wide">Email</th>
-                <th className="px-4 py-2.5 text-left font-semibold text-slate-500 uppercase tracking-wide">Name</th>
-                <th className="px-4 py-2.5 text-left font-semibold text-slate-500 uppercase tracking-wide">Role</th>
-                <th className="px-4 py-2.5 text-left font-semibold text-slate-500 uppercase tracking-wide">Detail</th>
-                <th className="px-4 py-2.5 text-left font-semibold text-slate-500 uppercase tracking-wide">Valid</th>
+            <thead className="scholr-sunk sticky top-0">
+              <tr className="border-b scholr-rule-soft">
+                <th className="px-4 py-2.5 text-left font-semibold scholr-muted uppercase tracking-wide">#</th>
+                <th className="px-4 py-2.5 text-left font-semibold scholr-muted uppercase tracking-wide">Email</th>
+                <th className="px-4 py-2.5 text-left font-semibold scholr-muted uppercase tracking-wide">Name</th>
+                <th className="px-4 py-2.5 text-left font-semibold scholr-muted uppercase tracking-wide">Role</th>
+                <th className="px-4 py-2.5 text-left font-semibold scholr-muted uppercase tracking-wide">Detail</th>
+                <th className="px-4 py-2.5 text-left font-semibold scholr-muted uppercase tracking-wide">Valid</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y scholr-divide">
               {preview.validated.map((row, i) => (
                 <tr key={i} className={row._valid ? '' : 'bg-red-50'}>
-                  <td className="px-4 py-2 text-slate-400">{row._line}</td>
-                  <td className="px-4 py-2 text-slate-700 font-mono">{row.email}</td>
-                  <td className="px-4 py-2 text-slate-600">{row.name || '—'}</td>
+                  <td className="px-4 py-2 scholr-faint">{row._line}</td>
+                  <td className="px-4 py-2 scholr-body font-mono">{row.email}</td>
+                  <td className="px-4 py-2 scholr-muted">{row.name || '—'}</td>
                   <td className="px-4 py-2">
                     {ROLE_CONFIG[row.role]
                       ? <span className={`px-2 py-0.5 rounded-full border text-[11px] role-chip`}>{ROLE_CONFIG[row.role].label}</span>
                       : <span className="text-red-600">{row.role || '—'}</span>}
                   </td>
-                  <td className="px-4 py-2 text-slate-400">{row.grade_level || row.department || '—'}</td>
+                  <td className="px-4 py-2 scholr-faint">{row.grade_level || row.department || '—'}</td>
                   <td className="px-4 py-2">
                     {row._valid
                       ? <CheckCircle className="w-4 h-4 text-emerald-500" />
@@ -256,7 +256,7 @@ export default function BulkImportTab({ schoolId, schoolName }) {
             Cancel
           </Button>
           <Button
-            className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white gap-2"
+            className="flex-1 pub-btn pub-btn-gold gap-2"
             disabled={validRows.length === 0 || importMutation.isPending}
             onClick={() => importMutation.mutate(validRows)}
           >
@@ -273,19 +273,19 @@ export default function BulkImportTab({ schoolId, schoolName }) {
   return (
     <div className="space-y-5 max-w-2xl">
       <div>
-        <h3 className="text-sm font-semibold text-slate-800 mb-1">Bulk User Import</h3>
-        <p className="text-xs text-slate-500">Import users, enrollments, and class assignments via CSV. Strong validation and safe preview before applying changes.</p>
+        <h3 className="text-sm font-semibold scholr-ink mb-1">Bulk User Import</h3>
+        <p className="text-xs scholr-muted">Import users, enrollments, and class assignments via CSV. Strong validation and safe preview before applying changes.</p>
       </div>
 
       {/* Template download */}
-      <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center justify-between gap-4">
+      <div className="app-group p-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-indigo-50 flex items-center justify-center">
-            <FileText className="w-4 h-4 text-indigo-600" />
+          <div className="w-9 h-9 rounded-lg scholr-accent-sf flex items-center justify-center">
+            <FileText className="w-4 h-4 scholr-accent" />
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-800">Download Template</p>
-            <p className="text-xs text-slate-400">CSV with required columns: email, name, role, grade_level, department</p>
+            <p className="text-sm font-medium scholr-ink">Download Template</p>
+            <p className="text-xs scholr-faint">CSV with required columns: email, name, role, grade_level, department</p>
           </div>
         </div>
         <Button variant="outline" size="sm" className="gap-2 flex-shrink-0" onClick={downloadTemplate}>
@@ -295,18 +295,18 @@ export default function BulkImportTab({ schoolId, schoolName }) {
 
       {/* File upload zone */}
       <div
-        className="border-2 border-dashed border-slate-200 rounded-xl p-10 text-center hover:border-indigo-300 hover:bg-indigo-50/30 transition-colors cursor-pointer"
+        className="border-2 border-dashed scholr-rule rounded-xl p-10 text-center hover:scholr-accent-rule hover:scholr-accent-sf/30 transition-colors cursor-pointer"
         onClick={() => fileRef.current?.click()}
       >
-        <Upload className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-        <p className="text-sm font-medium text-slate-700 mb-1">Click to upload CSV file</p>
-        <p className="text-xs text-slate-400">Supports CSV files up to 1,000 rows</p>
+        <Upload className="w-10 h-10 scholr-faint mx-auto mb-3" />
+        <p className="text-sm font-medium scholr-body mb-1">Click to upload CSV file</p>
+        <p className="text-xs scholr-faint">Supports CSV files up to 1,000 rows</p>
         <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
       </div>
 
       {/* What gets validated */}
-      <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
-        <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">Validation Rules</p>
+      <div className="scholr-sunk border scholr-rule rounded-xl p-4 space-y-2">
+        <p className="text-xs font-semibold scholr-muted uppercase tracking-wide mb-2">Validation Rules</p>
         {[
           'Valid email address format required',
           `Role must be one of: ${VALID_ROLES.map(r => ROLE_CONFIG[r].label).join(', ')}`,
@@ -315,8 +315,8 @@ export default function BulkImportTab({ schoolId, schoolName }) {
           'Imported users start in "pending" status for security',
         ].map((rule, i) => (
           <div key={i} className="flex items-start gap-2">
-            <ChevronRight className="w-3.5 h-3.5 text-indigo-400 flex-shrink-0 mt-0.5" />
-            <span className="text-xs text-slate-600">{rule}</span>
+            <ChevronRight className="w-3.5 h-3.5 scholr-accent flex-shrink-0 mt-0.5" />
+            <span className="text-xs scholr-muted">{rule}</span>
           </div>
         ))}
       </div>

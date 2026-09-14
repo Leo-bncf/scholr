@@ -69,9 +69,9 @@ export default function ConversationView({ conversation, userId, userName, userR
 
   if (!conversation) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-slate-50">
-        <div className="text-center text-slate-400">
-          <Send className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+      <div className="flex-1 flex items-center justify-center scholr-sunk">
+        <div className="text-center scholr-faint">
+          <Send className="w-12 h-12 mx-auto mb-3 scholr-faint" />
           <p className="text-sm">Select a conversation to view messages</p>
         </div>
       </div>
@@ -80,17 +80,17 @@ export default function ConversationView({ conversation, userId, userName, userR
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-slate-50">
-        <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+      <div className="flex-1 flex items-center justify-center scholr-sunk">
+        <Loader2 className="w-6 h-6 animate-spin scholr-accent" />
       </div>
     );
   }
 
   return (
     <div className="flex-1 flex flex-col bg-white">
-      <div className="px-6 py-4 border-b border-slate-200 bg-white">
-        <h2 className="font-semibold text-slate-900">{conversation.subject}</h2>
-        <p className="text-sm text-slate-500 mt-0.5">
+      <div className="px-6 py-4 border-b scholr-rule bg-white">
+        <h2 className="font-semibold scholr-ink">{conversation.subject}</h2>
+        <p className="text-sm scholr-muted mt-0.5">
           {conversation.participant_name}
           {conversation.participant_role ? ` · ${conversation.participant_role}` : ''}
         </p>
@@ -101,12 +101,12 @@ export default function ConversationView({ conversation, userId, userName, userR
           const isSender = msg.sender_id === userId;
           return (
             <div key={msg.id} className={`flex ${isSender ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-lg ${isSender ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-900'} rounded-2xl px-4 py-3`}>
+              <div className={`max-w-lg ${isSender ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-ink'} rounded-2xl px-4 py-3`}>
                 {!isSender && (
                   <p className="text-xs font-semibold mb-1 opacity-70">{msg.sender_name}</p>
                 )}
                 <p className="text-sm whitespace-pre-wrap">{msg.body}</p>
-                <p className={`text-xs mt-2 ${isSender ? 'text-indigo-200' : 'text-slate-400'}`}>
+                <p className={`text-xs mt-2 ${isSender ? 'text-indigo-200' : 'scholr-faint'}`}>
                   {msg.created_at ? format(new Date(msg.created_at), 'MMM d, h:mm a') : ''}
                 </p>
               </div>
@@ -116,7 +116,7 @@ export default function ConversationView({ conversation, userId, userName, userR
         <div ref={bottomRef} />
       </div>
 
-      <div className="p-4 border-t border-slate-200 bg-white">
+      <div className="p-4 border-t scholr-rule bg-white">
         <div className="flex gap-3">
           <Textarea
             value={reply}
@@ -129,12 +129,12 @@ export default function ConversationView({ conversation, userId, userName, userR
           <Button
             onClick={handleSend}
             disabled={!reply.trim() || sendMutation.isPending}
-            className="bg-indigo-600 hover:bg-indigo-700 self-end"
+            className="scholr-accent-sf hover:scholr-accent-sf self-end"
           >
             {sendMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
           </Button>
         </div>
-        <p className="text-xs text-slate-400 mt-1">Ctrl+Enter to send</p>
+        <p className="text-xs scholr-faint mt-1">Ctrl+Enter to send</p>
       </div>
     </div>
   );

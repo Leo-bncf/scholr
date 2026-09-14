@@ -133,7 +133,7 @@ export default function BulkInviteDialog({ open, onClose, schoolId, schoolName }
                 </Button>
                 <label className="flex-1">
                   <input type="file" accept=".csv,.txt" className="hidden" onChange={handleFileUpload} />
-                  <div className="border border-slate-200 rounded-md px-3 py-2 text-sm text-center cursor-pointer hover:bg-slate-50 flex items-center justify-center gap-1.5">
+                  <div className="border scholr-rule rounded-md px-3 py-2 text-sm text-center cursor-pointer hover:scholr-sunk flex items-center justify-center gap-1.5">
                     <Upload className="w-3.5 h-3.5" /> Upload CSV
                   </div>
                 </label>
@@ -149,7 +149,7 @@ export default function BulkInviteDialog({ open, onClose, schoolId, schoolName }
                 rows={8}
                 className="mt-1.5 font-mono text-xs"
               />
-              <p className="text-xs text-slate-500 mt-1.5">
+              <p className="text-xs scholr-muted mt-1.5">
                 One user per row. Columns: <code>first_name, last_name, email</code> and optionally
                 {role === 'student' ? ' grade level' : role === 'teacher' ? ' department' : ' ignored for this role'}.
               </p>
@@ -162,23 +162,23 @@ export default function BulkInviteDialog({ open, onClose, schoolId, schoolName }
             )}
 
             {parsed.length > 0 && (
-              <div className="border border-slate-200 rounded-lg">
-                <div className="px-3 py-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-700">
+              <div className="border scholr-rule rounded-lg">
+                <div className="px-3 py-2 scholr-sunk border-b scholr-rule flex items-center justify-between text-xs">
+                  <span className="font-semibold scholr-body">
                     {validCount} valid · {invalidCount > 0 && <span className="text-red-600">{invalidCount} invalid</span>}
                   </span>
-                  <span className="text-slate-500">Role: <span className="font-medium capitalize">{role.replace('_', ' ')}</span></span>
+                  <span className="scholr-muted">Role: <span className="font-medium capitalize">{role.replace('_', ' ')}</span></span>
                 </div>
-                <div className="max-h-48 overflow-y-auto divide-y divide-slate-100">
+                <div className="max-h-48 overflow-y-auto divide-y scholr-divide">
                   {parsed.map((row) => (
                     <div key={row.rowNum} className="px-3 py-2 flex items-center gap-2 text-sm">
                       {row.valid
                         ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
                         : <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />
                       }
-                      <span className="text-slate-700 flex-1 truncate">
-                        {row.first_name} {row.last_name} <span className="text-slate-400">·</span> {row.email || <em className="text-red-500">missing email</em>}
-                        {row.extra && <span className="text-slate-400 text-xs ml-2">{row.extra}</span>}
+                      <span className="scholr-body flex-1 truncate">
+                        {row.first_name} {row.last_name} <span className="scholr-faint">·</span> {row.email || <em className="text-red-500">missing email</em>}
+                        {row.extra && <span className="scholr-faint text-xs ml-2">{row.extra}</span>}
                       </span>
                     </div>
                   ))}
@@ -191,7 +191,7 @@ export default function BulkInviteDialog({ open, onClose, schoolId, schoolName }
               <Button
                 disabled={validCount === 0 || inviteMutation.isPending}
                 onClick={() => inviteMutation.mutate()}
-                className="flex-1 bg-indigo-600 hover:bg-indigo-700 gap-1.5"
+                className="flex-1 scholr-accent-sf hover:scholr-accent-sf gap-1.5"
               >
                 {inviteMutation.isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending {validCount}...</> : <>Send {validCount} invitation{validCount !== 1 && 's'}</>}
               </Button>
@@ -207,19 +207,19 @@ export default function BulkInviteDialog({ open, onClose, schoolId, schoolName }
                 {failCount > 0 && <>, <strong>{failCount}</strong> failed</>}.
               </AlertDescription>
             </Alert>
-            <div className="max-h-64 overflow-y-auto border border-slate-200 rounded-lg divide-y divide-slate-100">
+            <div className="max-h-64 overflow-y-auto border scholr-rule rounded-lg divide-y scholr-divide">
               {results.map((r, i) => (
                 <div key={i} className="px-3 py-2 flex items-center gap-2 text-sm">
                   {r.ok
                     ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
                     : <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />
                   }
-                  <span className="flex-1 truncate text-slate-700">{r.email}</span>
+                  <span className="flex-1 truncate scholr-body">{r.email}</span>
                   {!r.ok && <span className="text-xs text-red-600">{r.error}</span>}
                 </div>
               ))}
             </div>
-            <Button onClick={() => { reset(); onClose(); }} className="w-full bg-indigo-600 hover:bg-indigo-700">
+            <Button onClick={() => { reset(); onClose(); }} className="w-full scholr-accent-sf hover:scholr-accent-sf">
               Done
             </Button>
           </div>

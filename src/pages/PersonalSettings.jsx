@@ -47,16 +47,16 @@ export default function PersonalSettings() {
 
   return (
     <RoleGuard allowedRoles={['teacher', 'student', 'school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <div className="min-h-screen scholr-sunk dark:bg-slate-950">
         <AppSidebar links={sidebarLinks} role={role} schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         <main className="app-offset p-4 md:p-8">
           <div className="max-w-3xl mx-auto space-y-6">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Personal Settings</h1>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Update your display name, email preferences, and theme.</p>
+              <h1 className="text-2xl font-bold scholr-ink dark:text-slate-100">Personal Settings</h1>
+              <p className="text-sm scholr-muted dark:scholr-faint mt-1">Update your display name, email preferences, and theme.</p>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 rounded-md border border-slate-200 dark:border-slate-800 shadow-sm p-6 space-y-5">
+            <div className="bg-white dark:scholr-sunk rounded-md border scholr-rule dark:border-slate-800 shadow-sm p-6 space-y-5">
               <div className="space-y-2">
                 <Label>Display name</Label>
                 <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your display name" />
@@ -64,17 +64,17 @@ export default function PersonalSettings() {
 
               <div className="space-y-3">
                 <Label>Email preferences</Label>
-                <div className="flex items-center justify-between rounded-md border border-slate-200 dark:border-slate-800 p-3">
+                <div className="flex items-center justify-between rounded-md border scholr-rule dark:border-slate-800 p-3">
                   <div>
-                    <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Assignment reminders</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Receive reminder emails for upcoming due work</p>
+                    <p className="text-sm font-medium scholr-ink dark:text-slate-100">Assignment reminders</p>
+                    <p className="text-xs scholr-muted dark:scholr-faint">Receive reminder emails for upcoming due work</p>
                   </div>
                   <Switch checked={emailAssignments} onCheckedChange={setEmailAssignments} />
                 </div>
-                <div className="flex items-center justify-between rounded-md border border-slate-200 dark:border-slate-800 p-3">
+                <div className="flex items-center justify-between rounded-md border scholr-rule dark:border-slate-800 p-3">
                   <div>
-                    <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Message emails</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Receive email alerts for new messages</p>
+                    <p className="text-sm font-medium scholr-ink dark:text-slate-100">Message emails</p>
+                    <p className="text-xs scholr-muted dark:scholr-faint">Receive email alerts for new messages</p>
                   </div>
                   <Switch checked={emailMessages} onCheckedChange={setEmailMessages} />
                 </div>

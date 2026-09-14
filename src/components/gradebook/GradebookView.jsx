@@ -75,7 +75,7 @@ export default function GradebookView({ classData, assignments = [] }) {
   });
 
   if (loadingItems || loadingGrades) {
-    return <div className="text-center py-12"><Loader2 className="w-6 h-6 animate-spin text-indigo-600 mx-auto" /></div>;
+    return <div className="text-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent mx-auto" /></div>;
   }
 
   const getGradeForStudent = (gradeItemTitle, studentId) => {
@@ -100,15 +100,15 @@ export default function GradebookView({ classData, assignments = [] }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-slate-900">Gradebook</h2>
+        <h2 className="text-xl font-bold scholr-ink">Gradebook</h2>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 mr-4">
             <button
               onClick={() => setViewMode('grades')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 viewMode === 'grades' 
-                  ? 'bg-indigo-600 text-white' 
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'pub-btn pub-btn-gold' 
+                  : 'scholr-sunk scholr-muted hover:scholr-sunk'
               }`}
             >
               Grades
@@ -118,8 +118,8 @@ export default function GradebookView({ classData, assignments = [] }) {
                 onClick={() => setViewMode('predicted')}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   viewMode === 'predicted' 
-                    ? 'bg-violet-600 text-white' 
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'scholr-accent-sf text-white' 
+                    : 'scholr-sunk scholr-muted hover:scholr-sunk'
                 }`}
               >
                 {predictedLabel}
@@ -128,7 +128,7 @@ export default function GradebookView({ classData, assignments = [] }) {
           </div>
           <CreateGradeItem classData={classData} assignments={assignments} />
           <CreateRubricGradeItem classData={classData} />
-          <div className="flex items-center gap-2 text-xs text-slate-500 border border-slate-200 rounded-lg px-3 py-2">
+          <div className="flex items-center gap-2 text-xs scholr-muted border scholr-rule rounded-lg px-3 py-2">
             <ClipboardCheck className="w-4 h-4" />
             Assessment results flow into the gradebook automatically
           </div>
@@ -136,28 +136,28 @@ export default function GradebookView({ classData, assignments = [] }) {
       </div>
 
       {viewMode === 'predicted' ? (
-        <div className="bg-white rounded-xl border border-slate-200 overflow-x-auto">
+        <div className="bg-white rounded-xl border scholr-rule overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200 bg-violet-50">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+              <tr className="border-b scholr-rule scholr-accent-sf">
+                <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">
                   Student
                 </th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase">
+                <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">
                   {predictedLabel}
                 </th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase">
+                <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">
                   Confidence
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">
                   Rationale
                 </th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase">
+                <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">
                   Entry Date
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y scholr-divide">
               {students.map(student => {
                 const pred = getPredictedGradeForStudent(student.user_id);
                 const confidenceColors = {
@@ -167,24 +167,24 @@ export default function GradebookView({ classData, assignments = [] }) {
                 };
 
                 return (
-                  <tr key={student.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-medium text-slate-900">
+                  <tr key={student.id} className="hover:scholr-sunk">
+                    <td className="px-4 py-3 font-medium scholr-ink">
                       <div>
                         <p className="text-sm">{student.user_name || student.user_email}</p>
-                        <p className="text-xs text-slate-400">{student.grade_level || ''}</p>
+                        <p className="text-xs scholr-faint">{student.grade_level || ''}</p>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-center">
                       <button
                         onClick={() => handlePredictedGradeClick(student)}
-                        className="w-full h-full min-h-[60px] flex items-center justify-center hover:bg-violet-50 rounded-lg transition-colors"
+                        className="w-full h-full min-h-[60px] flex items-center justify-center hover:scholr-accent-sf rounded-lg transition-colors"
                       >
                         {pred ? (
-                          <div className="text-2xl font-bold text-violet-700">
+                          <div className="text-2xl font-bold scholr-accent">
                             {formatGrade(pred.predicted_ib_grade, curriculum)}
                           </div>
                         ) : (
-                          <span className="text-slate-300 text-sm">Not set</span>
+                          <span className="scholr-faint text-sm">Not set</span>
                         )}
                       </button>
                     </td>
@@ -195,10 +195,10 @@ export default function GradebookView({ classData, assignments = [] }) {
                         </Badge>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-sm text-slate-600 max-w-xs">
+                    <td className="px-4 py-3 text-sm scholr-muted max-w-xs">
                       <p className="line-clamp-2">{pred?.rationale || '—'}</p>
                     </td>
-                    <td className="px-4 py-3 text-center text-sm text-slate-500">
+                    <td className="px-4 py-3 text-center text-sm scholr-muted">
                       {pred?.entry_date ? format(new Date(pred.entry_date), 'MMM d, yyyy') : '—'}
                     </td>
                   </tr>
@@ -208,46 +208,46 @@ export default function GradebookView({ classData, assignments = [] }) {
           </table>
         </div>
       ) : gradeItems.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-          <p className="text-slate-400 mb-4">No grade items yet</p>
+        <div className="bg-white rounded-xl border scholr-rule p-12 text-center">
+          <p className="scholr-faint mb-4">No grade items yet</p>
           <div className="flex items-center justify-center gap-3">
             <CreateGradeItem classData={classData} assignments={assignments} trigger={
               <Button variant="outline">Create Simple Grade Item</Button>
             } />
             <CreateRubricGradeItem classData={classData} trigger={
-              <Button variant="outline" className="border-indigo-200 text-indigo-700">Create Rubric Grade Item</Button>
+              <Button variant="outline" className="scholr-accent-rule scholr-accent">Create Rubric Grade Item</Button>
             } />
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 overflow-x-auto">
+        <div className="bg-white rounded-xl border scholr-rule overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase sticky left-0 bg-slate-50 z-10">
+              <tr className="border-b scholr-rule scholr-sunk">
+                <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase sticky left-0 scholr-sunk z-10">
                   Student
                 </th>
                 {gradeItems.map(item => (
-                  <th key={item.id} className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase min-w-[120px]">
+                  <th key={item.id} className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase min-w-[120px]">
                     <div className="flex items-center justify-center gap-1">
                       <span className="truncate">{item.title}</span>
                       {item.visible_to_student ? (
                         <Eye className="w-3 h-3 text-emerald-500" />
                       ) : (
-                        <EyeOff className="w-3 h-3 text-slate-400" />
+                        <EyeOff className="w-3 h-3 scholr-faint" />
                       )}
                     </div>
-                    <div className="text-xs text-slate-400 font-normal mt-0.5">
+                    <div className="text-xs scholr-faint font-normal mt-0.5">
                       {item.max_score} pts
                     </div>
                   </th>
                 ))}
-                <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase min-w-[100px]">
+                <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase min-w-[100px]">
                   Average
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y scholr-divide">
               {students.map(student => {
                 const studentGrades = gradeItems.map(item => getGradeForStudent(item.title, student.user_id));
                 const validScores = studentGrades.filter(g => g?.score != null).map(g => g.score);
@@ -256,11 +256,11 @@ export default function GradebookView({ classData, assignments = [] }) {
                   : '—';
 
                 return (
-                  <tr key={student.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-medium text-slate-900 sticky left-0 bg-white z-10">
+                  <tr key={student.id} className="hover:scholr-sunk">
+                    <td className="px-4 py-3 font-medium scholr-ink sticky left-0 bg-white z-10">
                       <div>
                         <p className="text-sm">{student.user_name || student.user_email}</p>
-                        <p className="text-xs text-slate-400">{student.grade_level || ''}</p>
+                        <p className="text-xs scholr-faint">{student.grade_level || ''}</p>
                       </div>
                     </td>
                     {gradeItems.map(item => {
@@ -272,19 +272,19 @@ export default function GradebookView({ classData, assignments = [] }) {
                          <button
                            onClick={() => handleGradeClick(item, student)}
                            className={`w-full h-full min-h-[60px] flex items-center justify-center rounded-lg transition-colors group ${
-                             isRubric ? 'hover:bg-indigo-50 border border-indigo-100' : 'hover:bg-indigo-50'
+                             isRubric ? 'hover:scholr-accent-sf border border-indigo-100' : 'hover:scholr-accent-sf'
                            }`}
                          >
                            {grade ? (
                              <div>
                                {grade.score != null && (
-                                   <div className="text-lg font-semibold text-slate-900">
+                                   <div className="text-lg font-semibold scholr-ink">
                                      {formatGrade(grade.score, curriculum)}
-                                     {isRubric && <span className="text-xs text-indigo-600 ml-1">R</span>}
+                                     {isRubric && <span className="text-xs scholr-accent ml-1">R</span>}
                                    </div>
                                  )}
                                  {showIBGrade && grade.ib_grade && (
-                                   <Badge className="bg-violet-50 text-violet-700 border-0 text-xs mt-1">
+                                   <Badge className="scholr-accent-sf scholr-accent border-0 text-xs mt-1">
                                      {gradeScaleLabel} {grade.ib_grade}
                                    </Badge>
                                  )}
@@ -299,15 +299,15 @@ export default function GradebookView({ classData, assignments = [] }) {
                                )}
                              </div>
                            ) : (
-                             <Edit className="w-4 h-4 text-slate-300 group-hover:text-indigo-600" />
+                             <Edit className="w-4 h-4 scholr-faint group-hover:scholr-accent" />
                            )}
                          </button>
                        </td>
                      );
                     })}
                     <td className="px-4 py-3 text-center">
-                      <div className="text-lg font-bold text-slate-900">{avg !== '—' ? formatGrade(avg, curriculum) : '—'}</div>
-                      {avg !== '—' && <div className="text-xs text-slate-400">{gradeScaleLabel}</div>}
+                      <div className="text-lg font-bold scholr-ink">{avg !== '—' ? formatGrade(avg, curriculum) : '—'}</div>
+                      {avg !== '—' && <div className="text-xs scholr-faint">{gradeScaleLabel}</div>}
                     </td>
                   </tr>
                 );

@@ -209,19 +209,19 @@ export default function TeacherWorkspace() {
   const handleMarkReviewed = (row) => reviewedMutation.mutate(row);
 
   if (isLoading) {
-    return <div className="min-h-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-700" /></div>;
+    return <div className="min-h-screen scholr-sunk flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-700" /></div>;
   }
 
   return (
     <RoleGuard allowedRoles={['teacher', 'school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar links={getAppSidebarLinks('teacher')} role="teacher" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         <main className="app-offset p-4 md:p-6">
           <div className="max-w-[1600px] mx-auto space-y-6">
             <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-slate-900">Teacher Workspace</h1>
-                <p className="text-sm text-slate-500 mt-1">Daily teaching, review, and grading in one place.</p>
+                <h1 className="text-2xl font-bold scholr-ink">Teacher Workspace</h1>
+                <p className="text-sm scholr-muted mt-1">Daily teaching, review, and grading in one place.</p>
               </div>
               <WorkspaceQuickActions classData={computed.selectedClass} userId={userId} />
             </div>

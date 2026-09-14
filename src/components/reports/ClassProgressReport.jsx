@@ -48,43 +48,43 @@ function StudentProgressTable({ students, grades, attendance }) {
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="bg-slate-50 border-b border-slate-200">
-            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Student</th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Grade Level</th>
-            <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase">Grades</th>
-            <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase">Avg Score</th>
-            <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase">Attendance</th>
-            <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase">Rate</th>
-            <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase hidden lg:table-cell">Absent</th>
-            <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase hidden lg:table-cell">Late</th>
+          <tr className="scholr-sunk border-b scholr-rule">
+            <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">Student</th>
+            <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase hidden md:table-cell">Grade Level</th>
+            <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">Grades</th>
+            <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">Avg Score</th>
+            <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">Attendance</th>
+            <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">Rate</th>
+            <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase hidden lg:table-cell">Absent</th>
+            <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase hidden lg:table-cell">Late</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="divide-y scholr-divide">
           {rows.map(row => {
             const rate = row.aStats.rate ? parseFloat(row.aStats.rate) : null;
-            const rateColor = rate === null ? 'text-slate-400' : rate >= 90 ? 'text-emerald-700 font-semibold' : rate >= 75 ? 'text-amber-700 font-semibold' : 'text-red-700 font-semibold';
+            const rateColor = rate === null ? 'scholr-faint' : rate >= 90 ? 'text-emerald-700 font-semibold' : rate >= 75 ? 'text-amber-700 font-semibold' : 'text-red-700 font-semibold';
             return (
-              <tr key={row.user_id} className="hover:bg-slate-50 transition-colors">
+              <tr key={row.user_id} className="hover:scholr-sunk transition-colors">
                 <td className="px-4 py-3">
-                  <p className="font-medium text-slate-900">{row.user_name || row.user_email}</p>
-                  <p className="text-xs text-slate-400">{row.user_email}</p>
+                  <p className="font-medium scholr-ink">{row.user_name || row.user_email}</p>
+                  <p className="text-xs scholr-faint">{row.user_email}</p>
                 </td>
-                <td className="px-4 py-3 text-slate-500 text-xs hidden md:table-cell">{row.grade_level || '—'}</td>
-                <td className="px-4 py-3 text-center text-slate-700">{row.gStats.count || '—'}</td>
+                <td className="px-4 py-3 scholr-muted text-xs hidden md:table-cell">{row.grade_level || '—'}</td>
+                <td className="px-4 py-3 text-center scholr-body">{row.gStats.count || '—'}</td>
                 <td className="px-4 py-3 text-center">
                   {row.gStats.avg ? (
                     <span className={`font-semibold ${parseFloat(row.gStats.avg) >= 70 ? 'text-emerald-700' : parseFloat(row.gStats.avg) >= 50 ? 'text-amber-700' : 'text-red-700'}`}>
                       {row.gStats.avg}%
                     </span>
-                  ) : <span className="text-slate-400">—</span>}
+                  ) : <span className="scholr-faint">—</span>}
                 </td>
-                <td className="px-4 py-3 text-center text-slate-700">{row.aStats.total || '—'}</td>
+                <td className="px-4 py-3 text-center scholr-body">{row.aStats.total || '—'}</td>
                 <td className={`px-4 py-3 text-center ${rateColor}`}>{row.aStats.rate ? `${row.aStats.rate}%` : '—'}</td>
                 <td className="px-4 py-3 text-center hidden lg:table-cell">
-                  {row.aStats.absent > 0 ? <span className="text-red-600 font-medium">{row.aStats.absent}</span> : <span className="text-slate-400">0</span>}
+                  {row.aStats.absent > 0 ? <span className="text-red-600 font-medium">{row.aStats.absent}</span> : <span className="scholr-faint">0</span>}
                 </td>
                 <td className="px-4 py-3 text-center hidden lg:table-cell">
-                  {row.aStats.late > 0 ? <span className="text-amber-600 font-medium">{row.aStats.late}</span> : <span className="text-slate-400">0</span>}
+                  {row.aStats.late > 0 ? <span className="text-amber-600 font-medium">{row.aStats.late}</span> : <span className="scholr-faint">0</span>}
                 </td>
               </tr>
             );
@@ -312,13 +312,13 @@ export default function ClassProgressReport({
   return (
     <div className="space-y-6">
       {/* Config Panel */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5">
-        <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-          <GraduationCap className="w-4 h-4 text-indigo-600" /> Class Progress Report Settings
+      <div className="bg-white rounded-xl border scholr-rule p-5">
+        <h3 className="font-semibold scholr-ink mb-4 flex items-center gap-2">
+          <GraduationCap className="w-4 h-4 scholr-accent" /> Class Progress Report Settings
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
           <div>
-            <Label className="text-xs text-slate-500 mb-1 block">Class *</Label>
+            <Label className="text-xs scholr-muted mb-1 block">Class *</Label>
             <Select value={selectedClass} onValueChange={setSelectedClass}>
               <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Select a class…" /></SelectTrigger>
               <SelectContent>
@@ -327,7 +327,7 @@ export default function ClassProgressReport({
             </Select>
           </div>
           <div>
-            <Label className="text-xs text-slate-500 mb-1 block">Term (optional)</Label>
+            <Label className="text-xs scholr-muted mb-1 block">Term (optional)</Label>
             <Select value={termId} onValueChange={setTermId}>
               <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="All terms" /></SelectTrigger>
               <SelectContent>
@@ -337,12 +337,12 @@ export default function ClassProgressReport({
             </Select>
           </div>
           <div>
-            <Label className="text-xs text-slate-500 mb-1 block">Search Student</Label>
+            <Label className="text-xs scholr-muted mb-1 block">Search Student</Label>
             <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Filter by name…" className="h-9 text-sm" />
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-6 mb-5 pt-2 border-t border-slate-100">
+        <div className="flex flex-wrap gap-6 mb-5 pt-2 border-t scholr-rule-soft">
           {[
             [includeGrades, setIncludeGrades, 'Include Grade Records'],
             [includeAttendance, setIncludeAttendance, 'Include Attendance Detail'],
@@ -351,7 +351,7 @@ export default function ClassProgressReport({
           ].map(([val, setter, label]) => (
             <div key={label} className="flex items-center gap-2">
               <Switch checked={val} onCheckedChange={setter} />
-              <Label className="text-sm text-slate-700 cursor-pointer">{label}</Label>
+              <Label className="text-sm scholr-body cursor-pointer">{label}</Label>
             </div>
           ))}
         </div>
@@ -360,7 +360,7 @@ export default function ClassProgressReport({
           <Button
             onClick={generatePerStudentPDF}
             disabled={!selectedClass || generating === 'pdf_students'}
-            className="bg-indigo-600 hover:bg-indigo-700"
+            className="scholr-accent-sf hover:scholr-accent-sf"
           >
             {generating === 'pdf_students' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Printer className="w-4 h-4 mr-2" />}
             Print / Save as PDF
@@ -380,11 +380,11 @@ export default function ClassProgressReport({
       {cls && classStats && (
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {[
-            { label: 'Students', value: classStats.enrolled, color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
-            { label: 'Published Grades', value: classStats.gradeCount, color: 'bg-violet-50 text-violet-700 border-violet-200' },
+            { label: 'Students', value: classStats.enrolled, color: 'scholr-accent-sf scholr-accent scholr-accent-rule' },
+            { label: 'Published Grades', value: classStats.gradeCount, color: 'scholr-accent-sf scholr-accent scholr-accent-rule' },
             { label: 'Avg Score', value: classStats.avgScore ? `${classStats.avgScore}%` : '—', color: 'bg-sky-50 text-sky-700 border-sky-200' },
             { label: 'Attendance Rate', value: classStats.rate ? `${classStats.rate}%` : '—', color: classStats.rate && parseFloat(classStats.rate) >= 90 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200' },
-            { label: 'Total Absences', value: classStats.absent, color: classStats.absent > 0 ? 'bg-red-50 text-red-700 border-red-200' : 'bg-slate-50 text-slate-600 border-slate-200' },
+            { label: 'Total Absences', value: classStats.absent, color: classStats.absent > 0 ? 'bg-red-50 text-red-700 border-red-200' : 'scholr-sunk scholr-muted scholr-rule' },
           ].map(({ label, value, color }) => (
             <div key={label} className={`rounded-xl border p-4 ${color}`}>
               <p className="text-xl font-black">{value}</p>
@@ -396,15 +396,15 @@ export default function ClassProgressReport({
 
       {/* Student Progress Table */}
       {cls && filteredStudents.length > 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+        <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+          <div className="px-5 py-4 border-b scholr-rule flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-slate-500" />
-              <h3 className="font-semibold text-slate-800">Student Progress Summary</h3>
+              <Users className="w-4 h-4 scholr-muted" />
+              <h3 className="font-semibold scholr-ink">Student Progress Summary</h3>
               <Badge variant="outline" className="text-xs">{filteredStudents.length} students</Badge>
             </div>
             {termId !== 'all' && (
-              <Badge className="bg-indigo-100 text-indigo-700 border-0 text-xs">
+              <Badge className="scholr-accent-sf scholr-accent border-0 text-xs">
                 {terms.find(t => t.id === termId)?.name}
               </Badge>
             )}
@@ -416,15 +416,15 @@ export default function ClassProgressReport({
           />
         </div>
       ) : cls ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-10 text-center">
-          <Users className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-slate-400">{search ? 'No students match your search.' : 'No students enrolled in this class.'}</p>
+        <div className="bg-white rounded-xl border scholr-rule p-10 text-center">
+          <Users className="w-8 h-8 scholr-faint mx-auto mb-2" />
+          <p className="scholr-faint">{search ? 'No students match your search.' : 'No students enrolled in this class.'}</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 p-10 text-center">
-          <BarChart3 className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-slate-500 font-medium">Select a class to view progress</p>
-          <p className="text-slate-400 text-sm mt-1">Choose a class above to see per-student grades and attendance summary.</p>
+        <div className="bg-white rounded-xl border scholr-rule p-10 text-center">
+          <BarChart3 className="w-8 h-8 scholr-faint mx-auto mb-2" />
+          <p className="scholr-muted font-medium">Select a class to view progress</p>
+          <p className="scholr-faint text-sm mt-1">Choose a class above to see per-student grades and attendance summary.</p>
         </div>
       )}
 

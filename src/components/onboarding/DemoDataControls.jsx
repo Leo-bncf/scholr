@@ -37,25 +37,25 @@ function DemoActionCard({
 }) {
   const Icon = icon;
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 md:p-7 shadow-sm">
+    <div className="rounded-3xl border scholr-rule bg-white p-6 md:p-7 shadow-sm">
       <div className="flex items-start gap-4">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-slate-100">
-          <Icon className="h-7 w-7 text-slate-700" />
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl scholr-sunk">
+          <Icon className="h-7 w-7 scholr-body" />
         </div>
         <div className="min-w-0 flex-1 space-y-3">
           <div className="flex flex-wrap items-center gap-2">
-            <h4 className="text-xl font-bold text-slate-900">{title}</h4>
+            <h4 className="text-xl font-bold scholr-ink">{title}</h4>
             <Badge className={badgeClassName}>{badge}</Badge>
           </div>
-          <p className="text-sm leading-7 text-slate-600">{description}</p>
+          <p className="text-sm leading-7 scholr-muted">{description}</p>
         </div>
       </div>
 
-      <div className="mt-6 rounded-2xl bg-slate-50 p-5">
+      <div className="mt-6 rounded-2xl scholr-sunk p-5">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {items.map((item) => (
-            <div key={item} className="flex items-center gap-3 rounded-xl bg-white px-4 py-3 text-sm text-slate-700 border border-slate-200">
-              <Layers3 className="h-4 w-4 shrink-0 text-slate-400" />
+            <div key={item} className="flex items-center gap-3 rounded-xl bg-white px-4 py-3 text-sm scholr-body border scholr-rule">
+              <Layers3 className="h-4 w-4 shrink-0 scholr-faint" />
               <span>{item}</span>
             </div>
           ))}
@@ -132,10 +132,10 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
           </div>
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-xl font-bold text-slate-900">Demo and sample data</h3>
+              <h3 className="text-xl font-bold scholr-ink">Demo and sample data</h3>
               <Badge className="bg-emerald-100 text-emerald-700 border-0">Safe sandbox</Badge>
             </div>
-            <p className="text-sm leading-7 text-slate-600">
+            <p className="text-sm leading-7 scholr-muted">
               Use this area to quickly load realistic school records for testing, onboarding, and walkthroughs. All generated items are tagged as demo data so they can be removed cleanly later.
             </p>
           </div>
@@ -147,13 +147,13 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
           icon={Database}
           title="Generate Demo Data"
           badge="Safe to run"
-          badgeClassName="bg-indigo-100 text-indigo-700 border-0"
+          badgeClassName="scholr-accent-sf scholr-accent border-0"
           description="Creates a realistic set of sample academic years, terms, subjects, classes, memberships, and assignments for training or demonstration purposes."
           items={demoHighlights}
           action={handleSeed}
           loading={seeding}
           disabled={clearing}
-          actionClassName="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white"
+          actionClassName="w-full h-12 pub-btn pub-btn-gold"
         />
 
         <DemoActionCard

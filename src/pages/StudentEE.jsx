@@ -33,7 +33,7 @@ const milestoneLabels = {
 };
 
 const statusColors = {
-  pending: 'bg-slate-100 text-slate-700',
+  pending: 'scholr-sunk scholr-body',
   submitted: 'bg-blue-100 text-blue-700',
   reviewed: 'bg-amber-100 text-amber-700',
   approved: 'bg-green-100 text-green-700',
@@ -58,97 +58,97 @@ export default function StudentEE() {
 
   return (
     <RoleGuard allowedRoles={['student', 'school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar links={STUDENT_SIDEBAR_LINKS} role="student" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         
         <main className="app-offset p-8">
           <div className="max-w-7xl mx-auto">
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-slate-900 mb-2">IB Core: Extended Essay</h1>
-              <p className="text-slate-600">Track your EE research journey and milestones</p>
+              <h1 className="text-3xl font-bold scholr-ink mb-2">IB Core: Extended Essay</h1>
+              <p className="scholr-muted">Track your EE research journey and milestones</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white rounded-xl border border-slate-200 p-6">
+              <div className="bg-white rounded-xl border scholr-rule p-6">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-indigo-600" />
+                  <div className="w-10 h-10 scholr-accent-sf rounded-lg flex items-center justify-center">
+                    <FileText className="w-5 h-5 scholr-accent" />
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500">Subject Area</p>
-                    <p className="font-semibold text-slate-900">{latestMilestone?.subject_area || 'Not yet selected'}</p>
+                    <p className="text-sm scholr-muted">Subject Area</p>
+                    <p className="font-semibold scholr-ink">{latestMilestone?.subject_area || 'Not yet selected'}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl border border-slate-200 p-6">
+              <div className="bg-white rounded-xl border scholr-rule p-6">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
                     <CheckCircle2 className="w-5 h-5 text-emerald-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500">Progress</p>
-                    <p className="font-semibold text-slate-900">{milestones.filter(m => m.status === 'approved').length} / {sortedMilestones.length} milestones</p>
+                    <p className="text-sm scholr-muted">Progress</p>
+                    <p className="font-semibold scholr-ink">{milestones.filter(m => m.status === 'approved').length} / {sortedMilestones.length} milestones</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl border border-slate-200 p-6">
+              <div className="bg-white rounded-xl border scholr-rule p-6">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
                     <MessageSquare className="w-5 h-5 text-amber-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500">Supervisor</p>
-                    <p className="font-semibold text-slate-900">{latestMilestone?.supervisor_name || 'Not yet assigned'}</p>
+                    <p className="text-sm scholr-muted">Supervisor</p>
+                    <p className="font-semibold scholr-ink">{latestMilestone?.supervisor_name || 'Not yet assigned'}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {latestMilestone?.research_question && (
-              <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6 mb-8">
-                <h2 className="text-sm font-semibold text-indigo-900 mb-2">Research Question</h2>
-                <p className="text-indigo-800 italic">"{latestMilestone.research_question}"</p>
+              <div className="scholr-accent-sf border scholr-accent-rule rounded-xl p-6 mb-8">
+                <h2 className="text-sm font-semibold scholr-accent mb-2">Research Question</h2>
+                <p className="scholr-accent italic">"{latestMilestone.research_question}"</p>
               </div>
             )}
 
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
-              <h2 className="text-xl font-bold text-slate-900 mb-6">EE Milestones</h2>
+            <div className="bg-white rounded-xl border scholr-rule p-6">
+              <h2 className="text-xl font-bold scholr-ink mb-6">EE Milestones</h2>
 
               {isLoading ? (
                 <div className="flex justify-center py-20">
-                  <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+                  <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
                 </div>
               ) : sortedMilestones.length === 0 ? (
                 <div className="text-center py-12">
-                  <FileText className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-slate-900 mb-2">No milestones yet</h3>
-                  <p className="text-slate-500">Your EE coordinator will set up your milestones</p>
+                  <FileText className="w-12 h-12 scholr-faint mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold scholr-ink mb-2">No milestones yet</h3>
+                  <p className="scholr-muted">Your EE coordinator will set up your milestones</p>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {sortedMilestones.map((milestone, idx) => (
-                    <div key={milestone.id} className="border border-slate-200 rounded-lg p-5">
+                    <div key={milestone.id} className="border scholr-rule rounded-lg p-5">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-start gap-4">
                           <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                             milestone.status === 'approved' ? 'bg-green-100' : 
                             milestone.status === 'submitted' ? 'bg-blue-100' :
-                            'bg-slate-100'
+                            'scholr-sunk'
                           }`}>
                             {milestone.status === 'approved' ? (
                               <CheckCircle2 className="w-4 h-4 text-green-600" />
                             ) : milestone.status === 'submitted' ? (
                               <Clock className="w-4 h-4 text-blue-600" />
                             ) : (
-                              <span className="text-xs font-semibold text-slate-600">{idx + 1}</span>
+                              <span className="text-xs font-semibold scholr-muted">{idx + 1}</span>
                             )}
                           </div>
                           <div>
-                            <h3 className="font-semibold text-slate-900">{milestoneLabels[milestone.milestone_type]}</h3>
+                            <h3 className="font-semibold scholr-ink">{milestoneLabels[milestone.milestone_type]}</h3>
                             {milestone.due_date && (
-                              <p className="text-sm text-slate-500 mt-1 flex items-center gap-1">
+                              <p className="text-sm scholr-muted mt-1 flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
                                 Due: {format(new Date(milestone.due_date), 'MMM d, yyyy')}
                               </p>
@@ -159,9 +159,9 @@ export default function StudentEE() {
                       </div>
 
                       {milestone.supervisor_feedback && (
-                        <div className="bg-slate-50 rounded-lg p-4 mt-3">
-                          <p className="text-xs font-semibold text-slate-700 mb-1">Supervisor Feedback</p>
-                          <p className="text-sm text-slate-600">{milestone.supervisor_feedback}</p>
+                        <div className="scholr-sunk rounded-lg p-4 mt-3">
+                          <p className="text-xs font-semibold scholr-body mb-1">Supervisor Feedback</p>
+                          <p className="text-sm scholr-muted">{milestone.supervisor_feedback}</p>
                         </div>
                       )}
 

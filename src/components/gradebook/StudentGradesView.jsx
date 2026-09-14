@@ -31,13 +31,13 @@ export default function StudentGradesView({ classData, studentId }) {
   });
 
   if (isLoading) {
-    return <div className="text-center py-12"><Loader2 className="w-6 h-6 animate-spin text-indigo-600 mx-auto" /></div>;
+    return <div className="text-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent mx-auto" /></div>;
   }
 
   if (grades.length === 0) {
     return (
-      <div className="text-center py-16 text-slate-400">
-        <Eye className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+      <div className="text-center py-16 scholr-faint">
+        <Eye className="w-12 h-12 mx-auto mb-3 scholr-faint" />
         <p>No grades available yet</p>
       </div>
     );
@@ -56,20 +56,20 @@ export default function StudentGradesView({ classData, studentId }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
-          <p className="text-sm text-slate-500 font-medium">Total Grades</p>
-          <p className="text-3xl font-bold text-slate-900 mt-1">{grades.length}</p>
+        <div className="bg-white rounded-xl border scholr-rule p-5">
+          <p className="text-sm scholr-muted font-medium">Total Grades</p>
+          <p className="text-3xl font-bold scholr-ink mt-1">{grades.length}</p>
         </div>
-        <div className="bg-indigo-50 rounded-xl border border-indigo-200 p-5">
-          <p className="text-sm text-indigo-700 font-medium">Class Average</p>
-          <p className="text-3xl font-bold text-indigo-900 mt-1">
+        <div className="scholr-accent-sf rounded-xl border scholr-accent-rule p-5">
+          <p className="text-sm scholr-accent font-medium">Class Average</p>
+          <p className="text-3xl font-bold scholr-accent mt-1">
             {average ? `${average}%` : '—'}
           </p>
         </div>
-        <div className="bg-violet-50 rounded-xl border border-violet-200 p-5">
-          <p className="text-sm text-violet-700 font-medium">IB Average</p>
-          <p className="text-3xl font-bold text-violet-900 mt-1">
-            {ibAverage || '—'}{ibAverage && <span className="text-lg text-violet-600">/7</span>}
+        <div className="scholr-accent-sf rounded-xl border scholr-accent-rule p-5">
+          <p className="text-sm scholr-accent font-medium">IB Average</p>
+          <p className="text-3xl font-bold scholr-accent mt-1">
+            {ibAverage || '—'}{ibAverage && <span className="text-lg scholr-accent">/7</span>}
           </p>
         </div>
         {predictedGrade && (
@@ -92,12 +92,12 @@ export default function StudentGradesView({ classData, studentId }) {
           }
 
           return (
-            <div key={grade.id} className="bg-white rounded-xl border border-slate-200 p-5">
+            <div key={grade.id} className="bg-white rounded-xl border scholr-rule p-5">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
-                  <h3 className="font-semibold text-slate-900 text-lg">{grade.title}</h3>
+                  <h3 className="font-semibold scholr-ink text-lg">{grade.title}</h3>
                   {grade.created_at && (
-                    <p className="text-xs text-slate-400 mt-0.5">
+                    <p className="text-xs scholr-faint mt-0.5">
                       {format(new Date(grade.created_at), 'MMM d, yyyy')}
                     </p>
                   )}
@@ -105,17 +105,17 @@ export default function StudentGradesView({ classData, studentId }) {
                 <div className="flex flex-col items-end gap-2">
                   {grade.score != null && (
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-slate-900">
+                      <div className="text-2xl font-bold scholr-ink">
                         {grade.score}
-                        <span className="text-lg text-slate-400 ml-1">/ {grade.max_score}</span>
+                        <span className="text-lg scholr-faint ml-1">/ {grade.max_score}</span>
                       </div>
                       {grade.percentage && (
-                        <div className="text-sm text-slate-500">{grade.percentage}%</div>
+                        <div className="text-sm scholr-muted">{grade.percentage}%</div>
                       )}
                     </div>
                   )}
                   {grade.ib_grade && (
-                    <Badge className="bg-violet-50 text-violet-700 border-0">
+                    <Badge className="scholr-accent-sf scholr-accent border-0">
                       IB {grade.ib_grade}/7
                     </Badge>
                   )}
@@ -132,12 +132,12 @@ export default function StudentGradesView({ classData, studentId }) {
               </div>
 
               {grade.comment && (
-                <div className="mt-3 pt-3 border-t border-slate-100">
+                <div className="mt-3 pt-3 border-t scholr-rule-soft">
                   <div className="flex items-start gap-2">
-                    <MessageSquare className="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" />
+                    <MessageSquare className="w-4 h-4 scholr-faint mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-xs font-semibold text-slate-700 mb-1">Teacher Feedback</p>
-                      <p className="text-sm text-slate-600">{grade.comment}</p>
+                      <p className="text-xs font-semibold scholr-body mb-1">Teacher Feedback</p>
+                      <p className="text-sm scholr-muted">{grade.comment}</p>
                     </div>
                   </div>
                 </div>

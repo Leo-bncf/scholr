@@ -41,7 +41,7 @@ export default function ClassStream({ classData, isTeacher, userId }) {
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       {isTeacher && (
-        <div className="bg-white rounded-xl border border-slate-200 p-4">
+        <div className="bg-white rounded-xl border scholr-rule p-4">
           <Textarea
             placeholder="Share an announcement with your class..."
             value={newPost}
@@ -53,7 +53,7 @@ export default function ClassStream({ classData, isTeacher, userId }) {
             <Button 
               onClick={handlePost} 
               disabled={!newPost.trim() || postMutation.isPending}
-              className="bg-indigo-600 hover:bg-indigo-700"
+              className="scholr-accent-sf hover:scholr-accent-sf"
             >
               {postMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
               Post
@@ -63,26 +63,26 @@ export default function ClassStream({ classData, isTeacher, userId }) {
       )}
 
       {isLoading ? (
-        <div className="text-center py-12"><Loader2 className="w-6 h-6 animate-spin text-indigo-600 mx-auto" /></div>
+        <div className="text-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent mx-auto" /></div>
       ) : messages.length === 0 ? (
-        <div className="text-center py-16 text-slate-400">
-          <MessageSquare className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+        <div className="text-center py-16 scholr-faint">
+          <MessageSquare className="w-12 h-12 mx-auto mb-3 scholr-faint" />
           <p>No announcements yet</p>
         </div>
       ) : (
         <div className="space-y-4">
           {messages.map(msg => (
-            <div key={msg.id} className="bg-white rounded-xl border border-slate-200 p-5">
+            <div key={msg.id} className="bg-white rounded-xl border scholr-rule p-5">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-semibold flex-shrink-0">
+                <div className="w-10 h-10 rounded-full scholr-accent-sf flex items-center justify-center scholr-accent font-semibold flex-shrink-0">
                   {msg.sender_name?.[0]?.toUpperCase() || '?'}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-slate-900">{msg.sender_name || 'Unknown'}</span>
-                    <span className="text-xs text-slate-400">{msg.created_at ? format(new Date(msg.created_at), 'MMM d, h:mm a') : ''}</span>
+                    <span className="font-semibold scholr-ink">{msg.sender_name || 'Unknown'}</span>
+                    <span className="text-xs scholr-faint">{msg.created_at ? format(new Date(msg.created_at), 'MMM d, h:mm a') : ''}</span>
                   </div>
-                  <p className="text-slate-700 whitespace-pre-wrap">{msg.body}</p>
+                  <p className="scholr-body whitespace-pre-wrap">{msg.body}</p>
                 </div>
               </div>
             </div>

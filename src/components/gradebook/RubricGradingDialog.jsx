@@ -90,15 +90,15 @@ export default function RubricGradingDialog({
             return (
               <div key={criterion.id} className="border rounded-lg p-4 space-y-3">
                 <div>
-                  <h4 className="font-semibold text-slate-900">{criterion.name}</h4>
+                  <h4 className="font-semibold scholr-ink">{criterion.name}</h4>
                   {criterion.description && (
-                    <p className="text-sm text-slate-600 mt-1">{criterion.description}</p>
+                    <p className="text-sm scholr-muted mt-1">{criterion.description}</p>
                   )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-xs font-semibold text-slate-600">
+                    <Label className="text-xs font-semibold scholr-muted">
                       Score (out of {criterion.max_score})
                     </Label>
                     <Input
@@ -113,7 +113,7 @@ export default function RubricGradingDialog({
                 </div>
 
                 <div>
-                  <Label className="text-xs font-semibold text-slate-600">Feedback</Label>
+                  <Label className="text-xs font-semibold scholr-muted">Feedback</Label>
                   <Textarea
                     placeholder="Specific feedback for this criterion..."
                     value={score?.feedback || ''}
@@ -126,8 +126,8 @@ export default function RubricGradingDialog({
             );
           })}
 
-          <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
-            <p className="text-sm text-indigo-900">
+          <div className="scholr-accent-sf border scholr-accent-rule rounded-lg p-4">
+            <p className="text-sm scholr-accent">
               <span className="font-semibold">Total Score:</span> {currentTotal} / {maxTotal}
               {maxTotal > 0 && (
                 <>
@@ -144,7 +144,7 @@ export default function RubricGradingDialog({
           <Button
             onClick={handleSave}
             disabled={isLoading}
-            className="bg-indigo-600 hover:bg-indigo-700"
+            className="scholr-accent-sf hover:scholr-accent-sf"
           >
             {isLoading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
             Save Grade

@@ -35,12 +35,12 @@ export default function TeacherReviewQueue({ teacherId }) {
       {queue.length === 0 ? (
         <p className="text-sm text-slate-500">Inbox zero — all submissions graded.</p>
       ) : (
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y scholr-divide">
           {queue.map(({ sub, assignment, student, cls }) => (
             <Link
               key={sub.id}
               to={`/demo/teacher/review/${sub.id}`}
-              className="flex items-center justify-between py-3 -mx-2 px-2 rounded-lg hover:bg-slate-50 transition group"
+              className="flex items-center justify-between py-3 -mx-2 px-2 rounded-lg scholr-hover transition group"
             >
               <div className="flex items-center gap-3 min-w-0">
                 <div className="h-10 w-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold flex-shrink-0">
@@ -60,7 +60,7 @@ export default function TeacherReviewQueue({ teacherId }) {
                   </span>
                 )}
                 <span className="text-xs text-slate-500 hidden sm:inline">{sub.submittedAt}</span>
-                <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 group-hover:gap-2 transition-all">
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 group-hover:gap-2 transition-colors">
                   Grade <ArrowRight className="w-3 h-3" />
                 </span>
               </div>

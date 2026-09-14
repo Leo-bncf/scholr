@@ -66,23 +66,23 @@ function ClassFormDialog({ open, onClose, initialData, schoolId, subjects, acade
         </DialogHeader>
         <form onSubmit={e => { e.preventDefault(); mutation.mutate(form); }} className="space-y-4 pt-1">
           <div>
-            <Label className="text-xs font-semibold text-slate-600">Class Name *</Label>
+            <Label className="text-xs font-semibold scholr-muted">Class Name *</Label>
             <Input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="e.g. Mathematics HL – Group A" className="mt-1" />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label className="text-xs font-semibold text-slate-600">Section Code</Label>
+              <Label className="text-xs font-semibold scholr-muted">Section Code</Label>
               <Input value={form.section} onChange={e => setForm({ ...form, section: e.target.value })} placeholder="A, B, 1…" className="mt-1" />
             </div>
             <div>
-              <Label className="text-xs font-semibold text-slate-600">Room</Label>
+              <Label className="text-xs font-semibold scholr-muted">Room</Label>
               <Input value={form.room} onChange={e => setForm({ ...form, room: e.target.value })} placeholder="101, Lab 3…" className="mt-1" />
             </div>
           </div>
 
           <div>
-            <Label className="text-xs font-semibold text-slate-600">Subject</Label>
+            <Label className="text-xs font-semibold scholr-muted">Subject</Label>
             <Select value={form.subject_id || '__none'} onValueChange={v => setForm({ ...form, subject_id: v === '__none' ? '' : v })}>
               <SelectTrigger className="mt-1"><SelectValue placeholder="No subject" /></SelectTrigger>
               <SelectContent>
@@ -96,7 +96,7 @@ function ClassFormDialog({ open, onClose, initialData, schoolId, subjects, acade
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label className="text-xs font-semibold text-slate-600">Academic Year</Label>
+              <Label className="text-xs font-semibold scholr-muted">Academic Year</Label>
               <Select value={form.academic_year_id || '__none'} onValueChange={v => setForm({ ...form, academic_year_id: v === '__none' ? '' : v })}>
                 <SelectTrigger className="mt-1"><SelectValue placeholder="Any year" /></SelectTrigger>
                 <SelectContent>
@@ -106,7 +106,7 @@ function ClassFormDialog({ open, onClose, initialData, schoolId, subjects, acade
               </Select>
             </div>
             <div>
-              <Label className="text-xs font-semibold text-slate-600">Cohort</Label>
+              <Label className="text-xs font-semibold scholr-muted">Cohort</Label>
               <Select value={form.cohort_id || '__none'} onValueChange={v => setForm({ ...form, cohort_id: v === '__none' ? '' : v })}>
                 <SelectTrigger className="mt-1"><SelectValue placeholder="Any cohort" /></SelectTrigger>
                 <SelectContent>
@@ -119,11 +119,11 @@ function ClassFormDialog({ open, onClose, initialData, schoolId, subjects, acade
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label className="text-xs font-semibold text-slate-600">Capacity (optional)</Label>
+              <Label className="text-xs font-semibold scholr-muted">Capacity (optional)</Label>
               <Input type="number" min="1" value={form.capacity} onChange={e => setForm({ ...form, capacity: e.target.value })} placeholder="e.g. 30" className="mt-1" />
             </div>
             <div>
-              <Label className="text-xs font-semibold text-slate-600">Schedule</Label>
+              <Label className="text-xs font-semibold scholr-muted">Schedule</Label>
               <Input value={form.schedule_info} onChange={e => setForm({ ...form, schedule_info: e.target.value })} placeholder="Mon/Wed 09:00–10:30" className="mt-1" />
             </div>
           </div>
@@ -138,7 +138,7 @@ function ClassFormDialog({ open, onClose, initialData, schoolId, subjects, acade
 
           <div className="flex gap-2 pt-2">
             <Button type="button" variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={mutation.isPending} className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white">
+            <Button type="submit" disabled={mutation.isPending} className="flex-1 pub-btn pub-btn-gold">
               {mutation.isPending && <Loader2 className="w-3.5 h-3.5 animate-spin mr-2" />}
               {isEdit ? 'Save Changes' : 'Create Class'}
             </Button>
@@ -181,20 +181,20 @@ export default function ClassSectionTab({ schoolId, classes, subjects, academicY
       <div className="flex items-center gap-2 flex-wrap">
         {[
           { key: 'active',   label: 'Active',   count: activeCount,   color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-          { key: 'archived', label: 'Archived', count: archivedCount, color: 'bg-slate-100 text-slate-500 border-slate-200' },
-          { key: 'all',      label: 'All',      count: classes.length, color: 'bg-white text-slate-600 border-slate-200' },
+          { key: 'archived', label: 'Archived', count: archivedCount, color: 'scholr-sunk scholr-muted scholr-rule' },
+          { key: 'all',      label: 'All',      count: classes.length, color: 'bg-white scholr-muted scholr-rule' },
         ].map(({ key, label, count, color }) => (
           <button
             key={key}
             onClick={() => setStatusFilter(key)}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${color} ${statusFilter === key ? 'ring-2 ring-indigo-400 ring-offset-1' : ''}`}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${color} ${statusFilter === key ? 'ring-2 scholr-accent-rule ring-offset-1' : ''}`}
           >
             {label} <span className="font-bold">{count}</span>
           </button>
         ))}
 
         <div className="ml-auto">
-          <Button onClick={() => setCreateOpen(true)} className="bg-indigo-600 hover:bg-indigo-700 text-white h-9 text-xs gap-1.5">
+          <Button onClick={() => setCreateOpen(true)} className="pub-btn pub-btn-gold h-9 text-xs gap-1.5">
             <Plus className="w-3.5 h-3.5" /> New Class Section
           </Button>
         </div>
@@ -202,17 +202,17 @@ export default function ClassSectionTab({ schoolId, classes, subjects, academicY
 
       {/* Search */}
       <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 scholr-faint" />
         <Input placeholder="Search by name, section, room…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white h-9" />
       </div>
 
       {/* Class grid */}
       {filtered.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-16 text-center">
-          <BookOpen className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-          <p className="text-sm text-slate-500 font-medium">No class sections found</p>
+        <div className="bg-white rounded-xl border scholr-rule p-16 text-center">
+          <BookOpen className="w-10 h-10 scholr-faint mx-auto mb-3" />
+          <p className="text-sm scholr-muted font-medium">No class sections found</p>
           {statusFilter === 'active' && (
-            <Button onClick={() => setCreateOpen(true)} className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white h-8 text-xs gap-1.5">
+            <Button onClick={() => setCreateOpen(true)} className="mt-4 pub-btn pub-btn-gold h-8 text-xs gap-1.5">
               <Plus className="w-3.5 h-3.5" /> Create First Class
             </Button>
           )}
@@ -229,10 +229,10 @@ export default function ClassSectionTab({ schoolId, classes, subjects, academicY
             const isFull      = capacity && enrolled >= capacity;
 
             return (
-              <div key={c.id} className={`bg-white rounded-xl border shadow-sm overflow-hidden flex flex-col transition-shadow hover:shadow-md ${c.status === 'archived' ? 'opacity-60' : ''} border-slate-200`}>
+              <div key={c.id} className={`bg-white rounded-xl border shadow-sm overflow-hidden flex flex-col transition-shadow hover:shadow-md ${c.status === 'archived' ? 'opacity-60' : ''} scholr-rule`}>
                 <div className="px-5 pt-4 pb-3 flex-1">
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <h3 className="font-semibold text-slate-900 text-sm leading-snug flex-1">{c.name}</h3>
+                    <h3 className="font-semibold scholr-ink text-sm leading-snug flex-1">{c.name}</h3>
                     <div className="flex items-center gap-1.5 flex-shrink-0">
                       {c.roster_locked && <Lock className="w-3.5 h-3.5 text-amber-500" title="Roster locked" />}
                       <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${sc.classes}`}>{sc.label}</span>
@@ -241,49 +241,49 @@ export default function ClassSectionTab({ schoolId, classes, subjects, academicY
 
                   <div className="flex flex-wrap gap-1.5 mb-3">
                     {subjectName && (
-                      <span className="text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-100 px-2 py-0.5 rounded-full">{subjectName}</span>
+                      <span className="text-[11px] scholr-accent-sf scholr-accent border border-indigo-100 px-2 py-0.5 rounded-full">{subjectName}</span>
                     )}
                     {c.section && (
-                      <span className="text-[11px] bg-slate-50 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-full flex items-center gap-1"><Hash className="w-2.5 h-2.5" />{c.section}</span>
+                      <span className="text-[11px] scholr-sunk scholr-muted border scholr-rule px-2 py-0.5 rounded-full flex items-center gap-1"><Hash className="w-2.5 h-2.5" />{c.section}</span>
                     )}
                     {yearName && (
-                      <span className="text-[11px] bg-slate-50 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-full">{yearName}</span>
+                      <span className="text-[11px] scholr-sunk scholr-muted border scholr-rule px-2 py-0.5 rounded-full">{yearName}</span>
                     )}
                     {cohortName && (
-                      <span className="text-[11px] bg-violet-50 text-violet-700 border border-violet-100 px-2 py-0.5 rounded-full">{cohortName}</span>
+                      <span className="text-[11px] scholr-accent-sf scholr-accent border border-violet-100 px-2 py-0.5 rounded-full">{cohortName}</span>
                     )}
                   </div>
 
                   <div className="grid grid-cols-3 gap-2 text-center">
-                    <div className="bg-slate-50 rounded-lg py-2">
-                      <p className="text-sm font-bold text-slate-900">{c.teacher_ids?.length || 0}</p>
-                      <p className="text-[10px] text-slate-400">Staff</p>
+                    <div className="scholr-sunk rounded-lg py-2">
+                      <p className="text-sm font-bold scholr-ink">{c.teacher_ids?.length || 0}</p>
+                      <p className="text-[10px] scholr-faint">Staff</p>
                     </div>
-                    <div className={`rounded-lg py-2 ${isFull ? 'bg-red-50' : 'bg-slate-50'}`}>
-                      <p className={`text-sm font-bold ${isFull ? 'text-red-600' : 'text-slate-900'}`}>{enrolled}{capacity ? `/${capacity}` : ''}</p>
-                      <p className="text-[10px] text-slate-400">Students</p>
+                    <div className={`rounded-lg py-2 ${isFull ? 'bg-red-50' : 'scholr-sunk'}`}>
+                      <p className={`text-sm font-bold ${isFull ? 'text-red-600' : 'scholr-ink'}`}>{enrolled}{capacity ? `/${capacity}` : ''}</p>
+                      <p className="text-[10px] scholr-faint">Students</p>
                     </div>
-                    <div className="bg-slate-50 rounded-lg py-2">
-                      <p className="text-sm font-bold text-slate-900">{c.subject_teacher_assignments?.length || 0}</p>
-                      <p className="text-[10px] text-slate-400">Subjects</p>
+                    <div className="scholr-sunk rounded-lg py-2">
+                      <p className="text-sm font-bold scholr-ink">{c.subject_teacher_assignments?.length || 0}</p>
+                      <p className="text-[10px] scholr-faint">Subjects</p>
                     </div>
                   </div>
 
                   {c.room && (
-                    <p className="text-[11px] text-slate-400 mt-2">📍 {c.room}{c.schedule_info ? ` · ${c.schedule_info}` : ''}</p>
+                    <p className="text-[11px] scholr-faint mt-2">📍 {c.room}{c.schedule_info ? ` · ${c.schedule_info}` : ''}</p>
                   )}
                 </div>
 
-                <div className="px-4 py-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+                <div className="px-4 py-3 border-t scholr-rule-soft scholr-sunk flex items-center justify-between">
                    <div className="flex items-center gap-1">
-                     <Button variant="ghost" size="sm" onClick={() => setEditingClass(c)} className="h-7 px-2 text-xs text-slate-500 hover:text-slate-800 gap-1">
+                     <Button variant="ghost" size="sm" onClick={() => setEditingClass(c)} className="h-7 px-2 text-xs scholr-muted hover:scholr-ink gap-1">
                        <Pencil className="w-3 h-3" /> Edit
                      </Button>
                    </div>
                   {c.status === 'active' && (
                     <Link
                       to={`/ClassWorkspace?class_id=${c.id}`}
-                      className="flex items-center gap-1 text-xs font-medium text-indigo-600 hover:text-indigo-700"
+                      className="flex items-center gap-1 text-xs font-medium scholr-accent hover:scholr-accent"
                     >
                       Open <ChevronRight className="w-3.5 h-3.5" />
                     </Link>

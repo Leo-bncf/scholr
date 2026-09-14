@@ -37,7 +37,7 @@ export default function SubjectProgressList({ studentId }) {
   });
 
   return (
-    <div className="divide-y divide-slate-100">
+    <div className="divide-y scholr-divide">
       {rows.map((r) => (
         <div key={r.subjectId} className="px-4 md:px-6 py-4">
           <div className="flex items-center justify-between gap-3 mb-2">
@@ -61,7 +61,7 @@ export default function SubjectProgressList({ studentId }) {
             <>
               <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
                 <div
-                  className="h-full bg-indigo-500 transition-all"
+                  className="h-full bg-indigo-500 transition-colors"
                   style={{ width: `${r.completion}%` }}
                 />
               </div>

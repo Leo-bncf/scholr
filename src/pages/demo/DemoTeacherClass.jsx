@@ -38,7 +38,7 @@ export default function DemoTeacherClass() {
 
   return (
     <DemoShell roleKey="teacher">
-      <Link to="/demo/teacher" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900 mb-4">
+      <Link to="/demo/teacher" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 scholr-ink mb-4">
         <ArrowLeft className="w-4 h-4" /> Back to dashboard
       </Link>
 
@@ -67,7 +67,7 @@ export default function DemoTeacherClass() {
             </thead>
             <tbody>
               {students.map((stu) => (
-                <tr key={stu.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50">
+                <tr key={stu.id} className="border-b scholr-rule last:border-0 scholr-hover/50">
                   <td className="py-3 px-5">
                     <div className="flex items-center gap-2.5">
                       <div className="h-8 w-8 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center text-[11px] font-bold">

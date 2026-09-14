@@ -171,7 +171,7 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
               disabled={loading}
               required
             />
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs scholr-muted mt-1">
               This person will receive an invitation to set up their school admin account.
             </p>
           </div>
@@ -219,7 +219,7 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
               value={formData.plan}
               onChange={handleChange}
               disabled={loading}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-3 py-2 border scholr-rule rounded-md text-sm scholr-focus"
             >
               {SCHOOL_PLAN_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
@@ -227,7 +227,7 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
             </select>
           </div>
 
-          <div className="flex items-start gap-2 p-3 bg-indigo-50 border border-indigo-100 rounded-lg">
+          <div className="flex items-start gap-2 p-3 scholr-accent-sf border border-indigo-100 rounded-lg">
             <Checkbox
               id="send-invite"
               checked={sendInvite}
@@ -235,11 +235,11 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
               disabled={loading}
               className="mt-0.5"
             />
-            <label htmlFor="send-invite" className="text-sm text-slate-700 cursor-pointer flex-1">
+            <label htmlFor="send-invite" className="text-sm scholr-body cursor-pointer flex-1">
               <span className="font-medium flex items-center gap-1.5">
-                <Mail className="w-3.5 h-3.5 text-indigo-600" /> Send setup invitation email
+                <Mail className="w-3.5 h-3.5 scholr-accent" /> Send setup invitation email
               </span>
-              <span className="text-xs text-slate-500 block mt-0.5">
+              <span className="text-xs scholr-muted block mt-0.5">
                 The school admin will get an email with a link to create their account.
               </span>
             </label>
@@ -258,7 +258,7 @@ export default function CreateSchoolDialog({ open, onOpenChange, onSchoolCreated
             <Button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+              className="flex-1 scholr-accent-sf hover:scholr-accent-sf"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
               {loading ? 'Creating...' : sendInvite ? 'Create & Send Invite' : 'Create School'}

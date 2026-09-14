@@ -45,7 +45,7 @@ const LEVEL_COLORS = {
   HL: 'bg-rose-50 text-rose-700 border-rose-200',
   SL: 'bg-blue-50 text-blue-700 border-blue-200',
   core: 'bg-amber-50 text-amber-700 border-amber-200',
-  na: 'bg-slate-50 text-slate-500 border-slate-200',
+  na: 'scholr-sunk scholr-muted scholr-rule',
 };
 
 const EMPTY_FORM = { name: '', code: '', level: 'na', ib_group: '' };
@@ -106,16 +106,16 @@ export default function SchoolAdminSubjects() {
 
   return (
     <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar links={sidebarLinks} role="school_admin" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
 
         <main className="app-offset min-h-screen flex flex-col">
-          <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10 shadow-sm">
+          <div className="bg-white border-b scholr-rule px-6 py-4 flex items-center justify-between sticky top-0 z-10 shadow-sm">
             <div>
-              <h1 className="text-base font-semibold text-slate-900">Subject Catalogue</h1>
-              <p className="text-xs text-slate-400 mt-0.5">{subjects.length} subjects configured</p>
+              <h1 className="text-base font-semibold scholr-ink">Subject Catalogue</h1>
+              <p className="text-xs scholr-faint mt-0.5">{subjects.length} subjects configured</p>
             </div>
-            <Button onClick={() => { setForm(EMPTY_FORM); setShowCreate(true); }} className="bg-indigo-600 hover:bg-indigo-700 h-8 text-xs gap-1.5">
+            <Button onClick={() => { setForm(EMPTY_FORM); setShowCreate(true); }} className="scholr-accent-sf hover:scholr-accent-sf h-8 text-xs gap-1.5">
               <Plus className="w-3.5 h-3.5" /> New Subject
             </Button>
           </div>
@@ -124,7 +124,7 @@ export default function SchoolAdminSubjects() {
             {/* Filters */}
             <div className="flex flex-wrap gap-3 items-center">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 scholr-faint" />
                 <Input placeholder="Search subjects…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white w-56" />
               </div>
               <Select value={groupFilter} onValueChange={setGroupFilter}>
@@ -137,50 +137,50 @@ export default function SchoolAdminSubjects() {
             </div>
 
             {isLoading ? (
-              <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-slate-400" /></div>
+              <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin scholr-faint" /></div>
             ) : filtered.length === 0 ? (
-              <div className="bg-white rounded-xl border border-slate-200 p-16 text-center">
-                <GraduationCap className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-                <p className="text-sm text-slate-500 font-medium">No subjects yet</p>
+              <div className="bg-white rounded-xl border scholr-rule p-16 text-center">
+                <GraduationCap className="w-10 h-10 scholr-faint mx-auto mb-3" />
+                <p className="text-sm scholr-muted font-medium">No subjects yet</p>
               </div>
             ) : (
-              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+              <div className="bg-white rounded-xl border scholr-rule overflow-hidden shadow-sm">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-100 bg-slate-50">
-                      <th className="px-5 py-3 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Subject</th>
-                      <th className="px-5 py-3 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide hidden sm:table-cell">Code</th>
-                      <th className="px-5 py-3 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Level</th>
-                      <th className="px-5 py-3 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide hidden lg:table-cell">IB Group</th>
-                      <th className="px-5 py-3 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide hidden md:table-cell">Classes</th>
-                      <th className="px-5 py-3 text-right text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Actions</th>
+                    <tr className="border-b scholr-rule-soft scholr-sunk">
+                      <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide">Subject</th>
+                      <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide hidden sm:table-cell">Code</th>
+                      <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide">Level</th>
+                      <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide hidden lg:table-cell">IB Group</th>
+                      <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide hidden md:table-cell">Classes</th>
+                      <th className="px-5 py-3 text-right text-[11px] font-semibold scholr-muted uppercase tracking-wide">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-50">
+                  <tbody className="divide-y scholr-divide">
                     {filtered.map(s => (
-                      <tr key={s.id} className="hover:bg-slate-50 transition-colors">
+                      <tr key={s.id} className="hover:scholr-sunk transition-colors">
                         <td className="px-5 py-3.5">
-                          <span className="text-sm font-medium text-slate-900">{s.name}</span>
+                          <span className="text-sm font-medium scholr-ink">{s.name}</span>
                         </td>
                         <td className="px-5 py-3.5 hidden sm:table-cell">
-                          <span className="text-xs font-mono bg-slate-100 px-2 py-0.5 rounded text-slate-600">{s.code || '—'}</span>
+                          <span className="text-xs font-mono scholr-sunk px-2 py-0.5 rounded scholr-muted">{s.code || '—'}</span>
                         </td>
                         <td className="px-5 py-3.5">
                           <Badge className={`text-[11px] border ${LEVEL_COLORS[s.level] || LEVEL_COLORS.na}`}>{s.level?.toUpperCase() || '—'}</Badge>
                         </td>
-                        <td className="px-5 py-3.5 hidden lg:table-cell text-xs text-slate-500">
+                        <td className="px-5 py-3.5 hidden lg:table-cell text-xs scholr-muted">
                           {IB_GROUPS.find(g => g.value === s.ib_group)?.label || '—'}
                         </td>
                         <td className="px-5 py-3.5 hidden md:table-cell">
-                          <span className="text-xs font-semibold text-slate-700">{getClassCount(s.id)}</span>
-                          <span className="text-xs text-slate-400 ml-1">classes</span>
+                          <span className="text-xs font-semibold scholr-body">{getClassCount(s.id)}</span>
+                          <span className="text-xs scholr-faint ml-1">classes</span>
                         </td>
                         <td className="px-5 py-3.5 text-right">
                           <div className="flex items-center justify-end gap-1">
-                            <Button variant="ghost" size="sm" onClick={() => openEdit(s)} className="h-7 w-7 p-0 text-slate-400 hover:text-indigo-600">
+                            <Button variant="ghost" size="sm" onClick={() => openEdit(s)} className="h-7 w-7 p-0 scholr-faint hover:scholr-accent">
                               <Pencil className="w-3.5 h-3.5" />
                             </Button>
-                            <Button variant="ghost" size="sm" onClick={() => handleDelete(s)} className="h-7 w-7 p-0 text-slate-400 hover:text-red-600">
+                            <Button variant="ghost" size="sm" onClick={() => handleDelete(s)} className="h-7 w-7 p-0 scholr-faint hover:text-red-600">
                               <Trash2 className="w-3.5 h-3.5" />
                             </Button>
                           </div>
@@ -241,7 +241,7 @@ export default function SchoolAdminSubjects() {
               </div>
               <div className="flex gap-2 pt-2">
                 <Button type="button" variant="outline" className="flex-1" onClick={() => { setShowCreate(false); setEditingSubject(null); }}>Cancel</Button>
-                <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending} className="flex-1 bg-indigo-600 hover:bg-indigo-700">
+                <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending} className="flex-1 scholr-accent-sf hover:scholr-accent-sf">
                   {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                   {editingSubject ? 'Save Changes' : 'Create Subject'}
                 </Button>

@@ -18,14 +18,14 @@ export default function PredictedGradesPolicy({ form, onChange }) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-sm font-bold text-slate-800 mb-1">Predicted Grades Workflow</h3>
-        <p className="text-xs text-slate-500 mb-4">Configure the IB predicted grade collection process as a governed, school-wide workflow.</p>
+        <h3 className="text-sm font-bold scholr-ink mb-1">Predicted Grades Workflow</h3>
+        <p className="text-xs scholr-muted mb-4">Configure the IB predicted grade collection process as a governed, school-wide workflow.</p>
       </div>
 
-      <div className="flex items-center justify-between p-4 rounded-xl border-2 border-slate-200 bg-white">
+      <div className="flex items-center justify-between p-4 rounded-xl border-2 scholr-rule bg-white">
         <div>
-          <p className="text-sm font-bold text-slate-800 flex items-center gap-1.5"><TrendingUp className="w-4 h-4 text-violet-600" /> Enable Predicted Grades</p>
-          <p className="text-xs text-slate-500 mt-0.5">Activates the predicted grade collection feature school-wide</p>
+          <p className="text-sm font-bold scholr-ink flex items-center gap-1.5"><TrendingUp className="w-4 h-4 scholr-accent" /> Enable Predicted Grades</p>
+          <p className="text-xs scholr-muted mt-0.5">Activates the predicted grade collection feature school-wide</p>
         </div>
         <Switch checked={form.predicted_grades_enabled} onCheckedChange={v => onChange({ predicted_grades_enabled: v })} />
       </div>
@@ -33,15 +33,15 @@ export default function PredictedGradesPolicy({ form, onChange }) {
       {form.predicted_grades_enabled && (
         <>
           <div>
-            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide mb-3">Who Can Enter Predicted Grades</h4>
+            <h4 className="text-xs font-bold scholr-body uppercase tracking-wide mb-3">Who Can Enter Predicted Grades</h4>
             <div className="space-y-2">
               {ROLE_OPTIONS.map(opt => {
                 const enabled = (form.predicted_grade_entry_roles || []).includes(opt.value);
                 return (
-                  <div key={opt.value} className={`flex items-center justify-between p-3 rounded-lg border-2 transition-all ${enabled ? 'border-violet-300 bg-violet-50' : 'border-slate-200 bg-white'}`}>
+                  <div key={opt.value} className={`flex items-center justify-between p-3 rounded-lg border-2 transition-colors ${enabled ? 'scholr-accent-rule scholr-accent-sf' : 'scholr-rule bg-white'}`}>
                     <div>
-                      <p className={`text-sm font-semibold ${enabled ? 'text-violet-900' : 'text-slate-700'}`}>{opt.label}</p>
-                      <p className="text-xs text-slate-500">{opt.desc}</p>
+                      <p className={`text-sm font-semibold ${enabled ? 'scholr-accent' : 'scholr-body'}`}>{opt.label}</p>
+                      <p className="text-xs scholr-muted">{opt.desc}</p>
                     </div>
                     <Switch checked={enabled} onCheckedChange={() => toggleRole(opt.value)} />
                   </div>
@@ -50,28 +50,28 @@ export default function PredictedGradesPolicy({ form, onChange }) {
             </div>
           </div>
 
-          <div className="border-t border-slate-100 pt-5 space-y-4">
-            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide">Entry Requirements</h4>
+          <div className="border-t scholr-rule-soft pt-5 space-y-4">
+            <h4 className="text-xs font-bold scholr-body uppercase tracking-wide">Entry Requirements</h4>
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-slate-800">Require written rationale</p>
-                <p className="text-xs text-slate-500">Teachers must explain the basis for their predicted grade</p>
+                <p className="text-sm font-semibold scholr-ink">Require written rationale</p>
+                <p className="text-xs scholr-muted">Teachers must explain the basis for their predicted grade</p>
               </div>
               <Switch checked={form.predicted_grades_require_rationale} onCheckedChange={v => onChange({ predicted_grades_require_rationale: v })} />
             </div>
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-slate-800">Coordinator can lock predicted grades</p>
-                <p className="text-xs text-slate-500">Once locked, no further teacher entries or edits are allowed</p>
+                <p className="text-sm font-semibold scholr-ink">Coordinator can lock predicted grades</p>
+                <p className="text-xs scholr-muted">Once locked, no further teacher entries or edits are allowed</p>
               </div>
               <Switch checked={form.coordinator_can_lock_predicted} onCheckedChange={v => onChange({ coordinator_can_lock_predicted: v })} />
             </div>
           </div>
 
-          <div className="border-t border-slate-100 pt-5 space-y-4">
-            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide">Current Collection Status</h4>
+          <div className="border-t scholr-rule-soft pt-5 space-y-4">
+            <h4 className="text-xs font-bold scholr-body uppercase tracking-wide">Current Collection Status</h4>
 
             <div className={`flex items-center justify-between p-4 rounded-xl border-2 ${form.predicted_grades_locked ? 'border-red-300 bg-red-50' : 'border-emerald-300 bg-emerald-50'}`}>
               <div className="flex items-center gap-3">
@@ -84,7 +84,7 @@ export default function PredictedGradesPolicy({ form, onChange }) {
                   <p className={`text-sm font-bold ${form.predicted_grades_locked ? 'text-red-900' : 'text-emerald-900'}`}>
                     {form.predicted_grades_locked ? 'Collection Locked' : 'Collection Open'}
                   </p>
-                  <p className="text-xs text-slate-600">
+                  <p className="text-xs scholr-muted">
                     {form.predicted_grades_locked ? 'Teachers cannot enter or edit predicted grades' : 'Eligible roles can enter predicted grades'}
                   </p>
                 </div>
@@ -102,21 +102,21 @@ export default function PredictedGradesPolicy({ form, onChange }) {
             )}
           </div>
 
-          <div className="border-t border-slate-100 pt-5 space-y-4">
-            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-1.5"><Eye className="w-3.5 h-3.5" /> Release to Students & Parents</h4>
+          <div className="border-t scholr-rule-soft pt-5 space-y-4">
+            <h4 className="text-xs font-bold scholr-body uppercase tracking-wide flex items-center gap-1.5"><Eye className="w-3.5 h-3.5" /> Release to Students & Parents</h4>
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-slate-800">Release predicted grades to students</p>
-                <p className="text-xs text-slate-500">Students can see their predicted IB grade in their portal</p>
+                <p className="text-sm font-semibold scholr-ink">Release predicted grades to students</p>
+                <p className="text-xs scholr-muted">Students can see their predicted IB grade in their portal</p>
               </div>
               <Switch checked={form.predicted_grades_released_to_student} onCheckedChange={v => onChange({ predicted_grades_released_to_student: v })} />
             </div>
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-slate-800">Release predicted grades to parents</p>
-                <p className="text-xs text-slate-500">Parents can see predicted grades in the parent portal</p>
+                <p className="text-sm font-semibold scholr-ink">Release predicted grades to parents</p>
+                <p className="text-xs scholr-muted">Parents can see predicted grades in the parent portal</p>
               </div>
               <Switch checked={form.predicted_grades_released_to_parent} onCheckedChange={v => onChange({ predicted_grades_released_to_parent: v })} />
             </div>
@@ -125,10 +125,10 @@ export default function PredictedGradesPolicy({ form, onChange }) {
       )}
 
       {!form.predicted_grades_enabled && (
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 text-center">
-          <TrendingUp className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-sm text-slate-500">Predicted grades are disabled</p>
-          <p className="text-xs text-slate-400 mt-1">Enable predicted grades above to configure the workflow</p>
+        <div className="scholr-sunk border scholr-rule rounded-xl p-6 text-center">
+          <TrendingUp className="w-8 h-8 scholr-faint mx-auto mb-2" />
+          <p className="text-sm scholr-muted">Predicted grades are disabled</p>
+          <p className="text-xs scholr-faint mt-1">Enable predicted grades above to configure the workflow</p>
         </div>
       )}
     </div>

@@ -9,9 +9,9 @@ const TYPE_CONFIGS = {
   google_doc: { icon: FileText, label: 'Google Doc', color: 'bg-blue-50 text-blue-700 border-blue-200' },
   google_slides: { icon: Presentation, label: 'Google Slides', color: 'bg-amber-50 text-amber-700 border-amber-200' },
   google_sheet: { icon: Table, label: 'Google Sheet', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  google_drive_file: { icon: FileIcon, label: 'Drive File', color: 'bg-slate-50 text-slate-700 border-slate-200' },
-  uploaded_file: { icon: FileIcon, label: 'Uploaded File', color: 'bg-slate-50 text-slate-700 border-slate-200' },
-  external_link: { icon: LinkIcon, label: 'Link', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+  google_drive_file: { icon: FileIcon, label: 'Drive File', color: 'scholr-sunk scholr-body scholr-rule' },
+  uploaded_file: { icon: FileIcon, label: 'Uploaded File', color: 'scholr-sunk scholr-body scholr-rule' },
+  external_link: { icon: LinkIcon, label: 'Link', color: 'scholr-accent-sf scholr-accent scholr-accent-rule' },
 };
 
 export default function SubmissionDocumentsView({ documents, onRemove = null, onOpen = null, compact = false, isTeacher = false }) {

@@ -76,20 +76,20 @@ export default function PredictedGradeDialog({ classData, student, existingPredi
         <DialogHeader>
           <DialogTitle>
             <div className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-indigo-600" />
+              <TrendingUp className="w-5 h-5 scholr-accent" />
               Predicted IB Grade
             </div>
           </DialogTitle>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm scholr-muted mt-1">
             {student.user_name || student.user_email} - {classData.name}
           </p>
         </DialogHeader>
 
         <div className="space-y-5">
           {!policy.predicted_grades_enabled && (
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-slate-500" />
-              <p className="text-xs text-slate-600">Predicted grades are currently disabled by school policy.</p>
+            <div className="scholr-sunk border scholr-rule rounded-lg p-3 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 scholr-muted" />
+              <p className="text-xs scholr-muted">Predicted grades are currently disabled by school policy.</p>
             </div>
           )}
           {policy.predicted_grades_locked && (
@@ -105,8 +105,8 @@ export default function PredictedGradeDialog({ classData, student, existingPredi
             </div>
           )}
           {canEdit && !policy.predicted_grades_locked && (
-            <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
-              <p className="text-sm text-indigo-900 mb-2">
+            <div className="scholr-accent-sf border scholr-accent-rule rounded-lg p-4">
+              <p className="text-sm scholr-accent mb-2">
                 Enter your predicted IB grade for this student based on current performance and trajectory.
               </p>
             </div>
@@ -169,7 +169,7 @@ export default function PredictedGradeDialog({ classData, student, existingPredi
               rows={4}
               className="mt-1.5"
             />
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs scholr-muted mt-1">
               This rationale will be visible to the IB coordinator and helps track prediction accuracy.
             </p>
           </div>
@@ -209,7 +209,7 @@ export default function PredictedGradeDialog({ classData, student, existingPredi
             <Button
               onClick={handleSave}
               disabled={!form.predicted_ib_grade || (policy.predicted_grades_require_rationale && !form.rationale) || saveMutation.isPending || !canEdit || policy.predicted_grades_locked}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+              className="flex-1 scholr-accent-sf hover:scholr-accent-sf"
             >
               {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
               {existingPrediction ? 'Update' : 'Save'} Predicted Grade

@@ -85,7 +85,7 @@ export default function Messages() {
 
   return (
     <RoleGuard allowedRoles={['teacher', 'student', 'parent', 'school_admin', 'ib_coordinator', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar
           links={sidebarLinks}
           role={role}
@@ -97,11 +97,11 @@ export default function Messages() {
 
         <main className="app-offset">
           {/* Header */}
-          <div className="bg-white border-b border-slate-200 px-4 md:px-6 py-4">
+          <div className="bg-white border-b scholr-rule px-4 md:px-6 py-4">
             <div className="flex items-center justify-between max-w-7xl mx-auto">
               <div>
-                <h1 className="text-xl md:text-2xl font-bold text-slate-900">Communications</h1>
-                <p className="text-sm text-slate-500 mt-0.5">Messages &amp; Announcements</p>
+                <h1 className="text-xl md:text-2xl font-bold scholr-ink">Communications</h1>
+                <p className="text-sm scholr-muted mt-0.5">Messages &amp; Announcements</p>
               </div>
               <div className="flex items-center gap-2">
                 <AnnouncementComposer
@@ -122,18 +122,18 @@ export default function Messages() {
 
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-[calc(100vh-73px)]">
-            <div className="bg-white border-b border-slate-200 px-4 md:px-6">
+            <div className="bg-white border-b scholr-rule px-4 md:px-6">
               <TabsList className="bg-transparent border-0 h-auto p-0 gap-0">
                 <TabsTrigger
                   value="messages"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-indigo-600 data-[state=active]:text-indigo-700 data-[state=active]:bg-transparent px-4 py-3 text-sm font-medium text-slate-600"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:scholr-accent-rule data-[state=active]:scholr-accent data-[state=active]:bg-transparent px-4 py-3 text-sm font-medium scholr-muted"
                 >
                   <MessageSquare className="w-4 h-4 mr-2" />
                   Messages
                 </TabsTrigger>
                 <TabsTrigger
                   value="announcements"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-indigo-600 data-[state=active]:text-indigo-700 data-[state=active]:bg-transparent px-4 py-3 text-sm font-medium text-slate-600"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:scholr-accent-rule data-[state=active]:scholr-accent data-[state=active]:bg-transparent px-4 py-3 text-sm font-medium scholr-muted"
                 >
                   <Megaphone className="w-4 h-4 mr-2" />
                   Announcements
@@ -143,10 +143,10 @@ export default function Messages() {
 
             {/* Messages Tab */}
             <TabsContent value="messages" className="flex flex-1 mt-0 overflow-hidden">
-              <div className="w-72 md:w-80 border-r border-slate-200 bg-white overflow-y-auto flex-shrink-0">
+              <div className="w-72 md:w-80 border-r scholr-rule bg-white overflow-y-auto flex-shrink-0">
                 {isLoading ? (
                   <div className="flex items-center justify-center py-12">
-                    <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+                    <Loader2 className="w-6 h-6 animate-spin scholr-accent" />
                   </div>
                 ) : (
                   <ConversationList

@@ -127,7 +127,7 @@ export default function NewMessageDialog({ userId, userName, userRole, schoolId,
       {trigger ? (
         <div onClick={() => setOpen(true)}>{trigger}</div>
       ) : (
-        <Button onClick={() => setOpen(true)} className="bg-indigo-600 hover:bg-indigo-700">
+        <Button onClick={() => setOpen(true)} className="scholr-accent-sf hover:scholr-accent-sf">
           <Plus className="w-4 h-4 mr-2" /> New Message
         </Button>
       )}
@@ -187,7 +187,7 @@ export default function NewMessageDialog({ userId, userName, userRole, schoolId,
                     {recipients.map(r => (
                       <SelectItem key={r.user_id} value={r.user_id}>
                         {r.user_name || r.user_email}
-                        {r.role && <span className="text-slate-400 ml-1">({r.role})</span>}
+                        {r.role && <span className="scholr-faint ml-1">({r.role})</span>}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -219,7 +219,7 @@ export default function NewMessageDialog({ userId, userName, userRole, schoolId,
             <Button
               onClick={handleSend}
               disabled={!canSubmit || sendMutation.isPending}
-              className="w-full bg-indigo-600 hover:bg-indigo-700"
+              className="w-full scholr-accent-sf hover:scholr-accent-sf"
             >
               {sendMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
               Send Message

@@ -77,7 +77,7 @@ export const SYNC_STATUS_CONFIG = {
   failed:    { color: 'bg-red-50 text-red-700 border-red-200',             dot: 'bg-red-500',     label: 'Failed' },
   in_progress: { color: 'bg-blue-50 text-blue-700 border-blue-200',        dot: 'bg-blue-500',    label: 'In Progress' },
   partial:   { color: 'bg-amber-50 text-amber-700 border-amber-200',       dot: 'bg-amber-500',   label: 'Partial' },
-  pending:   { color: 'bg-slate-50 text-slate-600 border-slate-200',       dot: 'bg-slate-400',   label: 'Pending' },
+  pending:   { color: 'scholr-sunk scholr-muted scholr-rule',       dot: 'bg-slate-400',   label: 'Pending' },
 };
 
 export const OVERRIDE_POLICY_CONFIG = {

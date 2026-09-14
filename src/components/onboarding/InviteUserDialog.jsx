@@ -152,9 +152,9 @@ export default function InviteUserDialog({ open, onClose, schoolId, schoolName }
             />
           </div>
 
-          <Alert className="border-indigo-200 bg-indigo-50">
-            <Mail className="w-4 h-4 text-indigo-700" />
-            <AlertDescription className="text-sm text-indigo-900">
+          <Alert className="scholr-accent-rule scholr-accent-sf">
+            <Mail className="w-4 h-4 scholr-accent" />
+            <AlertDescription className="text-sm scholr-accent">
               An invitation email will be sent to <strong>{formData.email || 'the user'}</strong>. They'll set their own password when they accept.
             </AlertDescription>
           </Alert>
@@ -174,7 +174,7 @@ export default function InviteUserDialog({ open, onClose, schoolId, schoolName }
             <Button 
               type="submit" 
               disabled={inviteMutation.isPending || !formData.email}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+              className="flex-1 scholr-accent-sf hover:scholr-accent-sf"
             >
               {inviteMutation.isPending ? (
                 <>

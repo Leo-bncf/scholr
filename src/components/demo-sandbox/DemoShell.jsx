@@ -16,11 +16,11 @@ export default function DemoShell({ roleKey, children }) {
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4 min-w-0">
-            <Link to="/demo" className="flex items-center gap-2 text-slate-600 hover:text-slate-900 text-sm font-medium">
+            <Link to="/demo" className="flex items-center gap-2 text-slate-600 scholr-ink text-sm font-medium">
               <ArrowLeft className="w-4 h-4" />
               Exit demo
             </Link>
-            <div className="hidden md:block h-6 w-px bg-slate-200" />
+            <div className="hidden md:block h-6 w-px scholr-sunk" />
             <div className="hidden md:block text-sm truncate">
               <span className="font-semibold text-slate-900">{SCHOOL.name}</span>
               <span className="text-slate-400 mx-2">·</span>
@@ -31,10 +31,10 @@ export default function DemoShell({ roleKey, children }) {
             {role?.tour?.length > 0 && (
               <button
                 onClick={() => tourRef.current?.replay()}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-slate-200 text-xs font-semibold text-slate-700 scholr-hover transition"
                 title="Replay the guided tour"
               >
-                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+                <Sparkles className="w-3.5 h-3.5 scholr-accent" />
                 <span className="hidden sm:inline">Replay tour</span>
               </button>
             )}

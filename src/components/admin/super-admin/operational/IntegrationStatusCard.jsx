@@ -29,17 +29,17 @@ export default function IntegrationStatusCard() {
         const cfg = statusConfig[integration.status] || statusConfig.disconnected;
         const { Icon } = cfg;
         return (
-          <div key={integration.name} className="flex items-start gap-4 p-4 rounded-lg border border-slate-200 bg-slate-50">
+          <div key={integration.name} className="flex items-start gap-4 p-4 rounded-lg border scholr-rule scholr-sunk">
             <div className="text-2xl mt-0.5">{integration.icon}</div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <p className="text-sm font-semibold text-slate-900">{integration.name}</p>
+                <p className="text-sm font-semibold scholr-ink">{integration.name}</p>
                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${cfg.color}`}>
                   <cfg.Icon className={`w-3 h-3 ${cfg.iconColor}`} />
                   {cfg.label}
                 </span>
               </div>
-              <p className="text-xs text-slate-500 mt-0.5">{integration.description}</p>
+              <p className="text-xs scholr-muted mt-0.5">{integration.description}</p>
             </div>
           </div>
         );

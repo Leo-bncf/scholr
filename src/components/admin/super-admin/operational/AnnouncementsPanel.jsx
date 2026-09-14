@@ -72,17 +72,17 @@ export default function AnnouncementsPanel({ schools }) {
       )}
 
       <div>
-        <Label className="text-sm font-medium text-slate-900">Audience</Label>
+        <Label className="text-sm font-medium scholr-ink">Audience</Label>
         <div className="mt-2 flex gap-3">
           <button
             onClick={() => setTargetMode('all')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${targetMode === 'all' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'}`}
+            className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${targetMode === 'all' ? 'pub-btn pub-btn-gold scholr-accent-rule' : 'bg-white scholr-body scholr-rule hover:scholr-sunk'}`}
           >
             All Schools
           </button>
           <button
             onClick={() => setTargetMode('specific')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${targetMode === 'specific' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'}`}
+            className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${targetMode === 'specific' ? 'pub-btn pub-btn-gold scholr-accent-rule' : 'bg-white scholr-body scholr-rule hover:scholr-sunk'}`}
           >
             Specific Schools
           </button>
@@ -90,19 +90,19 @@ export default function AnnouncementsPanel({ schools }) {
       </div>
 
       {targetMode === 'specific' && (
-        <div className="border border-slate-200 rounded-lg max-h-44 overflow-y-auto divide-y divide-slate-100">
+        <div className="border scholr-rule rounded-lg max-h-44 overflow-y-auto divide-y scholr-divide">
           {schools.length === 0 ? (
-            <p className="text-sm text-slate-500 p-4">No schools found.</p>
+            <p className="text-sm scholr-muted p-4">No schools found.</p>
           ) : (
             schools.map((school) => (
-              <label key={school.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 cursor-pointer">
+              <label key={school.id} className="flex items-center gap-3 px-4 py-2.5 hover:scholr-sunk cursor-pointer">
                 <input
                   type="checkbox"
                   checked={selectedSchoolIds.includes(school.id)}
                   onChange={() => toggleSchool(school.id)}
-                  className="rounded border-slate-300"
+                  className="rounded scholr-rule"
                 />
-                <span className="text-sm text-slate-800">{school.name}</span>
+                <span className="text-sm scholr-ink">{school.name}</span>
               </label>
             ))
           )}
@@ -110,7 +110,7 @@ export default function AnnouncementsPanel({ schools }) {
       )}
 
       <div>
-        <Label className="text-sm font-medium text-slate-900">Subject</Label>
+        <Label className="text-sm font-medium scholr-ink">Subject</Label>
         <Input
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
@@ -120,20 +120,20 @@ export default function AnnouncementsPanel({ schools }) {
       </div>
 
       <div>
-        <Label className="text-sm font-medium text-slate-900">Message</Label>
+        <Label className="text-sm font-medium scholr-ink">Message</Label>
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value)}
           rows={5}
           placeholder="Write your announcement here..."
-          className="mt-1.5 w-full px-3 py-2 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none"
+          className="mt-1.5 w-full px-3 py-2 border scholr-rule rounded-lg text-sm scholr-ink focus:outline-none focus:ring-1 scholr-focus resize-none"
         />
       </div>
 
       <Button
         onClick={handleSend}
         disabled={sending}
-        className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2"
+        className="pub-btn pub-btn-gold gap-2"
       >
         {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
         Send Announcement

@@ -115,7 +115,7 @@ export default function TermsStep({ schoolId, onComplete }) {
         <CardContent className="pt-6">
           <div className="flex items-center justify-center gap-2">
             <Loader2 className="w-4 h-4 animate-spin" />
-            <span className="text-slate-600">Loading terms...</span>
+            <span className="scholr-muted">Loading terms...</span>
           </div>
         </CardContent>
       </Card>
@@ -129,7 +129,7 @@ export default function TermsStep({ schoolId, onComplete }) {
     <Card>
       <CardHeader>
         <CardTitle>Terms & Semesters</CardTitle>
-        <p className="text-sm text-slate-600 mt-1">
+        <p className="text-sm scholr-muted mt-1">
           Create terms within your academic year. E.g., Term 1, Term 2, Semester 1, etc.
         </p>
       </CardHeader>
@@ -159,7 +159,7 @@ export default function TermsStep({ schoolId, onComplete }) {
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(e.target.value)}
-            className="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm"
+            className="w-full px-3 py-2 border scholr-rule rounded-md bg-white text-sm"
           >
             {academicYears.map((year) => (
               <option key={year.id} value={year.id}>
@@ -172,15 +172,15 @@ export default function TermsStep({ schoolId, onComplete }) {
         {/* Existing Terms */}
         {hasTerms && (
           <div className="space-y-2">
-            <p className="text-sm font-semibold text-slate-700">Terms in {selectedYearName}</p>
+            <p className="text-sm font-semibold scholr-body">Terms in {selectedYearName}</p>
             {terms.map((term) => (
               <div
                 key={term.id}
                 className="flex items-center justify-between p-3 bg-emerald-50 border border-emerald-200 rounded-lg"
               >
                 <div>
-                  <p className="font-semibold text-sm text-slate-900">{term.name}</p>
-                  <p className="text-xs text-slate-600 mt-0.5">
+                  <p className="font-semibold text-sm scholr-ink">{term.name}</p>
+                  <p className="text-xs scholr-muted mt-0.5">
                     {new Date(term.start_date).toLocaleDateString()} — {new Date(term.end_date).toLocaleDateString()}
                   </p>
                 </div>
@@ -199,7 +199,7 @@ export default function TermsStep({ schoolId, onComplete }) {
 
         {/* Add New Term */}
         <div className={hasTerms ? 'border-t pt-6' : ''}>
-          <p className="text-sm font-semibold text-slate-700 mb-3">Add a Term</p>
+          <p className="text-sm font-semibold scholr-body mb-3">Add a Term</p>
           <div className="space-y-3">
             <div>
               <Label className="text-sm font-semibold mb-1 block">Term Name</Label>
@@ -250,12 +250,12 @@ export default function TermsStep({ schoolId, onComplete }) {
           <Button
             onClick={onComplete}
             disabled={!hasTerms}
-            className="bg-indigo-600 hover:bg-indigo-700"
+            className="scholr-accent-sf hover:scholr-accent-sf"
           >
             Continue to Subjects
           </Button>
           {!hasTerms && (
-            <p className="text-xs text-slate-600 mt-2">Create at least one term to continue</p>
+            <p className="text-xs scholr-muted mt-2">Create at least one term to continue</p>
           )}
         </div>
       </CardContent>

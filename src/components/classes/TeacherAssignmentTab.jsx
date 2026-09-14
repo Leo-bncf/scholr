@@ -75,8 +75,8 @@ function TeacherAssignDialog({ classObj, onClose, schoolId, memberships }) {
 
           {/* Primary teacher */}
           <div>
-            <Label className="text-xs font-semibold text-slate-600">Primary Teacher (Class Owner)</Label>
-            <p className="text-[11px] text-slate-400 mb-2">Responsible for grades, reports, and class management.</p>
+            <Label className="text-xs font-semibold scholr-muted">Primary Teacher (Class Owner)</Label>
+            <p className="text-[11px] scholr-faint mb-2">Responsible for grades, reports, and class management.</p>
             <Select value={primaryId} onValueChange={setPrimaryId}>
               <SelectTrigger className="mt-1">
                 <SelectValue placeholder="Select primary teacher…" />
@@ -94,8 +94,8 @@ function TeacherAssignDialog({ classObj, onClose, schoolId, memberships }) {
 
           {/* Co-teachers */}
           <div>
-            <Label className="text-xs font-semibold text-slate-600">Co-Teachers</Label>
-            <p className="text-[11px] text-slate-400 mb-2">Select co-teachers and configure their permissions.</p>
+            <Label className="text-xs font-semibold scholr-muted">Co-Teachers</Label>
+            <p className="text-[11px] scholr-faint mb-2">Select co-teachers and configure their permissions.</p>
             <div className="space-y-2 max-h-72 overflow-y-auto">
               {teachers
                 .filter(t => (t.user_id || t.id) !== (primaryId === '__none' ? null : primaryId))
@@ -104,19 +104,19 @@ function TeacherAssignDialog({ classObj, onClose, schoolId, memberships }) {
                   const isAssigned = coTeacherIds.includes(tid);
                   const perms = coPermissions[tid] || [];
                   return (
-                    <div key={t.id} className={`border rounded-lg transition-colors ${isAssigned ? 'border-indigo-200 bg-indigo-50' : 'border-slate-200 bg-white'}`}>
+                    <div key={t.id} className={`border rounded-lg transition-colors ${isAssigned ? 'scholr-accent-rule scholr-accent-sf' : 'scholr-rule bg-white'}`}>
                       <button
                         onClick={() => toggleCoTeacher(tid)}
                         className="w-full flex items-center gap-3 px-3 py-2.5 text-left"
                       >
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${isAssigned ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${isAssigned ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-muted'}`}>
                           {(t.user_name || '?')[0]?.toUpperCase()}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-slate-900">{t.user_name || t.user_email}</p>
-                          <p className="text-[11px] text-slate-500">{t.department ? `${t.department} · ` : ''}{t.role.replace('_', ' ')}</p>
+                          <p className="text-sm font-medium scholr-ink">{t.user_name || t.user_email}</p>
+                          <p className="text-[11px] scholr-muted">{t.department ? `${t.department} · ` : ''}{t.role.replace('_', ' ')}</p>
                         </div>
-                        <div className={`w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 ${isAssigned ? 'bg-indigo-600 border-indigo-600' : 'border-slate-300'}`}>
+                        <div className={`w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 ${isAssigned ? 'scholr-accent-sf scholr-accent-rule' : 'scholr-rule'}`}>
                           {isAssigned && <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
                         </div>
                       </button>
@@ -129,8 +129,8 @@ function TeacherAssignDialog({ classObj, onClose, schoolId, memberships }) {
                               onClick={() => togglePerm(tid, p.value)}
                               className={`text-[11px] px-2 py-1 rounded border transition-colors ${
                                 perms.includes(p.value)
-                                  ? 'bg-indigo-600 border-indigo-600 text-white font-medium'
-                                  : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'
+                                  ? 'scholr-accent-sf scholr-accent-rule text-white font-medium'
+                                  : 'bg-white scholr-rule scholr-muted hover:scholr-rule'
                               }`}
                             >
                               {p.label}
@@ -147,7 +147,7 @@ function TeacherAssignDialog({ classObj, onClose, schoolId, memberships }) {
           <div className="flex gap-2 pt-2">
             <Button type="button" variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
             <Button
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white"
+              className="flex-1 pub-btn pub-btn-gold"
               disabled={mutation.isPending}
               onClick={handleSave}
             >
@@ -192,17 +192,17 @@ export default function TeacherAssignmentTab({ schoolId, classes, memberships })
       )}
 
       <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 scholr-faint" />
         <Input placeholder="Search classes…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white h-9" />
       </div>
 
       {filtered.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-          <BookOpen className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-          <p className="text-sm text-slate-400">No active classes found</p>
+        <div className="bg-white rounded-xl border scholr-rule p-12 text-center">
+          <BookOpen className="w-10 h-10 scholr-faint mx-auto mb-3" />
+          <p className="text-sm scholr-faint">No active classes found</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 divide-y divide-slate-100 overflow-hidden shadow-sm">
+        <div className="bg-white rounded-xl border scholr-rule divide-y scholr-divide overflow-hidden shadow-sm">
           {filtered.map(c => {
             const primaryId     = c.primary_teacher_id || c.teacher_ids?.[0];
             const primary       = primaryId ? getMember(primaryId) : null;
@@ -210,20 +210,20 @@ export default function TeacherAssignmentTab({ schoolId, classes, memberships })
             const hasStaff      = (c.teacher_ids || []).length > 0;
 
             return (
-              <div key={c.id} className="px-5 py-4 flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors group">
+              <div key={c.id} className="px-5 py-4 flex items-center justify-between gap-4 hover:scholr-sunk transition-colors group">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1.5">
-                    <h3 className="text-sm font-semibold text-slate-900 truncate">{c.name}</h3>
-                    {c.section && <span className="text-[11px] text-slate-400">§ {c.section}</span>}
+                    <h3 className="text-sm font-semibold scholr-ink truncate">{c.name}</h3>
+                    {c.section && <span className="text-[11px] scholr-faint">§ {c.section}</span>}
                     {c.roster_locked && <Lock className="w-3 h-3 text-amber-500" />}
                   </div>
 
                   {hasStaff ? (
                     <div className="flex flex-wrap items-center gap-2">
                       {primary && (
-                        <div className="flex items-center gap-1.5 bg-violet-50 border border-violet-100 rounded-full px-2.5 py-1">
-                          <Crown className="w-3 h-3 text-violet-500" />
-                          <span className="text-xs font-medium text-violet-700">{primary.user_name || primary.user_email}</span>
+                        <div className="flex items-center gap-1.5 scholr-accent-sf border border-violet-100 rounded-full px-2.5 py-1">
+                          <Crown className="w-3 h-3 scholr-accent" />
+                          <span className="text-xs font-medium scholr-accent">{primary.user_name || primary.user_email}</span>
                         </div>
                       )}
                       {coTeacherIds.map(id => {
@@ -231,10 +231,10 @@ export default function TeacherAssignmentTab({ schoolId, classes, memberships })
                         if (!m) return null;
                         const perms = c.co_teacher_permissions?.[id] || [];
                         return (
-                          <div key={id} className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-full px-2.5 py-1">
-                            <span className="text-xs text-slate-600">{m.user_name || m.user_email}</span>
+                          <div key={id} className="flex items-center gap-1.5 scholr-sunk border scholr-rule rounded-full px-2.5 py-1">
+                            <span className="text-xs scholr-muted">{m.user_name || m.user_email}</span>
                             {perms.length > 0 && (
-                              <span className="text-[10px] text-slate-400">{perms.length} perm{perms.length !== 1 ? 's' : ''}</span>
+                              <span className="text-[10px] scholr-faint">{perms.length} perm{perms.length !== 1 ? 's' : ''}</span>
                             )}
                           </div>
                         );

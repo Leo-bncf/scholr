@@ -20,29 +20,29 @@ import * as membershipsData from '@/data/memberships';
 
 function StatCard({ label, value, sub, icon: Icon, color = 'indigo' }) {
   const colors = {
-    indigo: 'bg-indigo-50 text-indigo-600',
+    indigo: 'scholr-accent-sf scholr-accent',
     emerald: 'bg-emerald-50 text-emerald-600',
     amber: 'bg-amber-50 text-amber-600',
     rose: 'bg-rose-50 text-rose-600',
-    violet: 'bg-violet-50 text-violet-600',
+    violet: 'scholr-accent-sf scholr-accent',
     sky: 'bg-sky-50 text-sky-600',
   };
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-start gap-4">
+    <div className="bg-white rounded-xl border scholr-rule p-5 flex items-start gap-4">
       <div className={`rounded-lg p-2.5 flex-shrink-0 ${colors[color]}`}>
         <Icon className="w-5 h-5" />
       </div>
       <div className="min-w-0">
-        <p className="text-sm text-slate-500 truncate">{label}</p>
-        <p className="text-2xl font-bold text-slate-900 mt-0.5">{value ?? '—'}</p>
-        {sub && <p className="text-xs text-slate-400 mt-0.5">{sub}</p>}
+        <p className="text-sm scholr-muted truncate">{label}</p>
+        <p className="text-2xl font-bold scholr-ink mt-0.5">{value ?? '—'}</p>
+        {sub && <p className="text-xs scholr-faint mt-0.5">{sub}</p>}
       </div>
     </div>
   );
 }
 
 function SectionTitle({ children }) {
-  return <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">{children}</h3>;
+  return <h3 className="text-xs font-semibold scholr-faint uppercase tracking-wider mb-3">{children}</h3>;
 }
 
 const GRADE_COLORS = ['#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#f43f5e', '#8b5cf6', '#06b6d4'];
@@ -69,7 +69,7 @@ function AttendanceTrend({ attendance }) {
     return weeks;
   }, [attendance]);
 
-  if (data.length < 2) return <p className="text-sm text-slate-400 py-4 text-center">Not enough data to show trend</p>;
+  if (data.length < 2) return <p className="text-sm scholr-faint py-4 text-center">Not enough data to show trend</p>;
 
   return (
     <ResponsiveContainer width="100%" height={200}>
@@ -106,7 +106,7 @@ function GradeDistribution({ grades }) {
     }));
   }, [grades]);
 
-  if (data.every(d => d.count === 0)) return <p className="text-sm text-slate-400 py-4 text-center">No published grade scores yet</p>;
+  if (data.every(d => d.count === 0)) return <p className="text-sm scholr-faint py-4 text-center">No published grade scores yet</p>;
 
   return (
     <ResponsiveContainer width="100%" height={200}>
@@ -132,7 +132,7 @@ function IBGradePie({ grades }) {
     return Object.entries(counts).map(([grade, count]) => ({ name: `Grade ${grade}`, value: count }));
   }, [grades]);
 
-  if (data.length === 0) return <p className="text-sm text-slate-400 py-4 text-center">No IB grades recorded</p>;
+  if (data.length === 0) return <p className="text-sm scholr-faint py-4 text-center">No IB grades recorded</p>;
 
   return (
     <ResponsiveContainer width="100%" height={200}>
@@ -180,7 +180,7 @@ function StudentPerformanceTable({ memberships, grades, attendance, classData })
   };
 
   const Th = ({ k, children }) => (
-    <th onClick={() => toggleSort(k)} className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase cursor-pointer select-none hover:text-slate-800">
+    <th onClick={() => toggleSort(k)} className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase cursor-pointer select-none hover:scholr-ink">
       <span className="flex items-center gap-1">
         {children}
         {sortKey === k ? (sortAsc ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />) : null}
@@ -191,7 +191,7 @@ function StudentPerformanceTable({ memberships, grades, attendance, classData })
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
-        <thead className="bg-slate-50 border-b border-slate-200">
+        <thead className="scholr-sunk border-b scholr-rule">
           <tr>
             <Th k="name">Student</Th>
             <Th k="grades">Grades</Th>
@@ -201,30 +201,30 @@ function StudentPerformanceTable({ memberships, grades, attendance, classData })
             <Th k="late">Late</Th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="divide-y scholr-divide">
           {sorted.map(row => {
             const avgOk = row.avg !== null;
             const attOk = row.attRate !== null;
             return (
-              <tr key={row.id} className="hover:bg-slate-50 transition-colors">
-                <td className="px-4 py-3 font-medium text-slate-900">{row.name}</td>
-                <td className="px-4 py-3 text-slate-600">{row.grades}</td>
+              <tr key={row.id} className="hover:scholr-sunk transition-colors">
+                <td className="px-4 py-3 font-medium scholr-ink">{row.name}</td>
+                <td className="px-4 py-3 scholr-muted">{row.grades}</td>
                 <td className="px-4 py-3">
                   {avgOk ? (
                     <span className={`font-semibold ${row.avg >= 70 ? 'text-emerald-700' : row.avg >= 50 ? 'text-amber-700' : 'text-red-700'}`}>
                       {row.avg.toFixed(1)}%
                     </span>
-                  ) : <span className="text-slate-400">—</span>}
+                  ) : <span className="scholr-faint">—</span>}
                 </td>
                 <td className="px-4 py-3">
                   {attOk ? (
                     <span className={`font-semibold ${row.attRate >= 90 ? 'text-emerald-700' : row.attRate >= 75 ? 'text-amber-700' : 'text-red-700'}`}>
                       {row.attRate.toFixed(1)}%
                     </span>
-                  ) : <span className="text-slate-400">—</span>}
+                  ) : <span className="scholr-faint">—</span>}
                 </td>
-                <td className="px-4 py-3">{row.absent > 0 ? <span className="text-red-600 font-semibold">{row.absent}</span> : <span className="text-slate-400">0</span>}</td>
-                <td className="px-4 py-3">{row.late > 0 ? <span className="text-amber-600 font-semibold">{row.late}</span> : <span className="text-slate-400">0</span>}</td>
+                <td className="px-4 py-3">{row.absent > 0 ? <span className="text-red-600 font-semibold">{row.absent}</span> : <span className="scholr-faint">0</span>}</td>
+                <td className="px-4 py-3">{row.late > 0 ? <span className="text-amber-600 font-semibold">{row.late}</span> : <span className="scholr-faint">0</span>}</td>
               </tr>
             );
           })}
@@ -246,7 +246,7 @@ function SubmissionRateChart({ assignments, submissions, classData }) {
     });
   }, [assignments, submissions, classData]);
 
-  if (data.length === 0) return <p className="text-sm text-slate-400 py-4 text-center">No assignments yet</p>;
+  if (data.length === 0) return <p className="text-sm scholr-faint py-4 text-center">No assignments yet</p>;
 
   return (
     <ResponsiveContainer width="100%" height={220}>
@@ -298,8 +298,8 @@ export default function ClassAnalytics({ classData, isTeacher }) {
 
   if (!isTeacher) {
     return (
-      <div className="p-6 text-center text-slate-400">
-        <BarChart3 className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+      <div className="p-6 text-center scholr-faint">
+        <BarChart3 className="w-12 h-12 mx-auto mb-3 scholr-faint" />
         <p>Analytics are only available to teachers</p>
       </div>
     );
@@ -319,7 +319,7 @@ export default function ClassAnalytics({ classData, isTeacher }) {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8">
-      <h2 className="text-xl font-bold text-slate-900">Class Analytics</h2>
+      <h2 className="text-xl font-bold scholr-ink">Class Analytics</h2>
 
       {/* KPI row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -331,11 +331,11 @@ export default function ClassAnalytics({ classData, isTeacher }) {
 
       {/* Charts row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
+        <div className="bg-white rounded-xl border scholr-rule p-5">
           <SectionTitle>Attendance Rate — Weekly Trend</SectionTitle>
           <AttendanceTrend attendance={attendance} />
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
+        <div className="bg-white rounded-xl border scholr-rule p-5">
           <SectionTitle>Grade Score Distribution</SectionTitle>
           <GradeDistribution grades={grades} />
         </div>
@@ -343,11 +343,11 @@ export default function ClassAnalytics({ classData, isTeacher }) {
 
       {/* Charts row 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
+        <div className="bg-white rounded-xl border scholr-rule p-5">
           <SectionTitle>Assignment Submission Rates</SectionTitle>
           <SubmissionRateChart assignments={assignments} submissions={submissions} classData={classData} />
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
+        <div className="bg-white rounded-xl border scholr-rule p-5">
           <SectionTitle>IB Grade Distribution</SectionTitle>
           <IBGradePie grades={grades} />
         </div>
@@ -372,10 +372,10 @@ export default function ClassAnalytics({ classData, isTeacher }) {
       </div>
 
       {/* Per-student table */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-200">
-          <h3 className="font-semibold text-slate-800">Per-Student Performance</h3>
-          <p className="text-xs text-slate-400 mt-0.5">Click column headers to sort</p>
+      <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+        <div className="px-5 py-4 border-b scholr-rule">
+          <h3 className="font-semibold scholr-ink">Per-Student Performance</h3>
+          <p className="text-xs scholr-faint mt-0.5">Click column headers to sort</p>
         </div>
         <StudentPerformanceTable memberships={memberships} grades={grades} attendance={attendance} classData={classData} />
       </div>

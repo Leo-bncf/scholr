@@ -74,7 +74,7 @@ export default function DemoTeacherReview() {
       <div className="flex items-center justify-between mb-4 gap-4 flex-wrap">
         <Link
           to={cls ? `/demo/teacher/class/${cls.id}` : '/demo/teacher'}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 scholr-ink"
         >
           <ArrowLeft className="w-4 h-4" /> {cls ? `Back to ${cls.name}` : 'Back to dashboard'}
         </Link>
@@ -121,7 +121,7 @@ export default function DemoTeacherReview() {
             const color =
               effectiveStatus === 'graded' ? 'bg-emerald-500' :
               effectiveStatus === 'submitted' || effectiveStatus === 'late' ? 'bg-amber-400' :
-              'bg-slate-200';
+              'scholr-sunk';
             return (
               <div
                 key={s.id}

@@ -85,7 +85,7 @@ export default function AssessmentBuilderDialog({ open, onOpenChange, classData,
             <div>
               <Label>Timer (minutes)</Label>
               <Input type="number" value={form.duration_minutes} onChange={(e) => setForm({ ...form, duration_minutes: Number(e.target.value) || 0 })} className="mt-1" />
-              <p className="text-xs text-slate-500 mt-2">Total score: {maxScore}</p>
+              <p className="text-xs scholr-muted mt-2">Total score: {maxScore}</p>
             </div>
           </div>
           <div className="space-y-3">

@@ -29,17 +29,17 @@ export default function StudentBehavior() {
 
   return (
     <RoleGuard allowedRoles={['student', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar links={sidebarLinks} role="student" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         
         <main className="app-offset p-8">
           <div className="max-w-5xl mx-auto">
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">My Behavior Records</h1>
-            <p className="text-slate-600 mb-8">View notes and feedback from your teachers</p>
+            <h1 className="text-3xl font-bold scholr-ink mb-2">My Behavior Records</h1>
+            <p className="scholr-muted mb-8">View notes and feedback from your teachers</p>
 
             {isLoading ? (
               <div className="flex justify-center py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+                <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
               </div>
             ) : (
               <BehaviorRecordsList records={records} showVisibilityIndicators={false} />

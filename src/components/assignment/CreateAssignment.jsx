@@ -104,7 +104,7 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
         {trigger ? (
           <div onClick={() => setOpen(true)}>{trigger}</div>
         ) : (
-          <Button onClick={() => setOpen(true)} className="bg-indigo-600 hover:bg-indigo-700">
+          <Button onClick={() => setOpen(true)} className="scholr-accent-sf hover:scholr-accent-sf">
             <Plus className="w-4 h-4 mr-2" /> Create Assignment
           </Button>
         )}
@@ -195,12 +195,12 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
 
             <div>
               <Label className="text-sm font-semibold mb-2 block">Curriculum Topics</Label>
-              <div className="max-h-48 overflow-y-auto border rounded-lg p-3 space-y-3 bg-slate-50">
+              <div className="max-h-48 overflow-y-auto border rounded-lg p-3 space-y-3 scholr-sunk">
                 {curriculumTopics.length === 0 ? (
-                  <p className="text-sm text-slate-500">No curriculum topics yet.</p>
+                  <p className="text-sm scholr-muted">No curriculum topics yet.</p>
                 ) : (
                   curriculumTopics.map((topic) => (
-                    <label key={topic.id} className="flex items-center gap-3 text-sm text-slate-700">
+                    <label key={topic.id} className="flex items-center gap-3 text-sm scholr-body">
                       <Checkbox
                         checked={form.curriculum_topic_ids.includes(topic.id)}
                         onCheckedChange={(checked) => setForm({
@@ -218,7 +218,7 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
             </div>
 
             <div className="pt-4 border-t">
-              <h3 className="text-base font-semibold text-slate-900 mb-4">Submission Settings</h3>
+              <h3 className="text-base font-semibold scholr-ink mb-4">Submission Settings</h3>
               <SubmissionFormatSelector
                 primaryFormat={form.primary_submission_format}
                 allowAlternatives={form.allow_alternative_formats}
@@ -236,17 +236,17 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
               <Label className="text-sm font-semibold mb-2 block">Attachments</Label>
               <div className="space-y-2">
                 {attachments.map((att, i) => (
-                  <div key={i} className="flex items-center gap-2 p-2 bg-slate-50 rounded-lg">
-                    <FileText className="w-4 h-4 text-slate-400" />
+                  <div key={i} className="flex items-center gap-2 p-2 scholr-sunk rounded-lg">
+                    <FileText className="w-4 h-4 scholr-faint" />
                     <span className="text-sm flex-1 truncate">{att.name}</span>
                     <button onClick={() => setAttachments(attachments.filter((_, idx) => idx !== i))}>
-                      <X className="w-4 h-4 text-slate-400 hover:text-red-600" />
+                      <X className="w-4 h-4 scholr-faint hover:text-red-600" />
                     </button>
                   </div>
                 ))}
-                <label className="flex items-center gap-2 p-3 border-2 border-dashed border-slate-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50/50 cursor-pointer transition-colors">
-                  <Upload className="w-4 h-4 text-slate-400" />
-                  <span className="text-sm text-slate-600">
+                <label className="flex items-center gap-2 p-3 border-2 border-dashed scholr-rule rounded-lg hover:scholr-accent-rule hover:scholr-accent-sf/50 cursor-pointer transition-colors">
+                  <Upload className="w-4 h-4 scholr-faint" />
+                  <span className="text-sm scholr-muted">
                     {uploading ? 'Uploading...' : 'Add file'}
                   </span>
                   <input type="file" className="hidden" onChange={handleFileUpload} disabled={uploading} />
@@ -270,9 +270,9 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
                   )}
                 </>
               ) : (
-                <div className="flex items-center gap-2 text-xs text-slate-500">
+                <div className="flex items-center gap-2 text-xs scholr-muted">
                   <span>Late submissions: <strong>{policy.late_submission_default}</strong></span>
-                  <span className="text-slate-400">(school policy — override not permitted)</span>
+                  <span className="scholr-faint">(school policy — override not permitted)</span>
                 </div>
               )}
             </div>
@@ -290,7 +290,7 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
               <Button
                 onClick={() => handleCreate('published')}
                 disabled={!form.title || !form.due_date || createMutation.isPending}
-                className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+                className="flex-1 scholr-accent-sf hover:scholr-accent-sf"
               >
                 {createMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                 Publish Assignment

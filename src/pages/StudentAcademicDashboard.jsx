@@ -48,27 +48,27 @@ function GradeCard({ grade }) {
   const hasExtra = grade.comment || grade.criteria_scores?.length > 0;
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+    <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
       <div className="p-4 flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-slate-900 truncate">{grade.title}</p>
+          <p className="font-semibold scholr-ink truncate">{grade.title}</p>
           <div className="flex flex-wrap items-center gap-2 mt-1">
-            {grade.class_name && <span className="text-xs text-slate-500">{grade.class_name}</span>}
+            {grade.class_name && <span className="text-xs scholr-muted">{grade.class_name}</span>}
             {grade.type && <Badge variant="outline" className="text-xs capitalize">{grade.type?.replace('_', ' ')}</Badge>}
-            {grade.ib_grade && <Badge className="bg-violet-50 text-violet-700 border-0 text-xs">IB {grade.ib_grade}/7</Badge>}
+            {grade.ib_grade && <Badge className="scholr-accent-sf scholr-accent border-0 text-xs">IB {grade.ib_grade}/7</Badge>}
           </div>
           {grade.created_at && (
-            <p className="text-xs text-slate-400 mt-1">{format(new Date(grade.created_at), 'MMM d, yyyy')}</p>
+            <p className="text-xs scholr-faint mt-1">{format(new Date(grade.created_at), 'MMM d, yyyy')}</p>
           )}
         </div>
         <div className="text-right flex-shrink-0">
           {grade.score != null ? (
             <>
-              <p className={`text-2xl font-bold ${scoreColor(p)}`}>{grade.score}<span className="text-sm font-normal text-slate-400">/{grade.max_score}</span></p>
+              <p className={`text-2xl font-bold ${scoreColor(p)}`}>{grade.score}<span className="text-sm font-normal scholr-faint">/{grade.max_score}</span></p>
               {p && <p className={`text-sm font-semibold ${scoreColor(p)}`}>{p}%</p>}
             </>
           ) : (
-            <span className="text-slate-400 text-sm">—</span>
+            <span className="scholr-faint text-sm">—</span>
           )}
         </div>
       </div>
@@ -77,26 +77,26 @@ function GradeCard({ grade }) {
         <>
           <button
             onClick={() => setExpanded(e => !e)}
-            className="w-full px-4 py-2 flex items-center gap-1.5 text-xs text-indigo-600 font-medium hover:bg-indigo-50 border-t border-slate-100 transition-colors"
+            className="w-full px-4 py-2 flex items-center gap-1.5 text-xs scholr-accent font-medium hover:scholr-accent-sf border-t scholr-rule-soft transition-colors"
           >
             {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             {expanded ? 'Hide' : 'Show'} feedback & details
           </button>
           {expanded && (
-            <div className="px-4 pb-4 space-y-3 border-t border-slate-100">
+            <div className="px-4 pb-4 space-y-3 border-t scholr-rule-soft">
               {grade.comment && (
                 <div className="mt-3">
-                  <p className="text-xs font-semibold text-slate-700 mb-1">Teacher Feedback</p>
-                  <p className="text-sm text-slate-600 bg-slate-50 rounded-lg p-3">{grade.comment}</p>
+                  <p className="text-xs font-semibold scholr-body mb-1">Teacher Feedback</p>
+                  <p className="text-sm scholr-muted scholr-sunk rounded-lg p-3">{grade.comment}</p>
                 </div>
               )}
               {grade.criteria_scores?.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold text-slate-700 mb-2">Rubric Criteria</p>
+                  <p className="text-xs font-semibold scholr-body mb-2">Rubric Criteria</p>
                   <div className="space-y-2">
                     {grade.criteria_scores.map((c, i) => (
                       <div key={i} className="flex items-center justify-between text-sm">
-                        <span className="text-slate-700">{c.criterion_name}</span>
+                        <span className="scholr-body">{c.criterion_name}</span>
                         <span className={`font-semibold ${scoreColor(pct(c.score, c.max_score))}`}>{c.score}/{c.max_score}</span>
                       </div>
                     ))}
@@ -134,7 +134,7 @@ function GradesTab({ schoolId, userId, classes }) {
   const validScores = filtered.filter(g => g.score != null && g.max_score);
   const avg = validScores.length > 0 ? (validScores.reduce((s, g) => s + (g.score / g.max_score) * 100, 0) / validScores.length).toFixed(1) : null;
 
-  if (isLoading) return <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>;
+  if (isLoading) return <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>;
 
   return (
     <div className="space-y-5">
@@ -142,15 +142,15 @@ function GradesTab({ schoolId, userId, classes }) {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           {avg && (
-            <div className="bg-indigo-50 border border-indigo-200 rounded-xl px-5 py-3 flex items-center gap-3">
-              <TrendingUp className="w-5 h-5 text-indigo-600" />
+            <div className="scholr-accent-sf border scholr-accent-rule rounded-xl px-5 py-3 flex items-center gap-3">
+              <TrendingUp className="w-5 h-5 scholr-accent" />
               <div>
-                <p className="text-xs text-indigo-600 font-medium">Overall Average</p>
+                <p className="text-xs scholr-accent font-medium">Overall Average</p>
                 <p className={`text-2xl font-bold ${scoreColor(avg)}`}>{avg}%</p>
               </div>
             </div>
           )}
-          <p className="text-sm text-slate-500">{filtered.length} grade{filtered.length !== 1 ? 's' : ''}</p>
+          <p className="text-sm scholr-muted">{filtered.length} grade{filtered.length !== 1 ? 's' : ''}</p>
         </div>
         <Select value={classFilter} onValueChange={setClassFilter}>
           <SelectTrigger className="w-48 h-9 text-sm"><SelectValue placeholder="All classes" /></SelectTrigger>
@@ -162,8 +162,8 @@ function GradesTab({ schoolId, userId, classes }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="text-center py-16 text-slate-400">
-          <BarChart3 className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+        <div className="text-center py-16 scholr-faint">
+          <BarChart3 className="w-12 h-12 mx-auto mb-3 scholr-faint" />
           <p>No grades available yet</p>
         </div>
       ) : (
@@ -188,12 +188,12 @@ function PredictedTab({ schoolId, userId }) {
     enabled: !!schoolId && !!userId,
   });
 
-  if (isLoading) return <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>;
+  if (isLoading) return <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>;
 
   if (predictions.length === 0) {
     return (
-      <div className="text-center py-16 text-slate-400">
-        <TrendingUp className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+      <div className="text-center py-16 scholr-faint">
+        <TrendingUp className="w-12 h-12 mx-auto mb-3 scholr-faint" />
         <p>No predicted grades have been shared with you yet</p>
       </div>
     );
@@ -203,23 +203,23 @@ function PredictedTab({ schoolId, userId }) {
 
   return (
     <div className="space-y-5">
-      <div className="bg-violet-50 border border-violet-200 rounded-xl p-5 flex items-center justify-between">
+      <div className="scholr-accent-sf border scholr-accent-rule rounded-xl p-5 flex items-center justify-between">
         <div>
-          <p className="text-sm font-semibold text-violet-700">Predicted IB Average</p>
-          <p className="text-4xl font-bold text-violet-900 mt-0.5">{avg}<span className="text-lg text-violet-500">/7</span></p>
-          <p className="text-xs text-violet-600 mt-1">Based on {predictions.length} subject{predictions.length !== 1 ? 's' : ''}</p>
+          <p className="text-sm font-semibold scholr-accent">Predicted IB Average</p>
+          <p className="text-4xl font-bold scholr-accent mt-0.5">{avg}<span className="text-lg scholr-accent">/7</span></p>
+          <p className="text-xs scholr-accent mt-1">Based on {predictions.length} subject{predictions.length !== 1 ? 's' : ''}</p>
         </div>
-        <TrendingUp className="w-10 h-10 text-violet-400" />
+        <TrendingUp className="w-10 h-10 scholr-accent" />
       </div>
 
       <div className="space-y-3">
         {predictions.map(pred => (
-          <div key={pred.id} className="bg-white rounded-xl border border-slate-200 p-5">
+          <div key={pred.id} className="bg-white rounded-xl border scholr-rule p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1">
-                <h4 className="font-semibold text-slate-900">{pred.class_name || 'Subject'}</h4>
+                <h4 className="font-semibold scholr-ink">{pred.class_name || 'Subject'}</h4>
                 {pred.entry_date && (
-                  <p className="text-xs text-slate-400 mt-0.5">Updated {format(new Date(pred.entry_date), 'MMM d, yyyy')}</p>
+                  <p className="text-xs scholr-faint mt-0.5">Updated {format(new Date(pred.entry_date), 'MMM d, yyyy')}</p>
                 )}
                 {pred.confidence_level && (
                   <Badge className={`mt-2 border text-xs ${confidenceBadge[pred.confidence_level] || ''}`} variant="outline">
@@ -227,16 +227,16 @@ function PredictedTab({ schoolId, userId }) {
                   </Badge>
                 )}
               </div>
-              <div className="bg-violet-50 border border-violet-200 rounded-xl px-5 py-3 text-center flex-shrink-0">
-                <p className="text-xs text-violet-600 font-semibold">Predicted</p>
-                <p className="text-3xl font-bold text-violet-700">{pred.predicted_ib_grade}</p>
-                <p className="text-xs text-violet-500">/7</p>
+              <div className="scholr-accent-sf border scholr-accent-rule rounded-xl px-5 py-3 text-center flex-shrink-0">
+                <p className="text-xs scholr-accent font-semibold">Predicted</p>
+                <p className="text-3xl font-bold scholr-accent">{pred.predicted_ib_grade}</p>
+                <p className="text-xs scholr-accent">/7</p>
               </div>
             </div>
             {pred.rationale && (
-              <div className="mt-4 pt-4 border-t border-slate-100">
-                <p className="text-xs font-semibold text-slate-700 mb-1">Teacher Notes</p>
-                <p className="text-sm text-slate-600">{pred.rationale}</p>
+              <div className="mt-4 pt-4 border-t scholr-rule-soft">
+                <p className="text-xs font-semibold scholr-body mb-1">Teacher Notes</p>
+                <p className="text-sm scholr-muted">{pred.rationale}</p>
               </div>
             )}
           </div>
@@ -300,8 +300,8 @@ function AssignmentsTab({ schoolId, userId, userName, classes }) {
     late: 'bg-amber-100 text-amber-700',
     returned: 'bg-blue-100 text-blue-700',
     missing: 'bg-red-100 text-red-700',
-    pending: 'bg-slate-100 text-slate-600',
-    draft: 'bg-slate-100 text-slate-600',
+    pending: 'scholr-sunk scholr-muted',
+    draft: 'scholr-sunk scholr-muted',
   };
 
   const statusLabel = {
@@ -309,7 +309,7 @@ function AssignmentsTab({ schoolId, userId, userName, classes }) {
     missing: 'Missing', pending: 'To Do', draft: 'Draft',
   };
 
-  if (loadingA || loadingS) return <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>;
+  if (loadingA || loadingS) return <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>;
 
   const selectedSub = submittingAssignment ? submissionMap[submittingAssignment.id] : null;
 
@@ -325,7 +325,7 @@ function AssignmentsTab({ schoolId, userId, userName, classes }) {
           <button
             key={filter}
             onClick={() => setStatusFilter(statusFilter === filter ? 'all' : filter)}
-            className={`rounded-xl border p-3 text-center transition-all ${color} ${statusFilter === filter ? 'ring-2 ring-offset-1 ring-current' : 'hover:opacity-80'}`}
+            className={`rounded-xl border p-3 text-center transition-colors ${color} ${statusFilter === filter ? 'ring-2 ring-offset-1 ring-current' : 'hover:opacity-80'}`}
           >
             <p className="text-2xl font-bold">{count}</p>
             <p className="text-xs font-medium mt-0.5">{label}</p>
@@ -357,29 +357,29 @@ function AssignmentsTab({ schoolId, userId, userName, classes }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="text-center py-16 text-slate-400">
-          <ClipboardList className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+        <div className="text-center py-16 scholr-faint">
+          <ClipboardList className="w-12 h-12 mx-auto mb-3 scholr-faint" />
           <p>No assignments match these filters</p>
         </div>
       ) : (
         <div className="space-y-3">
           {filtered.map(a => (
-            <div key={a.id} className={`bg-white rounded-xl border overflow-hidden ${a.displayStatus === 'missing' ? 'border-red-200' : 'border-slate-200'}`}>
+            <div key={a.id} className={`bg-white rounded-xl border overflow-hidden ${a.displayStatus === 'missing' ? 'border-red-200' : 'scholr-rule'}`}>
               <div className="p-4 flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-slate-900 truncate">{a.title}</p>
+                  <p className="font-semibold scholr-ink truncate">{a.title}</p>
                   <div className="flex flex-wrap items-center gap-2 mt-1">
-                    <span className="text-xs text-slate-500">{a.class_name}</span>
+                    <span className="text-xs scholr-muted">{a.class_name}</span>
                     {a.type && <Badge variant="outline" className="text-xs capitalize">{a.type?.replace('_', ' ')}</Badge>}
                   </div>
                   {a.due_date && (
-                    <p className={`text-xs mt-1.5 flex items-center gap-1 ${a.displayStatus === 'missing' ? 'text-red-600' : 'text-slate-500'}`}>
+                    <p className={`text-xs mt-1.5 flex items-center gap-1 ${a.displayStatus === 'missing' ? 'text-red-600' : 'scholr-muted'}`}>
                       <Clock className="w-3 h-3" />
                       Due {format(new Date(a.due_date), 'MMM d, yyyy')}
                     </p>
                   )}
                   {a.submission?.feedback && (
-                    <p className="text-xs text-slate-500 mt-1 truncate">Feedback: {a.submission.feedback}</p>
+                    <p className="text-xs scholr-muted mt-1 truncate">Feedback: {a.submission.feedback}</p>
                   )}
                 </div>
                 <div className="flex flex-col items-end gap-2 flex-shrink-0">
@@ -389,7 +389,7 @@ function AssignmentsTab({ schoolId, userId, userName, classes }) {
                   <Button
                     size="sm"
                     variant={['submitted', 'late'].includes(a.displayStatus) ? 'outline' : 'default'}
-                    className={['submitted', 'late'].includes(a.displayStatus) ? '' : 'bg-indigo-600 hover:bg-indigo-700'}
+                    className={['submitted', 'late'].includes(a.displayStatus) ? '' : 'scholr-accent-sf hover:scholr-accent-sf'}
                     onClick={() => setSubmittingAssignment(a)}
                   >
                     <Send className="w-3.5 h-3.5 mr-1.5" />
@@ -408,7 +408,7 @@ function AssignmentsTab({ schoolId, userId, userName, classes }) {
           <DialogHeader>
             <DialogTitle>{submittingAssignment?.title}</DialogTitle>
             {submittingAssignment?.description && (
-              <p className="text-sm text-slate-600 mt-1">{submittingAssignment.description}</p>
+              <p className="text-sm scholr-muted mt-1">{submittingAssignment.description}</p>
             )}
           </DialogHeader>
           {submittingAssignment && (
@@ -442,18 +442,18 @@ export default function StudentAcademicDashboard() {
 
   return (
     <RoleGuard allowedRoles={['student', 'school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar links={studentLinks} role="student" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         <main className="app-offset p-4 md:p-8">
           <div className="max-w-4xl mx-auto">
             <div className="mb-6">
-              <h1 className="text-xl md:text-2xl font-bold text-slate-900">Academic Dashboard</h1>
-              <p className="text-sm text-slate-500 mt-1">Your grades, predicted scores, and assignments</p>
+              <h1 className="text-xl md:text-2xl font-bold scholr-ink">Academic Dashboard</h1>
+              <p className="text-sm scholr-muted mt-1">Your grades, predicted scores, and assignments</p>
             </div>
 
             {isLoading ? (
               <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+                <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
               </div>
             ) : (
               <Tabs defaultValue="grades">

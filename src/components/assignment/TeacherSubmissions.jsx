@@ -30,7 +30,7 @@ export default function TeacherSubmissions({ assignment, classData }) {
   });
 
   if (isLoading) {
-    return <div className="text-center py-12"><Loader2 className="w-6 h-6 animate-spin text-indigo-600 mx-auto" /></div>;
+    return <div className="text-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent mx-auto" /></div>;
   }
 
   const submissionMap = {};
@@ -43,7 +43,7 @@ export default function TeacherSubmissions({ assignment, classData }) {
   const studentsWithStatus = students.map(student => {
     const submission = submissionMap[student.user_id];
     let status = 'missing';
-    let statusColor = 'bg-slate-100 text-slate-700';
+    let statusColor = 'scholr-sunk scholr-body';
     let statusIcon = <XCircle className="w-4 h-4" />;
 
     if (submission) {
@@ -61,11 +61,11 @@ export default function TeacherSubmissions({ assignment, classData }) {
         statusIcon = <AlertCircle className="w-4 h-4" />;
       } else if (submission.status === 'graded') {
         status = 'graded';
-        statusColor = 'bg-violet-50 text-violet-700';
+        statusColor = 'scholr-accent-sf scholr-accent';
         statusIcon = <CheckCircle className="w-4 h-4" />;
       } else {
         status = 'draft';
-        statusColor = 'bg-slate-100 text-slate-600';
+        statusColor = 'scholr-sunk scholr-muted';
         statusIcon = <Clock className="w-4 h-4" />;
       }
     } else if (new Date() > dueDate) {
@@ -87,9 +87,9 @@ export default function TeacherSubmissions({ assignment, classData }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200 p-4">
-          <p className="text-sm text-slate-500 font-medium">Total Students</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{stats.total}</p>
+        <div className="bg-white rounded-xl border scholr-rule p-4">
+          <p className="text-sm scholr-muted font-medium">Total Students</p>
+          <p className="text-2xl font-bold scholr-ink mt-1">{stats.total}</p>
         </div>
         <div className="bg-emerald-50 rounded-xl border border-emerald-200 p-4">
           <p className="text-sm text-emerald-700 font-medium">Submitted</p>
@@ -105,24 +105,24 @@ export default function TeacherSubmissions({ assignment, classData }) {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50">
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Student</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Status</th>
-              <th className="px-6 py-3 text-center text-xs font-semibold text-slate-600 uppercase">Documents</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Submitted</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Action</th>
+            <tr className="border-b scholr-rule scholr-sunk">
+              <th className="px-6 py-3 text-left text-xs font-semibold scholr-muted uppercase">Student</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold scholr-muted uppercase">Status</th>
+              <th className="px-6 py-3 text-center text-xs font-semibold scholr-muted uppercase">Documents</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold scholr-muted uppercase">Submitted</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold scholr-muted uppercase">Action</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y scholr-divide">
             {studentsWithStatus.map(student => (
-              <tr key={student.id} className="hover:bg-slate-50">
+              <tr key={student.id} className="hover:scholr-sunk">
                 <td className="px-6 py-4">
                   <div>
-                    <p className="font-medium text-slate-900">{student.user_name || student.user_email}</p>
-                    <p className="text-xs text-slate-400">{student.grade_level || ''}</p>
+                    <p className="font-medium scholr-ink">{student.user_name || student.user_email}</p>
+                    <p className="text-xs scholr-faint">{student.grade_level || ''}</p>
                   </div>
                 </td>
                 <td className="px-6 py-4">
@@ -136,14 +136,14 @@ export default function TeacherSubmissions({ assignment, classData }) {
                      <div className="space-y-1.5">
                        {student.submission.documents.map((doc) => {
                          let Icon = FileText;
-                         let color = 'text-slate-600';
+                         let color = 'scholr-muted';
                          let label = 'File';
                          const isGoogleDoc = doc.type?.includes('google');
                          if (doc.type === 'google_doc') { Icon = FileText; color = 'text-blue-600'; label = 'Doc'; }
                          else if (doc.type === 'google_slides') { Icon = Presentation; color = 'text-amber-600'; label = 'Slides'; }
                          else if (doc.type === 'google_sheet') { Icon = Table; color = 'text-emerald-600'; label = 'Sheet'; }
-                         else if (doc.type === 'uploaded_file') { Icon = Upload; color = 'text-slate-600'; label = 'File'; }
-                         else if (doc.type === 'external_link') { Icon = LinkIcon; color = 'text-indigo-600'; label = 'Link'; }
+                         else if (doc.type === 'uploaded_file') { Icon = Upload; color = 'scholr-muted'; label = 'File'; }
+                         else if (doc.type === 'external_link') { Icon = LinkIcon; color = 'scholr-accent'; label = 'Link'; }
 
                          if (isGoogleDoc) {
                            return (
@@ -153,7 +153,7 @@ export default function TeacherSubmissions({ assignment, classData }) {
                                  onOpenDocument={() => window.open(doc.url, '_blank')}
                                  isTeacher={true}
                                />
-                               <span className="text-slate-600 truncate">{doc.name}</span>
+                               <span className="scholr-muted truncate">{doc.name}</span>
                              </div>
                            );
                          }
@@ -161,7 +161,7 @@ export default function TeacherSubmissions({ assignment, classData }) {
                          return (
                            <div key={doc.id} className="flex items-center gap-2 text-xs">
                              <Icon className={`w-3.5 h-3.5 ${color}`} />
-                             <span className="text-slate-700 max-w-xs truncate">{doc.name}</span>
+                             <span className="scholr-body max-w-xs truncate">{doc.name}</span>
                              {doc.url && (
                                <a
                                  href={doc.url}
@@ -177,10 +177,10 @@ export default function TeacherSubmissions({ assignment, classData }) {
                        })}
                      </div>
                    ) : (
-                     <span className="text-slate-400 text-sm">—</span>
+                     <span className="scholr-faint text-sm">—</span>
                    )}
                  </td>
-                <td className="px-6 py-4 text-sm text-slate-600">
+                <td className="px-6 py-4 text-sm scholr-muted">
                   {student.submission?.submitted_at 
                     ? format(new Date(student.submission.submitted_at), 'MMM d, h:mm a')
                     : '—'}

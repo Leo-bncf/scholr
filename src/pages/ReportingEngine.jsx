@@ -168,18 +168,18 @@ export default function ReportingEngine() {
   };
 
   if (isLoading) {
-    return <div className="min-h-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-700" /></div>;
+    return <div className="min-h-screen scholr-sunk flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-700" /></div>;
   }
 
   return (
     <RoleGuard allowedRoles={['school_admin', 'ib_coordinator', 'admin', 'super_admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar links={SCHOOL_ADMIN_SIDEBAR_LINKS} role="school_admin" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         <main className="app-offset p-6 max-w-7xl mx-auto space-y-6">
           <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">Reporting Engine</h1>
-              <p className="text-sm text-slate-500 mt-1">Fast operational reports for school leadership and admins.</p>
+              <h1 className="text-2xl font-bold scholr-ink">Reporting Engine</h1>
+              <p className="text-sm scholr-muted mt-1">Fast operational reports for school leadership and admins.</p>
             </div>
             <div className="flex items-center gap-3">
               <Select value={reportType} onValueChange={setReportType}>

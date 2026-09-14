@@ -17,7 +17,7 @@ import * as classesData from '@/data/classes';
 
 const statusColors = {
   active: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  inactive: 'bg-slate-50 text-slate-600 border-slate-200',
+  inactive: 'scholr-sunk scholr-muted scholr-rule',
   pending: 'bg-amber-50 text-amber-700 border-amber-200',
 };
 
@@ -134,7 +134,7 @@ export default function ClassPeople({ classData }) {
   };
 
   if (isLoading) {
-    return <div className="p-6 text-center"><Loader2 className="w-6 h-6 animate-spin text-indigo-600 mx-auto" /></div>;
+    return <div className="p-6 text-center"><Loader2 className="w-6 h-6 animate-spin scholr-accent mx-auto" /></div>;
   }
 
   const { teachers = [], students = [], availableStudents = [], availableTeachers = [] } = memberships;
@@ -151,8 +151,8 @@ export default function ClassPeople({ classData }) {
       <div>
         <div className="flex items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-slate-700" />
-            <h2 className="text-lg font-bold text-slate-900">Teachers</h2>
+            <Users className="w-5 h-5 scholr-body" />
+            <h2 className="text-lg font-bold scholr-ink">Teachers</h2>
             <Badge variant="secondary" className="ml-1">{teachers.length}</Badge>
           </div>
           {canEdit && (
@@ -168,30 +168,30 @@ export default function ClassPeople({ classData }) {
           )}
         </div>
         {teachers.length === 0 ? (
-          <p className="text-slate-400 text-sm">No teachers assigned</p>
+          <p className="scholr-faint text-sm">No teachers assigned</p>
         ) : (
           <div className="grid sm:grid-cols-2 gap-3">
             {teachers.map(t => (
-              <div key={t.id} className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3 group">
-                <div className="w-11 h-11 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-base flex-shrink-0">
+              <div key={t.id} className="bg-white rounded-xl border scholr-rule p-4 flex items-center gap-3 group">
+                <div className="w-11 h-11 rounded-full scholr-accent-sf flex items-center justify-center scholr-accent font-bold text-base flex-shrink-0">
                   {t.user_name?.[0]?.toUpperCase() || '?'}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="font-semibold text-slate-900 truncate">{t.user_name || 'Unknown'}</p>
+                    <p className="font-semibold scholr-ink truncate">{t.user_name || 'Unknown'}</p>
                     {classData.primary_teacher_id === t.user_id && (
-                      <Badge className="bg-indigo-50 text-indigo-700 border border-indigo-200 text-[10px]">Primary</Badge>
+                      <Badge className="scholr-accent-sf scholr-accent border scholr-accent-rule text-[10px]">Primary</Badge>
                     )}
                   </div>
-                  <p className="text-sm text-slate-500 truncate flex items-center gap-1">
+                  <p className="text-sm scholr-muted truncate flex items-center gap-1">
                     <Mail className="w-3 h-3" />{t.user_email}
                   </p>
-                  {t.department && <p className="text-xs text-slate-400 mt-0.5">{t.department}</p>}
+                  {t.department && <p className="text-xs scholr-faint mt-0.5">{t.department}</p>}
                 </div>
                 {canEdit && (
                   <button
                     onClick={() => setRemoveTarget({ kind: 'teacher', userId: t.user_id, name: t.user_name || 'this teacher' })}
-                    className="opacity-0 group-hover:opacity-100 transition text-slate-400 hover:text-red-600 p-1"
+                    className="opacity-0 group-hover:opacity-100 transition scholr-faint hover:text-red-600 p-1"
                     title="Remove from class"
                   >
                     <X className="w-4 h-4" />
@@ -207,20 +207,20 @@ export default function ClassPeople({ classData }) {
       <div>
         <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
           <div className="flex items-center gap-2">
-            <GraduationCap className="w-5 h-5 text-slate-700" />
-            <h2 className="text-lg font-bold text-slate-900">Students</h2>
+            <GraduationCap className="w-5 h-5 scholr-body" />
+            <h2 className="text-lg font-bold scholr-ink">Students</h2>
             <Badge variant="secondary" className="ml-1">{students.length}</Badge>
           </div>
           <div className="flex items-center gap-2">
             <div className="relative w-56">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 scholr-faint" />
               <Input value={search} onChange={e => setSearch(e.target.value)}
                 placeholder="Search students..." className="pl-9 h-8 text-sm" />
             </div>
             {canEdit && (
               <Button
                 size="sm"
-                className="h-8 text-xs bg-indigo-600 hover:bg-indigo-700"
+                className="h-8 text-xs scholr-accent-sf hover:scholr-accent-sf"
                 onClick={() => setEnrollOpen(true)}
               >
                 <UserPlus className="w-3.5 h-3.5 mr-1.5" />
@@ -237,39 +237,39 @@ export default function ClassPeople({ classData }) {
         )}
 
         {filteredStudents.length === 0 ? (
-          <p className="text-slate-400 text-sm">{students.length === 0 ? 'No students enrolled' : 'No students match your search'}</p>
+          <p className="scholr-faint text-sm">{students.length === 0 ? 'No students enrolled' : 'No students match your search'}</p>
         ) : (
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200">
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Student</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Year / Level</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Cohort</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Contact</th>
+                <tr className="scholr-sunk border-b scholr-rule">
+                  <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase tracking-wide">Student</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase tracking-wide">Year / Level</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase tracking-wide">Cohort</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase tracking-wide">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase tracking-wide">Contact</th>
                   {canEdit && <th className="px-4 py-3 w-10"></th>}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y scholr-divide">
                 {filteredStudents.map(s => (
-                  <tr key={s.id} className="hover:bg-slate-50 transition-colors group">
+                  <tr key={s.id} className="hover:scholr-sunk transition-colors group">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-semibold text-sm flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full scholr-sunk flex items-center justify-center scholr-muted font-semibold text-sm flex-shrink-0">
                           {s.user_name?.[0]?.toUpperCase() || '?'}
                         </div>
                         <div>
-                          <p className="font-medium text-slate-900 text-sm">{s.user_name || s.user_email}</p>
+                          <p className="font-medium scholr-ink text-sm">{s.user_name || s.user_email}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-slate-600">{s.grade_level || '—'}</td>
+                    <td className="px-4 py-3 text-sm scholr-muted">{s.grade_level || '—'}</td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap gap-1">
                         {s.cohorts.length > 0
                           ? s.cohorts.map((c, i) => <Badge key={i} variant="secondary" className="text-xs font-normal">{c}</Badge>)
-                          : <span className="text-sm text-slate-400">—</span>
+                          : <span className="text-sm scholr-faint">—</span>
                         }
                       </div>
                     </td>
@@ -278,8 +278,8 @@ export default function ClassPeople({ classData }) {
                         {s.status || 'active'}
                       </Badge>
                     </td>
-                    <td className="px-4 py-3 text-sm text-slate-500">
-                      <a href={`mailto:${s.user_email}`} className="flex items-center gap-1 hover:text-indigo-600 truncate max-w-[180px]">
+                    <td className="px-4 py-3 text-sm scholr-muted">
+                      <a href={`mailto:${s.user_email}`} className="flex items-center gap-1 hover:scholr-accent truncate max-w-[180px]">
                         <Mail className="w-3.5 h-3.5 flex-shrink-0" />
                         <span className="truncate">{s.user_email}</span>
                       </a>
@@ -288,7 +288,7 @@ export default function ClassPeople({ classData }) {
                       <td className="px-2 py-3">
                         <button
                           onClick={() => setRemoveTarget({ kind: 'student', userId: s.user_id, name: s.user_name || 'this student' })}
-                          className="opacity-0 group-hover:opacity-100 transition text-slate-400 hover:text-red-600 p-1"
+                          className="opacity-0 group-hover:opacity-100 transition scholr-faint hover:text-red-600 p-1"
                           title="Remove from class"
                         >
                           <X className="w-4 h-4" />

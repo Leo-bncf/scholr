@@ -37,17 +37,17 @@ export default function TourOverlay({ active, step, stepIndex, total, rect, onNe
   // Build the spotlight: four dark rects around the target (we avoid CSS mask for browser compat)
   const spotlight = rect ? (
     <>
-      <div className="fixed inset-x-0 top-0 bg-slate-900/55 backdrop-blur-[1px]" style={{ height: Math.max(0, rect.top - PADDING) }} />
+      <div className="fixed inset-x-0 top-0 scholr-sunk/55 backdrop-blur-[1px]" style={{ height: Math.max(0, rect.top - PADDING) }} />
       <div
-        className="fixed bg-slate-900/55 backdrop-blur-[1px]"
+        className="fixed scholr-sunk/55 backdrop-blur-[1px]"
         style={{ top: Math.max(0, rect.top - PADDING), left: 0, width: Math.max(0, rect.left - PADDING), height: rect.height + PADDING * 2 }}
       />
       <div
-        className="fixed bg-slate-900/55 backdrop-blur-[1px]"
+        className="fixed scholr-sunk/55 backdrop-blur-[1px]"
         style={{ top: Math.max(0, rect.top - PADDING), left: rect.left + rect.width + PADDING, right: 0, height: rect.height + PADDING * 2 }}
       />
       <div
-        className="fixed inset-x-0 bg-slate-900/55 backdrop-blur-[1px]"
+        className="fixed inset-x-0 scholr-sunk/55 backdrop-blur-[1px]"
         style={{ top: rect.top + rect.height + PADDING, bottom: 0 }}
       />
       {/* Highlight ring */}
@@ -64,7 +64,7 @@ export default function TourOverlay({ active, step, stepIndex, total, rect, onNe
       />
     </>
   ) : (
-    <div className="fixed inset-0 bg-slate-900/55 backdrop-blur-[1px]" />
+    <div className="fixed inset-0 scholr-sunk/55 backdrop-blur-[1px]" />
   );
 
   return createPortal(
@@ -99,7 +99,7 @@ export default function TourOverlay({ active, step, stepIndex, total, rect, onNe
             </div>
             <button
               onClick={onDismiss}
-              className="h-6 w-6 rounded-full hover:bg-slate-200 text-slate-500 flex items-center justify-center"
+              className="h-6 w-6 rounded-full hover:scholr-sunk text-slate-500 flex items-center justify-center"
               aria-label="Skip tour"
             >
               <X className="w-3.5 h-3.5" />
@@ -114,7 +114,7 @@ export default function TourOverlay({ active, step, stepIndex, total, rect, onNe
               {Array.from({ length: total }).map((_, i) => (
                 <span
                   key={i}
-                  className={`h-1 rounded-full transition-all duration-150 ${i === stepIndex ? 'w-5 bg-emerald-700' : 'w-1.5 bg-slate-200'}`}
+                  className={`h-1 rounded-full transition-colors duration-150 ${i === stepIndex ? 'w-5 bg-emerald-700' : 'w-1.5 scholr-sunk'}`}
                 />
               ))}
             </div>
@@ -122,7 +122,7 @@ export default function TourOverlay({ active, step, stepIndex, total, rect, onNe
               {!isFirst && (
                 <button
                   onClick={onBack}
-                  className="inline-flex items-center gap-1 text-xs font-medium text-slate-600 hover:text-slate-900"
+                  className="inline-flex items-center gap-1 text-xs font-medium text-slate-600 scholr-ink"
                 >
                   <ArrowLeft className="w-3 h-3" /> Back
                 </button>

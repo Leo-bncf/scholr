@@ -38,7 +38,7 @@ export default function ConfirmDialog({
             className={
               isDestructive
                 ? 'bg-red-600 hover:bg-red-700'
-                : 'bg-indigo-600 hover:bg-indigo-700'
+                : 'scholr-accent-sf hover:scholr-accent-sf'
             }
           >
             {confirmLabel}

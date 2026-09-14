@@ -110,7 +110,7 @@ export default function SchoolOnboarding() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+        <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
       </div>
     );
   }
@@ -120,16 +120,16 @@ export default function SchoolOnboarding() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
+      <div className="bg-white border-b scholr-rule sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Home className="w-6 h-6 text-indigo-600" />
-            <h1 className="text-2xl font-bold text-slate-900">Set Up Your School</h1>
+            <Home className="w-6 h-6 scholr-accent" />
+            <h1 className="text-2xl font-bold scholr-ink">Set Up Your School</h1>
           </div>
           <Button
             variant="ghost"
             onClick={() => navigate(createPageUrl('SchoolAdminDashboard'))}
-            className="text-slate-600"
+            className="scholr-muted"
           >
             Exit Setup
           </Button>
@@ -168,12 +168,12 @@ export default function SchoolOnboarding() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm p-8 mb-8">
               <div className="mb-6">
-                <div className="flex items-center gap-2 text-sm text-indigo-600 font-semibold">
+                <div className="flex items-center gap-2 text-sm scholr-accent font-semibold">
                   <span>Step {currentStep + 1}</span>
                   <span>of</span>
                   <span>{steps.length}</span>
                 </div>
-                <h2 className="text-3xl font-bold text-slate-900 mt-2">
+                <h2 className="text-3xl font-bold scholr-ink mt-2">
                   {steps[currentStep].label}
                 </h2>
               </div>
@@ -196,7 +196,7 @@ export default function SchoolOnboarding() {
                 Back
               </Button>
 
-              <div className="text-sm text-slate-600">
+              <div className="text-sm scholr-muted">
                 {completedSteps.size} of {steps.length} steps completed
               </div>
 

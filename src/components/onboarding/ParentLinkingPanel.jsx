@@ -50,22 +50,22 @@ export default function ParentLinkingPanel({ schoolId }) {
   }, [links, search]);
 
   if (loadingMembers || loadingLinks) {
-    return <div className="text-center py-8 text-slate-400 text-sm">Loading parent-student links...</div>;
+    return <div className="text-center py-8 scholr-faint text-sm">Loading parent-student links...</div>;
   }
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-bold text-slate-900">Parent–Student Links</h3>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h3 className="text-lg font-bold scholr-ink">Parent–Student Links</h3>
+          <p className="text-xs scholr-muted mt-0.5">
             {links.length} link{links.length !== 1 && 's'} · {parents.length} parents · {students.length} students at your school
           </p>
         </div>
         <Button
           onClick={() => setDialogOpen(true)}
           disabled={parents.length === 0 || students.length === 0}
-          className="bg-indigo-600 hover:bg-indigo-700 gap-1.5"
+          className="scholr-accent-sf hover:scholr-accent-sf gap-1.5"
         >
           <Plus className="w-4 h-4" /> Link parent to student
         </Button>
@@ -81,7 +81,7 @@ export default function ParentLinkingPanel({ schoolId }) {
 
       {links.length > 0 && (
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 scholr-faint" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -92,22 +92,22 @@ export default function ParentLinkingPanel({ schoolId }) {
       )}
 
       {links.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-10 text-center">
-          <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-600 font-medium mb-1">No parent-student links yet</p>
-          <p className="text-xs text-slate-500 mb-4">Link parent accounts to the students they're responsible for.</p>
+        <div className="bg-white rounded-xl border scholr-rule p-10 text-center">
+          <Users className="w-10 h-10 scholr-faint mx-auto mb-3" />
+          <p className="scholr-muted font-medium mb-1">No parent-student links yet</p>
+          <p className="text-xs scholr-muted mb-4">Link parent accounts to the students they're responsible for.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 divide-y divide-slate-100">
+        <div className="bg-white rounded-xl border scholr-rule divide-y scholr-divide">
           {filteredLinks.map((link) => (
             <div key={link.id} className="p-4 flex items-center gap-3">
-              <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <Link2 className="w-4 h-4 text-indigo-600" />
+              <div className="w-8 h-8 scholr-accent-sf rounded-full flex items-center justify-center flex-shrink-0">
+                <Link2 className="w-4 h-4 scholr-accent" />
               </div>
               <div className="flex-1 min-w-0 flex items-center gap-2 text-sm">
-                <span className="font-medium text-slate-900 truncate">{link.parent_name || 'Parent'}</span>
-                <span className="text-slate-400 text-xs">→</span>
-                <span className="text-slate-700 truncate">{link.student_name || 'Student'}</span>
+                <span className="font-medium scholr-ink truncate">{link.parent_name || 'Parent'}</span>
+                <span className="scholr-faint text-xs">→</span>
+                <span className="scholr-body truncate">{link.student_name || 'Student'}</span>
                 <Badge variant="outline" className="text-[10px] capitalize ml-1">{link.relationship || 'guardian'}</Badge>
               </div>
               <Button
@@ -193,7 +193,7 @@ function LinkParentDialog({ open, onClose, schoolId, parents, students, existing
               <SelectContent>
                 {students.map(s => (
                   <SelectItem key={s.user_id} value={s.user_id}>
-                    {s.user_name || s.user_email} {s.grade_level && <span className="text-slate-400">· {s.grade_level}</span>}
+                    {s.user_name || s.user_email} {s.grade_level && <span className="scholr-faint">· {s.grade_level}</span>}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -224,7 +224,7 @@ function LinkParentDialog({ open, onClose, schoolId, parents, students, existing
             <Button
               onClick={() => createMutation.mutate()}
               disabled={!parentId || !studentId || alreadyLinked || createMutation.isPending}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700 gap-1.5"
+              className="flex-1 scholr-accent-sf hover:scholr-accent-sf gap-1.5"
             >
               {createMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserCheck className="w-4 h-4" />}
               Create link

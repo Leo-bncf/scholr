@@ -116,7 +116,7 @@ export default function SchoolAdminGovernance() {
 
   return (
     <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar
           links={SCHOOL_ADMIN_SIDEBAR_LINKS}
           role="school_admin"
@@ -127,14 +127,14 @@ export default function SchoolAdminGovernance() {
         />
 
         <main className="app-offset">
-          <div className="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-10 shadow-sm">
+          <div className="bg-white border-b scholr-rule px-6 py-4 sticky top-0 z-10 shadow-sm">
             <div className="flex items-center gap-2.5">
-              <div className="bg-indigo-100 rounded-lg p-1.5">
-                <Shield className="w-4 h-4 text-indigo-700" />
+              <div className="scholr-accent-sf rounded-lg p-1.5">
+                <Shield className="w-4 h-4 scholr-accent" />
               </div>
               <div>
-                <h1 className="text-base font-black text-slate-900 tracking-tight">Audit, Compliance & Data Governance</h1>
-                <p className="text-xs text-slate-400 mt-0.5">School-scoped audit trail, change controls, retention policy, and privacy request management</p>
+                <h1 className="text-base font-black scholr-ink tracking-tight">Audit, Compliance & Data Governance</h1>
+                <p className="text-xs scholr-faint mt-0.5">School-scoped audit trail, change controls, retention policy, and privacy request management</p>
               </div>
             </div>
           </div>
@@ -154,17 +154,17 @@ export default function SchoolAdminGovernance() {
 
           <div className="p-6 max-w-6xl">
             <Tabs defaultValue="audit">
-              <TabsList className="bg-white border border-slate-200 h-auto mb-6 flex-wrap">
-                <TabsTrigger value="audit" className="text-xs gap-1.5 data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
+              <TabsList className="bg-white border scholr-rule h-auto mb-6 flex-wrap">
+                <TabsTrigger value="audit" className="text-xs gap-1.5 data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
                   <ScrollText className="w-3.5 h-3.5" /> Audit Log
                 </TabsTrigger>
-                <TabsTrigger value="reasons" className="text-xs gap-1.5 data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
+                <TabsTrigger value="reasons" className="text-xs gap-1.5 data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
                   <Lock className="w-3.5 h-3.5" /> Reason Enforcement
                 </TabsTrigger>
-                <TabsTrigger value="retention" className="text-xs gap-1.5 data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
+                <TabsTrigger value="retention" className="text-xs gap-1.5 data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
                   <Database className="w-3.5 h-3.5" /> Data Retention
                 </TabsTrigger>
-                <TabsTrigger value="privacy" className="text-xs gap-1.5 data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
+                <TabsTrigger value="privacy" className="text-xs gap-1.5 data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
                   <UserX className="w-3.5 h-3.5" /> Privacy Requests
                 </TabsTrigger>
               </TabsList>

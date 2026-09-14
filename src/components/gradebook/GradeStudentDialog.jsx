@@ -120,7 +120,7 @@ export default function GradeStudentDialog({ gradeItem, student, existingGrade, 
       <DialogContent className="max-w-xl">
         <DialogHeader>
           <DialogTitle>Grade: {student.user_name || student.user_email}</DialogTitle>
-          <p className="text-sm text-slate-500">{gradeItem.title}</p>
+          <p className="text-sm scholr-muted">{gradeItem.title}</p>
         </DialogHeader>
 
         {effectiveLocked && (
@@ -148,7 +148,7 @@ export default function GradeStudentDialog({ gradeItem, student, existingGrade, 
                   placeholder="0"
                   className="flex-1"
                 />
-                <span className="text-sm text-slate-500">/ {gradeItem.max_score}</span>
+                <span className="text-sm scholr-muted">/ {gradeItem.max_score}</span>
               </div>
             </div>
             {showIBGrade && (
@@ -239,7 +239,7 @@ export default function GradeStudentDialog({ gradeItem, student, existingGrade, 
             <Button
               onClick={handleSave}
               disabled={saveMutation.isPending || effectiveLocked || (needsJustification && justification.trim().length < (policy.justification_min_chars || 20))}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+              className="flex-1 scholr-accent-sf hover:scholr-accent-sf"
             >
               {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
               Save Grade

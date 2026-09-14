@@ -8,8 +8,8 @@ function Pill({ active, onClick, children }) {
       onClick={onClick}
       className={`px-3 py-1.5 rounded-md text-xs font-semibold transition border ${
         active
-          ? 'bg-indigo-600 text-white border-indigo-600'
-          : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
+          ? 'scholr-accent-sf text-white scholr-accent-rule'
+          : 'bg-white text-slate-700 border-slate-200 hover:scholr-rule'
       }`}
     >
       {children}

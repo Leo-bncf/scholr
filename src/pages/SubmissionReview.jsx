@@ -65,16 +65,16 @@ export default function SubmissionReview() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+      <div className="min-h-screen scholr-sunk flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
       </div>
     );
   }
 
   if (!submission) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <p className="text-slate-500">Submission not found</p>
+      <div className="min-h-screen scholr-sunk flex items-center justify-center">
+        <p className="scholr-muted">Submission not found</p>
       </div>
     );
   }
@@ -100,12 +100,12 @@ export default function SubmissionReview() {
     submitted: 'bg-emerald-50 text-emerald-700',
     late: 'bg-amber-50 text-amber-700',
     returned: 'bg-blue-50 text-blue-700',
-    graded: 'bg-violet-50 text-violet-700',
+    graded: 'scholr-accent-sf scholr-accent',
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="bg-white border-b border-slate-200">
+    <div className="min-h-screen scholr-sunk">
+      <div className="bg-white border-b scholr-rule">
         <div className="max-w-5xl mx-auto px-6 py-4">
           <a href={createPageUrl('AssignmentDetail') + `?assignment_id=${submission.assignment_id}`}>
             <Button variant="ghost" size="sm" className="mb-3">
@@ -114,12 +114,12 @@ export default function SubmissionReview() {
           </a>
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">{submission.student_name}'s Submission</h1>
-              <p className="text-sm text-slate-500 mt-1">
+              <h1 className="text-2xl font-bold scholr-ink">{submission.student_name}'s Submission</h1>
+              <p className="text-sm scholr-muted mt-1">
                 {assignment?.title || 'Loading...'}
               </p>
             </div>
-            <Badge className={`${statusColors[submission.status] || 'bg-slate-100 text-slate-700'} border-0`}>
+            <Badge className={`${statusColors[submission.status] || 'scholr-sunk scholr-body'} border-0`}>
               {submission.status}
             </Badge>
           </div>
@@ -131,24 +131,24 @@ export default function SubmissionReview() {
           <div className="lg:col-span-2 space-y-6">
             <SubmissionHistory submissions={[...submissionHistory].sort((a, b) => (b.version_number || 0) - (a.version_number || 0))} currentId={submission.id} />
 
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
-              <h2 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+            <div className="bg-white rounded-xl border scholr-rule p-6">
+              <h2 className="font-semibold scholr-ink mb-4 flex items-center gap-2">
                 <FileText className="w-5 h-5" />
                 Student Work
               </h2>
 
               {submission.content && (
                 <div className="mb-6">
-                  <p className="text-sm font-medium text-slate-700 mb-2">Written Response</p>
-                  <div className="p-4 bg-slate-50 rounded-lg">
-                    <p className="text-slate-700 whitespace-pre-wrap">{submission.content}</p>
+                  <p className="text-sm font-medium scholr-body mb-2">Written Response</p>
+                  <div className="p-4 scholr-sunk rounded-lg">
+                    <p className="scholr-body whitespace-pre-wrap">{submission.content}</p>
                   </div>
                 </div>
               )}
 
               {submission.documents && submission.documents.length > 0 && (
                 <div className="mb-6">
-                  <p className="text-sm font-medium text-slate-700 mb-3">Documents & Attachments</p>
+                  <p className="text-sm font-medium scholr-body mb-3">Documents & Attachments</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {submission.documents.map(doc => (
                       <div key={doc.id} className="space-y-3">
@@ -167,12 +167,12 @@ export default function SubmissionReview() {
               {/* Legacy support for old submissions */}
               {submission.link_url && (
                 <div className="mb-6">
-                  <p className="text-sm font-medium text-slate-700 mb-2">Link (Legacy)</p>
+                  <p className="text-sm font-medium scholr-body mb-2">Link (Legacy)</p>
                   <a
                     href={submission.link_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors text-indigo-600"
+                    className="flex items-center gap-2 p-3 scholr-sunk rounded-lg hover:scholr-sunk transition-colors scholr-accent"
                   >
                     <Link2 className="w-4 h-4" />
                     {submission.link_url}
@@ -181,7 +181,7 @@ export default function SubmissionReview() {
               )}
               {submission.file_urls && submission.file_urls.length > 0 && (
                 <div className="mb-6">
-                  <p className="text-sm font-medium text-slate-700 mb-2">Attachments (Legacy)</p>
+                  <p className="text-sm font-medium scholr-body mb-2">Attachments (Legacy)</p>
                   <div className="space-y-2">
                     {submission.file_urls.map((url, i) => (
                       <a
@@ -189,10 +189,10 @@ export default function SubmissionReview() {
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                        className="flex items-center gap-2 p-3 scholr-sunk rounded-lg hover:scholr-sunk transition-colors"
                       >
-                        <FileText className="w-4 h-4 text-slate-400" />
-                        <span className="text-sm text-slate-700">File {i + 1}</span>
+                        <FileText className="w-4 h-4 scholr-faint" />
+                        <span className="text-sm scholr-body">File {i + 1}</span>
                       </a>
                     ))}
                   </div>
@@ -203,14 +203,14 @@ export default function SubmissionReview() {
                (!submission.documents || submission.documents.length === 0) && 
                !submission.link_url && 
                (!submission.file_urls || submission.file_urls.length === 0) && (
-                <p className="text-slate-400 text-center py-8">No work submitted yet</p>
+                <p className="scholr-faint text-center py-8">No work submitted yet</p>
               )}
             </div>
 
             <TeacherAnnotationsPanel annotations={submission.annotations || []} onAddAnnotation={handleAddAnnotation} />
 
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
-              <h2 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+            <div className="bg-white rounded-xl border scholr-rule p-6">
+              <h2 className="font-semibold scholr-ink mb-4 flex items-center gap-2">
                 <MessageSquare className="w-5 h-5" />
                 Teacher Feedback
               </h2>
@@ -224,7 +224,7 @@ export default function SubmissionReview() {
               <Button
                 onClick={handleReturn}
                 disabled={updateMutation.isPending}
-                className="bg-indigo-600 hover:bg-indigo-700"
+                className="scholr-accent-sf hover:scholr-accent-sf"
               >
                 {updateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
                 Save & Return to Student
@@ -233,52 +233,52 @@ export default function SubmissionReview() {
           </div>
 
           <div className="space-y-4">
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
-              <h3 className="font-semibold text-slate-900 mb-3">Submission Info</h3>
+            <div className="bg-white rounded-xl border scholr-rule p-5">
+              <h3 className="font-semibold scholr-ink mb-3">Submission Info</h3>
               <div className="space-y-3 text-sm">
                 <div>
-                  <p className="text-slate-500">Student</p>
-                  <p className="font-medium text-slate-900">{submission.student_name}</p>
+                  <p className="scholr-muted">Student</p>
+                  <p className="font-medium scholr-ink">{submission.student_name}</p>
                 </div>
                 <div>
-                  <p className="text-slate-500">Submitted</p>
-                  <p className="font-medium text-slate-900">
+                  <p className="scholr-muted">Submitted</p>
+                  <p className="font-medium scholr-ink">
                     {submission.submitted_at 
                       ? format(new Date(submission.submitted_at), 'MMM d, yyyy h:mm a')
                       : 'Not submitted'}
                   </p>
                 </div>
                 <div>
-                  <p className="text-slate-500">Version</p>
-                  <p className="font-medium text-slate-900">{submission.version_number || 1}</p>
+                  <p className="scholr-muted">Version</p>
+                  <p className="font-medium scholr-ink">{submission.version_number || 1}</p>
                 </div>
                 <div>
-                  <p className="text-slate-500">File Type</p>
-                  <p className="font-medium text-slate-900">{submission.file_type || '—'}</p>
+                  <p className="scholr-muted">File Type</p>
+                  <p className="font-medium scholr-ink">{submission.file_type || '—'}</p>
                 </div>
                 <div>
-                  <p className="text-slate-500">Status</p>
+                  <p className="scholr-muted">Status</p>
                   <Badge className={`${statusColors[submission.status]} border-0 mt-1`}>
                     {submission.status}
                   </Badge>
                 </div>
                 {submission.graded_at && (
                   <div>
-                    <p className="text-slate-500">Graded</p>
-                    <p className="font-medium text-slate-900">
+                    <p className="scholr-muted">Graded</p>
+                    <p className="font-medium scholr-ink">
                       {format(new Date(submission.graded_at), 'MMM d, yyyy')}
                     </p>
                   </div>
                 )}
                 {submission.score !== undefined && submission.score !== null && (
                   <div>
-                    <p className="text-slate-500">Score</p>
-                    <p className="font-medium text-slate-900">{submission.score} points</p>
+                    <p className="scholr-muted">Score</p>
+                    <p className="font-medium scholr-ink">{submission.score} points</p>
                   </div>
                 )}
                 <div>
-                  <p className="text-slate-500">Annotations</p>
-                  <p className="font-medium text-slate-900">{submission.annotations?.length || 0}</p>
+                  <p className="scholr-muted">Annotations</p>
+                  <p className="font-medium scholr-ink">{submission.annotations?.length || 0}</p>
                 </div>
               </div>
             </div>

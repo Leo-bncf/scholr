@@ -19,7 +19,7 @@ import {
 
 const statusVisual = {
   submitted:   { label: 'Submitted',   icon: CheckCircle2, color: 'bg-emerald-50 text-emerald-700' },
-  graded:      { label: 'Graded',      icon: CheckCircle2, color: 'bg-violet-50 text-violet-700' },
+  graded:      { label: 'Graded',      icon: CheckCircle2, color: 'scholr-accent-sf scholr-accent' },
   in_progress: { label: 'In progress', icon: Clock,        color: 'bg-amber-50 text-amber-700' },
   late:        { label: 'Late',        icon: AlertCircle,  color: 'bg-red-50 text-red-700' },
   not_started: { label: 'Not started', icon: CircleDashed, color: 'bg-slate-100 text-slate-700' },
@@ -27,9 +27,9 @@ const statusVisual = {
 
 const typeColors = {
   homework:            'bg-blue-50 text-blue-700',
-  essay:               'bg-purple-50 text-purple-700',
-  internal_assessment: 'bg-indigo-50 text-indigo-700',
-  extended_essay:      'bg-violet-50 text-violet-700',
+  essay:               'scholr-accent-sf scholr-accent',
+  internal_assessment: 'scholr-accent-sf scholr-accent',
+  extended_essay:      'scholr-accent-sf scholr-accent',
   lab_report:          'bg-cyan-50 text-cyan-700',
 };
 
@@ -42,7 +42,7 @@ export default function DemoStudentAssignment() {
     return (
       <DemoShell roleKey="student">
         <p className="text-sm text-slate-500">Assignment not found.</p>
-        <Link to="/demo/student" className="text-sm font-semibold text-indigo-700 hover:underline">
+        <Link to="/demo/student" className="text-sm font-semibold scholr-accent hover:underline">
           ← Back to dashboard
         </Link>
       </DemoShell>
@@ -64,7 +64,7 @@ export default function DemoStudentAssignment() {
     <DemoShell roleKey="student">
       <Link
         to="/demo/student"
-        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900 mb-4"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 scholr-ink mb-4"
       >
         <ArrowLeft className="w-4 h-4" /> Back to dashboard
       </Link>
@@ -107,8 +107,8 @@ export default function DemoStudentAssignment() {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {rubric.criteria.map((c) => (
-                      <Badge key={c.id} className="bg-indigo-50 text-indigo-700 border-0 text-xs">
-                        {c.name} <span className="text-indigo-400 ml-1">/ {c.max}</span>
+                      <Badge key={c.id} className="scholr-accent-sf scholr-accent border-0 text-xs">
+                        {c.name} <span className="scholr-accent ml-1">/ {c.max}</span>
                       </Badge>
                     ))}
                   </div>
@@ -122,7 +122,7 @@ export default function DemoStudentAssignment() {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {assignment.ibCriteria.map((c) => (
-                      <Badge key={c} className="bg-indigo-50 text-indigo-700 border-0 text-xs">
+                      <Badge key={c} className="scholr-accent-sf scholr-accent border-0 text-xs">
                         {c}
                       </Badge>
                     ))}
@@ -139,13 +139,13 @@ export default function DemoStudentAssignment() {
                 No feedback yet — your teacher will review this once you submit.
               </div>
             ) : (
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y scholr-divide">
                 {feedback.map((f) => {
                   const t = getTeacher(f.teacherId);
                   return (
                     <div key={f.id} className="px-5 md:px-6 py-4">
                       <div className="flex items-center gap-2 mb-2">
-                        <div className="h-8 w-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[11px] font-bold">
+                        <div className="h-8 w-8 rounded-full scholr-accent-sf scholr-accent flex items-center justify-center text-[11px] font-bold">
                           {t?.initials}
                         </div>
                         <div>
@@ -199,7 +199,7 @@ export default function DemoStudentAssignment() {
               {submission && (status === 'in_progress' || status === 'not_started') && (
                 <button
                   onClick={() => submitDemoAssignment(submission.id)}
-                  className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-md bg-indigo-600 text-white px-4 py-2.5 text-sm font-semibold hover:bg-indigo-700 transition"
+                  className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-md scholr-accent-sf scholr-accent-ink px-4 py-2.5 text-sm font-semibold hover:scholr-accent-sf transition"
                 >
                   <Send className="w-4 h-4" />
                   Submit work to teacher
@@ -207,8 +207,8 @@ export default function DemoStudentAssignment() {
               )}
 
               {override?.result && (
-                <div className="mt-4 p-3 rounded-md bg-violet-50 border border-violet-100">
-                  <p className="text-[10px] font-bold uppercase tracking-wide text-violet-700">
+                <div className="mt-4 p-3 rounded-md scholr-accent-sf border border-violet-100">
+                  <p className="text-[10px] font-bold uppercase tracking-wide scholr-accent">
                     Your grade
                   </p>
                   <div className="flex items-end justify-between mt-1">
@@ -216,9 +216,9 @@ export default function DemoStudentAssignment() {
                       {override.result.totalScored}
                       <span className="text-sm text-slate-400">/{override.result.totalMax}</span>
                     </p>
-                    <p className="text-2xl font-bold text-violet-600">
+                    <p className="text-2xl font-bold scholr-accent">
                       {override.result.ibGrade}
-                      <span className="text-[10px] font-semibold text-violet-500 ml-1">IB</span>
+                      <span className="text-[10px] font-semibold scholr-accent ml-1">IB</span>
                     </p>
                   </div>
                 </div>

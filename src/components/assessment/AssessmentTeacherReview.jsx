@@ -57,15 +57,15 @@ export default function AssessmentTeacherReview({ assignment }) {
         return (
           <div key={submission.id} className="border rounded-xl p-4 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-slate-900">{submission.student_name}</h3>
-              <span className="text-sm text-slate-500">{submission.total_score || 0} / {submission.max_score || assessment.max_score}</span>
+              <h3 className="font-semibold scholr-ink">{submission.student_name}</h3>
+              <span className="text-sm scholr-muted">{submission.total_score || 0} / {submission.max_score || assessment.max_score}</span>
             </div>
             {editableAnswers.map((answer, index) => {
               const question = assessment.questions.find((item) => item.id === answer.question_id);
               return (
                 <div key={answer.question_id} className="border rounded-lg p-3 space-y-2">
                   <p className="font-medium text-sm">Q{index + 1}. {question?.prompt}</p>
-                  <p className="text-sm text-slate-700">Answer: {answer.answer || '—'}</p>
+                  <p className="text-sm scholr-body">Answer: {answer.answer || '—'}</p>
                   {question?.type !== 'multiple_choice' && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <Input type="number" defaultValue={answer.teacher_score ?? answer.auto_score ?? 0} onChange={(e) => { answer.teacher_score = Number(e.target.value) || 0; }} placeholder="Teacher score" />

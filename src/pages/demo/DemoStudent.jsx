@@ -22,10 +22,10 @@ import {
 
 function StatCard({ label, value, icon: Icon, color }) {
   const colors = {
-    indigo:  'bg-indigo-50 text-indigo-600',
+    indigo:  'scholr-accent-sf scholr-accent',
     amber:   'bg-amber-50 text-amber-600',
     emerald: 'bg-emerald-50 text-emerald-600',
-    violet:  'bg-violet-50 text-violet-600',
+    violet:  'scholr-accent-sf scholr-accent',
   };
   return (
     <div className="bg-white rounded-md border border-slate-200 shadow-sm p-4 md:p-5">
@@ -74,14 +74,14 @@ export default function DemoStudent() {
         <Link
           data-tour="student-next-up"
           to={`/demo/student/assignment/${nextUp.id}`}
-          className="group block mb-6 rounded-md border border-indigo-200 bg-gradient-to-r from-indigo-50 to-white shadow-sm hover:shadow-md transition-shadow"
+          className="group block mb-6 rounded-md border scholr-accent-rule bg-gradient-to-r from-indigo-50 to-white shadow-sm hover:shadow-md transition-shadow"
         >
           <div className="p-4 md:p-5 flex items-center gap-4">
-            <div className="h-11 w-11 rounded-md bg-indigo-600 text-white flex items-center justify-center flex-shrink-0">
+            <div className="h-11 w-11 rounded-md scholr-accent-sf text-white flex items-center justify-center flex-shrink-0">
               <Target className="w-5 h-5" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-bold uppercase tracking-wide text-indigo-700">Up next</p>
+              <p className="text-[10px] font-bold uppercase tracking-wide scholr-accent">Up next</p>
               <p className="text-sm md:text-base font-semibold text-slate-900 truncate">
                 {nextUp.title}
               </p>
@@ -89,7 +89,7 @@ export default function DemoStudent() {
                 Due {nextUp.dueIn.toLowerCase()} · {nextUp.dueLabel}
               </p>
             </div>
-            <Badge className="bg-indigo-600 text-white border-0 text-xs flex-shrink-0 hidden sm:inline-flex">
+            <Badge className="scholr-accent-sf text-white border-0 text-xs flex-shrink-0 hidden sm:inline-flex">
               Open →
             </Badge>
           </div>
@@ -125,7 +125,7 @@ export default function DemoStudent() {
 
         <div className="space-y-6">
           <AppStyleCard title="Today's schedule" icon={Clock}>
-            <div className="divide-y divide-slate-50">
+            <div className="divide-y scholr-divide">
               {TIMETABLE_TODAY.map((p, i) => (
                 <div key={i} className="px-4 md:px-6 py-3 flex items-start gap-3">
                   <div className="text-[10px] font-bold text-slate-500 w-16 pt-0.5 flex-shrink-0">
@@ -147,7 +147,7 @@ export default function DemoStudent() {
           </div>
 
           <AppStyleCard title="Announcements" icon={Megaphone}>
-            <div className="divide-y divide-slate-50">
+            <div className="divide-y scholr-divide">
               {ANNOUNCEMENTS.map((n) => (
                 <div key={n.id} className="px-4 md:px-6 py-3">
                   <p className="text-sm font-medium text-slate-900">{n.title}</p>

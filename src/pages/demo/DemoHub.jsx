@@ -87,7 +87,7 @@ Opening demo…
         </div>
 
         <div className="mt-16 text-center">
-          <Link to="/" className="text-sm text-slate-500 hover:text-slate-900 underline underline-offset-4">
+          <Link to="/" className="text-sm text-slate-500 scholr-ink underline underline-offset-4">
             ← Back to marketing site
           </Link>
         </div>

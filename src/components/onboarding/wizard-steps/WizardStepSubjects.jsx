@@ -72,8 +72,8 @@ export default function WizardStepSubjects({ schoolId, curriculum = 'ib_dp', onD
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="text-base font-bold text-slate-900 mb-1">Subject Catalogue</h3>
-        <p className="text-sm text-slate-500">
+        <h3 className="text-base font-bold scholr-ink mb-1">Subject Catalogue</h3>
+        <p className="text-sm scholr-muted">
           {hasTemplate
             ? `Choose from the ${config.shortLabel} subject template or create custom subjects.`
             : 'Add the subjects your school teaches.'}
@@ -82,7 +82,7 @@ export default function WizardStepSubjects({ schoolId, curriculum = 'ib_dp', onD
 
       {existingSubjects.length > 0 && (
         <div>
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Existing Subjects ({existingSubjects.length})</p>
+          <p className="text-xs font-semibold scholr-muted uppercase tracking-wide mb-2">Existing Subjects ({existingSubjects.length})</p>
           <div className="flex flex-wrap gap-2 mb-3">
             {existingSubjects.map(s => (
               <Badge key={s.id} variant="outline" className="gap-1.5">
@@ -100,13 +100,13 @@ export default function WizardStepSubjects({ schoolId, curriculum = 'ib_dp', onD
         <div className="flex gap-2">
           <button
             onClick={() => setUseTemplate(true)}
-            className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-colors ${useTemplate ? 'bg-indigo-600 text-white border-indigo-600' : 'border-slate-200 text-slate-600'}`}
+            className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-colors ${useTemplate ? 'pub-btn pub-btn-gold scholr-accent-rule' : 'scholr-rule scholr-muted'}`}
           >
             {config.shortLabel} Template
           </button>
           <button
             onClick={() => setUseTemplate(false)}
-            className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-colors ${!useTemplate ? 'bg-indigo-600 text-white border-indigo-600' : 'border-slate-200 text-slate-600'}`}
+            className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-colors ${!useTemplate ? 'pub-btn pub-btn-gold scholr-accent-rule' : 'scholr-rule scholr-muted'}`}
           >
             Custom Subjects
           </button>
@@ -114,19 +114,19 @@ export default function WizardStepSubjects({ schoolId, curriculum = 'ib_dp', onD
       )}
 
       {(useTemplate && hasTemplate) ? (
-        <div className="bg-slate-50 rounded-xl border border-slate-200 p-4 space-y-4">
+        <div className="scholr-sunk rounded-xl border scholr-rule p-4 space-y-4">
           <div className="flex items-center justify-between">
-            <p className="text-xs text-slate-500">Select the subjects your school offers:</p>
+            <p className="text-xs scholr-muted">Select the subjects your school offers:</p>
             <div className="flex gap-2">
-              <button onClick={selectAll} className="text-xs text-indigo-600 hover:underline">Select all</button>
-              <span className="text-slate-300">|</span>
-              <button onClick={selectNone} className="text-xs text-slate-500 hover:underline">None</button>
+              <button onClick={selectAll} className="text-xs scholr-accent hover:underline">Select all</button>
+              <span className="scholr-faint">|</span>
+              <button onClick={selectNone} className="text-xs scholr-muted hover:underline">None</button>
             </div>
           </div>
           {Object.entries(groupedTemplate).map(([groupKey, items]) => (
             <div key={groupKey}>
               {groupKey !== '_other' && (
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+                <p className="text-xs font-semibold scholr-muted uppercase tracking-wide mb-2">
                   {groupLabels[groupKey] || groupKey}
                 </p>
               )}
@@ -135,20 +135,20 @@ export default function WizardStepSubjects({ schoolId, curriculum = 'ib_dp', onD
                   <button
                     key={s.code}
                     onClick={() => toggleTemplate(s.code)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-left transition-all ${
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-left transition-colors ${
                       selectedFromTemplate.has(s.code)
-                        ? 'bg-indigo-50 border-indigo-300 text-indigo-800'
-                        : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
+                        ? 'scholr-accent-sf scholr-accent-rule scholr-accent'
+                        : 'bg-white scholr-rule scholr-body hover:scholr-rule'
                     }`}
                   >
                     <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 ${
-                      selectedFromTemplate.has(s.code) ? 'bg-indigo-600 border-indigo-600' : 'border-slate-300'
+                      selectedFromTemplate.has(s.code) ? 'scholr-accent-sf scholr-accent-rule' : 'scholr-rule'
                     }`}>
                       {selectedFromTemplate.has(s.code) && <CheckCircle2 className="w-2.5 h-2.5 text-white" />}
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs font-medium truncate">{s.name}</p>
-                      <p className="text-[10px] text-slate-400">{s.code}{s.level && s.level !== 'na' ? ` · ${s.level}` : ''}</p>
+                      <p className="text-[10px] scholr-faint">{s.code}{s.level && s.level !== 'na' ? ` · ${s.level}` : ''}</p>
                     </div>
                   </button>
                 ))}
@@ -157,18 +157,18 @@ export default function WizardStepSubjects({ schoolId, curriculum = 'ib_dp', onD
           ))}
         </div>
       ) : (
-        <div className="bg-slate-50 rounded-xl border border-slate-200 p-5 space-y-3">
+        <div className="scholr-sunk rounded-xl border scholr-rule p-5 space-y-3">
           {subjects.map((sub, i) => (
             <div key={i} className="grid grid-cols-[1fr_auto_auto] gap-2 items-end">
               <div>
-                <Label className="text-xs text-slate-600 mb-1 block">Subject Name</Label>
+                <Label className="text-xs scholr-muted mb-1 block">Subject Name</Label>
                 <Input value={sub.name} onChange={e => updateRow(i, 'name', e.target.value)} placeholder="e.g. Mathematics" />
               </div>
               <div className="w-24">
-                <Label className="text-xs text-slate-600 mb-1 block">Code</Label>
+                <Label className="text-xs scholr-muted mb-1 block">Code</Label>
                 <Input value={sub.code} onChange={e => updateRow(i, 'code', e.target.value)} placeholder="MA" />
               </div>
-              <Button variant="ghost" size="icon" onClick={() => removeRow(i)} className="text-slate-400 h-9 w-9">
+              <Button variant="ghost" size="icon" onClick={() => removeRow(i)} className="scholr-faint h-9 w-9">
                 <Trash2 className="w-3.5 h-3.5" />
               </Button>
             </div>
@@ -182,7 +182,7 @@ export default function WizardStepSubjects({ schoolId, curriculum = 'ib_dp', onD
       <Button
         onClick={handleSave}
         disabled={saving || !canSave}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 gap-1.5"
+        className="w-full scholr-accent-sf hover:scholr-accent-sf gap-1.5"
       >
         {saving ? 'Saving…' : <><BookOpen className="w-4 h-4" /> Save Subjects &amp; Continue</>}
       </Button>

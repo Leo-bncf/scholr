@@ -24,7 +24,7 @@ function urgencyColor(daysLeft) {
   if (daysLeft <= 1) return 'bg-red-100 text-red-700 border-red-200';
   if (daysLeft <= 3) return 'bg-amber-100 text-amber-700 border-amber-200';
   if (daysLeft <= 7) return 'bg-blue-100 text-blue-700 border-blue-200';
-  return 'bg-slate-100 text-slate-600 border-slate-200';
+  return 'scholr-sunk scholr-muted scholr-rule';
 }
 
 function urgencyLabel(daysLeft) {
@@ -38,10 +38,10 @@ function urgencyLabel(daysLeft) {
 
 function PeriodCard({ entry, isNow, isNext }) {
   return (
-    <div className={`rounded-xl border p-3 md:p-4 transition-all ${
+    <div className={`rounded-xl border p-3 md:p-4 transition-colors ${
       isNow ? 'bg-emerald-50 border-emerald-300 shadow-sm' :
       isNext ? 'bg-blue-50 border-blue-300 shadow-sm' :
-      'bg-white border-slate-200'
+      'bg-white scholr-rule'
     }`}>
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
@@ -49,20 +49,20 @@ function PeriodCard({ entry, isNow, isNext }) {
             {isNow && <Badge className="bg-emerald-600 text-white border-0 text-xs py-0">Now</Badge>}
             {isNext && <Badge className="bg-blue-600 text-white border-0 text-xs py-0">Next</Badge>}
           </div>
-          <p className="font-semibold text-slate-900 truncate">{entry.class_name || 'Class'}</p>
+          <p className="font-semibold scholr-ink truncate">{entry.class_name || 'Class'}</p>
           <div className="mt-1.5 space-y-1">
-            <div className="flex items-center gap-1.5 text-xs text-slate-500">
+            <div className="flex items-center gap-1.5 text-xs scholr-muted">
               <Clock className="w-3 h-3 flex-shrink-0" />
               <span>{entry.start_time} – {entry.end_time}</span>
             </div>
             {entry.room_name && (
-              <div className="flex items-center gap-1.5 text-xs text-slate-500">
+              <div className="flex items-center gap-1.5 text-xs scholr-muted">
                 <MapPin className="w-3 h-3 flex-shrink-0" />
                 <span>{entry.room_name}</span>
               </div>
             )}
             {entry.teacher_name && (
-              <div className="flex items-center gap-1.5 text-xs text-slate-500">
+              <div className="flex items-center gap-1.5 text-xs scholr-muted">
                 <User className="w-3 h-3 flex-shrink-0" />
                 <span>{entry.teacher_name}</span>
               </div>
@@ -86,8 +86,8 @@ function DayView({ entries, selectedDate }) {
 
   if (dayEntries.length === 0) {
     return (
-      <div className="text-center py-16 text-slate-400">
-        <CalendarDays className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+      <div className="text-center py-16 scholr-faint">
+        <CalendarDays className="w-12 h-12 mx-auto mb-3 scholr-faint" />
         <p>No classes scheduled for {format(selectedDate, 'EEEE')}</p>
       </div>
     );
@@ -121,22 +121,22 @@ function WeekView({ entries, weekStart }) {
         const isToday = isSameDay(date, new Date());
 
         return (
-          <div key={dow} className={`rounded-xl border overflow-hidden ${isToday ? 'border-indigo-300' : 'border-slate-200'}`}>
-            <div className={`px-2 py-2 text-center text-xs font-bold uppercase tracking-wide ${isToday ? 'bg-indigo-600 text-white' : 'bg-slate-50 text-slate-600'}`}>
+          <div key={dow} className={`rounded-xl border overflow-hidden ${isToday ? 'scholr-accent-rule' : 'scholr-rule'}`}>
+            <div className={`px-2 py-2 text-center text-xs font-bold uppercase tracking-wide ${isToday ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-muted'}`}>
               <p>{DAY_NAMES[dow]}</p>
-              <p className={`text-lg font-bold leading-tight ${isToday ? 'text-white' : 'text-slate-900'}`}>{format(date, 'd')}</p>
+              <p className={`text-lg font-bold leading-tight ${isToday ? 'text-white' : 'scholr-ink'}`}>{format(date, 'd')}</p>
             </div>
             <div className="p-2 space-y-2 min-h-32 bg-white">
               {dayEntries.length === 0 ? (
-                <p className="text-xs text-slate-300 text-center py-4">—</p>
+                <p className="text-xs scholr-faint text-center py-4">—</p>
               ) : (
                 dayEntries.map(entry => {
                   const isNow = isToday && entry.start_time <= now && entry.end_time > now;
                   return (
-                    <div key={entry.id} className={`rounded-lg p-2 text-xs ${isNow ? 'bg-emerald-100 border border-emerald-300' : 'bg-slate-50 border border-slate-200'}`}>
-                      <p className="font-semibold text-slate-900 truncate leading-tight">{entry.class_name}</p>
-                      <p className="text-slate-500 mt-0.5">{entry.start_time}–{entry.end_time}</p>
-                      {entry.room_name && <p className="text-slate-400 flex items-center gap-0.5 mt-0.5"><MapPin className="w-2.5 h-2.5" />{entry.room_name}</p>}
+                    <div key={entry.id} className={`rounded-lg p-2 text-xs ${isNow ? 'bg-emerald-100 border border-emerald-300' : 'scholr-sunk border scholr-rule'}`}>
+                      <p className="font-semibold scholr-ink truncate leading-tight">{entry.class_name}</p>
+                      <p className="scholr-muted mt-0.5">{entry.start_time}–{entry.end_time}</p>
+                      {entry.room_name && <p className="scholr-faint flex items-center gap-0.5 mt-0.5"><MapPin className="w-2.5 h-2.5" />{entry.room_name}</p>}
                     </div>
                   );
                 })
@@ -163,8 +163,8 @@ function DeadlineAlerts({ assignments, submissions }) {
 
   if (upcoming.length === 0) {
     return (
-      <div className="text-center py-8 text-slate-400">
-        <Bell className="w-8 h-8 mx-auto mb-2 text-slate-300" />
+      <div className="text-center py-8 scholr-faint">
+        <Bell className="w-8 h-8 mx-auto mb-2 scholr-faint" />
         <p className="text-sm">No upcoming deadlines in the next 2 weeks</p>
       </div>
     );
@@ -263,33 +263,33 @@ export default function StudentTimetable() {
 
   return (
     <RoleGuard allowedRoles={['student', 'school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar links={studentLinks} role="student" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         <main className="app-offset p-4 md:p-8">
           <div className="max-w-5xl mx-auto">
             {/* Header */}
             <div className="mb-6">
-              <h1 className="text-xl md:text-2xl font-bold text-slate-900">My Timetable</h1>
-              <p className="text-sm text-slate-500 mt-1">Personal schedule and upcoming deadlines</p>
+              <h1 className="text-xl md:text-2xl font-bold scholr-ink">My Timetable</h1>
+              <p className="text-sm scholr-muted mt-1">Personal schedule and upcoming deadlines</p>
             </div>
 
             {isLoading ? (
               <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+                <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
               </div>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Schedule column */}
                 <div className="lg:col-span-2 space-y-4">
                   {/* Controls */}
-                  <div className="bg-white rounded-xl border border-slate-200 p-3 flex flex-wrap items-center justify-between gap-3">
+                  <div className="bg-white rounded-xl border scholr-rule p-3 flex flex-wrap items-center justify-between gap-3">
                     {/* View toggle */}
-                    <div className="flex rounded-lg border border-slate-200 overflow-hidden text-sm">
+                    <div className="flex rounded-lg border scholr-rule overflow-hidden text-sm">
                       {['day', 'week'].map(v => (
                         <button
                           key={v}
                           onClick={() => setView(v)}
-                          className={`px-4 py-1.5 font-medium capitalize transition-colors ${view === v ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-50'}`}
+                          className={`px-4 py-1.5 font-medium capitalize transition-colors ${view === v ? 'pub-btn pub-btn-gold' : 'scholr-muted hover:scholr-sunk'}`}
                         >
                           {v}
                         </button>
@@ -298,25 +298,25 @@ export default function StudentTimetable() {
 
                     {/* Navigation */}
                     <div className="flex items-center gap-2">
-                      <button onClick={goBack} className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors">
-                        <ChevronLeft className="w-4 h-4 text-slate-600" />
+                      <button onClick={goBack} className="p-1.5 rounded-lg hover:scholr-sunk transition-colors">
+                        <ChevronLeft className="w-4 h-4 scholr-muted" />
                       </button>
-                      <span className="text-sm font-medium text-slate-700 min-w-0 text-center">{dateLabel}</span>
-                      <button onClick={goForward} className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors">
-                        <ChevronRight className="w-4 h-4 text-slate-600" />
+                      <span className="text-sm font-medium scholr-body min-w-0 text-center">{dateLabel}</span>
+                      <button onClick={goForward} className="p-1.5 rounded-lg hover:scholr-sunk transition-colors">
+                        <ChevronRight className="w-4 h-4 scholr-muted" />
                       </button>
                     </div>
 
                     <button
                       onClick={goToday}
-                      className="px-3 py-1.5 text-sm font-medium text-indigo-600 border border-indigo-200 rounded-lg hover:bg-indigo-50 transition-colors"
+                      className="px-3 py-1.5 text-sm font-medium scholr-accent border scholr-accent-rule rounded-lg hover:scholr-accent-sf transition-colors"
                     >
                       Today
                     </button>
                   </div>
 
                   {/* Schedule content */}
-                  <div className="bg-white rounded-xl border border-slate-200 p-4 md:p-5">
+                  <div className="bg-white rounded-xl border scholr-rule p-4 md:p-5">
                     {view === 'day' ? (
                       <DayView entries={scheduleEntries} selectedDate={selectedDate} />
                     ) : (
@@ -327,11 +327,11 @@ export default function StudentTimetable() {
 
                 {/* Deadlines column */}
                 <div className="space-y-4">
-                  <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                    <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+                  <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+                    <div className="px-4 py-3 border-b scholr-rule-soft flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Bell className="w-4 h-4 text-amber-500" />
-                        <h2 className="font-bold text-sm text-slate-900">Upcoming Deadlines</h2>
+                        <h2 className="font-bold text-sm scholr-ink">Upcoming Deadlines</h2>
                       </div>
                       {urgentCount > 0 && (
                         <Badge className="bg-red-100 text-red-700 border-0 text-xs">{urgentCount} urgent</Badge>

@@ -8,8 +8,8 @@ function ProgressView({ progress, items }) {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between text-sm">
-        <span className="font-semibold text-slate-700">Setup Progress</span>
-        <span className="text-xs text-slate-600">{Math.round(progress)}%</span>
+        <span className="font-semibold scholr-body">Setup Progress</span>
+        <span className="text-xs scholr-muted">{Math.round(progress)}%</span>
       </div>
       <Progress value={progress} className="h-2" />
       <div className="grid grid-cols-2 gap-2 text-xs mt-2">
@@ -18,9 +18,9 @@ function ProgressView({ progress, items }) {
             {item.completed ? (
               <CheckCircle className="w-3 h-3 text-emerald-600 flex-shrink-0" />
             ) : (
-              <Circle className="w-3 h-3 text-slate-300 flex-shrink-0" />
+              <Circle className="w-3 h-3 scholr-faint flex-shrink-0" />
             )}
-            <span className={item.completed ? 'text-slate-600' : 'text-slate-500'}>{item.label}</span>
+            <span className={item.completed ? 'scholr-muted' : 'scholr-muted'}>{item.label}</span>
           </div>
         ))}
       </div>
@@ -73,7 +73,7 @@ export default function SchoolOnboardingProgress({ schoolId, summary }) {
   }, [schoolId, summary]);
 
   if (loading) {
-    return <div className="text-xs text-slate-500">Loading...</div>;
+    return <div className="text-xs scholr-muted">Loading...</div>;
   }
 
   return <ProgressView progress={progress} items={items} />;

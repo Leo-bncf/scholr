@@ -186,21 +186,21 @@ export default function TermReportExport({ schoolId, userId, userName, schoolNam
 
   return (
     <div className="space-y-5">
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
+      <div className="bg-white rounded-xl border scholr-rule p-6">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center flex-shrink-0">
-            <FileText className="w-6 h-6 text-indigo-600" />
+          <div className="w-12 h-12 scholr-accent-sf rounded-xl flex items-center justify-center flex-shrink-0">
+            <FileText className="w-6 h-6 scholr-accent" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-slate-900">Term Progress Report (PDF)</h3>
-            <p className="text-sm text-slate-500 mt-1">
+            <h3 className="font-semibold scholr-ink">Term Progress Report (PDF)</h3>
+            <p className="text-sm scholr-muted mt-1">
               A snapshot of your academic performance including grades, predicted IB scores, and attendance.
             </p>
 
             <div className="mt-4 grid grid-cols-3 gap-3">
               {[
-                { label: 'Grade items', value: grades.length, color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
-                { label: 'Predicted grades', value: predictions.length, color: 'bg-violet-50 text-violet-700 border-violet-200' },
+                { label: 'Grade items', value: grades.length, color: 'scholr-accent-sf scholr-accent scholr-accent-rule' },
+                { label: 'Predicted grades', value: predictions.length, color: 'scholr-accent-sf scholr-accent scholr-accent-rule' },
                 { label: 'Attendance records', value: attendance.length, color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
               ].map(({ label, value, color }) => (
                 <div key={label} className={`rounded-lg border p-3 text-center ${color}`}>
@@ -214,7 +214,7 @@ export default function TermReportExport({ schoolId, userId, userName, schoolNam
               <Button
                 onClick={generatePDF}
                 disabled={generating || !hasData}
-                className="bg-indigo-600 hover:bg-indigo-700"
+                className="scholr-accent-sf hover:scholr-accent-sf"
               >
                 {generating ? (
                   <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating…</>
@@ -224,21 +224,21 @@ export default function TermReportExport({ schoolId, userId, userName, schoolNam
                   <><Download className="w-4 h-4 mr-2" />Download PDF</>
                 )}
               </Button>
-              {!hasData && <p className="text-xs text-slate-400">No data available to export yet.</p>}
+              {!hasData && <p className="text-xs scholr-faint">No data available to export yet.</p>}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-        <p className="text-xs font-semibold text-slate-600 mb-2">Report includes:</p>
+      <div className="scholr-sunk border scholr-rule rounded-xl p-4">
+        <p className="text-xs font-semibold scholr-muted mb-2">Report includes:</p>
         <ul className="space-y-1.5">
           {[
             'All published grades with scores and percentages, grouped by class',
             'Predicted IB grades with overall average',
             'Attendance summary (present, absent, late, excused)',
           ].map((item, i) => (
-            <li key={i} className="flex items-center gap-2 text-xs text-slate-600">
+            <li key={i} className="flex items-center gap-2 text-xs scholr-muted">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
               {item}
             </li>

@@ -35,8 +35,8 @@ export default function GradingModelPanel({ form, onChange }) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-sm font-bold text-slate-800 mb-1">Grading Model</h3>
-        <p className="text-xs text-slate-500 mb-4">Defines how final grades are calculated across all classes in this school.</p>
+        <h3 className="text-sm font-bold scholr-ink mb-1">Grading Model</h3>
+        <p className="text-xs scholr-muted mb-4">Defines how final grades are calculated across all classes in this school.</p>
         <div className="grid grid-cols-1 gap-3">
           {MODEL_OPTIONS.map(opt => {
             const Icon = opt.icon;
@@ -46,14 +46,14 @@ export default function GradingModelPanel({ form, onChange }) {
                 key={opt.value}
                 type="button"
                 onClick={() => onChange({ grading_model: opt.value })}
-                className={`flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-all ${active ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 hover:border-slate-300 bg-white'}`}
+                className={`flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-colors ${active ? 'scholr-accent-rule scholr-accent-sf' : 'scholr-rule hover:scholr-rule bg-white'}`}
               >
-                <div className={`mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${active ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                <div className={`mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${active ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-muted'}`}>
                   <Icon className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className={`text-sm font-semibold ${active ? 'text-indigo-900' : 'text-slate-800'}`}>{opt.label}</p>
-                  <p className="text-xs text-slate-500 mt-0.5">{opt.desc}</p>
+                  <p className={`text-sm font-semibold ${active ? 'scholr-accent' : 'scholr-ink'}`}>{opt.label}</p>
+                  <p className="text-xs scholr-muted mt-0.5">{opt.desc}</p>
                 </div>
               </button>
             );
@@ -66,7 +66,7 @@ export default function GradingModelPanel({ form, onChange }) {
         <div>
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h4 className="text-sm font-bold text-slate-800">Grade Categories</h4>
+              <h4 className="text-sm font-bold scholr-ink">Grade Categories</h4>
               {totalWeight !== 100 && form.categories?.length > 0 && (
                 <p className="text-xs text-amber-600 mt-0.5">⚠ Weights total {totalWeight}% — should equal 100%</p>
               )}
@@ -81,8 +81,8 @@ export default function GradingModelPanel({ form, onChange }) {
 
           <div className="space-y-2">
             {(form.categories || []).map(cat => (
-              <div key={cat.id} className="flex items-center gap-3 bg-slate-50 rounded-lg p-3 border border-slate-200">
-                <GripVertical className="w-4 h-4 text-slate-300 flex-shrink-0" />
+              <div key={cat.id} className="flex items-center gap-3 scholr-sunk rounded-lg p-3 border scholr-rule">
+                <GripVertical className="w-4 h-4 scholr-faint flex-shrink-0" />
                 <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: cat.color }} />
                 <div className="flex-1 min-w-0">
                   <Input
@@ -98,9 +98,9 @@ export default function GradingModelPanel({ form, onChange }) {
                     onChange={e => updateCategory(cat.id, { weight_percent: Number(e.target.value) })}
                     className="h-7 w-16 text-xs text-center"
                   />
-                  <span className="text-xs text-slate-400">%</span>
+                  <span className="text-xs scholr-faint">%</span>
                 </div>
-                <div className="flex items-center gap-1 flex-shrink-0 text-xs text-slate-500">
+                <div className="flex items-center gap-1 flex-shrink-0 text-xs scholr-muted">
                   <span>Drop</span>
                   <Input
                     type="number" min="0"
@@ -110,7 +110,7 @@ export default function GradingModelPanel({ form, onChange }) {
                   />
                   <span>lowest</span>
                 </div>
-                <button type="button" onClick={() => removeCategory(cat.id)} className="text-slate-400 hover:text-red-500 flex-shrink-0">
+                <button type="button" onClick={() => removeCategory(cat.id)} className="scholr-faint hover:text-red-500 flex-shrink-0">
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -118,8 +118,8 @@ export default function GradingModelPanel({ form, onChange }) {
           </div>
 
           {showNewCat && (
-            <div className="mt-3 p-4 bg-indigo-50 border border-indigo-200 rounded-xl space-y-3">
-              <h5 className="text-xs font-bold text-indigo-900">New Category</h5>
+            <div className="mt-3 p-4 scholr-accent-sf border scholr-accent-rule rounded-xl space-y-3">
+              <h5 className="text-xs font-bold scholr-accent">New Category</h5>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label className="text-xs font-semibold">Name</Label>
@@ -134,12 +134,12 @@ export default function GradingModelPanel({ form, onChange }) {
                 <Label className="text-xs font-semibold">Color</Label>
                 <div className="flex gap-2 mt-1">
                   {CATEGORY_COLORS.map(c => (
-                    <button key={c} type="button" onClick={() => setNewCat({ ...newCat, color: c })} className={`w-6 h-6 rounded-full transition-all ${newCat.color === c ? 'ring-2 ring-offset-1 ring-indigo-500 scale-110' : ''}`} style={{ backgroundColor: c }} />
+                    <button key={c} type="button" onClick={() => setNewCat({ ...newCat, color: c })} className={`w-6 h-6 rounded-full transition-colors ${newCat.color === c ? 'ring-2 ring-offset-1 scholr-accent-rule scale-110' : ''}`} style={{ backgroundColor: c }} />
                   ))}
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button size="sm" onClick={addCategory} disabled={!newCat.name.trim()} className="bg-indigo-600 hover:bg-indigo-700 text-xs">Add</Button>
+                <Button size="sm" onClick={addCategory} disabled={!newCat.name.trim()} className="scholr-accent-sf hover:scholr-accent-sf text-xs">Add</Button>
                 <Button size="sm" variant="outline" onClick={() => setShowNewCat(false)} className="text-xs">Cancel</Button>
               </div>
             </div>
@@ -147,11 +147,11 @@ export default function GradingModelPanel({ form, onChange }) {
         </div>
       )}
 
-      <div className="pt-4 border-t border-slate-100">
+      <div className="pt-4 border-t scholr-rule-soft">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-slate-800">Allow teachers to override categories</p>
-            <p className="text-xs text-slate-500">Teachers can assign grade items to different categories per class</p>
+            <p className="text-sm font-semibold scholr-ink">Allow teachers to override categories</p>
+            <p className="text-xs scholr-muted">Teachers can assign grade items to different categories per class</p>
           </div>
           <Switch checked={form.allow_teacher_category_override} onCheckedChange={v => onChange({ allow_teacher_category_override: v })} />
         </div>

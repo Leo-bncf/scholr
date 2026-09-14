@@ -197,7 +197,7 @@ export default function EditSchoolDialog({ open, onOpenChange, school, onSchoolU
             <Button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+              className="flex-1 scholr-accent-sf hover:scholr-accent-sf"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
               {loading ? 'Saving...' : 'Save Changes'}

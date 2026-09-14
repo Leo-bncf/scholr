@@ -137,7 +137,7 @@ export default function CreateClassDialog({
             <Button type="button" variant="outline" className="flex-1" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={!canSubmit} className="flex-1 bg-indigo-600 hover:bg-indigo-700">
+            <Button type="submit" disabled={!canSubmit} className="flex-1 scholr-accent-sf hover:scholr-accent-sf">
               {isCreating && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
               Create Class
             </Button>

@@ -31,18 +31,18 @@ export default function StudentCAS() {
 
   return (
     <RoleGuard allowedRoles={['student', 'school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar links={STUDENT_SIDEBAR_LINKS} role="student" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         
         <main className="app-offset p-8">
           <div className="max-w-7xl mx-auto">
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-slate-900 mb-2">IB Core: CAS</h1>
-              <p className="text-slate-600">Creativity, Activity, Service - Track your IB CAS journey</p>
+              <h1 className="text-3xl font-bold scholr-ink mb-2">IB Core: CAS</h1>
+              <p className="scholr-muted">Creativity, Activity, Service - Track your IB CAS journey</p>
             </div>
 
             <Tabs defaultValue="experiences" className="space-y-6">
-              <TabsList className="bg-white border border-slate-200">
+              <TabsList className="bg-white border scholr-rule">
                 <TabsTrigger value="experiences">My Experiences</TabsTrigger>
                 <TabsTrigger value="progress">Progress Overview</TabsTrigger>
               </TabsList>
@@ -51,23 +51,23 @@ export default function StudentCAS() {
                 <div className="space-y-6">
                   <CASProgressOverview experiences={experiences} />
 
-                  <div className="bg-white rounded-xl border border-slate-200 p-6">
-                    <h2 className="text-xl font-bold text-slate-900 mb-4">CAS Requirements</h2>
-                    <div className="space-y-3 text-sm text-slate-700">
+                  <div className="bg-white rounded-xl border scholr-rule p-6">
+                    <h2 className="text-xl font-bold scholr-ink mb-4">CAS Requirements</h2>
+                    <div className="space-y-3 text-sm scholr-body">
                       <div className="flex items-start gap-2">
-                        <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full mt-2 flex-shrink-0"></div>
+                        <div className="w-1.5 h-1.5 scholr-accent-sf rounded-full mt-2 flex-shrink-0"></div>
                         <p>Complete experiences across all three strands (Creativity, Activity, Service)</p>
                       </div>
                       <div className="flex items-start gap-2">
-                        <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full mt-2 flex-shrink-0"></div>
+                        <div className="w-1.5 h-1.5 scholr-accent-sf rounded-full mt-2 flex-shrink-0"></div>
                         <p>Demonstrate achievement of the seven CAS learning outcomes</p>
                       </div>
                       <div className="flex items-start gap-2">
-                        <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full mt-2 flex-shrink-0"></div>
+                        <div className="w-1.5 h-1.5 scholr-accent-sf rounded-full mt-2 flex-shrink-0"></div>
                         <p>Undertake at least one CAS project (collaborative, sustained, with a real outcome)</p>
                       </div>
                       <div className="flex items-start gap-2">
-                        <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full mt-2 flex-shrink-0"></div>
+                        <div className="w-1.5 h-1.5 scholr-accent-sf rounded-full mt-2 flex-shrink-0"></div>
                         <p>Provide evidence and reflections for all experiences</p>
                       </div>
                     </div>
@@ -79,11 +79,11 @@ export default function StudentCAS() {
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Filter className="w-4 h-4 text-slate-400" />
+                      <Filter className="w-4 h-4 scholr-faint" />
                       <select 
                         value={filterStrand}
                         onChange={(e) => setFilterStrand(e.target.value)}
-                        className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm"
+                        className="border scholr-rule rounded-lg px-3 py-1.5 text-sm"
                       >
                         <option value="all">All Strands</option>
                         <option value="creativity">Creativity</option>
@@ -93,7 +93,7 @@ export default function StudentCAS() {
                       <select 
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
-                        className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm"
+                        className="border scholr-rule rounded-lg px-3 py-1.5 text-sm"
                       >
                         <option value="all">All Status</option>
                         <option value="planned">Planned</option>
@@ -102,7 +102,7 @@ export default function StudentCAS() {
                         <option value="approved">Approved</option>
                       </select>
                     </div>
-                    <Button className="bg-indigo-600 hover:bg-indigo-700">
+                    <Button className="scholr-accent-sf hover:scholr-accent-sf">
                       <Plus className="w-4 h-4 mr-2" />
                       Add Experience
                     </Button>
@@ -110,14 +110,14 @@ export default function StudentCAS() {
 
                   {isLoading ? (
                     <div className="flex justify-center py-20">
-                      <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+                      <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
                     </div>
                   ) : filteredExperiences.length === 0 ? (
-                    <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-                      <Star className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold text-slate-900 mb-2">No CAS experiences yet</h3>
-                      <p className="text-slate-500 mb-4">Start documenting your CAS journey by adding your first experience</p>
-                      <Button className="bg-indigo-600 hover:bg-indigo-700">
+                    <div className="bg-white rounded-xl border scholr-rule p-12 text-center">
+                      <Star className="w-12 h-12 scholr-faint mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold scholr-ink mb-2">No CAS experiences yet</h3>
+                      <p className="scholr-muted mb-4">Start documenting your CAS journey by adding your first experience</p>
+                      <Button className="scholr-accent-sf hover:scholr-accent-sf">
                         <Plus className="w-4 h-4 mr-2" />
                         Add Your First Experience
                       </Button>

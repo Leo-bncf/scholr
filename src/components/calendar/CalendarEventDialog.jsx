@@ -25,10 +25,10 @@ export default function CalendarEventDialog({ event, open, onOpenChange }) {
             {event.title}
           </DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 text-sm text-slate-700">
+        <div className="space-y-4 text-sm scholr-body">
           <Badge className="capitalize bg-emerald-50 text-emerald-700 border-0">{event.type}</Badge>
           <div className="flex items-start gap-2">
-            <Clock className="w-4 h-4 mt-0.5 text-slate-400" />
+            <Clock className="w-4 h-4 mt-0.5 scholr-faint" />
             <div>
               <p>{format(new Date(event.start_time), 'EEE, MMM d · h:mm a')}</p>
               <p>{format(new Date(event.end_time), 'EEE, MMM d · h:mm a')}</p>
@@ -36,17 +36,17 @@ export default function CalendarEventDialog({ event, open, onOpenChange }) {
           </div>
           {event.subjectName && (
             <div className="flex items-start gap-2">
-              <BookOpen className="w-4 h-4 mt-0.5 text-slate-400" />
+              <BookOpen className="w-4 h-4 mt-0.5 scholr-faint" />
               <p>{event.subjectName}</p>
             </div>
           )}
           {event.location && (
             <div className="flex items-start gap-2">
-              <MapPin className="w-4 h-4 mt-0.5 text-slate-400" />
+              <MapPin className="w-4 h-4 mt-0.5 scholr-faint" />
               <p>{event.location}</p>
             </div>
           )}
-          {event.description && <p className="text-slate-600">{event.description}</p>}
+          {event.description && <p className="scholr-muted">{event.description}</p>}
         </div>
       </DialogContent>
     </Dialog>

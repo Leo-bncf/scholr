@@ -133,13 +133,13 @@ export default function BehaviorExport({ schoolId, schoolName }) {
   ];
 
   const colorMap = {
-    indigo: 'border-indigo-200 text-indigo-700 hover:bg-indigo-50',
+    indigo: 'scholr-accent-rule scholr-accent hover:scholr-accent-sf',
     emerald: 'border-emerald-200 text-emerald-700 hover:bg-emerald-50',
     amber: 'border-amber-200 text-amber-700 hover:bg-amber-50',
     rose: 'border-rose-200 text-rose-700 hover:bg-rose-50',
   };
   const iconBg = {
-    indigo: 'bg-indigo-100 text-indigo-600',
+    indigo: 'scholr-accent-sf scholr-accent',
     emerald: 'bg-emerald-100 text-emerald-600',
     amber: 'bg-amber-100 text-amber-600',
     rose: 'bg-rose-100 text-rose-600',
@@ -156,18 +156,18 @@ export default function BehaviorExport({ schoolId, schoolName }) {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 flex flex-wrap gap-4 items-end">
+      <div className="bg-white rounded-xl border scholr-rule p-4 flex flex-wrap gap-4 items-end">
         <div>
-          <label className="text-xs font-semibold text-slate-600 block mb-1">From</label>
-          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm" />
+          <label className="text-xs font-semibold scholr-muted block mb-1">From</label>
+          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm" />
         </div>
         <div>
-          <label className="text-xs font-semibold text-slate-600 block mb-1">To</label>
-          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm" />
+          <label className="text-xs font-semibold scholr-muted block mb-1">To</label>
+          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm" />
         </div>
         <div>
-          <label className="text-xs font-semibold text-slate-600 block mb-1">Record Type</label>
-          <select value={filterType} onChange={e => setFilterType(e.target.value)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm bg-white">
+          <label className="text-xs font-semibold scholr-muted block mb-1">Record Type</label>
+          <select value={filterType} onChange={e => setFilterType(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm bg-white">
             <option value="all">All Types</option>
             <option value="positive">Positive</option>
             <option value="concern">Concern</option>
@@ -178,11 +178,11 @@ export default function BehaviorExport({ schoolId, schoolName }) {
         <div className="flex items-end gap-2">
           <label className="flex items-center gap-2 text-sm cursor-pointer pb-1.5">
             <input type="checkbox" checked={includeStaffOnly} onChange={e => setIncludeStaffOnly(e.target.checked)} className="w-4 h-4" />
-            <span className="font-medium text-slate-700">Include staff-only records</span>
+            <span className="font-medium scholr-body">Include staff-only records</span>
           </label>
         </div>
-        <div className="text-sm text-slate-500 pb-1.5">
-          <span className="font-bold text-slate-800">{isLoading ? '…' : filteredCount}</span> records in scope
+        <div className="text-sm scholr-muted pb-1.5">
+          <span className="font-bold scholr-ink">{isLoading ? '…' : filteredCount}</span> records in scope
         </div>
       </div>
 
@@ -198,17 +198,17 @@ export default function BehaviorExport({ schoolId, schoolName }) {
         {EXPORTS.map(exp => {
           const Icon = exp.icon;
           return (
-            <div key={exp.title} className="bg-white rounded-xl border border-slate-200 p-6 flex flex-col gap-4">
+            <div key={exp.title} className="bg-white rounded-xl border scholr-rule p-6 flex flex-col gap-4">
               <div className="flex items-start gap-3">
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${iconBg[exp.color]}`}>
                   <Icon className="w-5 h-5" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h4 className="font-bold text-slate-900">{exp.title}</h4>
+                    <h4 className="font-bold scholr-ink">{exp.title}</h4>
                     {exp.sensitive && <span className="text-xs px-1.5 py-0.5 bg-rose-50 text-rose-700 border border-rose-200 rounded font-medium">Sensitive</span>}
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">{exp.desc}</p>
+                  <p className="text-xs scholr-muted mt-1">{exp.desc}</p>
                 </div>
               </div>
               <Button variant="outline" onClick={exp.action} disabled={isExporting || isLoading || filteredCount === 0}

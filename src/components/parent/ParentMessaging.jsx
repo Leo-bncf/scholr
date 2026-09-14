@@ -83,13 +83,13 @@ export default function ParentMessaging({ parentId, parentName, schoolId, studen
   return (
     <div className="space-y-4">
       {!showNewMessage ? (
-        <Button onClick={() => setShowNewMessage(true)} className="w-full bg-indigo-600 hover:bg-indigo-700">
+        <Button onClick={() => setShowNewMessage(true)} className="w-full scholr-accent-sf hover:scholr-accent-sf">
           <Send className="w-4 h-4 mr-2" /> Message a Teacher
         </Button>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-4">
+        <div className="app-group p-4 space-y-4">
           <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-slate-900">New Message</h4>
+            <h4 className="font-semibold scholr-ink">New Message</h4>
             <Button variant="ghost" size="sm" onClick={() => setShowNewMessage(false)}>Cancel</Button>
           </div>
           
@@ -133,7 +133,7 @@ export default function ParentMessaging({ parentId, parentName, schoolId, studen
           <Button
             onClick={handleSend}
             disabled={!form.teacher_id || !form.subject || !form.body || sendMutation.isPending}
-            className="w-full bg-indigo-600 hover:bg-indigo-700"
+            className="w-full scholr-accent-sf hover:scholr-accent-sf"
           >
             {sendMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
             Send Message
@@ -142,26 +142,26 @@ export default function ParentMessaging({ parentId, parentName, schoolId, studen
       )}
 
       <div>
-        <h4 className="font-semibold text-slate-900 mb-3">Message History</h4>
+        <h4 className="font-semibold scholr-ink mb-3">Message History</h4>
         {isLoading ? (
-          <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>
+          <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>
         ) : messages.length === 0 ? (
-          <div className="text-center py-8 text-slate-400">
-            <MessageSquare className="w-10 h-10 mx-auto mb-2 text-slate-300" />
+          <div className="text-center py-8 scholr-faint">
+            <MessageSquare className="w-10 h-10 mx-auto mb-2 scholr-faint" />
             <p className="text-sm">No messages yet</p>
           </div>
         ) : (
           <div className="space-y-2">
             {messages.map(msg => (
-              <div key={msg.id} className="bg-slate-50 rounded-lg p-3 border border-slate-200">
+              <div key={msg.id} className="scholr-sunk rounded-lg p-3 border scholr-rule">
                 <div className="flex items-start justify-between mb-1">
-                  <p className="font-medium text-slate-900 text-sm">{msg.subject}</p>
-                  <span className="text-xs text-slate-500">
+                  <p className="font-medium scholr-ink text-sm">{msg.subject}</p>
+                  <span className="text-xs scholr-muted">
                     {msg.created_at ? format(new Date(msg.created_at), 'MMM d') : ''}
                   </span>
                 </div>
-                <p className="text-xs text-slate-600 mb-2">{msg.sender_name}</p>
-                <p className="text-sm text-slate-700 line-clamp-2">{msg.body}</p>
+                <p className="text-xs scholr-muted mb-2">{msg.sender_name}</p>
+                <p className="text-sm scholr-body line-clamp-2">{msg.body}</p>
               </div>
             ))}
           </div>

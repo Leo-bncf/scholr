@@ -3,22 +3,22 @@ import { Users, BookOpen, BarChart3, Calendar, AlertTriangle, TrendingUp, Gradua
 
 function KpiCard({ icon: Icon, label, value, sub, color = 'indigo' }) {
   const colors = {
-    indigo: 'text-indigo-600 bg-indigo-50',
+    indigo: 'scholr-accent scholr-accent-sf',
     emerald: 'text-emerald-600 bg-emerald-50',
     amber: 'text-amber-600 bg-amber-50',
     rose: 'text-rose-600 bg-rose-50',
-    violet: 'text-violet-600 bg-violet-50',
+    violet: 'scholr-accent scholr-accent-sf',
     sky: 'text-sky-600 bg-sky-50',
   };
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-start gap-4">
+    <div className="bg-white rounded-xl border scholr-rule p-5 flex items-start gap-4">
       <div className={`rounded-lg p-2.5 ${colors[color]}`}>
         <Icon className="w-5 h-5" />
       </div>
       <div>
-        <p className="text-sm text-slate-500">{label}</p>
-        <p className="text-2xl font-bold text-slate-900 mt-0.5">{value ?? '—'}</p>
-        {sub && <p className="text-xs text-slate-400 mt-0.5">{sub}</p>}
+        <p className="text-sm scholr-muted">{label}</p>
+        <p className="text-2xl font-bold scholr-ink mt-0.5">{value ?? '—'}</p>
+        {sub && <p className="text-xs scholr-faint mt-0.5">{sub}</p>}
       </div>
     </div>
   );
@@ -39,7 +39,7 @@ export default function ReportsCenterOverview({ memberships, classes, grades, at
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">School Overview</h2>
+        <h2 className="text-sm font-semibold scholr-muted uppercase tracking-wide mb-4">School Overview</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <KpiCard icon={Users} label="Students" value={students.length} color="indigo" />
           <KpiCard icon={Users} label="Teaching Staff" value={teachers.length} color="sky" />
@@ -53,7 +53,7 @@ export default function ReportsCenterOverview({ memberships, classes, grades, at
       </div>
 
       <div>
-        <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">Attendance Breakdown</h2>
+        <h2 className="text-sm font-semibold scholr-muted uppercase tracking-wide mb-4">Attendance Breakdown</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { label: 'Present', count: presentCount, color: 'bg-emerald-50 border-emerald-200 text-emerald-700' },
@@ -70,13 +70,13 @@ export default function ReportsCenterOverview({ memberships, classes, grades, at
       </div>
 
       <div>
-        <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">Behavior Breakdown</h2>
+        <h2 className="text-sm font-semibold scholr-muted uppercase tracking-wide mb-4">Behavior Breakdown</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { label: 'Positive', type: 'positive', color: 'bg-emerald-50 border-emerald-200 text-emerald-700' },
             { label: 'Concerns', type: 'concern', color: 'bg-amber-50 border-amber-200 text-amber-700' },
             { label: 'Incidents', type: 'incident', color: 'bg-red-50 border-red-200 text-red-700' },
-            { label: 'Notes', type: 'note', color: 'bg-slate-50 border-slate-200 text-slate-600' },
+            { label: 'Notes', type: 'note', color: 'scholr-sunk scholr-rule scholr-muted' },
           ].map(({ label, type, color }) => (
             <div key={type} className={`rounded-xl border p-4 text-center ${color}`}>
               <p className="text-2xl font-bold">{behavior.filter(b => b.type === type).length}</p>
@@ -88,12 +88,12 @@ export default function ReportsCenterOverview({ memberships, classes, grades, at
 
       {(predictedGrades.length > 0 || casExperiences.length > 0) && (
         <div>
-          <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">IB Core Summary</h2>
+          <h2 className="text-sm font-semibold scholr-muted uppercase tracking-wide mb-4">IB Core Summary</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
+            <div className="bg-white rounded-xl border scholr-rule p-5">
               <div className="flex items-center gap-2 mb-3">
-                <TrendingUp className="w-4 h-4 text-violet-600" />
-                <h3 className="font-semibold text-slate-800">Predicted Grades</h3>
+                <TrendingUp className="w-4 h-4 scholr-accent" />
+                <h3 className="font-semibold scholr-ink">Predicted Grades</h3>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {[1,2,3,4,5,6,7].reduce((acc, grade) => {
@@ -101,19 +101,19 @@ export default function ReportsCenterOverview({ memberships, classes, grades, at
                   if (count > 0) acc.push({ grade, count });
                   return acc;
                 }, []).map(({ grade, count }) => (
-                  <div key={grade} className="bg-violet-50 rounded-lg p-2 text-center">
-                    <p className="text-lg font-bold text-violet-700">{grade}</p>
-                    <p className="text-xs text-violet-500">{count} student{count !== 1 ? 's' : ''}</p>
+                  <div key={grade} className="scholr-accent-sf rounded-lg p-2 text-center">
+                    <p className="text-lg font-bold scholr-accent">{grade}</p>
+                    <p className="text-xs scholr-accent">{count} student{count !== 1 ? 's' : ''}</p>
                   </div>
                 ))}
-                {predictedGrades.length === 0 && <p className="text-sm text-slate-400 col-span-3">No predicted grades recorded</p>}
+                {predictedGrades.length === 0 && <p className="text-sm scholr-faint col-span-3">No predicted grades recorded</p>}
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
+            <div className="bg-white rounded-xl border scholr-rule p-5">
               <div className="flex items-center gap-2 mb-3">
                 <GraduationCap className="w-4 h-4 text-emerald-600" />
-                <h3 className="font-semibold text-slate-800">CAS Experiences</h3>
+                <h3 className="font-semibold scholr-ink">CAS Experiences</h3>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {['creativity', 'activity', 'service'].map(strand => {

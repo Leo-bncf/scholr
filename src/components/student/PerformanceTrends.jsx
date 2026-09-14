@@ -12,7 +12,7 @@ import * as gradebookData from '@/data/gradebook';
 function TrendBadge({ trend }) {
   if (trend > 0) return <span className="flex items-center gap-1 text-emerald-600 text-xs font-semibold"><TrendingUp className="w-3 h-3" />+{trend.toFixed(1)}%</span>;
   if (trend < 0) return <span className="flex items-center gap-1 text-red-600 text-xs font-semibold"><TrendingDown className="w-3 h-3" />{trend.toFixed(1)}%</span>;
-  return <span className="flex items-center gap-1 text-slate-400 text-xs"><Minus className="w-3 h-3" />No change</span>;
+  return <span className="flex items-center gap-1 scholr-faint text-xs"><Minus className="w-3 h-3" />No change</span>;
 }
 
 export default function PerformanceTrends({ schoolId, userId, classes }) {
@@ -79,11 +79,11 @@ export default function PerformanceTrends({ schoolId, userId, classes }) {
     return (valid.reduce((s, g) => s + (g.score / g.max_score) * 100, 0) / valid.length).toFixed(1);
   }, [filtered]);
 
-  if (isLoading) return <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>;
+  if (isLoading) return <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>;
 
   if (!grades.length) return (
-    <div className="text-center py-16 text-slate-400">
-      <TrendingUp className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+    <div className="text-center py-16 scholr-faint">
+      <TrendingUp className="w-12 h-12 mx-auto mb-3 scholr-faint" />
       <p>Not enough grade data to show trends yet</p>
     </div>
   );
@@ -94,18 +94,18 @@ export default function PerformanceTrends({ schoolId, userId, classes }) {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-6">
           {overallAvg && (
-            <div className="bg-indigo-50 border border-indigo-200 rounded-xl px-5 py-3">
-              <p className="text-xs text-indigo-600 font-medium">Overall Average</p>
-              <p className="text-2xl font-bold text-indigo-900">{overallAvg}%</p>
+            <div className="scholr-accent-sf border scholr-accent-rule rounded-xl px-5 py-3">
+              <p className="text-xs scholr-accent font-medium">Overall Average</p>
+              <p className="text-2xl font-bold scholr-accent">{overallAvg}%</p>
             </div>
           )}
           <div className="flex flex-col gap-1">
-            <p className="text-xs text-slate-500">Trend</p>
+            <p className="text-xs scholr-muted">Trend</p>
             <TrendBadge trend={trend} />
           </div>
           <div>
-            <p className="text-xs text-slate-500">Graded items</p>
-            <p className="text-lg font-bold text-slate-900">{filtered.filter(g => g.score != null).length}</p>
+            <p className="text-xs scholr-muted">Graded items</p>
+            <p className="text-lg font-bold scholr-ink">{filtered.filter(g => g.score != null).length}</p>
           </div>
         </div>
         <Select value={classFilter} onValueChange={setClassFilter}>
@@ -119,8 +119,8 @@ export default function PerformanceTrends({ schoolId, userId, classes }) {
 
       {/* Grade trend line chart */}
       {trendData.length >= 2 && (
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
-          <p className="font-semibold text-slate-900 mb-4 text-sm">Grade Trend Over Time</p>
+        <div className="bg-white rounded-xl border scholr-rule p-5">
+          <p className="font-semibold scholr-ink mb-4 text-sm">Grade Trend Over Time</p>
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={trendData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -135,8 +135,8 @@ export default function PerformanceTrends({ schoolId, userId, classes }) {
 
       {/* Per-class comparison */}
       {classAvgs.length > 1 && (
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
-          <p className="font-semibold text-slate-900 mb-4 text-sm">Average by Class</p>
+        <div className="bg-white rounded-xl border scholr-rule p-5">
+          <p className="font-semibold scholr-ink mb-4 text-sm">Average by Class</p>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={classAvgs}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -150,8 +150,8 @@ export default function PerformanceTrends({ schoolId, userId, classes }) {
       )}
 
       {/* Grade distribution */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5">
-        <p className="font-semibold text-slate-900 mb-4 text-sm">Grade Distribution</p>
+      <div className="bg-white rounded-xl border scholr-rule p-5">
+        <p className="font-semibold scholr-ink mb-4 text-sm">Grade Distribution</p>
         <div className="space-y-2">
           {[
             { label: 'Excellent (≥80%)', min: 80, color: 'bg-emerald-500' },
@@ -168,11 +168,11 @@ export default function PerformanceTrends({ schoolId, userId, classes }) {
             const pct = total > 0 ? Math.round((count / total) * 100) : 0;
             return (
               <div key={label} className="flex items-center gap-3">
-                <p className="text-xs text-slate-600 w-36 flex-shrink-0">{label}</p>
-                <div className="flex-1 bg-slate-100 rounded-full h-2">
-                  <div className={`${color} h-2 rounded-full transition-all`} style={{ width: `${pct}%` }} />
+                <p className="text-xs scholr-muted w-36 flex-shrink-0">{label}</p>
+                <div className="flex-1 scholr-sunk rounded-full h-2">
+                  <div className={`${color} h-2 rounded-full transition-colors`} style={{ width: `${pct}%` }} />
                 </div>
-                <p className="text-xs font-semibold text-slate-700 w-8 text-right">{count}</p>
+                <p className="text-xs font-semibold scholr-body w-8 text-right">{count}</p>
               </div>
             );
           })}

@@ -97,7 +97,7 @@ export default function GoogleDrivePicker({ open, onClose, onFilesSelected }) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <FolderOpen className="w-5 h-5 text-indigo-600" />
+            <FolderOpen className="w-5 h-5 scholr-accent" />
             Link from Google Drive
           </DialogTitle>
         </DialogHeader>
@@ -122,7 +122,7 @@ export default function GoogleDrivePicker({ open, onClose, onFilesSelected }) {
             </div>
           )}
 
-          <p className="text-sm text-slate-600">
+          <p className="text-sm scholr-muted">
             Click the button below to open Google Drive and select files to attach to your submission.
           </p>
 
@@ -137,7 +137,7 @@ export default function GoogleDrivePicker({ open, onClose, onFilesSelected }) {
             <Button
               onClick={handleOpenPicker}
               disabled={loading || !pickerReady}
-              className="bg-indigo-600 hover:bg-indigo-700"
+              className="scholr-accent-sf hover:scholr-accent-sf"
             >
               {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               {loading ? 'Processing...' : 'Open Google Drive'}

@@ -100,7 +100,7 @@ export default function SetupChecklist({ schoolId, onNavigate }) {
     return (
       <Card>
         <CardContent className="pt-6">
-          <div className="text-center text-slate-600">Loading setup status...</div>
+          <div className="text-center scholr-muted">Loading setup status...</div>
         </CardContent>
       </Card>
     );
@@ -111,7 +111,7 @@ export default function SetupChecklist({ schoolId, onNavigate }) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">Setup Checklist</CardTitle>
-          <span className={`text-sm font-semibold ${allComplete ? 'text-emerald-600' : 'text-slate-600'}`}>
+          <span className={`text-sm font-semibold ${allComplete ? 'text-emerald-600' : 'scholr-muted'}`}>
             {completedCount}/{tasks.length} Complete
           </span>
         </div>
@@ -131,20 +131,20 @@ export default function SetupChecklist({ schoolId, onNavigate }) {
             className={`flex items-start justify-between p-3 rounded-lg transition-colors ${
               task.completed
                 ? 'bg-emerald-50 border border-emerald-100'
-                : 'bg-slate-50 border border-slate-200 hover:bg-slate-100'
+                : 'scholr-sunk border scholr-rule hover:scholr-sunk'
             }`}
           >
             <div className="flex items-start gap-3 flex-1">
               <task.icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
-                task.completed ? 'text-emerald-600' : 'text-slate-400'
+                task.completed ? 'text-emerald-600' : 'scholr-faint'
               }`} />
               <div className="flex-1">
                 <p className={`font-semibold text-sm ${
-                  task.completed ? 'text-slate-600' : 'text-slate-900'
+                  task.completed ? 'scholr-muted' : 'scholr-ink'
                 }`}>
                   {task.label}
                 </p>
-                <p className="text-xs text-slate-600 mt-0.5">{task.description}</p>
+                <p className="text-xs scholr-muted mt-0.5">{task.description}</p>
               </div>
             </div>
             {!task.completed && (

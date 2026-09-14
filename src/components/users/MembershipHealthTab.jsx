@@ -148,7 +148,7 @@ export default function MembershipHealthTab({ schoolId }) {
   if (isLoading) {
     return (
       <div className="p-16 text-center">
-        <Loader2 className="w-6 h-6 animate-spin text-slate-300 mx-auto" />
+        <Loader2 className="w-6 h-6 animate-spin scholr-faint mx-auto" />
       </div>
     );
   }
@@ -159,8 +159,8 @@ export default function MembershipHealthTab({ schoolId }) {
         <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">
           <CheckCircle className="w-8 h-8 text-emerald-600" />
         </div>
-        <h3 className="text-lg font-semibold text-slate-900">All memberships look healthy</h3>
-        <p className="text-sm text-slate-500">
+        <h3 className="text-lg font-semibold scholr-ink">All memberships look healthy</h3>
+        <p className="text-sm scholr-muted">
           No orphan accounts, no duplicates, no missing data. {memberships.length} active memberships in good shape.
         </p>
         <Alert className="border-blue-200 bg-blue-50 text-left">
@@ -178,7 +178,7 @@ export default function MembershipHealthTab({ schoolId }) {
     const colors = {
       high:   'bg-red-50 border-red-200 text-red-700',
       medium: 'bg-amber-50 border-amber-200 text-amber-700',
-      low:    'bg-slate-50 border-slate-200 text-slate-600',
+      low:    'scholr-sunk scholr-rule scholr-muted',
     };
     const dotColors = { high: 'bg-red-500', medium: 'bg-amber-400', low: 'bg-slate-400' };
     return (
@@ -203,8 +203,8 @@ export default function MembershipHealthTab({ schoolId }) {
   return (
     <div className="space-y-5 max-w-2xl">
       <div>
-        <h3 className="text-sm font-semibold text-slate-800 mb-1">Membership Health Check</h3>
-        <p className="text-xs text-slate-500">
+        <h3 className="text-sm font-semibold scholr-ink mb-1">Membership Health Check</h3>
+        <p className="text-xs scholr-muted">
           Detects and helps fix orphan accounts, duplicates, invalid data, and multi-school isolation issues.
         </p>
       </div>
@@ -239,8 +239,8 @@ export default function MembershipHealthTab({ schoolId }) {
         renderItem={(m, i) => (
           <div key={i} className="flex items-center justify-between bg-white/60 rounded-lg px-3 py-2">
             <div>
-              <p className="text-xs font-medium text-slate-800">{m.user_name || m.user_email || `ID: ${m.id}`}</p>
-              <p className="text-[11px] text-slate-500">role: {m.role} · status: {m.status}</p>
+              <p className="text-xs font-medium scholr-ink">{m.user_name || m.user_email || `ID: ${m.id}`}</p>
+              <p className="text-[11px] scholr-muted">role: {m.role} · status: {m.status}</p>
             </div>
             <Button
               variant="ghost"
@@ -267,8 +267,8 @@ export default function MembershipHealthTab({ schoolId }) {
         renderItem={(m, i) => (
           <div key={i} className="flex items-center justify-between bg-white/60 rounded-lg px-3 py-2">
             <div>
-              <p className="text-xs font-medium text-slate-800">{m.user_email}</p>
-              <p className="text-[11px] text-slate-500">role: {ROLE_CONFIG[m.role]?.label || m.role} · id: {m.id?.slice(-8)}</p>
+              <p className="text-xs font-medium scholr-ink">{m.user_email}</p>
+              <p className="text-[11px] scholr-muted">role: {ROLE_CONFIG[m.role]?.label || m.role} · id: {m.id?.slice(-8)}</p>
             </div>
             <Button
               variant="ghost"
@@ -295,8 +295,8 @@ export default function MembershipHealthTab({ schoolId }) {
         renderItem={(m, i) => (
           <div key={i} className="flex items-center justify-between bg-white/60 rounded-lg px-3 py-2">
             <div>
-              <p className="text-xs font-medium text-slate-800">{m.user_name || `ID: ${m.id}`}</p>
-              <p className="text-[11px] text-slate-500">role: {m.role} · created: {new Date(m.created_at).toLocaleDateString()}</p>
+              <p className="text-xs font-medium scholr-ink">{m.user_name || `ID: ${m.id}`}</p>
+              <p className="text-[11px] scholr-muted">role: {m.role} · created: {new Date(m.created_at).toLocaleDateString()}</p>
             </div>
             <Button
               variant="ghost"
@@ -323,8 +323,8 @@ export default function MembershipHealthTab({ schoolId }) {
         renderItem={(m, i) => (
           <div key={i} className="flex items-center justify-between bg-white/60 rounded-lg px-3 py-2">
             <div>
-              <p className="text-xs font-medium text-slate-800">{m.user_email || m.user_name}</p>
-              <p className="text-[11px] text-slate-500">current role: "{m.role}"</p>
+              <p className="text-xs font-medium scholr-ink">{m.user_email || m.user_name}</p>
+              <p className="text-[11px] scholr-muted">current role: "{m.role}"</p>
             </div>
             <Button
               variant="ghost"
@@ -346,8 +346,8 @@ export default function MembershipHealthTab({ schoolId }) {
         renderItem={(m, i) => (
           <div key={i} className="flex items-center justify-between bg-white/60 rounded-lg px-3 py-2">
             <div>
-              <p className="text-xs font-medium text-slate-800">{m.user_email || m.user_name}</p>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-xs font-medium scholr-ink">{m.user_email || m.user_name}</p>
+              <p className="text-[11px] scholr-muted">
                 pending since {new Date(m.created_at).toLocaleDateString()} ·
                 {ROLE_CONFIG[m.role]?.label || m.role}
               </p>

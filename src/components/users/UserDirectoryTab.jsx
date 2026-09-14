@@ -22,7 +22,7 @@ import * as fns from '@/data/functions';
 
 const STATUS_CONFIG = {
   active:   { label: 'Active',    classes: 'bg-emerald-50 text-emerald-700', dot: 'bg-emerald-500' },
-  inactive: { label: 'Inactive',  classes: 'bg-slate-100 text-slate-500',   dot: 'bg-slate-400' },
+  inactive: { label: 'Inactive',  classes: 'scholr-sunk scholr-muted',   dot: 'bg-slate-400' },
   pending:  { label: 'Pending',   classes: 'bg-amber-50 text-amber-700',    dot: 'bg-amber-400' },
 };
 
@@ -74,11 +74,11 @@ function EditMemberDialog({ member, onClose, schoolId }) {
           className="space-y-4 pt-1"
         >
           <div>
-            <Label className="text-xs font-semibold text-slate-600">Display Name</Label>
+            <Label className="text-xs font-semibold scholr-muted">Display Name</Label>
             <Input value={form.user_name} onChange={e => setForm({ ...form, user_name: e.target.value })} className="mt-1" />
           </div>
           <div>
-            <Label className="text-xs font-semibold text-slate-600">Role</Label>
+            <Label className="text-xs font-semibold scholr-muted">Role</Label>
             <Select value={form.role} onValueChange={v => setForm({ ...form, role: v })}>
               <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -89,7 +89,7 @@ function EditMemberDialog({ member, onClose, schoolId }) {
             </Select>
           </div>
           <div>
-            <Label className="text-xs font-semibold text-slate-600">Status</Label>
+            <Label className="text-xs font-semibold scholr-muted">Status</Label>
             <Select value={form.status} onValueChange={v => setForm({ ...form, status: v })}>
               <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -101,20 +101,20 @@ function EditMemberDialog({ member, onClose, schoolId }) {
           </div>
           {form.role === 'student' && (
             <div>
-              <Label className="text-xs font-semibold text-slate-600">Grade Level</Label>
+              <Label className="text-xs font-semibold scholr-muted">Grade Level</Label>
               <Input value={form.grade_level} onChange={e => setForm({ ...form, grade_level: e.target.value })} placeholder="DP1, DP2, MYP3…" className="mt-1" />
             </div>
           )}
           {(form.role === 'teacher' || form.role === 'ib_coordinator') && (
             <div>
-              <Label className="text-xs font-semibold text-slate-600">Department</Label>
+              <Label className="text-xs font-semibold scholr-muted">Department</Label>
               <Input value={form.department} onChange={e => setForm({ ...form, department: e.target.value })} placeholder="Sciences, Humanities…" className="mt-1" />
             </div>
           )}
           {form.role === 'school_admin' && (
             <div>
-              <Label className="text-xs font-semibold text-slate-600">Sub-Admin Permissions</Label>
-              <p className="text-[11px] text-slate-400 mb-2">Grant limited admin rights to non-full-admin staff.</p>
+              <Label className="text-xs font-semibold scholr-muted">Sub-Admin Permissions</Label>
+              <p className="text-[11px] scholr-faint mb-2">Grant limited admin rights to non-full-admin staff.</p>
               <div className="grid grid-cols-2 gap-2 mt-1">
                 {SUB_ADMIN_PERMS.map(p => (
                   <button
@@ -123,8 +123,8 @@ function EditMemberDialog({ member, onClose, schoolId }) {
                     onClick={() => togglePerm(p.value)}
                     className={`text-xs px-3 py-2 rounded-md border text-left transition-colors ${
                       form.permissions.includes(p.value)
-                        ? 'bg-indigo-50 border-indigo-300 text-indigo-700 font-medium'
-                        : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                        ? 'scholr-accent-sf scholr-accent-rule scholr-accent font-medium'
+                        : 'bg-white scholr-rule scholr-muted hover:scholr-rule'
                     }`}
                   >
                     {p.label}
@@ -135,7 +135,7 @@ function EditMemberDialog({ member, onClose, schoolId }) {
           )}
           <div className="flex gap-2 pt-2">
             <Button type="button" variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={updateMutation.isPending} className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white">
+            <Button type="submit" disabled={updateMutation.isPending} className="flex-1 pub-btn pub-btn-gold">
               {updateMutation.isPending && <Loader2 className="w-3.5 h-3.5 animate-spin mr-2" />}
               Save Changes
             </Button>
@@ -284,8 +284,8 @@ export default function UserDirectoryTab({ schoolId }) {
           <button
             key={role}
             onClick={() => setRoleFilter(roleFilter === role ? 'all' : role)}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
-              roleFilter === role ? 'ring-2 ring-indigo-400 ring-offset-1' : ''
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
+              roleFilter === role ? 'ring-2 scholr-accent-rule ring-offset-1' : ''
             } ${color}`}
           >
             {label} <span className="font-bold">{count}</span>
@@ -296,7 +296,7 @@ export default function UserDirectoryTab({ schoolId }) {
       {/* Search + filters bar */}
       <div className="flex flex-wrap gap-2 items-center">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 scholr-faint" />
           <Input
             placeholder="Search name, email, department…"
             value={search}
@@ -307,7 +307,7 @@ export default function UserDirectoryTab({ schoolId }) {
 
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-36 h-9 bg-white text-xs">
-            <Filter className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
+            <Filter className="w-3.5 h-3.5 mr-1.5 scholr-faint" />
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -335,7 +335,7 @@ export default function UserDirectoryTab({ schoolId }) {
         {activeFilters > 0 && (
           <button
             onClick={() => { setRoleFilter('all'); setStatusFilter('all'); setCohortFilter('all'); setSearch(''); }}
-            className="text-xs text-slate-400 hover:text-slate-600 px-2 h-9"
+            className="text-xs scholr-faint hover:scholr-muted px-2 h-9"
           >
             Clear {activeFilters} filter{activeFilters > 1 ? 's' : ''} ×
           </button>
@@ -349,55 +349,55 @@ export default function UserDirectoryTab({ schoolId }) {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+      <div className="bg-white rounded-xl border scholr-rule overflow-hidden shadow-sm">
         {isLoading ? (
           <div className="p-16 text-center">
-            <Loader2 className="w-6 h-6 animate-spin text-slate-300 mx-auto" />
+            <Loader2 className="w-6 h-6 animate-spin scholr-faint mx-auto" />
           </div>
         ) : filtered.length === 0 ? (
           <div className="p-16 text-center">
-            <UserX className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-            <p className="text-slate-400 text-sm">No users match your filters</p>
+            <UserX className="w-10 h-10 scholr-faint mx-auto mb-3" />
+            <p className="scholr-faint text-sm">No users match your filters</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-100 bg-slate-50">
-                  <th className="px-5 py-3 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Member</th>
-                  <th className="px-5 py-3 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide hidden sm:table-cell">Email</th>
-                  <th className="px-5 py-3 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Role</th>
-                  <th className="px-5 py-3 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide hidden md:table-cell">Detail</th>
-                  <th className="px-5 py-3 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Status</th>
-                  <th className="px-5 py-3 text-right text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Actions</th>
+                <tr className="border-b scholr-rule-soft scholr-sunk">
+                  <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide">Member</th>
+                  <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide hidden sm:table-cell">Email</th>
+                  <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide">Role</th>
+                  <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide hidden md:table-cell">Detail</th>
+                  <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide">Status</th>
+                  <th className="px-5 py-3 text-right text-[11px] font-semibold scholr-muted uppercase tracking-wide">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50">
+              <tbody className="divide-y scholr-divide">
                 {filtered.map(m => {
-                  const rc = ROLE_CONFIG[m.role] || { label: m.role, color: 'bg-slate-100 text-slate-500 border-slate-200' };
+                  const rc = ROLE_CONFIG[m.role] || { label: m.role, color: 'scholr-sunk scholr-muted scholr-rule' };
                   const sc = STATUS_CONFIG[m.status] || STATUS_CONFIG.pending;
                   return (
-                    <tr key={m.id} className="hover:bg-slate-50 transition-colors group">
+                    <tr key={m.id} className="hover:scholr-sunk transition-colors group">
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-3">
                           <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 border role-chip`}>
                             {(m.user_name || m.user_email || '?')[0]?.toUpperCase()}
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-slate-900 leading-none">{m.user_name || '—'}</p>
-                            <p className="text-[11px] text-slate-400 sm:hidden mt-0.5 truncate max-w-[160px]">{m.user_email}</p>
+                            <p className="text-sm font-medium scholr-ink leading-none">{m.user_name || '—'}</p>
+                            <p className="text-[11px] scholr-faint sm:hidden mt-0.5 truncate max-w-[160px]">{m.user_email}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-5 py-3 hidden sm:table-cell text-sm text-slate-500">{m.user_email}</td>
+                      <td className="px-5 py-3 hidden sm:table-cell text-sm scholr-muted">{m.user_email}</td>
                       <td className="px-5 py-3">
                         <Badge className={`role-chip border text-[11px] font-medium`}>{rc.label}</Badge>
                       </td>
-                      <td className="px-5 py-3 hidden md:table-cell text-xs text-slate-500">
+                      <td className="px-5 py-3 hidden md:table-cell text-xs scholr-muted">
                         {m.grade_level
                           ? <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded">{m.grade_level}</span>
                           : m.department
-                          ? <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">{m.department}</span>
+                          ? <span className="scholr-sunk scholr-muted px-2 py-0.5 rounded">{m.department}</span>
                           : '—'}
                       </td>
                       <td className="px-5 py-3">
@@ -447,8 +447,8 @@ export default function UserDirectoryTab({ schoolId }) {
                 })}
               </tbody>
             </table>
-            <div className="px-5 py-2.5 border-t border-slate-100 bg-slate-50">
-              <p className="text-[11px] text-slate-400">
+            <div className="px-5 py-2.5 border-t scholr-rule-soft scholr-sunk">
+              <p className="text-[11px] scholr-faint">
                 Showing {filtered.length} of {memberships.length} members
               </p>
             </div>

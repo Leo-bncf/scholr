@@ -81,7 +81,7 @@ export default function DocumentAccessValidator({
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 text-sm text-slate-500">
+      <div className="flex items-center gap-2 text-sm scholr-muted">
         <Loader2 className="w-4 h-4 animate-spin" />
         <span>Checking access...</span>
       </div>

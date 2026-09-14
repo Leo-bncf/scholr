@@ -35,7 +35,7 @@ export default function StudentClassWorkspace({ classData, user, initialTab }) {
   }];
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen scholr-sunk">
       <ClassHeader classData={classData} />
       <ClassTabBar groups={groups} activeTab={activeTab} onTabChange={setActiveTab} />
 

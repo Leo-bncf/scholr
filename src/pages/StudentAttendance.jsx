@@ -50,8 +50,8 @@ function WeeklyTrendChart({ records }) {
   if (weeks.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5">
-      <h3 className="font-bold text-sm text-slate-700 mb-4 uppercase tracking-wide">Weekly Attendance Rate</h3>
+    <div className="bg-white rounded-xl border scholr-rule p-5">
+      <h3 className="font-bold text-sm scholr-body mb-4 uppercase tracking-wide">Weekly Attendance Rate</h3>
       <ResponsiveContainer width="100%" height={180}>
         <BarChart data={weeks} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -149,18 +149,18 @@ export default function StudentAttendance() {
 
   return (
     <RoleGuard allowedRoles={['student', 'school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar links={studentLinks} role="student" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         <main className="app-offset p-4 md:p-8">
           <div className="max-w-4xl mx-auto">
             <div className="mb-6">
-              <h1 className="text-xl md:text-2xl font-bold text-slate-900">My Attendance</h1>
-              <p className="text-sm text-slate-500 mt-1">Personal attendance records and trends</p>
+              <h1 className="text-xl md:text-2xl font-bold scholr-ink">My Attendance</h1>
+              <p className="text-sm scholr-muted mt-1">Personal attendance records and trends</p>
             </div>
 
             {isLoading ? (
               <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+                <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
               </div>
             ) : (
               <div className="space-y-5">
@@ -201,7 +201,7 @@ export default function StudentAttendance() {
                       <button
                         key={key}
                         onClick={() => setStatusFilter(statusFilter === key ? 'all' : key)}
-                        className={`rounded-xl border p-4 text-left transition-all ${meta.bg} ${meta.border} ${statusFilter === key ? 'ring-2 ring-offset-1 ring-current' : 'hover:opacity-80'}`}
+                        className={`rounded-xl border p-4 text-left transition-colors ${meta.bg} ${meta.border} ${statusFilter === key ? 'ring-2 ring-offset-1 ring-current' : 'hover:opacity-80'}`}
                       >
                         <div className="flex items-center gap-1.5 mb-1">
                           <Icon className={`w-4 h-4 ${meta.text}`} />
@@ -218,15 +218,15 @@ export default function StudentAttendance() {
                   <div className={`rounded-xl border p-5 ${rate >= 90 ? 'bg-emerald-50 border-emerald-200' : rate >= 75 ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200'}`}>
                     <div className="flex items-center justify-between mb-3">
                       <div>
-                        <p className="text-sm font-semibold text-slate-700">Overall Attendance Rate</p>
-                        <p className="text-xs text-slate-500 mt-0.5">{total} sessions recorded</p>
+                        <p className="text-sm font-semibold scholr-body">Overall Attendance Rate</p>
+                        <p className="text-xs scholr-muted mt-0.5">{total} sessions recorded</p>
                       </div>
                       <p className={`text-4xl font-black ${rate >= 90 ? 'text-emerald-700' : rate >= 75 ? 'text-amber-700' : 'text-red-700'}`}>{rate}%</p>
                     </div>
                     <StatusBreakdownBar counts={counts} total={total} />
                     <div className="flex flex-wrap gap-3 mt-3">
                       {Object.entries(STATUS_META).map(([key, meta]) => counts[key] > 0 && (
-                        <div key={key} className="flex items-center gap-1.5 text-xs text-slate-600">
+                        <div key={key} className="flex items-center gap-1.5 text-xs scholr-muted">
                           <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: meta.bar }} />
                           {meta.label}: {Math.round(((counts[key] || 0) / total) * 100)}%
                         </div>
@@ -240,8 +240,8 @@ export default function StudentAttendance() {
 
                 {/* Per-class breakdown */}
                 {classFilter === 'all' && classes.length > 1 && (
-                  <div className="bg-white rounded-xl border border-slate-200 p-5">
-                    <h3 className="font-bold text-sm text-slate-700 mb-4 uppercase tracking-wide">By Class</h3>
+                  <div className="bg-white rounded-xl border scholr-rule p-5">
+                    <h3 className="font-bold text-sm scholr-body mb-4 uppercase tracking-wide">By Class</h3>
                     <div className="space-y-3">
                       {classes.map(cls => {
                         const clsRecords = filtered.filter(r => r.class_id === cls.id);
@@ -253,14 +253,14 @@ export default function StudentAttendance() {
                         return (
                           <div key={cls.id} className="flex items-center gap-4">
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-slate-800 truncate">{cls.name}</p>
+                              <p className="text-sm font-medium scholr-ink truncate">{cls.name}</p>
                               <StatusBreakdownBar counts={clsCounts} total={clsTotal} />
                             </div>
                             <div className="flex-shrink-0 text-right">
                               <p className={`text-lg font-bold ${clsRate >= 90 ? 'text-emerald-700' : clsRate >= 75 ? 'text-amber-700' : 'text-red-700'}`}>
                                 {clsRate !== null ? `${clsRate}%` : '—'}
                               </p>
-                              <p className="text-xs text-slate-400">{clsTotal} sessions</p>
+                              <p className="text-xs scholr-faint">{clsTotal} sessions</p>
                             </div>
                           </div>
                         );
@@ -270,41 +270,41 @@ export default function StudentAttendance() {
                 )}
 
                 {/* Records table */}
-                <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                  <div className="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
-                    <h3 className="font-bold text-sm text-slate-700 uppercase tracking-wide">Record History</h3>
-                    <span className="text-xs text-slate-400">{filtered.length} records</span>
+                <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+                  <div className="px-5 py-3 border-b scholr-rule-soft flex items-center justify-between">
+                    <h3 className="font-bold text-sm scholr-body uppercase tracking-wide">Record History</h3>
+                    <span className="text-xs scholr-faint">{filtered.length} records</span>
                   </div>
                   {filtered.length === 0 ? (
-                    <div className="text-center py-12 text-slate-400">
-                      <ClipboardList className="w-10 h-10 mx-auto mb-2 text-slate-300" />
+                    <div className="text-center py-12 scholr-faint">
+                      <ClipboardList className="w-10 h-10 mx-auto mb-2 scholr-faint" />
                       <p className="text-sm">No records match these filters</p>
                     </div>
                   ) : (
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="bg-slate-50 border-b border-slate-100">
-                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Date</th>
-                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Class</th>
-                            <th className="px-4 py-3 text-center text-xs font-semibold text-slate-500 uppercase">Status</th>
-                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Note</th>
+                          <tr className="scholr-sunk border-b scholr-rule-soft">
+                            <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">Date</th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">Class</th>
+                            <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">Status</th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">Note</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-50">
+                        <tbody className="divide-y scholr-divide">
                           {filtered.map(r => {
                             const meta = STATUS_META[r.status] || STATUS_META.absent;
                             const Icon = meta.icon;
                             return (
-                              <tr key={r.id} className="hover:bg-slate-50 transition-colors">
-                                <td className="px-4 py-3 font-medium text-slate-700">{format(parseISO(r.date), 'EEE, MMM d yyyy')}</td>
-                                <td className="px-4 py-3 text-slate-600 text-xs">{r.class_name}</td>
+                              <tr key={r.id} className="hover:scholr-sunk transition-colors">
+                                <td className="px-4 py-3 font-medium scholr-body">{format(parseISO(r.date), 'EEE, MMM d yyyy')}</td>
+                                <td className="px-4 py-3 scholr-muted text-xs">{r.class_name}</td>
                                 <td className="px-4 py-3 text-center">
                                   <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border ${meta.bg} ${meta.text} ${meta.border}`}>
                                     <Icon className="w-3 h-3" /> {meta.label}
                                   </span>
                                 </td>
-                                <td className="px-4 py-3 text-slate-400 text-xs italic">{r.note || '—'}</td>
+                                <td className="px-4 py-3 scholr-faint text-xs italic">{r.note || '—'}</td>
                               </tr>
                             );
                           })}

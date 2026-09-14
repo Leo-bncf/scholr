@@ -131,13 +131,13 @@ export default function ParentInsightsDashboard() {
 
   return (
     <RoleGuard allowedRoles={['parent', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar links={getAppSidebarLinks('parent')} role="parent" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         <main className="app-offset p-4 md:p-8">
           <div className="max-w-7xl mx-auto space-y-6">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Parent Insights</h1>
-              <p className="text-sm text-slate-600 mt-1">A quick, simple view of how your child is doing.</p>
+              <h1 className="text-2xl md:text-3xl font-bold scholr-ink">Parent Insights</h1>
+              <p className="text-sm scholr-muted mt-1">A quick, simple view of how your child is doing.</p>
             </div>
 
             <ChildSelector
@@ -148,13 +148,13 @@ export default function ParentInsightsDashboard() {
             />
 
             {!selectedChildId ? (
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-10 text-center">
-                <Users className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <h2 className="text-xl font-semibold text-slate-900">Select a child</h2>
-                <p className="text-sm text-slate-500 mt-2">Choose a child above to see a fast summary.</p>
+              <div className="bg-white rounded-2xl border scholr-rule shadow-sm p-10 text-center">
+                <Users className="w-12 h-12 scholr-faint mx-auto mb-4" />
+                <h2 className="text-xl font-semibold scholr-ink">Select a child</h2>
+                <p className="text-sm scholr-muted mt-2">Choose a child above to see a fast summary.</p>
               </div>
             ) : isLoading ? (
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-10 flex items-center justify-center">
+              <div className="bg-white rounded-2xl border scholr-rule shadow-sm p-10 flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-emerald-700" />
               </div>
             ) : (

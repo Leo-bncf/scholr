@@ -16,11 +16,11 @@ export default function OnboardingProgress({
   const isComplete = completedSteps === totalSteps;
 
   return (
-    <Card className="bg-gradient-to-br from-indigo-50 to-blue-50 border-indigo-200">
+    <Card className="bg-gradient-to-br from-indigo-50 to-blue-50 scholr-accent-rule">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">Setup Progress</CardTitle>
-          <span className="text-sm font-semibold text-indigo-600">
+          <span className="text-sm font-semibold scholr-accent">
             {completedSteps} of {totalSteps} completed
           </span>
         </div>
@@ -36,9 +36,9 @@ export default function OnboardingProgress({
               ) : step.id === currentStep ? (
                 <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 animate-pulse" />
               ) : (
-                <Circle className="w-5 h-5 text-slate-300 flex-shrink-0" />
+                <Circle className="w-5 h-5 scholr-faint flex-shrink-0" />
               )}
-              <span className={step.completed ? 'text-slate-600 line-through' : 'text-slate-700 font-medium'}>
+              <span className={step.completed ? 'scholr-muted line-through' : 'scholr-body font-medium'}>
                 {step.label}
               </span>
             </div>

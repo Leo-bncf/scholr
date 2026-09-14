@@ -41,8 +41,8 @@ export default function TimetableGrid({ entries, rooms, classesById, memberships
 
   if (entries.length === 0) {
     return (
-      <div className="bg-white border border-slate-200 rounded-md p-10 text-center">
-        <p className="text-slate-500 text-sm">No timetable entries found for this selection.</p>
+      <div className="app-group p-10 text-center">
+        <p className="scholr-muted text-sm">No timetable entries found for this selection.</p>
       </div>
     );
   }
@@ -52,14 +52,14 @@ export default function TimetableGrid({ entries, rooms, classesById, memberships
       {visibleDays.map((day) => {
         const dayEntries = entriesByDay[day.value] || [];
         return (
-          <div key={day.value} className="bg-white border border-slate-200 rounded-md overflow-hidden shadow-sm flex flex-col">
-            <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
-              <p className="text-sm font-semibold text-slate-900">{day.label}</p>
-              <p className="text-xs text-slate-500">{dayEntries.length} {dayEntries.length === 1 ? 'entry' : 'entries'}</p>
+          <div key={day.value} className="app-group overflow-hidden shadow-sm flex flex-col">
+            <div className="px-4 py-3 border-b scholr-rule scholr-sunk">
+              <p className="text-sm font-semibold scholr-ink">{day.label}</p>
+              <p className="text-xs scholr-muted">{dayEntries.length} {dayEntries.length === 1 ? 'entry' : 'entries'}</p>
             </div>
-            <div className="flex-1 divide-y divide-slate-100">
+            <div className="flex-1 divide-y scholr-divide">
               {dayEntries.length === 0 ? (
-                <p className="text-xs text-slate-400 text-center py-6">No classes</p>
+                <p className="text-xs scholr-faint text-center py-6">No classes</p>
               ) : (
                 dayEntries.map((entry) => {
                   const room = entry.room_id ? roomsById[entry.room_id] : null;
@@ -68,7 +68,7 @@ export default function TimetableGrid({ entries, rooms, classesById, memberships
                   return (
                     <div key={entry.id} className="px-4 py-3">
                       <div className="flex items-center justify-between gap-2 mb-1">
-                        <span className="text-xs font-mono text-indigo-600 font-semibold">
+                        <span className="text-xs font-mono scholr-accent font-semibold">
                           {entry.start_time} – {entry.end_time}
                         </span>
                         {entry.status && entry.status !== 'active' && (
@@ -77,31 +77,31 @@ export default function TimetableGrid({ entries, rooms, classesById, memberships
                           </span>
                         )}
                       </div>
-                      <p className="text-sm font-medium text-slate-900 mb-1 truncate">
+                      <p className="text-sm font-medium scholr-ink mb-1 truncate">
                         {entry.class_name || cls?.name || 'Unnamed class'}
                       </p>
                       <div className="space-y-0.5">
                         {entry.teacher_name && (
-                          <p className="text-xs text-slate-600 flex items-center gap-1.5">
+                          <p className="text-xs scholr-muted flex items-center gap-1.5">
                             <User className="w-3 h-3" />
                             {entry.teacher_name}
                           </p>
                         )}
                         {!entry.teacher_name && teacherNames.length > 0 && (
-                          <p className="text-xs text-slate-600 flex items-center gap-1.5">
+                          <p className="text-xs scholr-muted flex items-center gap-1.5">
                             <Users className="w-3 h-3" />
                             {teacherNames.slice(0, 2).join(', ')}
                             {teacherNames.length > 2 && ` +${teacherNames.length - 2}`}
                           </p>
                         )}
                         {(entry.room_name || room?.name) && (
-                          <p className="text-xs text-slate-500 flex items-center gap-1.5">
+                          <p className="text-xs scholr-muted flex items-center gap-1.5">
                             <MapPin className="w-3 h-3" />
                             {entry.room_name || room?.name}
                           </p>
                         )}
                         {cls?.section && (
-                          <p className="text-xs text-slate-400 flex items-center gap-1.5">
+                          <p className="text-xs scholr-faint flex items-center gap-1.5">
                             <BookOpen className="w-3 h-3" />
                             Section {cls.section}
                           </p>

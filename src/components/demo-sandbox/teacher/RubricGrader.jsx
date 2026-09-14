@@ -39,13 +39,13 @@ export default function RubricGrader({ rubric, onPublish, initialScores }) {
           </div>
           <div className="text-right">
             <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">IB grade</p>
-            <p className={`text-3xl font-bold ${complete ? 'text-emerald-600' : 'text-slate-300'}`}>
+            <p className={`text-3xl font-bold ${complete ? 'text-emerald-600' : 'scholr-faint'}`}>
               {complete ? ibGrade : '—'}
             </p>
           </div>
         </div>
         <div className="mt-3 h-1.5 rounded-full bg-slate-100 overflow-hidden">
-          <div className="h-full bg-emerald-500 transition-all" style={{ width: `${percent}%` }} />
+          <div className="h-full bg-emerald-500 transition-colors" style={{ width: `${percent}%` }} />
         </div>
       </div>
 
@@ -71,7 +71,7 @@ export default function RubricGrader({ rubric, onPublish, initialScores }) {
                       className={`h-7 w-8 rounded-md text-xs font-bold transition ${
                         selected
                           ? 'bg-emerald-600 text-white shadow-sm'
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          : 'bg-slate-100 text-slate-600 hover:scholr-sunk'
                       }`}
                     >
                       {n}
@@ -89,7 +89,7 @@ export default function RubricGrader({ rubric, onPublish, initialScores }) {
         onClick={() => complete && onPublish?.({ totalScored, totalMax, ibGrade, percent })}
         className={`mt-6 w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition ${
           complete
-            ? 'bg-slate-900 text-white hover:bg-slate-800'
+            ? 'scholr-sunk text-white hover:scholr-sunk'
             : 'bg-slate-100 text-slate-400 cursor-not-allowed'
         }`}
       >

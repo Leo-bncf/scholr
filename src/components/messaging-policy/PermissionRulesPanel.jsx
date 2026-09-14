@@ -44,9 +44,9 @@ const RULE_GROUPS = [
 
 const ACCENT = {
   blue:    { bg: 'bg-blue-50',    border: 'border-blue-200',    icon: 'text-blue-600',   title: 'text-blue-900' },
-  indigo:  { bg: 'bg-indigo-50',  border: 'border-indigo-200',  icon: 'text-indigo-600', title: 'text-indigo-900' },
+  indigo:  { bg: 'scholr-accent-sf',  border: 'scholr-accent-rule',  icon: 'scholr-accent', title: 'scholr-accent' },
   emerald: { bg: 'bg-emerald-50', border: 'border-emerald-200', icon: 'text-emerald-600',title: 'text-emerald-900' },
-  violet:  { bg: 'bg-violet-50',  border: 'border-violet-200',  icon: 'text-violet-600', title: 'text-violet-900' },
+  violet:  { bg: 'scholr-accent-sf',  border: 'scholr-accent-rule',  icon: 'scholr-accent', title: 'scholr-accent' },
 };
 
 export default function PermissionRulesPanel({ form, onChange }) {
@@ -81,12 +81,12 @@ export default function PermissionRulesPanel({ form, onChange }) {
                 <div key={rule.key} className="flex items-center justify-between px-5 py-3.5 gap-4 bg-white/60">
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <p className="text-sm font-semibold text-slate-800">{rule.label}</p>
+                      <p className="text-sm font-semibold scholr-ink">{rule.label}</p>
                       {rule.sensitive && (
                         <span className="text-xs px-1.5 py-0.5 bg-amber-100 text-amber-700 border border-amber-200 rounded font-medium">Review carefully</span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-500 mt-0.5">{rule.desc}</p>
+                    <p className="text-xs scholr-muted mt-0.5">{rule.desc}</p>
                   </div>
                   <Switch
                     checked={pr[rule.key] ?? true}

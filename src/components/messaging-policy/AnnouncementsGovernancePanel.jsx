@@ -22,7 +22,7 @@ function RoleCheckbox({ role, checked, onChange, disabled }) {
         disabled={disabled}
         className="w-4 h-4 accent-indigo-600"
       />
-      <span className="text-sm text-slate-700">{ROLE_LABELS[role]}</span>
+      <span className="text-sm scholr-body">{ROLE_LABELS[role]}</span>
     </label>
   );
 }
@@ -43,19 +43,19 @@ export default function AnnouncementsGovernancePanel({ form, onChange }) {
   return (
     <div className="space-y-6">
       {/* Who can broadcast */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-5">
+      <div className="bg-white rounded-xl border scholr-rule p-5 space-y-5">
         <div className="flex items-center gap-2 mb-1">
-          <Megaphone className="w-5 h-5 text-indigo-600" />
+          <Megaphone className="w-5 h-5 scholr-accent" />
           <div>
-            <h4 className="font-bold text-slate-900 text-sm">Broadcast Permissions</h4>
-            <p className="text-xs text-slate-500 mt-0.5">Define which roles can send announcements and to whom.</p>
+            <h4 className="font-bold scholr-ink text-sm">Broadcast Permissions</h4>
+            <p className="text-xs scholr-muted mt-0.5">Define which roles can send announcements and to whom.</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="bg-slate-50 rounded-lg border border-slate-200 p-4">
-            <p className="text-xs font-bold text-slate-700 uppercase mb-3">School-wide Announcements</p>
-            <p className="text-xs text-slate-500 mb-3">Roles that can broadcast to the entire school community.</p>
+          <div className="scholr-sunk rounded-lg border scholr-rule p-4">
+            <p className="text-xs font-bold scholr-body uppercase mb-3">School-wide Announcements</p>
+            <p className="text-xs scholr-muted mb-3">Roles that can broadcast to the entire school community.</p>
             <div className="space-y-2">
               {ALL_ROLES.filter(r => !['student','parent'].includes(r)).map(role => (
                 <RoleCheckbox
@@ -69,9 +69,9 @@ export default function AnnouncementsGovernancePanel({ form, onChange }) {
             </div>
           </div>
 
-          <div className="bg-slate-50 rounded-lg border border-slate-200 p-4">
-            <p className="text-xs font-bold text-slate-700 uppercase mb-3">Class Announcements</p>
-            <p className="text-xs text-slate-500 mb-3">Roles that can post announcements scoped to a single class.</p>
+          <div className="scholr-sunk rounded-lg border scholr-rule p-4">
+            <p className="text-xs font-bold scholr-body uppercase mb-3">Class Announcements</p>
+            <p className="text-xs scholr-muted mb-3">Roles that can post announcements scoped to a single class.</p>
             <div className="space-y-2">
               {ALL_ROLES.filter(r => !['student','parent'].includes(r)).map(role => (
                 <RoleCheckbox
@@ -86,25 +86,25 @@ export default function AnnouncementsGovernancePanel({ form, onChange }) {
           </div>
         </div>
 
-        <div className="flex items-start gap-3 pt-2 border-t border-slate-100">
+        <div className="flex items-start gap-3 pt-2 border-t scholr-rule-soft">
           <Switch
             checked={br.require_admin_approval_for_broadcast ?? false}
             onCheckedChange={v => setBr('require_admin_approval_for_broadcast', v)}
           />
           <div>
-            <p className="text-sm font-semibold text-slate-800">Require admin approval for broadcasts</p>
-            <p className="text-xs text-slate-500 mt-0.5">Non-admin broadcasts (e.g. from teachers) require school admin sign-off before being sent. Currently tracked as a policy flag — approval workflow shown at broadcast time.</p>
+            <p className="text-sm font-semibold scholr-ink">Require admin approval for broadcasts</p>
+            <p className="text-xs scholr-muted mt-0.5">Non-admin broadcasts (e.g. from teachers) require school admin sign-off before being sent. Currently tracked as a policy flag — approval workflow shown at broadcast time.</p>
           </div>
         </div>
       </div>
 
       {/* Dashboard visibility */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+      <div className="bg-white rounded-xl border scholr-rule p-5 space-y-4">
         <div className="flex items-center gap-2 mb-1">
           <Monitor className="w-5 h-5 text-emerald-600" />
           <div>
-            <h4 className="font-bold text-slate-900 text-sm">Dashboard Announcement Visibility</h4>
-            <p className="text-xs text-slate-500 mt-0.5">Control which role dashboards surface announcements in their notification feeds.</p>
+            <h4 className="font-bold scholr-ink text-sm">Dashboard Announcement Visibility</h4>
+            <p className="text-xs scholr-muted mt-0.5">Control which role dashboards surface announcements in their notification feeds.</p>
           </div>
         </div>
 
@@ -117,8 +117,8 @@ export default function AnnouncementsGovernancePanel({ form, onChange }) {
             <div key={item.key} className="flex items-start gap-3">
               <Switch checked={ag[item.key] ?? true} onCheckedChange={v => setAg(item.key, v)} />
               <div>
-                <p className="text-sm font-semibold text-slate-800">{item.label}</p>
-                <p className="text-xs text-slate-500 mt-0.5">{item.desc}</p>
+                <p className="text-sm font-semibold scholr-ink">{item.label}</p>
+                <p className="text-xs scholr-muted mt-0.5">{item.desc}</p>
               </div>
             </div>
           ))}
@@ -126,16 +126,16 @@ export default function AnnouncementsGovernancePanel({ form, onChange }) {
       </div>
 
       {/* Retention & pin duration */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+      <div className="bg-white rounded-xl border scholr-rule p-5 space-y-4">
         <div className="flex items-center gap-2 mb-1">
           <Clock className="w-5 h-5 text-amber-600" />
           <div>
-            <h4 className="font-bold text-slate-900 text-sm">Retention & Display</h4>
+            <h4 className="font-bold scholr-ink text-sm">Retention & Display</h4>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
-            <label className="text-xs font-semibold text-slate-600 block mb-1.5">Announcement retention (days)</label>
+            <label className="text-xs font-semibold scholr-muted block mb-1.5">Announcement retention (days)</label>
             <div className="flex items-center gap-2">
               <Input
                 type="number"
@@ -145,11 +145,11 @@ export default function AnnouncementsGovernancePanel({ form, onChange }) {
                 onChange={e => setAg('announcement_retention_days', Number(e.target.value))}
                 className="w-28 h-9"
               />
-              <span className="text-xs text-slate-500">days before archived</span>
+              <span className="text-xs scholr-muted">days before archived</span>
             </div>
           </div>
           <div>
-            <label className="text-xs font-semibold text-slate-600 block mb-1.5">Pinned announcement duration (days)</label>
+            <label className="text-xs font-semibold scholr-muted block mb-1.5">Pinned announcement duration (days)</label>
             <div className="flex items-center gap-2">
               <Input
                 type="number"
@@ -159,7 +159,7 @@ export default function AnnouncementsGovernancePanel({ form, onChange }) {
                 onChange={e => setAg('pin_duration_days', Number(e.target.value))}
                 className="w-28 h-9"
               />
-              <span className="text-xs text-slate-500">days at top of feed</span>
+              <span className="text-xs scholr-muted">days at top of feed</span>
             </div>
           </div>
         </div>

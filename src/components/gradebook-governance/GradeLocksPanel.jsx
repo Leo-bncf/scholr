@@ -33,15 +33,15 @@ export default function GradeLocksPanel({ form, onChange, terms = [] }) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-sm font-bold text-slate-800 mb-1">Reporting Windows</h3>
-        <p className="text-xs text-slate-500 mb-4">Define named reporting periods. Grades can be automatically locked after the deadline.</p>
+        <h3 className="text-sm font-bold scholr-ink mb-1">Reporting Windows</h3>
+        <p className="text-xs scholr-muted mb-4">Define named reporting periods. Grades can be automatically locked after the deadline.</p>
 
         <div className="space-y-2 mb-3">
           {(form.reporting_windows || []).map(win => {
             const expired = isExpired(win);
             const effectiveLocked = win.locked || expired;
             return (
-              <div key={win.id} className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+              <div key={win.id} className="scholr-sunk border scholr-rule rounded-xl p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
@@ -65,11 +65,11 @@ export default function GradeLocksPanel({ form, onChange, terms = [] }) {
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <Label className="text-xs text-slate-500">Opens</Label>
+                        <Label className="text-xs scholr-muted">Opens</Label>
                         <Input type="datetime-local" value={win.opens_at?.slice(0, 16) || ''} onChange={e => updateWindow(win.id, { opens_at: e.target.value ? new Date(e.target.value).toISOString() : '' })} className="mt-0.5 h-7 text-xs" />
                       </div>
                       <div>
-                        <Label className="text-xs text-slate-500">Deadline (locks at)</Label>
+                        <Label className="text-xs scholr-muted">Deadline (locks at)</Label>
                         <Input type="datetime-local" value={win.locks_at?.slice(0, 16) || ''} onChange={e => updateWindow(win.id, { locks_at: e.target.value ? new Date(e.target.value).toISOString() : '' })} className="mt-0.5 h-7 text-xs" />
                       </div>
                     </div>
@@ -79,7 +79,7 @@ export default function GradeLocksPanel({ form, onChange, terms = [] }) {
                       {win.locked ? <Unlock className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
                       {win.locked ? 'Unlock' : 'Lock Now'}
                     </Button>
-                    <button type="button" onClick={() => removeWindow(win.id)} className="text-slate-400 hover:text-red-500">
+                    <button type="button" onClick={() => removeWindow(win.id)} className="scholr-faint hover:text-red-500">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -90,8 +90,8 @@ export default function GradeLocksPanel({ form, onChange, terms = [] }) {
         </div>
 
         {showNew ? (
-          <div className="p-4 bg-indigo-50 border border-indigo-200 rounded-xl space-y-3">
-            <h5 className="text-xs font-bold text-indigo-900">New Reporting Window</h5>
+          <div className="p-4 scholr-accent-sf border scholr-accent-rule rounded-xl space-y-3">
+            <h5 className="text-xs font-bold scholr-accent">New Reporting Window</h5>
             <div>
               <Label className="text-xs font-semibold">Window Name</Label>
               <Input value={newWin.name} onChange={e => setNewWin({ ...newWin, name: e.target.value })} placeholder="e.g. Semester 1 Reports" className="mt-1 h-8 text-sm" />
@@ -107,7 +107,7 @@ export default function GradeLocksPanel({ form, onChange, terms = [] }) {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button size="sm" onClick={addWindow} disabled={!newWin.name.trim() || !newWin.locks_at} className="bg-indigo-600 hover:bg-indigo-700 text-xs">Add Window</Button>
+              <Button size="sm" onClick={addWindow} disabled={!newWin.name.trim() || !newWin.locks_at} className="scholr-accent-sf hover:scholr-accent-sf text-xs">Add Window</Button>
               <Button size="sm" variant="outline" onClick={() => setShowNew(false)} className="text-xs">Cancel</Button>
             </div>
           </div>
@@ -118,21 +118,21 @@ export default function GradeLocksPanel({ form, onChange, terms = [] }) {
         )}
       </div>
 
-      <div className="border-t border-slate-100 pt-5 space-y-4">
-        <h3 className="text-sm font-bold text-slate-800">Lock Behavior</h3>
+      <div className="border-t scholr-rule-soft pt-5 space-y-4">
+        <h3 className="text-sm font-bold scholr-ink">Lock Behavior</h3>
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-slate-800 flex items-center gap-1.5"><Lock className="w-4 h-4 text-red-500" /> Auto-lock after deadline</p>
-            <p className="text-xs text-slate-500">Grade edits are blocked once a reporting window's deadline passes</p>
+            <p className="text-sm font-semibold scholr-ink flex items-center gap-1.5"><Lock className="w-4 h-4 text-red-500" /> Auto-lock after deadline</p>
+            <p className="text-xs scholr-muted">Grade edits are blocked once a reporting window's deadline passes</p>
           </div>
           <Switch checked={form.lock_grades_after_deadline} onCheckedChange={v => onChange({ lock_grades_after_deadline: v })} />
         </div>
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-slate-800 flex items-center gap-1.5"><AlertTriangle className="w-4 h-4 text-amber-500" /> Require justification for post-lock edits</p>
-            <p className="text-xs text-slate-500">Admin overrides must include a written justification</p>
+            <p className="text-sm font-semibold scholr-ink flex items-center gap-1.5"><AlertTriangle className="w-4 h-4 text-amber-500" /> Require justification for post-lock edits</p>
+            <p className="text-xs scholr-muted">Admin overrides must include a written justification</p>
           </div>
           <Switch checked={form.require_justification_for_locked_edit} onCheckedChange={v => onChange({ require_justification_for_locked_edit: v })} />
         </div>
@@ -146,8 +146,8 @@ export default function GradeLocksPanel({ form, onChange, terms = [] }) {
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-slate-800">Admins can override locked grades</p>
-            <p className="text-xs text-slate-500">School admins retain override capability even when grades are locked</p>
+            <p className="text-sm font-semibold scholr-ink">Admins can override locked grades</p>
+            <p className="text-xs scholr-muted">School admins retain override capability even when grades are locked</p>
           </div>
           <Switch checked={form.admin_can_override_lock} onCheckedChange={v => onChange({ admin_can_override_lock: v })} />
         </div>

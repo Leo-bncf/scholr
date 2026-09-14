@@ -23,7 +23,7 @@ export default function SubjectPerformanceOverview({ yearGroup, subjectId }) {
   }
 
   return (
-    <div className="divide-y divide-slate-100">
+    <div className="divide-y scholr-divide">
       {rows.map((r) => {
         const { Icon, color, bg, label } = trendMeta(r.trend, r.delta);
         const pct = Math.min(100, Math.max(0, (r.current / 7) * 100));
@@ -44,7 +44,7 @@ export default function SubjectPerformanceOverview({ yearGroup, subjectId }) {
             </div>
             <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
               <div
-                className={`h-full transition-all ${barColor(r.current)}`}
+                className={`h-full transition-colors ${barColor(r.current)}`}
                 style={{ width: `${pct}%` }}
               />
             </div>

@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 export default function ReportingFilters({ filters, setFilters, subjects = [], classes = [], teachers = [] }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+    <div className="bg-white rounded-xl border scholr-rule p-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
       <div>
         <Label>Date from</Label>
         <Input type="date" value={filters.startDate} onChange={(e) => setFilters({ ...filters, startDate: e.target.value })} className="mt-1" />

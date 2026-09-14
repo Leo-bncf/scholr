@@ -44,8 +44,8 @@ export default function NoSchool() {
     return (
       <div className="min-h-screen flex items-center justify-center scholr-page">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-3" />
-          <p className="text-slate-500 text-sm">Checking for invitations...</p>
+          <Loader2 className="w-8 h-8 animate-spin scholr-accent mx-auto mb-3" />
+          <p className="scholr-muted text-sm">Checking for invitations...</p>
         </div>
       </div>
     );
@@ -54,12 +54,12 @@ export default function NoSchool() {
   if (pendingInvitations.length > 0) {
     return (
       <div className="min-h-screen flex items-center justify-center scholr-page px-4">
-        <div className="text-center max-w-md bg-white rounded-2xl border border-slate-200 p-8 shadow-xl">
-          <div className="w-16 h-16 rounded-2xl bg-indigo-100 flex items-center justify-center mx-auto mb-6">
-            <Mail className="w-8 h-8 text-indigo-600" />
+        <div className="text-center max-w-md bg-white rounded-2xl border scholr-rule p-8 shadow-xl">
+          <div className="w-16 h-16 rounded-2xl scholr-accent-sf flex items-center justify-center mx-auto mb-6">
+            <Mail className="w-8 h-8 scholr-accent" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-2">You Have Pending Invitations!</h1>
-          <p className="text-slate-500 mb-6">
+          <h1 className="text-2xl font-bold scholr-ink mb-2">You Have Pending Invitations!</h1>
+          <p className="scholr-muted mb-6">
             You've been invited to join {pendingInvitations.length} school{pendingInvitations.length > 1 ? 's' : ''} on AtlasIB.
           </p>
           <div className="space-y-3 mb-6">
@@ -67,10 +67,10 @@ export default function NoSchool() {
               <a 
                 key={inv.id} 
                 href={createPageUrl('AcceptInvitation') + `?token=${inv.invitation_token}`}
-                className="block p-4 border-2 border-indigo-200 rounded-xl hover:bg-indigo-50 transition-all"
+                className="block p-4 border-2 scholr-accent-rule rounded-xl hover:scholr-accent-sf transition-colors"
               >
-                <p className="font-semibold text-slate-900 mb-1">School Invitation</p>
-                <p className="text-sm text-slate-600">Role: {inv.role.replace('_', ' ')}</p>
+                <p className="font-semibold scholr-ink mb-1">School Invitation</p>
+                <p className="text-sm scholr-muted">Role: {inv.role.replace('_', ' ')}</p>
               </a>
             ))}
           </div>
@@ -88,8 +88,8 @@ export default function NoSchool() {
         <div className="w-16 h-16 rounded-2xl bg-amber-50 flex items-center justify-center mx-auto mb-6">
           <Building2 className="w-8 h-8 text-amber-600" />
         </div>
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">No School Assigned</h1>
-        <p className="text-slate-500 mb-6">
+        <h1 className="text-2xl font-bold scholr-ink mb-2">No School Assigned</h1>
+        <p className="scholr-muted mb-6">
           Your account is not linked to any school yet. Please contact your school administrator to get invited.
         </p>
         <div className="space-y-3">
@@ -99,7 +99,7 @@ export default function NoSchool() {
           <Button 
             onClick={() => signOut()}
             variant="ghost"
-            className="w-full text-slate-500"
+            className="w-full scholr-muted"
           >
             Sign Out
           </Button>

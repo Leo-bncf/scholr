@@ -84,7 +84,7 @@ export default function SchoolAdminMessagingPolicy() {
 
   return (
     <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar
           links={SCHOOL_ADMIN_SIDEBAR_LINKS}
           role="school_admin"
@@ -96,14 +96,14 @@ export default function SchoolAdminMessagingPolicy() {
 
         <main className="app-offset min-h-screen">
           {/* Header */}
-          <div className="bg-white border-b border-slate-200 px-6 py-5 sticky top-0 z-10">
+          <div className="bg-white border-b scholr-rule px-6 py-5 sticky top-0 z-10">
             <div className="max-w-5xl mx-auto flex items-center justify-between">
               <div>
-                <h1 className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5 text-indigo-600" />
+                <h1 className="text-xl font-black scholr-ink tracking-tight flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 scholr-accent" />
                   Messaging & Communication Policy
                 </h1>
-                <p className="text-xs text-slate-500 mt-0.5">{school?.name} · Govern communication across the platform</p>
+                <p className="text-xs scholr-muted mt-0.5">{school?.name} · Govern communication across the platform</p>
               </div>
               <div className="flex items-center gap-3">
                 {saved && (
@@ -114,7 +114,7 @@ export default function SchoolAdminMessagingPolicy() {
                 <Button
                   onClick={() => form && saveMutation.mutate(form)}
                   disabled={saveMutation.isPending || !form}
-                  className="bg-indigo-600 hover:bg-indigo-700"
+                  className="scholr-accent-sf hover:scholr-accent-sf"
                 >
                   {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
                   Save Policy
@@ -124,7 +124,7 @@ export default function SchoolAdminMessagingPolicy() {
           </div>
 
           {/* Tab bar */}
-          <div className="bg-white border-b border-slate-200 px-6">
+          <div className="bg-white border-b scholr-rule px-6">
             <div className="max-w-5xl mx-auto flex gap-1 -mb-px overflow-x-auto">
               {TABS.map(t => {
                 const Icon = t.icon;
@@ -134,7 +134,7 @@ export default function SchoolAdminMessagingPolicy() {
                     key={t.id}
                     onClick={() => setTab(t.id)}
                     className={`flex items-center gap-2 px-4 py-3.5 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap ${
-                      active ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-700'
+                      active ? 'scholr-accent-rule scholr-accent' : 'border-transparent scholr-muted hover:scholr-body'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -149,7 +149,7 @@ export default function SchoolAdminMessagingPolicy() {
           <div className="max-w-5xl mx-auto p-6">
             {isLoading || !form ? (
               <div className="flex justify-center py-20">
-                <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+                <Loader2 className="w-6 h-6 animate-spin scholr-accent" />
               </div>
             ) : (
               <>
@@ -162,7 +162,7 @@ export default function SchoolAdminMessagingPolicy() {
                   <Button
                     onClick={() => saveMutation.mutate(form)}
                     disabled={saveMutation.isPending}
-                    className="bg-indigo-600 hover:bg-indigo-700"
+                    className="scholr-accent-sf hover:scholr-accent-sf"
                   >
                     {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
                     Save Policy

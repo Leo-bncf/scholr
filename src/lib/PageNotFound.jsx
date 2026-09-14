@@ -39,7 +39,7 @@ export default function PageNotFound() {
           </Button>
           <Button
             onClick={() => navigate('/')}
-            className="bg-indigo-600 hover:bg-indigo-700 gap-2"
+            className="scholr-accent-sf hover:scholr-accent-sf gap-2"
           >
             <Home className="w-4 h-4" />
             Home

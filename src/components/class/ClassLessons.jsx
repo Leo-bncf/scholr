@@ -137,11 +137,11 @@ function LessonFormDialog({ open, onClose, classData, userId, lesson = null }) {
             <Label className="text-sm font-semibold">Resources</Label>
             <div className="space-y-2 mt-1.5">
               {form.resources.map(r => (
-                <div key={r.id} className="flex items-center gap-2 p-2 bg-slate-50 rounded-lg">
-                  {r.type === 'file' ? <FileText className="w-4 h-4 text-slate-400" /> : <Link2 className="w-4 h-4 text-slate-400" />}
+                <div key={r.id} className="flex items-center gap-2 p-2 scholr-sunk rounded-lg">
+                  {r.type === 'file' ? <FileText className="w-4 h-4 scholr-faint" /> : <Link2 className="w-4 h-4 scholr-faint" />}
                   <span className="text-sm flex-1 truncate">{r.name}</span>
-                  <a href={r.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="w-4 h-4 text-slate-400 hover:text-indigo-600" /></a>
-                  <button onClick={() => removeResource(r.id)}><X className="w-4 h-4 text-slate-400 hover:text-red-600" /></button>
+                  <a href={r.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="w-4 h-4 scholr-faint hover:scholr-accent" /></a>
+                  <button onClick={() => removeResource(r.id)}><X className="w-4 h-4 scholr-faint hover:text-red-600" /></button>
                 </div>
               ))}
               <div className="grid grid-cols-3 gap-2">
@@ -151,7 +151,7 @@ function LessonFormDialog({ open, onClose, classData, userId, lesson = null }) {
                   placeholder="URL (https://...)" />
                 <Button type="button" variant="outline" onClick={addResource}>Add Link</Button>
               </div>
-              <label className="flex items-center gap-2 p-2.5 border-2 border-dashed border-slate-200 rounded-lg hover:border-indigo-300 cursor-pointer text-sm text-slate-500">
+              <label className="flex items-center gap-2 p-2.5 border-2 border-dashed scholr-rule rounded-lg hover:scholr-accent-rule cursor-pointer text-sm scholr-muted">
                 <Upload className="w-4 h-4" /> {uploading ? 'Uploading...' : 'Upload file'}
                 <input type="file" className="hidden" onChange={handleFileUpload} disabled={uploading} />
               </label>
@@ -169,7 +169,7 @@ function LessonFormDialog({ open, onClose, classData, userId, lesson = null }) {
             <div className="flex gap-2">
               {['planned', 'completed'].map(s => (
                 <button key={s} onClick={() => setForm({ ...form, status: s })}
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium capitalize transition-colors ${form.status === s ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium capitalize transition-colors ${form.status === s ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-muted hover:scholr-sunk'}`}>
                   {s}
                 </button>
               ))}
@@ -179,7 +179,7 @@ function LessonFormDialog({ open, onClose, classData, userId, lesson = null }) {
           <div className="flex gap-3 pt-2">
             <Button variant="outline" onClick={onClose} className="flex-1">Cancel</Button>
             <Button onClick={handleSave} disabled={!form.title || !form.date || mutation.isPending}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700">
+              className="flex-1 scholr-accent-sf hover:scholr-accent-sf">
               {mutation.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
               {isEdit ? 'Save Changes' : 'Save Lesson'}
             </Button>
@@ -221,45 +221,45 @@ export default function ClassLessons({ classData, isTeacher, userId }) {
     <div className="p-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Lesson Planner</h2>
+          <h2 className="text-xl font-bold scholr-ink">Lesson Planner</h2>
           {lessons.length > 0 && (
-            <p className="text-sm text-slate-500 mt-0.5">{completed} of {lessons.length} lessons completed</p>
+            <p className="text-sm scholr-muted mt-0.5">{completed} of {lessons.length} lessons completed</p>
           )}
         </div>
         {isTeacher && (
-          <Button onClick={() => setDialogOpen(true)} className="bg-indigo-600 hover:bg-indigo-700">
+          <Button onClick={() => setDialogOpen(true)} className="scholr-accent-sf hover:scholr-accent-sf">
             <Plus className="w-4 h-4 mr-2" /> Plan Lesson
           </Button>
         )}
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12"><Loader2 className="w-6 h-6 animate-spin text-indigo-600 mx-auto" /></div>
+        <div className="text-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent mx-auto" /></div>
       ) : lessons.length === 0 ? (
-        <div className="text-center py-16 text-slate-400">
-          <CalendarDays className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-          <p className="font-medium text-slate-600">No lessons planned yet</p>
+        <div className="text-center py-16 scholr-faint">
+          <CalendarDays className="w-12 h-12 mx-auto mb-3 scholr-faint" />
+          <p className="font-medium scholr-muted">No lessons planned yet</p>
           {isTeacher && <p className="text-sm mt-1">Start planning your lessons for this class</p>}
         </div>
       ) : (
         <div className="space-y-3">
           {lessons.map(lesson => (
-            <div key={lesson.id} className={`bg-white rounded-xl border p-5 transition-all ${lesson.status === 'completed' ? 'border-slate-100 opacity-80' : 'border-slate-200 hover:shadow-md'}`}>
+            <div key={lesson.id} className={`bg-white rounded-xl border p-5 transition-colors ${lesson.status === 'completed' ? 'scholr-rule-soft opacity-80' : 'scholr-rule hover:shadow-md'}`}>
               <div className="flex items-start gap-4">
                 {isTeacher && (
                   <button onClick={() => toggleStatus.mutate(lesson)} className="mt-0.5 flex-shrink-0">
                     {lesson.status === 'completed'
                       ? <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                      : <Circle className="w-5 h-5 text-slate-300 hover:text-indigo-400" />}
+                      : <Circle className="w-5 h-5 scholr-faint hover:scholr-accent" />}
                   </button>
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
-                      <h3 className={`font-semibold text-slate-900 ${lesson.status === 'completed' ? 'line-through text-slate-500' : ''}`}>
+                      <h3 className={`font-semibold scholr-ink ${lesson.status === 'completed' ? 'line-through scholr-muted' : ''}`}>
                         {lesson.title}
                       </h3>
-                      <div className="flex items-center gap-3 mt-1 text-sm text-slate-500">
+                      <div className="flex items-center gap-3 mt-1 text-sm scholr-muted">
                         <span className="flex items-center gap-1">
                           <CalendarDays className="w-3.5 h-3.5" />
                           {lesson.date ? format(new Date(lesson.date), 'EEE, MMM d, yyyy') : 'No date'}
@@ -274,7 +274,7 @@ export default function ClassLessons({ classData, isTeacher, userId }) {
                     </div>
                     {isTeacher && (
                       <div className="flex items-center gap-1 flex-shrink-0">
-                        <Button variant="ghost" size="sm" onClick={() => handleEdit(lesson)} className="text-slate-500 hover:text-slate-900 text-xs">Edit</Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleEdit(lesson)} className="scholr-muted hover:scholr-ink text-xs">Edit</Button>
                         <Button variant="ghost" size="sm" onClick={() => deleteMutation.mutate(lesson.id)} className="text-red-500 hover:text-red-700 text-xs">Delete</Button>
                       </div>
                     )}
@@ -289,14 +289,14 @@ export default function ClassLessons({ classData, isTeacher, userId }) {
                   )}
 
                   {lesson.objectives && (
-                    <p className="text-sm text-slate-600 mt-2 line-clamp-2">{lesson.objectives}</p>
+                    <p className="text-sm scholr-muted mt-2 line-clamp-2">{lesson.objectives}</p>
                   )}
 
                   {lesson.resources?.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-3">
                       {lesson.resources.map(r => (
                         <a key={r.id} href={r.url} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-md text-xs text-slate-600 hover:border-indigo-300 hover:text-indigo-700 transition-colors">
+                          className="flex items-center gap-1.5 px-2.5 py-1 scholr-sunk border scholr-rule rounded-md text-xs scholr-muted hover:scholr-accent-rule hover:scholr-accent transition-colors">
                           {r.type === 'file' ? <FileText className="w-3 h-3" /> : <Link2 className="w-3 h-3" />}
                           {r.name}
                         </a>

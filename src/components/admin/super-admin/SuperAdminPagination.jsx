@@ -5,7 +5,7 @@ import React from 'react';
  *
  * It sits as the last child of the group, so the group's own `> * + *` rule
  * draws the hairline above it — it must not draw its own, or the line
- * doubles. Previously it painted `bg-slate-50/70` and a slate border, which
+ * doubles. Previously it painted `scholr-sunk/70` and a slate border, which
  * is why every paged list ended in a grey slab.
  */
 export default function SuperAdminPagination({ page, totalPages, totalItems, pageSize, onPageChange }) {

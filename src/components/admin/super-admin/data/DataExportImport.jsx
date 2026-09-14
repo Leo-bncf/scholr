@@ -97,8 +97,8 @@ export default function DataExportImport() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <div>
-            <p className="text-sm font-semibold text-slate-800">Export Data</p>
-            <p className="text-xs text-slate-500 mt-0.5">Download entity records as JSON for backups or migrations</p>
+            <p className="text-sm font-semibold scholr-ink">Export Data</p>
+            <p className="text-xs scholr-muted mt-0.5">Download entity records as JSON for backups or migrations</p>
           </div>
           <Button
             variant="outline"
@@ -111,14 +111,14 @@ export default function DataExportImport() {
             Export All
           </Button>
         </div>
-        <div className="divide-y divide-slate-100 border border-slate-200 rounded-md overflow-hidden">
+        <div className="divide-y scholr-divide border scholr-rule rounded-md overflow-hidden">
           {EXPORTABLE_ENTITIES.map(e => (
-            <div key={e.key} className="flex items-center justify-between px-4 py-3 bg-white hover:bg-slate-50 transition-colors">
+            <div key={e.key} className="flex items-center justify-between px-4 py-3 bg-white hover:scholr-sunk transition-colors">
               <div className="flex items-center gap-3">
-                <FileJson className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                <FileJson className="w-4 h-4 scholr-faint flex-shrink-0" />
                 <div>
-                  <p className="text-sm font-medium text-slate-800">{e.label}</p>
-                  <p className="text-xs text-slate-400">{e.description}</p>
+                  <p className="text-sm font-medium scholr-ink">{e.label}</p>
+                  <p className="text-xs scholr-faint">{e.description}</p>
                 </div>
               </div>
               <Button
@@ -126,7 +126,7 @@ export default function DataExportImport() {
                 size="sm"
                 onClick={() => handleExport(e.key)}
                 disabled={!!exporting[e.key]}
-                className="gap-1.5 text-xs text-slate-600 hover:text-slate-900"
+                className="gap-1.5 text-xs scholr-muted hover:scholr-ink"
               >
                 {exporting[e.key] ? <Loader2 className="w-3 h-3 animate-spin" /> : <Download className="w-3 h-3" />}
                 Export
@@ -138,8 +138,8 @@ export default function DataExportImport() {
 
       {/* Import */}
       <div>
-        <p className="text-sm font-semibold text-slate-800 mb-1">Import Data</p>
-        <p className="text-xs text-slate-500 mb-3">Upload a single-entity JSON export file to bulk-create records</p>
+        <p className="text-sm font-semibold scholr-ink mb-1">Import Data</p>
+        <p className="text-xs scholr-muted mb-3">Upload a single-entity JSON export file to bulk-create records</p>
 
         {importError && (
           <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-md mb-3 text-sm text-red-700">
@@ -154,9 +154,9 @@ export default function DataExportImport() {
           </div>
         )}
 
-        <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-md p-6 cursor-pointer hover:border-slate-300 bg-slate-50 hover:bg-white transition-colors">
-          <Upload className="w-6 h-6 text-slate-400 mb-2" />
-          <span className="text-sm text-slate-500">{importFile ? importFile.name : 'Click to select a JSON export file'}</span>
+        <label className="flex flex-col items-center justify-center border-2 border-dashed scholr-rule rounded-md p-6 cursor-pointer hover:scholr-rule scholr-sunk hover:bg-white transition-colors">
+          <Upload className="w-6 h-6 scholr-faint mb-2" />
+          <span className="text-sm scholr-muted">{importFile ? importFile.name : 'Click to select a JSON export file'}</span>
           <input type="file" accept=".json" className="hidden" onChange={handleFileChange} />
         </label>
 
@@ -171,7 +171,7 @@ export default function DataExportImport() {
           <Button
             onClick={handleImport}
             disabled={importing}
-            className="mt-3 bg-indigo-600 hover:bg-indigo-700 text-white gap-2 text-xs"
+            className="mt-3 pub-btn pub-btn-gold gap-2 text-xs"
             size="sm"
           >
             {importing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}

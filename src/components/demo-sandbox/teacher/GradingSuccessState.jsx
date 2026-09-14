@@ -105,14 +105,14 @@ export default function GradingSuccessState({
         {nextSubmissionId ? (
           <Link
             to={`/demo/teacher/review/${nextSubmissionId}`}
-            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 text-white px-4 py-3 text-sm font-semibold hover:bg-slate-800 transition"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl scholr-sunk text-white px-4 py-3 text-sm font-semibold hover:scholr-sunk transition"
           >
             Grade next submission <ArrowRight className="w-4 h-4" />
           </Link>
         ) : (
           <Link
             to="/demo/teacher"
-            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 text-white px-4 py-3 text-sm font-semibold hover:bg-slate-800 transition"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl scholr-sunk text-white px-4 py-3 text-sm font-semibold hover:scholr-sunk transition"
           >
             Back to dashboard <ArrowRight className="w-4 h-4" />
           </Link>
@@ -120,7 +120,7 @@ export default function GradingSuccessState({
         {onGradeAnother && (
           <button
             onClick={onGradeAnother}
-            className="w-full text-xs font-medium text-slate-500 hover:text-slate-900 py-1"
+            className="w-full text-xs font-medium text-slate-500 scholr-ink py-1"
           >
             Re-open this submission
           </button>

@@ -29,8 +29,8 @@ export default function ClassWorkspace() {
 
   if (loadingClass) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+      <div className="min-h-screen scholr-sunk flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
       </div>
     );
   }
@@ -60,10 +60,10 @@ export default function ClassWorkspace() {
 
 function EmptyState({ message }) {
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+    <div className="min-h-screen scholr-sunk flex items-center justify-center">
       <div className="text-center">
-        <BookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-        <p className="text-slate-500">{message}</p>
+        <BookOpen className="w-16 h-16 scholr-faint mx-auto mb-4" />
+        <p className="scholr-muted">{message}</p>
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ export default function BehaviorRecordsList({ records, showVisibilityIndicators 
       case 'positive': return <Smile className="w-5 h-5 text-emerald-600" />;
       case 'concern': return <AlertTriangle className="w-5 h-5 text-amber-600" />;
       case 'incident': return <AlertCircle className="w-5 h-5 text-red-600" />;
-      default: return <FileText className="w-5 h-5 text-slate-600" />;
+      default: return <FileText className="w-5 h-5 scholr-muted" />;
     }
   };
 
@@ -18,7 +18,7 @@ export default function BehaviorRecordsList({ records, showVisibilityIndicators 
       case 'positive': return 'bg-emerald-50 border-emerald-200 text-emerald-700';
       case 'concern': return 'bg-amber-50 border-amber-200 text-amber-700';
       case 'incident': return 'bg-red-50 border-red-200 text-red-700';
-      default: return 'bg-slate-50 border-slate-200 text-slate-700';
+      default: return 'scholr-sunk scholr-rule scholr-body';
     }
   };
 
@@ -33,8 +33,8 @@ export default function BehaviorRecordsList({ records, showVisibilityIndicators 
 
   if (records.length === 0) {
     return (
-      <div className="text-center py-12 text-slate-400">
-        <FileText className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+      <div className="text-center py-12 scholr-faint">
+        <FileText className="w-12 h-12 mx-auto mb-3 scholr-faint" />
         <p>No behavior records found</p>
       </div>
     );
@@ -49,7 +49,7 @@ export default function BehaviorRecordsList({ records, showVisibilityIndicators 
             <div className="flex-1">
               <div className="flex items-start justify-between mb-2">
                 <div>
-                  <h4 className="font-semibold text-slate-900">{record.title}</h4>
+                  <h4 className="font-semibold scholr-ink">{record.title}</h4>
                   <div className="flex items-center gap-2 mt-1">
                     <Badge variant="outline" className="text-xs capitalize">{record.type}</Badge>
                     <Badge variant="outline" className="text-xs capitalize">{record.category}</Badge>
@@ -65,24 +65,24 @@ export default function BehaviorRecordsList({ records, showVisibilityIndicators 
                       <Eye className="w-4 h-4 text-emerald-600" title="Visible to parent" />
                     )}
                     {!record.visible_to_student && !record.visible_to_parent && (
-                      <EyeOff className="w-4 h-4 text-slate-400" title="Staff only" />
+                      <EyeOff className="w-4 h-4 scholr-faint" title="Staff only" />
                     )}
                   </div>
                 )}
               </div>
               
               {record.description && (
-                <p className="text-sm text-slate-700 mt-2">{record.description}</p>
+                <p className="text-sm scholr-body mt-2">{record.description}</p>
               )}
 
               {record.action_taken && (
                 <div className="mt-3 pt-3 border-t border-current/10">
-                  <p className="text-xs font-semibold text-slate-700 mb-1">Action Taken:</p>
-                  <p className="text-sm text-slate-600">{record.action_taken}</p>
+                  <p className="text-xs font-semibold scholr-body mb-1">Action Taken:</p>
+                  <p className="text-sm scholr-muted">{record.action_taken}</p>
                 </div>
               )}
 
-              <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
+              <div className="mt-3 flex items-center justify-between text-xs scholr-muted">
                 <span>Recorded by: {record.recorded_by_name}</span>
                 <span>{record.date ? format(new Date(record.date), 'MMM d, yyyy') : ''}</span>
               </div>

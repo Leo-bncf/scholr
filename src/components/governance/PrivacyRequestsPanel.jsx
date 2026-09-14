@@ -14,7 +14,7 @@ import * as privacyRequestsData from '@/data/privacyRequests';
 const REQUEST_TYPES = {
   data_export: { label: 'Data Export', color: 'bg-sky-100 text-sky-700' },
   account_deletion: { label: 'Account Deletion', color: 'bg-red-100 text-red-700' },
-  anonymization: { label: 'Anonymization', color: 'bg-violet-100 text-violet-700' },
+  anonymization: { label: 'Anonymization', color: 'scholr-accent-sf scholr-accent' },
   data_correction: { label: 'Data Correction', color: 'bg-amber-100 text-amber-700' },
   access_request: { label: 'Access Request', color: 'bg-emerald-100 text-emerald-700' },
 };
@@ -22,10 +22,10 @@ const REQUEST_TYPES = {
 const STATUS_CONFIG = {
   pending:     { label: 'Pending',     color: 'bg-amber-100 text-amber-700',    icon: Clock },
   acknowledged:{ label: 'Acknowledged',color: 'bg-blue-100 text-blue-700',      icon: Info },
-  in_progress: { label: 'In Progress', color: 'bg-indigo-100 text-indigo-700',  icon: Loader2 },
+  in_progress: { label: 'In Progress', color: 'scholr-accent-sf scholr-accent',  icon: Loader2 },
   completed:   { label: 'Completed',   color: 'bg-emerald-100 text-emerald-700',icon: CheckCircle2 },
   rejected:    { label: 'Rejected',    color: 'bg-red-100 text-red-700',        icon: XCircle },
-  withdrawn:   { label: 'Withdrawn',   color: 'bg-slate-100 text-slate-500',    icon: XCircle },
+  withdrawn:   { label: 'Withdrawn',   color: 'scholr-sunk scholr-muted',    icon: XCircle },
 };
 
 function StatusBadge({ status }) {
@@ -44,7 +44,7 @@ function RequestCard({ req, onUpdate, schoolId, user }) {
   const [notes, setNotes] = useState(req.resolution_notes || '');
   const [updating, setUpdating] = useState(false);
   const isOverdue = req.due_date && new Date(req.due_date) < new Date() && !['completed', 'rejected', 'withdrawn'].includes(req.status);
-  const type = REQUEST_TYPES[req.request_type] || { label: req.request_type, color: 'bg-slate-100 text-slate-600' };
+  const type = REQUEST_TYPES[req.request_type] || { label: req.request_type, color: 'scholr-sunk scholr-muted' };
 
   const save = async (status) => {
     setUpdating(true);
@@ -60,9 +60,9 @@ function RequestCard({ req, onUpdate, schoolId, user }) {
   };
 
   return (
-    <div className={`bg-white rounded-xl border ${isOverdue ? 'border-red-300' : 'border-slate-200'} overflow-hidden`}>
+    <div className={`bg-white rounded-xl border ${isOverdue ? 'border-red-300' : 'scholr-rule'} overflow-hidden`}>
       <div
-        className="flex items-start gap-3 p-4 cursor-pointer hover:bg-slate-50"
+        className="flex items-start gap-3 p-4 cursor-pointer hover:scholr-sunk"
         onClick={() => setExpanded(e => !e)}
       >
         <div className="flex-1 min-w-0">
@@ -72,34 +72,34 @@ function RequestCard({ req, onUpdate, schoolId, user }) {
             {isOverdue && <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-medium flex items-center gap-1"><AlertTriangle className="w-3 h-3" />Overdue</span>}
             {req.priority === 'urgent' && <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-medium">Urgent</span>}
           </div>
-          <p className="font-semibold text-slate-800 text-sm">{req.requester_name || req.requester_email}</p>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="font-semibold scholr-ink text-sm">{req.requester_name || req.requester_email}</p>
+          <p className="text-xs scholr-faint mt-0.5">
             {req.requester_email} · {req.requester_role}
             {req.due_date && ` · Due: ${format(new Date(req.due_date), 'dd MMM yyyy')}`}
           </p>
-          {req.description && <p className="text-xs text-slate-500 mt-1 line-clamp-1">{req.description}</p>}
+          {req.description && <p className="text-xs scholr-muted mt-1 line-clamp-1">{req.description}</p>}
         </div>
-        <div className="text-slate-300 shrink-0">
+        <div className="scholr-faint shrink-0">
           {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </div>
       </div>
 
       {expanded && (
-        <div className="border-t border-slate-100 p-4 space-y-3">
+        <div className="border-t scholr-rule-soft p-4 space-y-3">
           <div className="grid grid-cols-2 gap-3 text-xs">
-            <div><span className="text-slate-400 font-medium">Subject:</span> <span className="text-slate-700">{req.subject_name || req.subject_user_id || '—'}</span></div>
-            <div><span className="text-slate-400 font-medium">Received:</span> <span className="text-slate-700">{req.created_at ? format(new Date(req.created_at), 'dd MMM yyyy') : '—'}</span></div>
-            <div><span className="text-slate-400 font-medium">Assigned to:</span> <span className="text-slate-700">{req.assigned_to_name || 'Unassigned'}</span></div>
-            <div><span className="text-slate-400 font-medium">Identity verified:</span> <span className="text-slate-700">{req.identity_verified ? 'Yes' : 'No'}</span></div>
+            <div><span className="scholr-faint font-medium">Subject:</span> <span className="scholr-body">{req.subject_name || req.subject_user_id || '—'}</span></div>
+            <div><span className="scholr-faint font-medium">Received:</span> <span className="scholr-body">{req.created_at ? format(new Date(req.created_at), 'dd MMM yyyy') : '—'}</span></div>
+            <div><span className="scholr-faint font-medium">Assigned to:</span> <span className="scholr-body">{req.assigned_to_name || 'Unassigned'}</span></div>
+            <div><span className="scholr-faint font-medium">Identity verified:</span> <span className="scholr-body">{req.identity_verified ? 'Yes' : 'No'}</span></div>
           </div>
           {req.description && (
             <div>
-              <p className="text-xs font-semibold text-slate-500 mb-1">Request Description</p>
-              <p className="text-sm text-slate-700 bg-slate-50 rounded-lg p-3">{req.description}</p>
+              <p className="text-xs font-semibold scholr-muted mb-1">Request Description</p>
+              <p className="text-sm scholr-body scholr-sunk rounded-lg p-3">{req.description}</p>
             </div>
           )}
           <div>
-            <Label className="text-xs font-semibold text-slate-500 mb-1 block">Resolution Notes</Label>
+            <Label className="text-xs font-semibold scholr-muted mb-1 block">Resolution Notes</Label>
             <Textarea rows={2} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Add notes about how this was handled…" className="text-sm" />
           </div>
           <div className="flex gap-2 flex-wrap">
@@ -107,7 +107,7 @@ function RequestCard({ req, onUpdate, schoolId, user }) {
               <Button size="sm" variant="outline" onClick={() => save('acknowledged')} disabled={updating} className="text-blue-700 border-blue-200 hover:bg-blue-50">Acknowledge</Button>
             )}
             {['pending', 'acknowledged'].includes(req.status) && (
-              <Button size="sm" variant="outline" onClick={() => save('in_progress')} disabled={updating} className="text-indigo-700 border-indigo-200 hover:bg-indigo-50">Mark In Progress</Button>
+              <Button size="sm" variant="outline" onClick={() => save('in_progress')} disabled={updating} className="scholr-accent scholr-accent-rule hover:scholr-accent-sf">Mark In Progress</Button>
             )}
             {!['completed', 'rejected', 'withdrawn'].includes(req.status) && (
               <>
@@ -171,11 +171,11 @@ export default function PrivacyRequestsPanel({ policy, onChange, onSave, saving,
   return (
     <div className="space-y-5">
       {/* Config section */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+      <div className="bg-white rounded-xl border scholr-rule p-5 space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-semibold text-slate-800 text-sm">Privacy Request Handling</p>
-            <p className="text-xs text-slate-500 mt-0.5">Enable this module to manage GDPR and privacy compliance requests at school level</p>
+            <p className="font-semibold scholr-ink text-sm">Privacy Request Handling</p>
+            <p className="text-xs scholr-muted mt-0.5">Enable this module to manage GDPR and privacy compliance requests at school level</p>
           </div>
           <Switch
             checked={!!privacyConfig.privacy_requests_enabled}
@@ -183,9 +183,9 @@ export default function PrivacyRequestsPanel({ policy, onChange, onSave, saving,
           />
         </div>
         {privacyConfig.privacy_requests_enabled && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t scholr-rule-soft">
             <div>
-              <Label className="text-xs font-semibold text-slate-600 mb-1 block">Data Protection Officer Email</Label>
+              <Label className="text-xs font-semibold scholr-muted mb-1 block">Data Protection Officer Email</Label>
               <Input
                 type="email"
                 className="h-8 text-sm"
@@ -195,7 +195,7 @@ export default function PrivacyRequestsPanel({ policy, onChange, onSave, saving,
               />
             </div>
             <div>
-              <Label className="text-xs font-semibold text-slate-600 mb-1 block">Regulatory Framework</Label>
+              <Label className="text-xs font-semibold scholr-muted mb-1 block">Regulatory Framework</Label>
               <Select value={privacyConfig.gdpr_jurisdiction || 'none'} onValueChange={v => onChange({ privacy: { ...privacyConfig, gdpr_jurisdiction: v } })}>
                 <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -211,8 +211,8 @@ export default function PrivacyRequestsPanel({ policy, onChange, onSave, saving,
             </div>
             <div className="flex items-center justify-between col-span-1 md:col-span-2">
               <div>
-                <p className="text-sm font-medium text-slate-700">Require identity verification before processing deletions</p>
-                <p className="text-xs text-slate-400">Admin must confirm identity is verified before marking deletion requests complete</p>
+                <p className="text-sm font-medium scholr-body">Require identity verification before processing deletions</p>
+                <p className="text-xs scholr-faint">Admin must confirm identity is verified before marking deletion requests complete</p>
               </div>
               <Switch
                 checked={!!privacyConfig.require_identity_verification}
@@ -222,7 +222,7 @@ export default function PrivacyRequestsPanel({ policy, onChange, onSave, saving,
           </div>
         )}
         <div className="flex justify-end">
-          <Button onClick={onSave} disabled={saving} size="sm" className="bg-indigo-600 hover:bg-indigo-700 gap-1.5">
+          <Button onClick={onSave} disabled={saving} size="sm" className="scholr-accent-sf hover:scholr-accent-sf gap-1.5">
             {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
             Save Privacy Settings
           </Button>
@@ -234,15 +234,15 @@ export default function PrivacyRequestsPanel({ policy, onChange, onSave, saving,
           {/* Stats */}
           <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
             {[
-              { label: 'Total', value: requests.length, color: 'text-slate-700' },
-              { label: 'Pending', value: pending, color: pending > 0 ? 'text-amber-600' : 'text-slate-700' },
-              { label: 'Overdue', value: overdue, color: overdue > 0 ? 'text-red-600' : 'text-slate-700' },
+              { label: 'Total', value: requests.length, color: 'scholr-body' },
+              { label: 'Pending', value: pending, color: pending > 0 ? 'text-amber-600' : 'scholr-body' },
+              { label: 'Overdue', value: overdue, color: overdue > 0 ? 'text-red-600' : 'scholr-body' },
               { label: 'Completed', value: requests.filter(r => r.status === 'completed').length, color: 'text-emerald-600' },
-              { label: 'Rejected', value: requests.filter(r => r.status === 'rejected').length, color: 'text-slate-500' },
+              { label: 'Rejected', value: requests.filter(r => r.status === 'rejected').length, color: 'scholr-muted' },
             ].map(({ label, value, color }) => (
-              <div key={label} className="bg-white border border-slate-200 rounded-lg p-3 text-center">
+              <div key={label} className="app-group p-3 text-center">
                 <p className={`text-xl font-bold ${color}`}>{value}</p>
-                <p className="text-xs text-slate-500 mt-0.5">{label}</p>
+                <p className="text-xs scholr-muted mt-0.5">{label}</p>
               </div>
             ))}
           </div>
@@ -258,18 +258,18 @@ export default function PrivacyRequestsPanel({ policy, onChange, onSave, saving,
                 ))}
               </SelectContent>
             </Select>
-            <Button size="sm" onClick={() => setShowForm(true)} className="bg-indigo-600 hover:bg-indigo-700 gap-1">
+            <Button size="sm" onClick={() => setShowForm(true)} className="scholr-accent-sf hover:scholr-accent-sf gap-1">
               <Plus className="w-3.5 h-3.5" /> Log New Request
             </Button>
           </div>
 
           {/* Request list */}
           {isLoading ? (
-            <div className="text-center py-12 text-slate-400 text-sm">Loading requests…</div>
+            <div className="text-center py-12 scholr-faint text-sm">Loading requests…</div>
           ) : filtered.length === 0 ? (
-            <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-              <Shield className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-              <p className="text-sm text-slate-500">No privacy requests {statusFilter !== 'all' ? `with status "${STATUS_CONFIG[statusFilter]?.label}"` : 'logged yet'}.</p>
+            <div className="bg-white rounded-xl border scholr-rule p-12 text-center">
+              <Shield className="w-8 h-8 scholr-faint mx-auto mb-3" />
+              <p className="text-sm scholr-muted">No privacy requests {statusFilter !== 'all' ? `with status "${STATUS_CONFIG[statusFilter]?.label}"` : 'logged yet'}.</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -342,10 +342,10 @@ export default function PrivacyRequestsPanel({ policy, onChange, onSave, saving,
               <Label className="text-xs font-semibold mb-1 block">Description</Label>
               <Textarea rows={3} className="text-sm" value={newReq.description} onChange={e => setNewReq(r => ({ ...r, description: e.target.value }))} placeholder="Describe the request in detail…" />
             </div>
-            <p className="text-xs text-slate-400">A 30-day due date will be set automatically from today's date.</p>
+            <p className="text-xs scholr-faint">A 30-day due date will be set automatically from today's date.</p>
             <div className="flex gap-2 justify-end">
               <Button variant="outline" size="sm" onClick={() => setShowForm(false)}>Cancel</Button>
-              <Button size="sm" onClick={() => createMutation.mutate(newReq)} disabled={createMutation.isPending || !newReq.requester_email} className="bg-indigo-600 hover:bg-indigo-700">
+              <Button size="sm" onClick={() => createMutation.mutate(newReq)} disabled={createMutation.isPending || !newReq.requester_email} className="scholr-accent-sf hover:scholr-accent-sf">
                 {createMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : null}
                 Log Request
               </Button>

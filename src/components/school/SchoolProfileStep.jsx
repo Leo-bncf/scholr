@@ -91,7 +91,7 @@ export default function SchoolProfileStep({ schoolId, onComplete }) {
         <CardContent className="pt-6">
           <div className="flex items-center justify-center gap-2">
             <Loader2 className="w-4 h-4 animate-spin" />
-            <span className="text-slate-600">Loading school information...</span>
+            <span className="scholr-muted">Loading school information...</span>
           </div>
         </CardContent>
       </Card>
@@ -102,7 +102,7 @@ export default function SchoolProfileStep({ schoolId, onComplete }) {
     <Card>
       <CardHeader>
         <CardTitle>School Profile</CardTitle>
-        <p className="text-sm text-slate-600 mt-1">
+        <p className="text-sm scholr-muted mt-1">
           Add your school's basic information. This helps identify your school across the platform.
         </p>
       </CardHeader>
@@ -184,7 +184,7 @@ export default function SchoolProfileStep({ schoolId, onComplete }) {
               value={timezone}
               onChange={(e) => setTimezone(e.target.value)}
               disabled={saving}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm"
+              className="w-full px-3 py-2 border scholr-rule rounded-md bg-white text-sm"
             >
               <option value="UTC">UTC</option>
               <option value="Europe/London">Europe/London</option>
@@ -214,7 +214,7 @@ export default function SchoolProfileStep({ schoolId, onComplete }) {
           <Button
             onClick={handleSave}
             disabled={saving}
-            className="bg-indigo-600 hover:bg-indigo-700"
+            className="scholr-accent-sf hover:scholr-accent-sf"
           >
             {saving && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
             {saving ? 'Saving...' : 'Save & Continue'}

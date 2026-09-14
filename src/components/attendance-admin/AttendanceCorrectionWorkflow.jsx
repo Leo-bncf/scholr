@@ -119,32 +119,32 @@ export default function AttendanceCorrectionWorkflow({ schoolId }) {
   return (
     <div className="space-y-5">
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 flex flex-wrap gap-4 items-end">
+      <div className="bg-white rounded-xl border scholr-rule p-4 flex flex-wrap gap-4 items-end">
         <div className="flex-1 min-w-48">
-          <label className="text-xs font-semibold text-slate-600 block mb-1">Search Student</label>
+          <label className="text-xs font-semibold scholr-muted block mb-1">Search Student</label>
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-2.5 scholr-faint" />
             <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Student name…" className="pl-9 h-9 text-sm" />
           </div>
         </div>
         <div>
-          <label className="text-xs font-semibold text-slate-600 block mb-1">From</label>
-          <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm" />
+          <label className="text-xs font-semibold scholr-muted block mb-1">From</label>
+          <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm" />
         </div>
         <div>
-          <label className="text-xs font-semibold text-slate-600 block mb-1">To</label>
-          <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm" />
+          <label className="text-xs font-semibold scholr-muted block mb-1">To</label>
+          <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm" />
         </div>
         <div>
-          <label className="text-xs font-semibold text-slate-600 block mb-1">Class</label>
-          <select value={filterClass} onChange={e => setFilterClass(e.target.value)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm bg-white">
+          <label className="text-xs font-semibold scholr-muted block mb-1">Class</label>
+          <select value={filterClass} onChange={e => setFilterClass(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm bg-white">
             <option value="all">All Classes</option>
             {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </div>
         <div>
-          <label className="text-xs font-semibold text-slate-600 block mb-1">Status</label>
-          <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm bg-white">
+          <label className="text-xs font-semibold scholr-muted block mb-1">Status</label>
+          <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm bg-white">
             <option value="all">All Statuses</option>
             <option value="present">Present</option>
             <option value="absent">Absent</option>
@@ -153,44 +153,44 @@ export default function AttendanceCorrectionWorkflow({ schoolId }) {
           </select>
         </div>
         {filtered.length > 0 && (
-          <span className="text-xs text-slate-500 self-end pb-2">{filtered.length} record{filtered.length !== 1 ? 's' : ''}</span>
+          <span className="text-xs scholr-muted self-end pb-2">{filtered.length} record{filtered.length !== 1 ? 's' : ''}</span>
         )}
       </div>
 
       {/* Records Table */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
         {isLoading ? (
-          <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>
+          <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-12 text-slate-400">
-            <PenLine className="w-10 h-10 mx-auto mb-2 text-slate-200" />
+          <div className="text-center py-12 scholr-faint">
+            <PenLine className="w-10 h-10 mx-auto mb-2 scholr-faint" />
             <p className="text-sm">No records found for the selected filters.</p>
           </div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Student</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Date</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Class</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase">Status</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden lg:table-cell">Note</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase">History</th>
-                <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase">Actions</th>
+              <tr className="scholr-sunk border-b scholr-rule">
+                <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">Student</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">Date</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase hidden md:table-cell">Class</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase hidden lg:table-cell">Note</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">History</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold scholr-muted uppercase">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y scholr-divide">
               {filtered.map(record => {
                 const hasHistory = (record.correction_history || []).length > 0;
                 const expanded = expandedHistory[record.id];
                 return (
                   <React.Fragment key={record.id}>
-                    <tr className={`hover:bg-slate-50 ${hasHistory ? 'bg-amber-50/40' : ''}`}>
-                      <td className="px-4 py-3 font-medium text-slate-900">{record.student_name}</td>
-                      <td className="px-4 py-3 text-slate-600 whitespace-nowrap">{record.date}</td>
-                      <td className="px-4 py-3 text-slate-500 text-xs hidden md:table-cell">{classMap[record.class_id] || '—'}</td>
+                    <tr className={`hover:scholr-sunk ${hasHistory ? 'bg-amber-50/40' : ''}`}>
+                      <td className="px-4 py-3 font-medium scholr-ink">{record.student_name}</td>
+                      <td className="px-4 py-3 scholr-muted whitespace-nowrap">{record.date}</td>
+                      <td className="px-4 py-3 scholr-muted text-xs hidden md:table-cell">{classMap[record.class_id] || '—'}</td>
                       <td className="px-4 py-3 text-center"><StatusBadge status={record.status} /></td>
-                      <td className="px-4 py-3 text-slate-500 max-w-xs truncate hidden lg:table-cell">{record.note || '—'}</td>
+                      <td className="px-4 py-3 scholr-muted max-w-xs truncate hidden lg:table-cell">{record.note || '—'}</td>
                       <td className="px-4 py-3 text-center">
                         {hasHistory ? (
                           <button
@@ -202,7 +202,7 @@ export default function AttendanceCorrectionWorkflow({ schoolId }) {
                             {expanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                           </button>
                         ) : (
-                          <span className="text-slate-300 text-xs">—</span>
+                          <span className="scholr-faint text-xs">—</span>
                         )}
                       </td>
                       <td className="px-4 py-3 text-right">
@@ -222,13 +222,13 @@ export default function AttendanceCorrectionWorkflow({ schoolId }) {
                           <p className="text-xs font-bold text-amber-800 mb-2 flex items-center gap-1"><History className="w-3 h-3" /> Correction History</p>
                           <div className="space-y-1.5">
                             {record.correction_history.map((h, i) => (
-                              <div key={i} className="text-xs text-slate-700 bg-white border border-amber-100 rounded px-3 py-1.5 flex flex-wrap gap-2 items-center">
+                              <div key={i} className="text-xs scholr-body bg-white border border-amber-100 rounded px-3 py-1.5 flex flex-wrap gap-2 items-center">
                                 <span className="font-semibold">{h.corrected_by_name}</span>
-                                <span className="text-slate-400">{h.corrected_at ? format(new Date(h.corrected_at), 'dd MMM yyyy HH:mm') : ''}</span>
+                                <span className="scholr-faint">{h.corrected_at ? format(new Date(h.corrected_at), 'dd MMM yyyy HH:mm') : ''}</span>
                                 <StatusBadge status={h.previous_status} />
-                                <span className="text-slate-400">→</span>
+                                <span className="scholr-faint">→</span>
                                 <StatusBadge status={h.new_status} />
-                                {h.reason && <span className="text-slate-600 italic">"{h.reason}"</span>}
+                                {h.reason && <span className="scholr-muted italic">"{h.reason}"</span>}
                               </div>
                             ))}
                           </div>
@@ -251,12 +251,12 @@ export default function AttendanceCorrectionWorkflow({ schoolId }) {
           </DialogHeader>
           {correcting && (
             <div className="space-y-4">
-              <div className="bg-slate-50 rounded-lg p-3 text-sm">
-                <p className="font-semibold text-slate-900">{correcting.student_name}</p>
-                <p className="text-slate-500">{correcting.date} · Current: <StatusBadge status={correcting.status} /></p>
+              <div className="scholr-sunk rounded-lg p-3 text-sm">
+                <p className="font-semibold scholr-ink">{correcting.student_name}</p>
+                <p className="scholr-muted">{correcting.date} · Current: <StatusBadge status={correcting.status} /></p>
               </div>
               <div>
-                <label className="text-sm font-semibold text-slate-700 block mb-1.5">New Status *</label>
+                <label className="text-sm font-semibold scholr-body block mb-1.5">New Status *</label>
                 <Select value={newStatus} onValueChange={setNewStatus}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select new status…" />
@@ -270,7 +270,7 @@ export default function AttendanceCorrectionWorkflow({ schoolId }) {
                 </Select>
               </div>
               <div>
-                <label className="text-sm font-semibold text-slate-700 block mb-1.5">
+                <label className="text-sm font-semibold scholr-body block mb-1.5">
                   Reason for Correction {requireReason ? '*' : '(optional)'}
                 </label>
                 <Textarea
@@ -296,7 +296,7 @@ export default function AttendanceCorrectionWorkflow({ schoolId }) {
             <Button
               onClick={handleCorrect}
               disabled={!newStatus || (requireReason && !reason.trim()) || correctMutation.isPending}
-              className="bg-indigo-600 hover:bg-indigo-700"
+              className="scholr-accent-sf hover:scholr-accent-sf"
             >
               {correctMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
               Save Correction

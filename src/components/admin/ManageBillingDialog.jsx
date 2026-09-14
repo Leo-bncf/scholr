@@ -94,7 +94,7 @@ export default function ManageBillingDialog({ open, onOpenChange, school, onUpda
               value={billingData.plan}
               onChange={handleChange}
               disabled={loading}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-3 py-2 border scholr-rule rounded-md text-sm scholr-focus"
             >
               {SCHOOL_PLAN_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
@@ -109,7 +109,7 @@ export default function ManageBillingDialog({ open, onOpenChange, school, onUpda
               value={billingData.billing_status}
               onChange={handleChange}
               disabled={loading}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-3 py-2 border scholr-rule rounded-md text-sm scholr-focus"
             >
               {BILLING_STATUS_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
@@ -136,7 +136,7 @@ export default function ManageBillingDialog({ open, onOpenChange, school, onUpda
             <Button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+              className="flex-1 scholr-accent-sf hover:scholr-accent-sf"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
               {loading ? 'Updating...' : 'Update Billing'}

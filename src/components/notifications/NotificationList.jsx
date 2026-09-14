@@ -22,15 +22,15 @@ const linkMap = {
 export default function NotificationList({ notifications, onToggleRead, onClose }) {
   if (!notifications.length) {
     return (
-      <div className="p-8 text-center text-slate-400">
-        <Bell className="w-10 h-10 mx-auto mb-2 text-slate-300" />
+      <div className="p-8 text-center scholr-faint">
+        <Bell className="w-10 h-10 mx-auto mb-2 scholr-faint" />
         <p className="text-sm">No notifications yet</p>
       </div>
     );
   }
 
   return (
-    <div className="max-h-[420px] overflow-y-auto divide-y divide-slate-100">
+    <div className="max-h-[420px] overflow-y-auto divide-y scholr-divide">
       {notifications.map((notification) => {
         const Icon = iconMap[notification.type] || BookOpen;
         return (
@@ -40,12 +40,12 @@ export default function NotificationList({ notifications, onToggleRead, onClose 
               <div className="flex-1 min-w-0">
                 <a href={linkMap[notification.type] || '#'} onClick={onClose} className="block">
                   <div className="flex items-start justify-between gap-2">
-                    <p className={`text-sm ${notification.read_status ? 'font-medium text-slate-700' : 'font-semibold text-slate-900'}`}>
+                    <p className={`text-sm ${notification.read_status ? 'font-medium scholr-body' : 'font-semibold scholr-ink'}`}>
                       {notification.message}
                     </p>
                     {!notification.read_status && <div className="w-2 h-2 rounded-full bg-emerald-600 mt-1.5 flex-shrink-0" />}
                   </div>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs scholr-faint mt-1">
                     {notification.timestamp ? formatDistanceToNow(new Date(notification.timestamp), { addSuffix: true }) : ''}
                   </p>
                 </a>

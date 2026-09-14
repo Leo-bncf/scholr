@@ -28,27 +28,27 @@ const EMPTY = { name: '', type: 'custom', description: '', color: '#4f46e5', aca
 function CohortCard({ cohort, memberCount, onEdit, onDelete, onManageStudents }) {
   const meta = TYPE_META[cohort.type] || TYPE_META.custom;
   return (
-    <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex items-center gap-3">
+    <div className="app-group p-4 shadow-sm flex items-center gap-3">
       <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-white font-bold text-sm shadow-sm"
         style={{ backgroundColor: cohort.color || meta.color }}>
         {cohort.name.slice(0, 2).toUpperCase()}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <p className="text-sm font-bold text-slate-900 truncate">{cohort.name}</p>
-          <span className="text-xs text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">{meta.label}</span>
+          <p className="text-sm font-bold scholr-ink truncate">{cohort.name}</p>
+          <span className="text-xs scholr-muted scholr-sunk px-1.5 py-0.5 rounded">{meta.label}</span>
         </div>
-        {cohort.description && <p className="text-xs text-slate-500 mt-0.5 truncate">{cohort.description}</p>}
-        <p className="text-xs text-slate-400 mt-0.5">{memberCount} student{memberCount !== 1 ? 's' : ''}</p>
+        {cohort.description && <p className="text-xs scholr-muted mt-0.5 truncate">{cohort.description}</p>}
+        <p className="text-xs scholr-faint mt-0.5">{memberCount} student{memberCount !== 1 ? 's' : ''}</p>
       </div>
       <div className="flex items-center gap-1 flex-shrink-0">
-        <Button variant="ghost" size="sm" onClick={() => onManageStudents(cohort)} className="h-7 px-2 text-xs text-slate-500 hover:text-indigo-600 gap-1">
+        <Button variant="ghost" size="sm" onClick={() => onManageStudents(cohort)} className="h-7 px-2 text-xs scholr-muted hover:scholr-accent gap-1">
           <UsersRound className="w-3.5 h-3.5" /> Students
         </Button>
-        <Button variant="ghost" size="sm" onClick={() => onEdit(cohort)} className="h-7 w-7 p-0 text-slate-400 hover:text-slate-700">
+        <Button variant="ghost" size="sm" onClick={() => onEdit(cohort)} className="h-7 w-7 p-0 scholr-faint hover:scholr-body">
           <Pencil className="w-3.5 h-3.5" />
         </Button>
-        <Button variant="ghost" size="sm" onClick={() => onDelete(cohort)} className="h-7 w-7 p-0 text-slate-400 hover:text-red-600">
+        <Button variant="ghost" size="sm" onClick={() => onDelete(cohort)} className="h-7 w-7 p-0 scholr-faint hover:text-red-600">
           <Trash2 className="w-3.5 h-3.5" />
         </Button>
       </div>
@@ -154,24 +154,24 @@ export default function CohortsTab({ schoolId }) {
     <div className="space-y-5">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h2 className="text-sm font-bold text-slate-900">Cohorts & Groups</h2>
-          <p className="text-xs text-slate-500 mt-0.5">Define student groupings for targeted assignments, analytics, and reporting views.</p>
+          <h2 className="text-sm font-bold scholr-ink">Cohorts & Groups</h2>
+          <p className="text-xs scholr-muted mt-0.5">Define student groupings for targeted assignments, analytics, and reporting views.</p>
         </div>
-        <Button onClick={openCreate} className="bg-indigo-600 hover:bg-indigo-700 h-8 text-xs gap-1.5">
+        <Button onClick={openCreate} className="scholr-accent-sf hover:scholr-accent-sf h-8 text-xs gap-1.5">
           <Plus className="w-3.5 h-3.5" /> New Group
         </Button>
       </div>
 
       {/* Type filter chips */}
       <div className="flex gap-1.5 flex-wrap">
-        <button onClick={() => setTypeFilter('all')} className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${typeFilter === 'all' ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+        <button onClick={() => setTypeFilter('all')} className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${typeFilter === 'all' ? 'pub-btn pub-btn-gold' : 'bg-white border scholr-rule scholr-muted hover:scholr-sunk'}`}>
           All ({cohorts.length})
         </button>
         {COHORT_TYPES.map(t => {
           const count = cohorts.filter(c => c.type === t.value).length;
           if (count === 0) return null;
           return (
-            <button key={t.value} onClick={() => setTypeFilter(t.value)} className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${typeFilter === t.value ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+            <button key={t.value} onClick={() => setTypeFilter(t.value)} className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${typeFilter === t.value ? 'pub-btn pub-btn-gold' : 'bg-white border scholr-rule scholr-muted hover:scholr-sunk'}`}>
               {t.label.split('—')[0].trim()} ({count})
             </button>
           );
@@ -179,21 +179,21 @@ export default function CohortsTab({ schoolId }) {
       </div>
 
       {cohortsLoading ? (
-        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-slate-400" /></div>
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-faint" /></div>
       ) : cohorts.length === 0 ? (
-        <div className="bg-white border border-dashed border-slate-300 rounded-lg p-12 text-center">
-          <UsersRound className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-          <p className="text-sm font-semibold text-slate-500">No cohorts or groups yet</p>
-          <p className="text-xs text-slate-400 mt-1 mb-4">Create DP1/DP2 year groups, advisory groups, HL/SL sets, and more.</p>
-          <Button onClick={openCreate} className="bg-indigo-600 hover:bg-indigo-700 h-8 text-xs gap-1.5"><Plus className="w-3.5 h-3.5" /> Create First Group</Button>
+        <div className="bg-white border border-dashed scholr-rule rounded-lg p-12 text-center">
+          <UsersRound className="w-10 h-10 scholr-faint mx-auto mb-3" />
+          <p className="text-sm font-semibold scholr-muted">No cohorts or groups yet</p>
+          <p className="text-xs scholr-faint mt-1 mb-4">Create DP1/DP2 year groups, advisory groups, HL/SL sets, and more.</p>
+          <Button onClick={openCreate} className="scholr-accent-sf hover:scholr-accent-sf h-8 text-xs gap-1.5"><Plus className="w-3.5 h-3.5" /> Create First Group</Button>
         </div>
       ) : grouped.length === 0 ? (
-        <p className="text-sm text-slate-400 text-center py-8">No groups of this type.</p>
+        <p className="text-sm scholr-faint text-center py-8">No groups of this type.</p>
       ) : (
         <div className="space-y-5">
           {grouped.map(group => (
             <div key={group.value}>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">{group.label}</h3>
+              <h3 className="text-xs font-bold uppercase tracking-wider scholr-muted mb-2">{group.label}</h3>
               <div className="space-y-2">
                 {group.items.map(c => (
                   <CohortCard
@@ -248,14 +248,14 @@ export default function CohortsTab({ schoolId }) {
               <div className="flex gap-2 mt-1 flex-wrap">
                 {PRESET_COLORS.map(c => (
                   <button key={c} type="button" onClick={() => setForm({ ...form, color: c })}
-                    className="w-7 h-7 rounded-full border-2 transition-all"
+                    className="w-7 h-7 rounded-full border-2 transition-colors"
                     style={{ backgroundColor: c, borderColor: form.color === c ? '#1e293b' : 'transparent' }} />
                 ))}
               </div>
             </div>
             <div className="flex gap-2 pt-2">
               <Button type="button" variant="outline" className="flex-1" onClick={closeDialog}>Cancel</Button>
-              <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending} className="flex-1 bg-indigo-600 hover:bg-indigo-700">
+              <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending} className="flex-1 scholr-accent-sf hover:scholr-accent-sf">
                 {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                 {editing ? 'Save Changes' : 'Create Group'}
               </Button>
@@ -271,30 +271,30 @@ export default function CohortsTab({ schoolId }) {
             <DialogHeader>
               <DialogTitle>Students — {studentDialog.name}</DialogTitle>
             </DialogHeader>
-            <p className="text-xs text-slate-500 mt-1">Click a student to add or remove from this group.</p>
+            <p className="text-xs scholr-muted mt-1">Click a student to add or remove from this group.</p>
             <div className="overflow-y-auto flex-1 mt-3 space-y-1.5">
               {students.length === 0 ? (
-                <p className="text-sm text-slate-400 text-center py-8">No students found. Add students via Users first.</p>
+                <p className="text-sm scholr-faint text-center py-8">No students found. Add students via Users first.</p>
               ) : students.map(s => {
                 const enrolled = (studentDialog.student_ids || []).includes(s.user_id);
                 return (
                   <button key={s.id} onClick={() => toggleStudentMutation.mutate({ cohort: studentDialog, userId: s.user_id })}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all text-left ${enrolled ? 'bg-indigo-50 border-indigo-200' : 'bg-white border-slate-200 hover:border-slate-300'}`}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-colors text-left ${enrolled ? 'scholr-accent-sf scholr-accent-rule' : 'bg-white scholr-rule hover:scholr-rule'}`}
                   >
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${enrolled ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${enrolled ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-muted'}`}>
                       {s.user_name?.[0]?.toUpperCase() || '?'}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-slate-900 truncate">{s.user_name || s.user_email}</p>
-                      <p className="text-xs text-slate-500 truncate">{s.grade_level || s.user_email}</p>
+                      <p className="text-sm font-medium scholr-ink truncate">{s.user_name || s.user_email}</p>
+                      <p className="text-xs scholr-muted truncate">{s.grade_level || s.user_email}</p>
                     </div>
-                    {enrolled && <Check className="w-4 h-4 text-indigo-600 flex-shrink-0" />}
+                    {enrolled && <Check className="w-4 h-4 scholr-accent flex-shrink-0" />}
                   </button>
                 );
               })}
             </div>
             <div className="pt-3 border-t mt-2">
-              <Button onClick={() => setStudentDialog(null)} className="w-full bg-indigo-600 hover:bg-indigo-700">Done</Button>
+              <Button onClick={() => setStudentDialog(null)} className="w-full scholr-accent-sf hover:scholr-accent-sf">Done</Button>
             </div>
           </DialogContent>
         </Dialog>

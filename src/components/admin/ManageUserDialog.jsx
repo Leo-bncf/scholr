@@ -175,23 +175,23 @@ export default function ManageUserDialog({ open, onOpenChange, user, onUserUpdat
           )}
 
           {/* User Info */}
-          <div className="p-3 bg-slate-50 rounded-lg space-y-2 border">
+          <div className="p-3 scholr-sunk rounded-lg space-y-2 border">
             <div>
-              <p className="text-xs text-slate-500">Name</p>
-              <p className="font-semibold text-slate-900 text-sm">{user.full_name || '—'}</p>
+              <p className="text-xs scholr-muted">Name</p>
+              <p className="font-semibold scholr-ink text-sm">{user.full_name || '—'}</p>
             </div>
             <div>
-              <p className="text-xs text-slate-500">Email</p>
+              <p className="text-xs scholr-muted">Email</p>
               <div className="flex items-center gap-2">
-                <p className="font-semibold text-slate-900 text-sm break-all">{user.email}</p>
+                <p className="font-semibold scholr-ink text-sm break-all">{user.email}</p>
                 <Button onClick={handleCopyEmail} size="icon" variant="ghost" className="h-6 w-6 flex-shrink-0">
                   {copied ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
                 </Button>
               </div>
             </div>
             <div>
-              <p className="text-xs text-slate-500">User ID</p>
-              <p className="font-mono text-slate-600 text-xs break-all">{user.id}</p>
+              <p className="text-xs scholr-muted">User ID</p>
+              <p className="font-mono scholr-muted text-xs break-all">{user.id}</p>
             </div>
           </div>
 
@@ -202,13 +202,13 @@ export default function ManageUserDialog({ open, onOpenChange, user, onUserUpdat
               value={newRole}
               onChange={(e) => setNewRole(e.target.value)}
               disabled={loading}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+              className="w-full px-3 py-2 border scholr-rule rounded-md text-sm scholr-focus bg-white"
             >
               {ROLES.map(r => (
                 <option key={r.value} value={r.value}>{r.label}</option>
               ))}
             </select>
-            <p className="text-xs text-slate-500 mt-1">Current: <strong>{user.role || 'user'}</strong></p>
+            <p className="text-xs scholr-muted mt-1">Current: <strong>{user.role || 'user'}</strong></p>
           </div>
 
           {/* Assign to School */}
@@ -220,7 +220,7 @@ export default function ManageUserDialog({ open, onOpenChange, user, onUserUpdat
               value={newSchoolId}
               onChange={(e) => setNewSchoolId(e.target.value)}
               disabled={loading || loadingSchools}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+              className="w-full px-3 py-2 border scholr-rule rounded-md text-sm scholr-focus bg-white"
             >
               <option value="">— No School —</option>
               {schools.map(s => (
@@ -228,7 +228,7 @@ export default function ManageUserDialog({ open, onOpenChange, user, onUserUpdat
               ))}
             </select>
             {user.active_school_id && (
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs scholr-muted mt-1">
                 Current: <strong>{schools.find(s => s.id === user.active_school_id)?.name || user.active_school_id}</strong>
               </p>
             )}
@@ -247,7 +247,7 @@ export default function ManageUserDialog({ open, onOpenChange, user, onUserUpdat
             <Button
               onClick={handleSave}
               disabled={loading || !hasChanges}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+              className="flex-1 scholr-accent-sf hover:scholr-accent-sf"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
               Save Changes

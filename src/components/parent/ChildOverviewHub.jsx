@@ -55,7 +55,7 @@ export default function ChildOverviewHub({ schoolId, studentId }) {
   const isLoading = loadingGrades || loadingAssignments || loadingAttendance;
 
   if (isLoading) {
-    return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>;
+    return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>;
   }
 
   // Calculate metrics
@@ -75,12 +75,12 @@ export default function ChildOverviewHub({ schoolId, studentId }) {
     <div className="space-y-6">
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-5 border border-indigo-200">
+        <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-5 border scholr-accent-rule">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-indigo-600 font-medium mb-1">Average Grade</p>
-              <p className="text-3xl font-bold text-indigo-900">{avgGrade || '—'}</p>
-              <p className="text-xs text-indigo-600 mt-1">{grades.length} grades recorded</p>
+              <p className="text-xs scholr-accent font-medium mb-1">Average Grade</p>
+              <p className="text-3xl font-bold scholr-accent">{avgGrade || '—'}</p>
+              <p className="text-xs scholr-accent mt-1">{grades.length} grades recorded</p>
             </div>
             <BarChart3 className="w-10 h-10 text-indigo-200" />
           </div>
@@ -110,26 +110,26 @@ export default function ChildOverviewHub({ schoolId, studentId }) {
       </div>
 
       {/* Grades & Feedback */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5">
-        <h3 className="font-semibold text-slate-900 mb-4 text-sm uppercase tracking-wide flex items-center gap-2">
-          <BarChart3 className="w-4 h-4 text-indigo-600" />
+      <div className="bg-white rounded-xl border scholr-rule p-5">
+        <h3 className="font-semibold scholr-ink mb-4 text-sm uppercase tracking-wide flex items-center gap-2">
+          <BarChart3 className="w-4 h-4 scholr-accent" />
           Recent Grades & Feedback
         </h3>
         {grades.length === 0 ? (
-          <p className="text-sm text-slate-500">No grades available yet</p>
+          <p className="text-sm scholr-muted">No grades available yet</p>
         ) : (
           <div className="space-y-3">
             {grades.slice(0, 5).map(grade => (
-              <div key={grade.id} className="border border-slate-100 rounded-lg p-3 hover:bg-slate-50 transition-colors">
+              <div key={grade.id} className="border scholr-rule-soft rounded-lg p-3 hover:scholr-sunk transition-colors">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-slate-900 text-sm truncate">{grade.title}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{grade.class_name || 'Unknown Class'}</p>
-                    {grade.comment && <p className="text-xs text-slate-600 mt-1 bg-slate-50 p-2 rounded">{grade.comment.substring(0, 100)}...</p>}
+                    <p className="font-medium scholr-ink text-sm truncate">{grade.title}</p>
+                    <p className="text-xs scholr-muted mt-0.5">{grade.class_name || 'Unknown Class'}</p>
+                    {grade.comment && <p className="text-xs scholr-muted mt-1 scholr-sunk p-2 rounded">{grade.comment.substring(0, 100)}...</p>}
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="text-lg font-bold text-indigo-600">{grade.score}/{grade.max_score}</p>
-                    <p className="text-xs text-slate-500">{((grade.score / grade.max_score) * 100).toFixed(0)}%</p>
+                    <p className="text-lg font-bold scholr-accent">{grade.score}/{grade.max_score}</p>
+                    <p className="text-xs scholr-muted">{((grade.score / grade.max_score) * 100).toFixed(0)}%</p>
                   </div>
                 </div>
               </div>
@@ -139,30 +139,30 @@ export default function ChildOverviewHub({ schoolId, studentId }) {
       </div>
 
       {/* Assignments & Deadlines */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5">
-        <h3 className="font-semibold text-slate-900 mb-4 text-sm uppercase tracking-wide flex items-center gap-2">
+      <div className="bg-white rounded-xl border scholr-rule p-5">
+        <h3 className="font-semibold scholr-ink mb-4 text-sm uppercase tracking-wide flex items-center gap-2">
           <ClipboardCheck className="w-4 h-4 text-emerald-600" />
           Upcoming Assignments & Deadlines
         </h3>
         {upcomingAssignments.length === 0 ? (
-          <p className="text-sm text-slate-500">No upcoming assignments</p>
+          <p className="text-sm scholr-muted">No upcoming assignments</p>
         ) : (
           <div className="space-y-3">
             {upcomingAssignments.map(assignment => {
               const submission = submissions.find(s => s.assignment_id === assignment.id);
               const daysLeft = Math.ceil((new Date(assignment.due_date) - new Date()) / (1000 * 60 * 60 * 24));
               return (
-                <div key={assignment.id} className={`border rounded-lg p-3 ${daysLeft <= 3 ? 'border-red-200 bg-red-50' : 'border-slate-100'}`}>
+                <div key={assignment.id} className={`border rounded-lg p-3 ${daysLeft <= 3 ? 'border-red-200 bg-red-50' : 'scholr-rule-soft'}`}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-slate-900 text-sm truncate">{assignment.title}</p>
-                      <p className="text-xs text-slate-500 mt-0.5">{assignment.class_name || 'Unknown Class'}</p>
+                      <p className="font-medium scholr-ink text-sm truncate">{assignment.title}</p>
+                      <p className="text-xs scholr-muted mt-0.5">{assignment.class_name || 'Unknown Class'}</p>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <p className={`text-xs font-semibold ${daysLeft <= 3 ? 'text-red-600' : 'text-slate-600'}`}>
+                      <p className={`text-xs font-semibold ${daysLeft <= 3 ? 'text-red-600' : 'scholr-muted'}`}>
                         Due in {daysLeft} day{daysLeft !== 1 ? 's' : ''}
                       </p>
-                      <p className="text-xs text-slate-500 mt-0.5">{format(new Date(assignment.due_date), 'MMM d')}</p>
+                      <p className="text-xs scholr-muted mt-0.5">{format(new Date(assignment.due_date), 'MMM d')}</p>
                       {submission && <Badge variant="outline" className="text-xs mt-1">{submission.status}</Badge>}
                     </div>
                   </div>
@@ -174,8 +174,8 @@ export default function ChildOverviewHub({ schoolId, studentId }) {
       </div>
 
       {/* Attendance Tracking */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5">
-        <h3 className="font-semibold text-slate-900 mb-4 text-sm uppercase tracking-wide flex items-center gap-2">
+      <div className="bg-white rounded-xl border scholr-rule p-5">
+        <h3 className="font-semibold scholr-ink mb-4 text-sm uppercase tracking-wide flex items-center gap-2">
           <Calendar className="w-4 h-4 text-amber-600" />
           Attendance Tracking
         </h3>
@@ -193,14 +193,14 @@ export default function ChildOverviewHub({ schoolId, studentId }) {
           ))}
         </div>
         {attendance.length === 0 ? (
-          <p className="text-sm text-slate-500">No attendance records yet</p>
+          <p className="text-sm scholr-muted">No attendance records yet</p>
         ) : (
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {attendance.slice(0, 10).map(record => (
-              <div key={record.id} className="flex items-center justify-between text-sm border-b border-slate-100 pb-2">
+              <div key={record.id} className="flex items-center justify-between text-sm border-b scholr-rule-soft pb-2">
                 <div>
-                  <p className="text-slate-900 font-medium">{format(new Date(record.date), 'MMM d, yyyy')}</p>
-                  {record.note && <p className="text-xs text-slate-500">{record.note}</p>}
+                  <p className="scholr-ink font-medium">{format(new Date(record.date), 'MMM d, yyyy')}</p>
+                  {record.note && <p className="text-xs scholr-muted">{record.note}</p>}
                 </div>
                 <Badge variant="outline" className={`text-xs capitalize ${
                   record.status === 'present' ? 'bg-emerald-50 text-emerald-700' :

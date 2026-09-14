@@ -80,13 +80,13 @@ export default function StudentCommunication() {
 
   return (
     <RoleGuard allowedRoles={['student', 'school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar links={studentLinks} role="student" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         <main className="app-offset p-4 md:p-6">
           <div className="max-w-5xl mx-auto">
             <div className="mb-5">
-              <h1 className="text-xl md:text-2xl font-bold text-slate-900">Communication</h1>
-              <p className="text-sm text-slate-500 mt-1">Messages and school announcements</p>
+              <h1 className="text-xl md:text-2xl font-bold scholr-ink">Communication</h1>
+              <p className="text-sm scholr-muted mt-1">Messages and school announcements</p>
             </div>
 
             <Tabs defaultValue="messages">
@@ -102,16 +102,16 @@ export default function StudentCommunication() {
                   <Megaphone className="w-4 h-4" />
                   Announcements
                   {announcementCount > 0 && (
-                    <Badge className="bg-indigo-100 text-indigo-700 border-0 text-xs px-1.5 py-0 ml-1">{announcementCount}</Badge>
+                    <Badge className="scholr-accent-sf scholr-accent border-0 text-xs px-1.5 py-0 ml-1">{announcementCount}</Badge>
                   )}
                 </TabsTrigger>
               </TabsList>
 
               {/* Messages tab */}
               <TabsContent value="messages">
-                <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                  <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
-                    <p className="font-semibold text-sm text-slate-700">Conversations</p>
+                <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+                  <div className="px-4 py-3 border-b scholr-rule-soft flex items-center justify-between">
+                    <p className="font-semibold text-sm scholr-body">Conversations</p>
                     <NewMessageDialog
                       userId={user?.id}
                       userName={user?.full_name}
@@ -121,10 +121,10 @@ export default function StudentCommunication() {
                   </div>
                   <div className="flex" style={{ height: '60vh' }}>
                     {/* Conversation list */}
-                    <div className="w-72 border-r border-slate-100 overflow-y-auto">
+                    <div className="w-72 border-r scholr-rule-soft overflow-y-auto">
                       {isLoading ? (
                         <div className="flex justify-center py-12">
-                          <Loader2 className="w-5 h-5 animate-spin text-indigo-600" />
+                          <Loader2 className="w-5 h-5 animate-spin scholr-accent" />
                         </div>
                       ) : (
                         <ConversationList

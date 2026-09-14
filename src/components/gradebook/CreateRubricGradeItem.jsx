@@ -85,7 +85,7 @@ export default function CreateRubricGradeItem({ classData, onClose, trigger }) {
       {trigger ? (
         <div onClick={() => setOpen(true)}>{trigger}</div>
       ) : (
-        <Button onClick={() => setOpen(true)} variant="outline" className="border-indigo-200 text-indigo-700 hover:bg-indigo-50">
+        <Button onClick={() => setOpen(true)} variant="outline" className="scholr-accent-rule scholr-accent hover:scholr-accent-sf">
           <Plus className="w-4 h-4 mr-2" /> Rubric Grade Item
         </Button>
       )}
@@ -94,7 +94,7 @@ export default function CreateRubricGradeItem({ classData, onClose, trigger }) {
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Create Rubric-Based Grade Item</DialogTitle>
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-sm scholr-muted mt-1">
               Create a grade item with multiple criteria for detailed IB-style assessment
             </p>
           </DialogHeader>
@@ -132,12 +132,12 @@ export default function CreateRubricGradeItem({ classData, onClose, trigger }) {
 
               <div className="space-y-4">
                 {criteria.map((criterion, idx) => (
-                  <div key={criterion.id} className="bg-slate-50 rounded-lg p-4 relative">
+                  <div key={criterion.id} className="scholr-sunk rounded-lg p-4 relative">
                     <div className="absolute top-3 right-3">
                       {criteria.length > 1 && (
                         <button
                           onClick={() => removeCriterion(criterion.id)}
-                          className="text-slate-400 hover:text-red-600"
+                          className="scholr-faint hover:text-red-600"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -146,7 +146,7 @@ export default function CreateRubricGradeItem({ classData, onClose, trigger }) {
 
                     <div className="space-y-3">
                       <div className="pr-8">
-                        <Label className="text-xs font-semibold text-slate-600">
+                        <Label className="text-xs font-semibold scholr-muted">
                           Criterion {String.fromCharCode(65 + idx)} Name *
                         </Label>
                         <Input
@@ -158,7 +158,7 @@ export default function CreateRubricGradeItem({ classData, onClose, trigger }) {
                       </div>
 
                       <div>
-                        <Label className="text-xs font-semibold text-slate-600">Description</Label>
+                        <Label className="text-xs font-semibold scholr-muted">Description</Label>
                         <Textarea
                           value={criterion.description}
                           onChange={e => updateCriterion(criterion.id, 'description', e.target.value)}
@@ -169,7 +169,7 @@ export default function CreateRubricGradeItem({ classData, onClose, trigger }) {
                       </div>
 
                       <div>
-                        <Label className="text-xs font-semibold text-slate-600">Max Score *</Label>
+                        <Label className="text-xs font-semibold scholr-muted">Max Score *</Label>
                         <Input
                           type="number"
                           min="1"
@@ -183,8 +183,8 @@ export default function CreateRubricGradeItem({ classData, onClose, trigger }) {
                 ))}
               </div>
 
-              <div className="mt-4 bg-indigo-50 border border-indigo-200 rounded-lg p-3">
-                <p className="text-sm font-semibold text-indigo-900">
+              <div className="mt-4 scholr-accent-sf border scholr-accent-rule rounded-lg p-3">
+                <p className="text-sm font-semibold scholr-accent">
                   Total Max Score: {criteria.reduce((sum, c) => sum + Number(c.max_score), 0)} points
                 </p>
               </div>
@@ -222,7 +222,7 @@ export default function CreateRubricGradeItem({ classData, onClose, trigger }) {
               <Button
                 onClick={handleCreate}
                 disabled={!isValid || createMutation.isPending}
-                className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+                className="flex-1 scholr-accent-sf hover:scholr-accent-sf"
               >
                 {createMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                 Create Rubric Grade Item

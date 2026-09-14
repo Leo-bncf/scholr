@@ -30,17 +30,17 @@ function Sparkline({ values }) {
 
 export default function InsightsSubjectPerformance({ subjects }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-      <h3 className="text-lg font-bold text-slate-900">Subject performance</h3>
+    <div className="bg-white rounded-2xl border scholr-rule shadow-sm p-5">
+      <h3 className="text-lg font-bold scholr-ink">Subject performance</h3>
       <div className="mt-4 space-y-3">
         {subjects.map((subject) => {
           const TrendIcon = subject.trend === 'up' ? TrendingUp : subject.trend === 'down' ? TrendingDown : Minus;
-          const trendColor = subject.trend === 'up' ? 'text-emerald-700' : subject.trend === 'down' ? 'text-rose-700' : 'text-slate-500';
+          const trendColor = subject.trend === 'up' ? 'text-emerald-700' : subject.trend === 'down' ? 'text-rose-700' : 'scholr-muted';
           return (
-            <div key={subject.name} className="rounded-xl border border-slate-200 p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div key={subject.name} className="rounded-xl border scholr-rule p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <p className="font-semibold text-slate-900">{subject.name}</p>
-                <p className="text-sm text-slate-500 mt-1">Current grade: {subject.currentGrade}%</p>
+                <p className="font-semibold scholr-ink">{subject.name}</p>
+                <p className="text-sm scholr-muted mt-1">Current grade: {subject.currentGrade}%</p>
               </div>
               <div className="flex items-center gap-4">
                 <div className={`inline-flex items-center gap-1.5 text-sm font-medium ${trendColor}`}>

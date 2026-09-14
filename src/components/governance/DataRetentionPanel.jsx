@@ -16,7 +16,7 @@ const RETENTION_FIELDS = [
     description: 'Grade items, assignment records, and enrollment data for classes marked as archived.',
     icon: Archive,
     recommended: '1825 (5 years)',
-    color: 'text-indigo-600 bg-indigo-50',
+    color: 'scholr-accent scholr-accent-sf',
   },
   {
     key: 'submission_files_days',
@@ -24,7 +24,7 @@ const RETENTION_FIELDS = [
     description: 'Uploaded files, Google Drive attachments, and document links submitted by students.',
     icon: HardDrive,
     recommended: '1825 (5 years)',
-    color: 'text-violet-600 bg-violet-50',
+    color: 'scholr-accent scholr-accent-sf',
   },
   {
     key: 'attendance_records_days',
@@ -63,14 +63,14 @@ const RETENTION_FIELDS = [
 function RetentionField({ field, value, onChange }) {
   const Icon = field.icon;
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4">
+    <div className="bg-white rounded-xl border scholr-rule p-4">
       <div className="flex items-start gap-3">
         <div className={`rounded-lg p-2 shrink-0 ${field.color}`}>
           <Icon className="w-4 h-4" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-slate-800 text-sm">{field.label}</p>
-          <p className="text-xs text-slate-500 mt-0.5 mb-3">{field.description}</p>
+          <p className="font-semibold scholr-ink text-sm">{field.label}</p>
+          <p className="text-xs scholr-muted mt-0.5 mb-3">{field.description}</p>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <Input
@@ -81,12 +81,12 @@ function RetentionField({ field, value, onChange }) {
                 value={value || ''}
                 onChange={e => onChange(field.key, Number(e.target.value))}
               />
-              <span className="text-xs text-slate-500">days</span>
+              <span className="text-xs scholr-muted">days</span>
             </div>
-            <span className="text-xs text-slate-400">Recommended: {field.recommended} days</span>
+            <span className="text-xs scholr-faint">Recommended: {field.recommended} days</span>
           </div>
           {value > 0 && (
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs scholr-faint mt-1">
               ≈ {(value / 365).toFixed(1)} years · Records older than this threshold are eligible for archival review
             </p>
           )}
@@ -127,12 +127,12 @@ export default function DataRetentionPanel({ policy, onChange, onSave, saving, s
       {/* Live data stats */}
       {stats && (
         <div>
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Current Data Volumes</p>
+          <p className="text-xs font-semibold scholr-faint uppercase tracking-wide mb-3">Current Data Volumes</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
               { label: 'Attendance Records', value: stats.attendance, color: 'text-emerald-700 bg-emerald-50 border-emerald-200' },
               { label: 'Behaviour Records', value: stats.behavior, color: 'text-amber-700 bg-amber-50 border-amber-200' },
-              { label: 'Submissions', value: stats.submissions, color: 'text-violet-700 bg-violet-50 border-violet-200' },
+              { label: 'Submissions', value: stats.submissions, color: 'scholr-accent scholr-accent-sf scholr-accent-rule' },
               { label: 'Audit Log Entries', value: stats.auditLogs, color: 'text-sky-700 bg-sky-50 border-sky-200' },
             ].map(({ label, value, color }) => (
               <div key={label} className={`border rounded-lg p-3 text-center ${color}`}>
@@ -147,8 +147,8 @@ export default function DataRetentionPanel({ policy, onChange, onSave, saving, s
       {/* Retention fields */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Retention Periods</p>
-          <Button onClick={onSave} disabled={saving} size="sm" className="bg-indigo-600 hover:bg-indigo-700 gap-1.5">
+          <p className="text-xs font-semibold scholr-faint uppercase tracking-wide">Retention Periods</p>
+          <Button onClick={onSave} disabled={saving} size="sm" className="scholr-accent-sf hover:scholr-accent-sf gap-1.5">
             {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
             Save Retention Policy
           </Button>
@@ -166,11 +166,11 @@ export default function DataRetentionPanel({ policy, onChange, onSave, saving, s
       </div>
 
       {/* Inactive account purge */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5">
+      <div className="bg-white rounded-xl border scholr-rule p-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="font-semibold text-slate-800 text-sm">Inactive Account Flagging</p>
-            <p className="text-xs text-slate-500 mt-1">Automatically flag deactivated accounts for review after a set number of days. Admins receive a notification; no data is deleted without manual confirmation.</p>
+            <p className="font-semibold scholr-ink text-sm">Inactive Account Flagging</p>
+            <p className="text-xs scholr-muted mt-1">Automatically flag deactivated accounts for review after a set number of days. Admins receive a notification; no data is deleted without manual confirmation.</p>
             <div className="flex items-center gap-3 mt-3">
               <Input
                 type="number"
@@ -179,7 +179,7 @@ export default function DataRetentionPanel({ policy, onChange, onSave, saving, s
                 value={retention.purge_inactive_accounts_days || 0}
                 onChange={e => handleChange('purge_inactive_accounts_days', Number(e.target.value))}
               />
-              <span className="text-xs text-slate-500">days after deactivation (0 = disabled)</span>
+              <span className="text-xs scholr-muted">days after deactivation (0 = disabled)</span>
             </div>
           </div>
           <Switch

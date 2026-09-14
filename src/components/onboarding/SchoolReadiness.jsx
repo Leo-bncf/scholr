@@ -64,8 +64,8 @@ export default function SchoolReadiness({ schoolId }) {
 
   if (isLoading || !data) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-        <div className="animate-pulse h-24 bg-slate-100 rounded" />
+      <div className="bg-white rounded-2xl border scholr-rule shadow-sm p-6">
+        <div className="animate-pulse h-24 scholr-sunk rounded" />
       </div>
     );
   }
@@ -85,7 +85,7 @@ export default function SchoolReadiness({ schoolId }) {
   const isReady = doneCount === gates.length;
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-2xl border scholr-rule shadow-sm overflow-hidden">
       <div className={`px-6 py-5 ${isReady ? 'bg-gradient-to-r from-emerald-600 to-teal-600' : 'bg-gradient-to-r from-indigo-600 to-indigo-500'} text-white`}>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
@@ -114,22 +114,22 @@ export default function SchoolReadiness({ schoolId }) {
         <StatTile icon={Link2} color="violet" label="Parent links" value={data.parentLinks} sub={`${data.parents} parent${data.parents !== 1 ? 's' : ''}`} />
       </div>
 
-      <div className="border-t border-slate-100 divide-y divide-slate-50">
+      <div className="border-t scholr-rule-soft divide-y scholr-divide">
         {gates.map((gate) => {
           const Icon = gate.icon;
           return (
             <div key={gate.id} className="px-5 py-3 flex items-center gap-3">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${gate.value ? 'bg-emerald-100' : 'bg-slate-100'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${gate.value ? 'bg-emerald-100' : 'scholr-sunk'}`}>
                 {gate.value
                   ? <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  : <AlertCircle className="w-4 h-4 text-slate-400" />
+                  : <AlertCircle className="w-4 h-4 scholr-faint" />
                 }
               </div>
               <div className="flex-1 min-w-0">
-                <p className={`text-sm font-medium ${gate.value ? 'text-slate-900' : 'text-slate-600'}`}>
+                <p className={`text-sm font-medium ${gate.value ? 'scholr-ink' : 'scholr-muted'}`}>
                   {gate.label}
                 </p>
-                <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1.5">
+                <p className="text-xs scholr-muted mt-0.5 flex items-center gap-1.5">
                   <Icon className="w-3 h-3" /> {gate.detail}
                 </p>
               </div>
@@ -144,20 +144,20 @@ export default function SchoolReadiness({ schoolId }) {
 
 function StatTile({ icon: Icon, color, label, value, sub }) {
   const colorMap = {
-    indigo: 'bg-indigo-50 text-indigo-600',
+    indigo: 'scholr-accent-sf scholr-accent',
     sky: 'bg-sky-50 text-sky-600',
     emerald: 'bg-emerald-50 text-emerald-600',
-    violet: 'bg-violet-50 text-violet-600',
+    violet: 'scholr-accent-sf scholr-accent',
   };
   return (
-    <div className="bg-slate-50 rounded-xl p-3 flex items-center gap-3">
+    <div className="scholr-sunk rounded-xl p-3 flex items-center gap-3">
       <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${colorMap[color]}`}>
         <Icon className="w-4 h-4" />
       </div>
       <div className="min-w-0">
-        <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-        <p className="text-xl font-bold text-slate-900 leading-tight">{value}</p>
-        <p className="text-[10px] text-slate-500 truncate">{sub}</p>
+        <p className="text-[10px] font-semibold uppercase tracking-wide scholr-muted">{label}</p>
+        <p className="text-xl font-bold scholr-ink leading-tight">{value}</p>
+        <p className="text-[10px] scholr-muted truncate">{sub}</p>
       </div>
     </div>
   );

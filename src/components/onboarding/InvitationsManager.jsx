@@ -61,7 +61,7 @@ export default function InvitationsManager({ schoolId, schoolName }) {
       return { color: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle };
     }
     if (invitation.status === 'cancelled') {
-      return { color: 'bg-slate-100 text-slate-600 border-slate-200', icon: XCircle };
+      return { color: 'scholr-sunk scholr-muted scholr-rule', icon: XCircle };
     }
     if (invitation.status === 'expired' || new Date(invitation.expires_at) < new Date()) {
       return { color: 'bg-red-50 text-red-700 border-red-200', icon: XCircle };
@@ -74,15 +74,15 @@ export default function InvitationsManager({ schoolId, schoolName }) {
   );
 
   if (isLoading) {
-    return <div className="text-center py-8 text-slate-400">Loading invitations...</div>;
+    return <div className="text-center py-8 scholr-faint">Loading invitations...</div>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-bold text-slate-900">User Invitations</h3>
-          <p className="text-sm text-slate-500 mt-1">
+          <h3 className="text-lg font-bold scholr-ink">User Invitations</h3>
+          <p className="text-sm scholr-muted mt-1">
             {pendingInvitations.length} pending invitation{pendingInvitations.length !== 1 ? 's' : ''}
           </p>
         </div>
@@ -96,7 +96,7 @@ export default function InvitationsManager({ schoolId, schoolName }) {
           </Button>
           <Button
             onClick={() => setInviteDialogOpen(true)}
-            className="bg-indigo-600 hover:bg-indigo-700"
+            className="scholr-accent-sf hover:scholr-accent-sf"
           >
             <UserPlus className="w-4 h-4 mr-2" />
             Invite User
@@ -105,9 +105,9 @@ export default function InvitationsManager({ schoolId, schoolName }) {
       </div>
 
       {invitations.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-          <Mail className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-500 mb-4">No invitations sent yet</p>
+        <div className="bg-white rounded-xl border scholr-rule p-12 text-center">
+          <Mail className="w-12 h-12 scholr-faint mx-auto mb-3" />
+          <p className="scholr-muted mb-4">No invitations sent yet</p>
           <Button 
             onClick={() => setInviteDialogOpen(true)}
             variant="outline"
@@ -117,26 +117,26 @@ export default function InvitationsManager({ schoolId, schoolName }) {
           </Button>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 divide-y divide-slate-100">
+        <div className="bg-white rounded-xl border scholr-rule divide-y scholr-divide">
           {invitations.map((invitation) => {
             const statusConfig = getStatusConfig(invitation);
             const StatusIcon = statusConfig.icon;
             const isExpired = new Date(invitation.expires_at) < new Date() && invitation.status === 'pending';
 
             return (
-              <div key={invitation.id} className="p-5 hover:bg-slate-50 transition-colors">
+              <div key={invitation.id} className="p-5 hover:scholr-sunk transition-colors">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
-                      <Mail className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                      <span className="font-medium text-slate-900">{invitation.email}</span>
+                      <Mail className="w-4 h-4 scholr-faint flex-shrink-0" />
+                      <span className="font-medium scholr-ink">{invitation.email}</span>
                       <Badge className={`${statusConfig.color} border-0 capitalize text-xs`}>
                         <StatusIcon className="w-3 h-3 mr-1" />
                         {isExpired ? 'Expired' : invitation.status}
                       </Badge>
                     </div>
                     
-                    <div className="flex items-center gap-4 text-xs text-slate-500 mb-2">
+                    <div className="flex items-center gap-4 text-xs scholr-muted mb-2">
                       <span className="capitalize">Role: {invitation.role.replace('_', ' ')}</span>
                       <span>•</span>
                       <span>Invited {format(new Date(invitation.created_at), 'MMM d, yyyy')}</span>

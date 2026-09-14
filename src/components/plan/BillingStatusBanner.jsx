@@ -42,11 +42,11 @@ export default function BillingStatusBanner() {
       showPortal: true,
     },
     canceled: {
-      bg: 'bg-slate-100 border-slate-400',
-      icon: <XCircle className="w-5 h-5 text-slate-500 shrink-0" />,
+      bg: 'scholr-sunk scholr-rule',
+      icon: <XCircle className="w-5 h-5 scholr-muted shrink-0" />,
       title: 'Subscription canceled',
       message: 'Your subscription has ended. Re-subscribe to restore access to premium modules and features.',
-      textColor: 'text-slate-800',
+      textColor: 'scholr-ink',
       showPortal: false,
     },
     incomplete: {
@@ -86,7 +86,7 @@ export default function BillingStatusBanner() {
           {isAdmin && (
             <div className="mt-3 flex gap-2">
               {config.showPortal && (
-                <Button size="sm" onClick={handlePortal} disabled={loading} className="bg-indigo-600 hover:bg-indigo-700 gap-1.5">
+                <Button size="sm" onClick={handlePortal} disabled={loading} className="scholr-accent-sf hover:scholr-accent-sf gap-1.5">
                   {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
                   Manage Billing
                 </Button>

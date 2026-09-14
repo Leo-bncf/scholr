@@ -164,7 +164,7 @@ export default function AcceptInvitation() {
   if (loading) {
     return (
       <div className="min-h-screen scholr-page flex items-center justify-center p-4">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+        <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
       </div>
     );
   }
@@ -177,8 +177,8 @@ export default function AcceptInvitation() {
             <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 mx-auto mb-4">
               <AlertCircle className="w-6 h-6 text-red-600" />
             </div>
-            <p className="text-center font-semibold text-slate-900 mb-2">Invitation Error</p>
-            <p className="text-center text-sm text-slate-600 mb-6">{error}</p>
+            <p className="text-center font-semibold scholr-ink mb-2">Invitation Error</p>
+            <p className="text-center text-sm scholr-muted mb-6">{error}</p>
             <Button onClick={() => navigate('/')} className="w-full">
               Return Home
             </Button>
@@ -197,26 +197,26 @@ export default function AcceptInvitation() {
               <CardTitle className="text-center">You're Invited</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-100 mx-auto">
-                <CheckCircle className="w-6 h-6 text-indigo-600" />
+              <div className="flex items-center justify-center w-12 h-12 rounded-full scholr-accent-sf mx-auto">
+                <CheckCircle className="w-6 h-6 scholr-accent" />
               </div>
 
               <div className="space-y-4 scholr-page p-4 rounded-lg">
                 <div>
-                  <p className="text-xs font-semibold text-slate-600 uppercase">School</p>
-                  <p className="text-lg font-semibold text-slate-900 mt-1">{invitation?.metadata?.school_name || 'School'}</p>
+                  <p className="text-xs font-semibold scholr-muted uppercase">School</p>
+                  <p className="text-lg font-semibold scholr-ink mt-1">{invitation?.metadata?.school_name || 'School'}</p>
                 </div>
 
                 <div>
-                  <p className="text-xs font-semibold text-slate-600 uppercase">Your Role</p>
-                  <p className="text-lg font-semibold text-slate-900 mt-1 capitalize">
+                  <p className="text-xs font-semibold scholr-muted uppercase">Your Role</p>
+                  <p className="text-lg font-semibold scholr-ink mt-1 capitalize">
                     {invitation?.role.replace(/_/g, ' ')}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-xs font-semibold text-slate-600 uppercase">Email</p>
-                  <p className="text-slate-900 mt-1">{email}</p>
+                  <p className="text-xs font-semibold scholr-muted uppercase">Email</p>
+                  <p className="scholr-ink mt-1">{email}</p>
                 </div>
               </div>
 
@@ -232,13 +232,13 @@ export default function AcceptInvitation() {
               <Button
                 onClick={handleAccept}
                 disabled={isProcessing}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 gap-2"
+                className="w-full scholr-accent-sf hover:scholr-accent-sf gap-2"
               >
                 {isProcessing && <Loader2 className="w-4 h-4 animate-spin" />}
                 Accept Invitation
               </Button>
 
-              <p className="text-xs text-slate-600 text-center">
+              <p className="text-xs scholr-muted text-center">
                 By accepting, you agree to join {invitation?.metadata?.school_name}
               </p>
             </CardContent>
@@ -278,7 +278,7 @@ export default function AcceptInvitation() {
 
               <div>
                 <Label className="text-sm font-semibold mb-1 block">Email</Label>
-                <Input disabled value={email} className="bg-slate-100" />
+                <Input disabled value={email} className="scholr-sunk" />
               </div>
 
               <div>
@@ -313,7 +313,7 @@ export default function AcceptInvitation() {
               <Button
                 onClick={handleCreateAccount}
                 disabled={isProcessing}
-                className="w-full bg-indigo-600 hover:bg-indigo-700"
+                className="w-full scholr-accent-sf hover:scholr-accent-sf"
               >
                 {isProcessing && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                 Create Account & Continue

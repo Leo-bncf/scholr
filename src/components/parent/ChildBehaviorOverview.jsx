@@ -16,7 +16,7 @@ export default function ChildBehaviorOverview({ schoolId, studentId }) {
   });
 
   if (isLoading) {
-    return <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>;
+    return <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>;
   }
 
   return <BehaviorRecordsList records={records} showVisibilityIndicators={false} />;

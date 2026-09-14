@@ -19,47 +19,47 @@ function TermCard({ term, onEdit, onDelete }) {
   const hasReporting = term.grade_lock_date || term.teacher_comment_open || term.teacher_comment_close;
 
   return (
-    <div className={`bg-white border rounded-lg shadow-sm overflow-hidden ${term.is_current ? 'border-indigo-300 ring-1 ring-indigo-200' : 'border-slate-200'}`}>
+    <div className={`bg-white border rounded-lg shadow-sm overflow-hidden ${term.is_current ? 'scholr-accent-rule ring-1 scholr-accent-rule' : 'scholr-rule'}`}>
       <div className="flex items-center gap-3 p-4">
-        <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${term.is_current ? 'bg-indigo-600' : 'bg-slate-100'}`}>
-          <BookMarked className={`w-4 h-4 ${term.is_current ? 'text-white' : 'text-slate-400'}`} />
+        <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${term.is_current ? 'scholr-accent-sf' : 'scholr-sunk'}`}>
+          <BookMarked className={`w-4 h-4 ${term.is_current ? 'text-white' : 'scholr-faint'}`} />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <p className="text-sm font-bold text-slate-900">{term.name}</p>
-            {term.is_current && <span className="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-full">Current</span>}
+            <p className="text-sm font-bold scholr-ink">{term.name}</p>
+            {term.is_current && <span className="text-xs font-bold scholr-accent scholr-accent-sf border scholr-accent-rule px-2 py-0.5 rounded-full">Current</span>}
             {hasReporting && (
-              <span className="inline-flex items-center gap-1 text-xs text-slate-500 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-full">
+              <span className="inline-flex items-center gap-1 text-xs scholr-muted scholr-sunk border scholr-rule px-2 py-0.5 rounded-full">
                 <Lock className="w-2.5 h-2.5" /> Reporting configured
               </span>
             )}
           </div>
-          <p className="text-xs text-slate-500 mt-0.5">{fmt(term.start_date)} — {fmt(term.end_date)}</p>
+          <p className="text-xs scholr-muted mt-0.5">{fmt(term.start_date)} — {fmt(term.end_date)}</p>
         </div>
         <div className="flex items-center gap-1 flex-shrink-0">
           {hasReporting && (
-            <Button variant="ghost" size="sm" onClick={() => setExpanded(e => !e)} className="h-7 w-7 p-0 text-slate-400 hover:text-slate-700">
+            <Button variant="ghost" size="sm" onClick={() => setExpanded(e => !e)} className="h-7 w-7 p-0 scholr-faint hover:scholr-body">
               {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             </Button>
           )}
-          <Button variant="ghost" size="sm" onClick={() => onEdit(term)} className="h-7 w-7 p-0 text-slate-400 hover:text-slate-700">
+          <Button variant="ghost" size="sm" onClick={() => onEdit(term)} className="h-7 w-7 p-0 scholr-faint hover:scholr-body">
             <Pencil className="w-3.5 h-3.5" />
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => onDelete(term)} className="h-7 w-7 p-0 text-slate-400 hover:text-red-600">
+          <Button variant="ghost" size="sm" onClick={() => onDelete(term)} className="h-7 w-7 p-0 scholr-faint hover:text-red-600">
             <Trash2 className="w-3.5 h-3.5" />
           </Button>
         </div>
       </div>
 
       {expanded && hasReporting && (
-        <div className="px-4 pb-4 pt-1 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="px-4 pb-4 pt-1 border-t scholr-rule-soft grid grid-cols-1 sm:grid-cols-3 gap-3">
           {term.grade_lock_date && (
             <div className="bg-red-50 border border-red-200 rounded-md p-2.5">
               <div className="flex items-center gap-1.5 mb-1">
                 <Lock className="w-3 h-3 text-red-500" />
                 <p className="text-[10px] font-bold uppercase tracking-wide text-red-600">Grade Lock</p>
               </div>
-              <p className="text-xs font-semibold text-slate-800">{fmt(term.grade_lock_date)}</p>
+              <p className="text-xs font-semibold scholr-ink">{fmt(term.grade_lock_date)}</p>
             </div>
           )}
           {term.teacher_comment_open && (
@@ -68,7 +68,7 @@ function TermCard({ term, onEdit, onDelete }) {
                 <CalendarCheck className="w-3 h-3 text-blue-500" />
                 <p className="text-[10px] font-bold uppercase tracking-wide text-blue-600">Comments Open</p>
               </div>
-              <p className="text-xs font-semibold text-slate-800">{fmt(term.teacher_comment_open)}</p>
+              <p className="text-xs font-semibold scholr-ink">{fmt(term.teacher_comment_open)}</p>
             </div>
           )}
           {term.teacher_comment_close && (
@@ -77,7 +77,7 @@ function TermCard({ term, onEdit, onDelete }) {
                 <CalendarCheck className="w-3 h-3 text-amber-500" />
                 <p className="text-[10px] font-bold uppercase tracking-wide text-amber-600">Comments Close</p>
               </div>
-              <p className="text-xs font-semibold text-slate-800">{fmt(term.teacher_comment_close)}</p>
+              <p className="text-xs font-semibold scholr-ink">{fmt(term.teacher_comment_close)}</p>
             </div>
           )}
         </div>
@@ -150,13 +150,13 @@ export default function TermsTab({ schoolId }) {
     else createMutation.mutate(clean);
   };
 
-  if (yearsLoading) return <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-slate-400" /></div>;
+  if (yearsLoading) return <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin scholr-faint" /></div>;
 
   if (years.length === 0) return (
-    <div className="bg-white border border-dashed border-slate-300 rounded-lg p-12 text-center">
-      <BookMarked className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-      <p className="text-sm font-semibold text-slate-500">No academic years configured</p>
-      <p className="text-xs text-slate-400 mt-1">Create an academic year first, then come back to add terms.</p>
+    <div className="bg-white border border-dashed scholr-rule rounded-lg p-12 text-center">
+      <BookMarked className="w-10 h-10 scholr-faint mx-auto mb-3" />
+      <p className="text-sm font-semibold scholr-muted">No academic years configured</p>
+      <p className="text-xs scholr-faint mt-1">Create an academic year first, then come back to add terms.</p>
     </div>
   );
 
@@ -166,8 +166,8 @@ export default function TermsTab({ schoolId }) {
     <div className="space-y-5">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h2 className="text-sm font-bold text-slate-900">Terms & Reporting Periods</h2>
-          <p className="text-xs text-slate-500 mt-0.5">Configure terms with grade-lock dates and teacher comment windows to enforce reporting deadlines.</p>
+          <h2 className="text-sm font-bold scholr-ink">Terms & Reporting Periods</h2>
+          <p className="text-xs scholr-muted mt-0.5">Configure terms with grade-lock dates and teacher comment windows to enforce reporting deadlines.</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <Select value={selectedYearId || ''} onValueChange={setSelectedYearId}>
@@ -176,19 +176,19 @@ export default function TermsTab({ schoolId }) {
               {years.map(y => <SelectItem key={y.id} value={y.id}>{y.name}</SelectItem>)}
             </SelectContent>
           </Select>
-          <Button onClick={openCreate} className="bg-indigo-600 hover:bg-indigo-700 h-8 text-xs gap-1.5">
+          <Button onClick={openCreate} className="scholr-accent-sf hover:scholr-accent-sf h-8 text-xs gap-1.5">
             <Plus className="w-3.5 h-3.5" /> Add Term
           </Button>
         </div>
       </div>
 
       {termsLoading ? (
-        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-slate-400" /></div>
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-faint" /></div>
       ) : terms.length === 0 ? (
-        <div className="bg-white border border-dashed border-slate-300 rounded-lg p-10 text-center">
-          <BookMarked className="w-8 h-8 text-slate-200 mx-auto mb-2" />
-          <p className="text-sm text-slate-500">No terms in {selectedYearName} yet</p>
-          <Button onClick={openCreate} className="mt-3 bg-indigo-600 hover:bg-indigo-700 h-8 text-xs gap-1.5">
+        <div className="bg-white border border-dashed scholr-rule rounded-lg p-10 text-center">
+          <BookMarked className="w-8 h-8 scholr-faint mx-auto mb-2" />
+          <p className="text-sm scholr-muted">No terms in {selectedYearName} yet</p>
+          <Button onClick={openCreate} className="mt-3 scholr-accent-sf hover:scholr-accent-sf h-8 text-xs gap-1.5">
             <Plus className="w-3.5 h-3.5" /> Add First Term
           </Button>
         </div>
@@ -222,36 +222,36 @@ export default function TermsTab({ schoolId }) {
             </div>
 
             <div className="border-t pt-4">
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-1.5">
+              <p className="text-xs font-bold uppercase tracking-wider scholr-muted mb-3 flex items-center gap-1.5">
                 <Lock className="w-3 h-3" /> Reporting Deadlines (optional)
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <Label className="text-xs text-slate-600">Grade Lock Date</Label>
+                  <Label className="text-xs scholr-muted">Grade Lock Date</Label>
                   <Input type="date" value={form.grade_lock_date} onChange={e => setForm({ ...form, grade_lock_date: e.target.value })} className="mt-1" />
-                  <p className="text-[10px] text-slate-400 mt-0.5">Grades frozen after this date</p>
+                  <p className="text-[10px] scholr-faint mt-0.5">Grades frozen after this date</p>
                 </div>
                 <div>
-                  <Label className="text-xs text-slate-600">Comments Open</Label>
+                  <Label className="text-xs scholr-muted">Comments Open</Label>
                   <Input type="date" value={form.teacher_comment_open} onChange={e => setForm({ ...form, teacher_comment_open: e.target.value })} className="mt-1" />
-                  <p className="text-[10px] text-slate-400 mt-0.5">Teachers can write from this date</p>
+                  <p className="text-[10px] scholr-faint mt-0.5">Teachers can write from this date</p>
                 </div>
                 <div>
-                  <Label className="text-xs text-slate-600">Comments Close</Label>
+                  <Label className="text-xs scholr-muted">Comments Close</Label>
                   <Input type="date" value={form.teacher_comment_close} onChange={e => setForm({ ...form, teacher_comment_close: e.target.value })} className="mt-1" />
-                  <p className="text-[10px] text-slate-400 mt-0.5">Comment window closes</p>
+                  <p className="text-[10px] scholr-faint mt-0.5">Comment window closes</p>
                 </div>
               </div>
             </div>
 
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={form.is_current} onChange={e => setForm({ ...form, is_current: e.target.checked })} className="rounded" />
-              <span className="text-sm text-slate-700">Mark as current term</span>
+              <span className="text-sm scholr-body">Mark as current term</span>
             </label>
 
             <div className="flex gap-2 pt-2">
               <Button type="button" variant="outline" className="flex-1" onClick={closeDialog}>Cancel</Button>
-              <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending} className="flex-1 bg-indigo-600 hover:bg-indigo-700">
+              <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending} className="flex-1 scholr-accent-sf hover:scholr-accent-sf">
                 {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                 {editing ? 'Save Changes' : 'Create Term'}
               </Button>

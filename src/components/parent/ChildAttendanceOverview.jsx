@@ -15,13 +15,13 @@ export default function ChildAttendanceOverview({ schoolId, studentId }) {
   });
 
   if (isLoading) {
-    return <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>;
+    return <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>;
   }
 
   if (attendanceRecords.length === 0) {
     return (
-      <div className="text-center py-8 text-slate-400">
-        <Calendar className="w-10 h-10 mx-auto mb-2 text-slate-300" />
+      <div className="text-center py-8 scholr-faint">
+        <Calendar className="w-10 h-10 mx-auto mb-2 scholr-faint" />
         <p className="text-sm">No attendance records yet</p>
       </div>
     );
@@ -48,7 +48,7 @@ export default function ChildAttendanceOverview({ schoolId, studentId }) {
       case 'absent': return 'bg-red-50 text-red-700 border-red-200';
       case 'late': return 'bg-amber-50 text-amber-700 border-amber-200';
       case 'excused': return 'bg-blue-50 text-blue-700 border-blue-200';
-      default: return 'bg-slate-50 text-slate-700 border-slate-200';
+      default: return 'scholr-sunk scholr-body scholr-rule';
     }
   };
 
@@ -69,14 +69,14 @@ export default function ChildAttendanceOverview({ schoolId, studentId }) {
           <p className="text-sm text-amber-700 font-medium">Late</p>
           <p className="text-2xl font-bold text-amber-900 mt-1">{statusCounts.late || 0}</p>
         </div>
-        <div className="bg-indigo-50 rounded-lg border border-indigo-200 p-4">
-          <p className="text-sm text-indigo-700 font-medium">Rate</p>
-          <p className="text-2xl font-bold text-indigo-900 mt-1">{attendanceRate}%</p>
+        <div className="scholr-accent-sf rounded-lg border scholr-accent-rule p-4">
+          <p className="text-sm scholr-accent font-medium">Rate</p>
+          <p className="text-2xl font-bold scholr-accent mt-1">{attendanceRate}%</p>
         </div>
       </div>
 
       <div>
-        <h4 className="font-semibold text-slate-900 mb-3">Recent Records</h4>
+        <h4 className="font-semibold scholr-ink mb-3">Recent Records</h4>
         <div className="space-y-2">
           {attendanceRecords.slice(0, 10).map(record => (
             <div key={record.id} className={`rounded-lg border p-3 ${getStatusColor(record.status)}`}>

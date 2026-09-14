@@ -102,9 +102,9 @@ function InviteDialog({ open, onClose, schoolId, schoolName }) {
             <Label className="text-xs font-semibold">Personal Message (Optional)</Label>
             <Textarea value={form.custom_message} onChange={e => setForm({ ...form, custom_message: e.target.value })} placeholder="A personal welcome…" rows={2} className="mt-1" />
           </div>
-          <Alert className="border-indigo-200 bg-indigo-50">
-            <Mail className="w-4 h-4 text-indigo-700" />
-            <AlertDescription className="text-xs text-indigo-900">
+          <Alert className="scholr-accent-rule scholr-accent-sf">
+            <Mail className="w-4 h-4 scholr-accent" />
+            <AlertDescription className="text-xs scholr-accent">
               An email with an accept link will be sent to <strong>{form.email || 'the user'}</strong>. The link expires in 7 days.
             </AlertDescription>
           </Alert>
@@ -116,7 +116,7 @@ function InviteDialog({ open, onClose, schoolId, schoolName }) {
           )}
           <div className="flex gap-2 pt-2">
             <Button type="button" variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={inviteMutation.isPending || !form.email} className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white">
+            <Button type="submit" disabled={inviteMutation.isPending || !form.email} className="flex-1 pub-btn pub-btn-gold">
               {inviteMutation.isPending ? <><Loader2 className="w-3.5 h-3.5 animate-spin mr-2" />Sending…</> : <><Send className="w-3.5 h-3.5 mr-2" />Send Invitation</>}
             </Button>
           </div>
@@ -128,7 +128,7 @@ function InviteDialog({ open, onClose, schoolId, schoolName }) {
 
 function getInviteStatus(inv) {
   if (inv.status === 'accepted') return { label: 'Accepted', color: 'bg-emerald-50 text-emerald-700', Icon: CheckCircle };
-  if (inv.status === 'cancelled') return { label: 'Cancelled', color: 'bg-slate-100 text-slate-500', Icon: XCircle };
+  if (inv.status === 'cancelled') return { label: 'Cancelled', color: 'scholr-sunk scholr-muted', Icon: XCircle };
   if (inv.status === 'expired' || new Date(inv.expires_at) < new Date()) return { label: 'Expired', color: 'bg-red-50 text-red-600', Icon: XCircle };
   return { label: 'Pending', color: 'bg-amber-50 text-amber-700', Icon: Clock };
 }
@@ -175,37 +175,37 @@ export default function InvitationsTab({ schoolId, schoolName }) {
     <div className="space-y-4">
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-sm px-4 py-2.5 rounded-lg shadow-lg animate-in slide-in-from-bottom-2">
+        <div className="fixed bottom-6 right-6 z-50 scholr-sunk text-white text-sm px-4 py-2.5 rounded-lg shadow-lg animate-in slide-in-from-bottom-2">
           {toast}
         </div>
       )}
 
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-semibold text-slate-800">
+          <p className="text-sm font-semibold scholr-ink">
             {invitations.length} total invitation{invitations.length !== 1 ? 's' : ''}
             {pending.length > 0 && (
               <span className="ml-2 text-amber-600 text-xs font-normal">· {pending.length} awaiting response</span>
             )}
           </p>
         </div>
-        <Button onClick={() => setInviteOpen(true)} className="bg-indigo-600 hover:bg-indigo-700 text-white h-9 text-xs gap-2">
+        <Button onClick={() => setInviteOpen(true)} className="pub-btn pub-btn-gold h-9 text-xs gap-2">
           <UserPlus className="w-3.5 h-3.5" /> Invite User
         </Button>
       </div>
 
       {isLoading ? (
-        <div className="p-16 text-center"><Loader2 className="w-6 h-6 animate-spin text-slate-300 mx-auto" /></div>
+        <div className="p-16 text-center"><Loader2 className="w-6 h-6 animate-spin scholr-faint mx-auto" /></div>
       ) : invitations.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-16 text-center">
-          <Mail className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-          <p className="text-slate-500 text-sm mb-4">No invitations sent yet</p>
+        <div className="bg-white rounded-xl border scholr-rule p-16 text-center">
+          <Mail className="w-10 h-10 scholr-faint mx-auto mb-3" />
+          <p className="scholr-muted text-sm mb-4">No invitations sent yet</p>
           <Button variant="outline" onClick={() => setInviteOpen(true)} className="text-xs gap-2">
             <UserPlus className="w-3.5 h-3.5" /> Send First Invitation
           </Button>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 divide-y divide-slate-100 overflow-hidden">
+        <div className="bg-white rounded-xl border scholr-rule divide-y scholr-divide overflow-hidden">
           {invitations.map(inv => {
             const st = getInviteStatus(inv);
             const StatusIcon = st.Icon;
@@ -213,15 +213,15 @@ export default function InvitationsTab({ schoolId, schoolName }) {
             const rc = ROLE_CONFIG[inv.role];
 
             return (
-              <div key={inv.id} className="p-4 hover:bg-slate-50 transition-colors">
+              <div key={inv.id} className="p-4 hover:scholr-sunk transition-colors">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center flex-shrink-0">
-                      <Mail className="w-4 h-4 text-indigo-400" />
+                    <div className="w-9 h-9 rounded-full scholr-accent-sf border border-indigo-100 flex items-center justify-center flex-shrink-0">
+                      <Mail className="w-4 h-4 scholr-accent" />
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-medium text-slate-900 truncate">{inv.email}</span>
+                        <span className="text-sm font-medium scholr-ink truncate">{inv.email}</span>
                         <span className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full role-chip`}>
                           <StatusIcon className="w-3 h-3" />
                           {st.label}
@@ -230,7 +230,7 @@ export default function InvitationsTab({ schoolId, schoolName }) {
                           <span className={`text-[11px] px-2 py-0.5 rounded-full border role-chip`}>{rc.label}</span>
                         )}
                       </div>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
+                      <p className="text-[11px] scholr-faint mt-0.5">
                         Invited {formatDistanceToNow(new Date(inv.created_at), { addSuffix: true })}
                         {inv.invited_by_name && ` · by ${inv.invited_by_name}`}
                         {inv.status === 'accepted' && inv.accepted_at && (

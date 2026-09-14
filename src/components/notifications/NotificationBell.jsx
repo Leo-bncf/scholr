@@ -56,7 +56,7 @@ export default function NotificationBell({ userId, schoolId }) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
-          <Bell className="w-5 h-5 text-slate-600" />
+          <Bell className="w-5 h-5 scholr-muted" />
           {unreadCount > 0 && (
             <Badge className="absolute -top-1 -right-1 bg-red-600 text-white border-0 px-1.5 py-0 text-xs min-w-[18px] h-[18px] flex items-center justify-center">
               {unreadCount > 9 ? '9+' : unreadCount}
@@ -65,8 +65,8 @@ export default function NotificationBell({ userId, schoolId }) {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-96 p-0" align="end">
-        <div className="p-4 border-b border-slate-200">
-          <h3 className="font-semibold text-slate-900">Notifications</h3>
+        <div className="p-4 border-b scholr-rule">
+          <h3 className="font-semibold scholr-ink">Notifications</h3>
         </div>
         <NotificationList notifications={groupedNotifications} onToggleRead={(notification) => toggleMutation.mutate(notification)} onClose={() => setOpen(false)} />
       </PopoverContent>

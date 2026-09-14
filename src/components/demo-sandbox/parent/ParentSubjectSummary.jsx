@@ -18,7 +18,7 @@ export default function ParentSubjectSummary({ studentId }) {
   }
 
   return (
-    <div className="divide-y divide-slate-100">
+    <div className="divide-y scholr-divide">
       {grades.map((g) => {
         const { Icon, color, label } = trendMeta(g.trend);
         return (
@@ -37,8 +37,8 @@ export default function ParentSubjectSummary({ studentId }) {
               </p>
             </div>
             <div className="text-right flex-shrink-0 ml-2">
-              <p className="text-[10px] uppercase tracking-wide text-indigo-500 font-semibold">Predicted</p>
-              <p className="text-xl font-bold text-indigo-600 leading-none">{g.predicted}</p>
+              <p className="text-[10px] uppercase tracking-wide scholr-accent font-semibold">Predicted</p>
+              <p className="text-xl font-bold scholr-accent leading-none">{g.predicted}</p>
             </div>
           </div>
         );

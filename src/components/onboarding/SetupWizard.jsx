@@ -37,12 +37,12 @@ function StepNav({ steps, currentIndex, completedStepIds }) {
         return (
           <React.Fragment key={step.id}>
             <div className="flex flex-col items-center">
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center border-2 transition-all ${
+              <div className={`w-9 h-9 rounded-full flex items-center justify-center border-2 transition-colors ${
                 isDone || isPast
                   ? 'bg-emerald-500 border-emerald-500 text-white'
                   : isCurrent
-                  ? 'bg-indigo-600 border-indigo-600 text-white'
-                  : 'bg-white border-slate-200 text-slate-400'
+                  ? 'scholr-accent-sf scholr-accent-rule text-white'
+                  : 'bg-white scholr-rule scholr-faint'
               }`}>
                 {isDone || isPast
                   ? <CheckCircle2 className="w-4 h-4" />
@@ -50,13 +50,13 @@ function StepNav({ steps, currentIndex, completedStepIds }) {
                 }
               </div>
               <p className={`text-xs mt-1 font-medium hidden md:block ${
-                isCurrent ? 'text-indigo-700' : isDone || isPast ? 'text-emerald-600' : 'text-slate-400'
+                isCurrent ? 'scholr-accent' : isDone || isPast ? 'text-emerald-600' : 'scholr-faint'
               }`}>
                 {step.label}
               </p>
             </div>
             {i < steps.length - 1 && (
-              <div className={`flex-1 h-0.5 mx-1 mb-4 ${isPast || isDone ? 'bg-emerald-300' : 'bg-slate-200'}`} />
+              <div className={`flex-1 h-0.5 mx-1 mb-4 ${isPast || isDone ? 'bg-emerald-300' : 'scholr-sunk'}`} />
             )}
           </React.Fragment>
         );
@@ -150,7 +150,7 @@ export default function SetupWizard({ onComplete }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-2xl border scholr-rule shadow-sm overflow-hidden">
       {/* Wizard header */}
       <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-5 text-white">
         <div className="flex items-center gap-3 mb-4">
@@ -179,18 +179,18 @@ export default function SetupWizard({ onComplete }) {
       </div>
 
       {/* Footer nav */}
-      <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+      <div className="px-6 py-4 scholr-sunk border-t scholr-rule-soft flex items-center justify-between">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => setCurrentIndex(i => Math.max(0, i - 1))}
           disabled={currentIndex === 0}
-          className="gap-1.5 text-slate-500"
+          className="gap-1.5 scholr-muted"
         >
           <ChevronLeft className="w-4 h-4" /> Back
         </Button>
         <div className="flex gap-2">
-          <Button variant="ghost" size="sm" onClick={handleSkip} className="text-slate-400 text-xs">
+          <Button variant="ghost" size="sm" onClick={handleSkip} className="scholr-faint text-xs">
             Skip this step
           </Button>
           {isLastStep ? (
@@ -201,7 +201,7 @@ export default function SetupWizard({ onComplete }) {
             <Button
               size="sm"
               onClick={() => setCurrentIndex(i => i + 1)}
-              className="bg-indigo-600 hover:bg-indigo-700 gap-1.5"
+              className="scholr-accent-sf hover:scholr-accent-sf gap-1.5"
             >
               Next <ChevronRight className="w-4 h-4" />
             </Button>

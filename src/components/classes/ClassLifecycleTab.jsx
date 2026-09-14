@@ -61,12 +61,12 @@ function DuplicateDialog({ classObj, onClose, schoolId, academicYears }) {
         </DialogHeader>
         <div className="space-y-4 pt-2">
           <div>
-            <Label className="text-xs font-semibold text-slate-600">New Class Name *</Label>
+            <Label className="text-xs font-semibold scholr-muted">New Class Name *</Label>
             <Input value={newName} onChange={e => setNewName(e.target.value)} className="mt-1" />
           </div>
           {academicYears.length > 0 && (
             <div>
-              <Label className="text-xs font-semibold text-slate-600">Target Academic Year</Label>
+              <Label className="text-xs font-semibold scholr-muted">Target Academic Year</Label>
               <Select value={targetYearId || '__same'} onValueChange={v => setTargetYearId(v === '__same' ? '' : v)}>
                 <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -77,7 +77,7 @@ function DuplicateDialog({ classObj, onClose, schoolId, academicYears }) {
             </div>
           )}
           <div className="space-y-2">
-            <Label className="text-xs font-semibold text-slate-600">Copy options</Label>
+            <Label className="text-xs font-semibold scholr-muted">Copy options</Label>
             {[
               { key: 'keepTeachers', label: 'Copy teacher assignments', val: keepTeachers, set: setKeepTeachers },
               { key: 'keepSubjects', label: 'Copy subject–teacher mappings', val: keepSubjects, set: setKeepSubjects },
@@ -88,9 +88,9 @@ function DuplicateDialog({ classObj, onClose, schoolId, academicYears }) {
                   type="checkbox"
                   checked={opt.val}
                   onChange={e => opt.set(e.target.checked)}
-                  className="rounded border-slate-300"
+                  className="rounded scholr-rule"
                 />
-                <span className="text-sm text-slate-700">{opt.label}</span>
+                <span className="text-sm scholr-body">{opt.label}</span>
               </label>
             ))}
           </div>
@@ -103,7 +103,7 @@ function DuplicateDialog({ classObj, onClose, schoolId, academicYears }) {
           <div className="flex gap-2 pt-1">
             <Button variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
             <Button
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white"
+              className="flex-1 pub-btn pub-btn-gold"
               disabled={!newName || mutation.isPending}
               onClick={() => mutation.mutate()}
             >
@@ -166,29 +166,29 @@ function SplitDialog({ classObj, onClose, schoolId, memberships }) {
         <div className="space-y-4 pt-2 flex-1 overflow-y-auto min-h-0">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label className="text-xs font-semibold text-slate-600">Section A Name</Label>
+              <Label className="text-xs font-semibold scholr-muted">Section A Name</Label>
               <Input value={nameA} onChange={e => setNameA(e.target.value)} className="mt-1" />
             </div>
             <div>
-              <Label className="text-xs font-semibold text-slate-600">Section B Name</Label>
+              <Label className="text-xs font-semibold scholr-muted">Section B Name</Label>
               <Input value={nameB} onChange={e => setNameB(e.target.value)} className="mt-1" />
             </div>
           </div>
-          <p className="text-xs text-slate-500">Tick students to assign them to Section A. Unticked students go to Section B.</p>
+          <p className="text-xs scholr-muted">Tick students to assign them to Section A. Unticked students go to Section B.</p>
           <div className="grid grid-cols-2 gap-1.5 text-xs mb-1">
-            <div className="bg-indigo-50 text-indigo-700 rounded px-2 py-1 font-medium text-center">A: {groupA.length} students</div>
-            <div className="bg-slate-100 text-slate-600 rounded px-2 py-1 font-medium text-center">B: {groupB.length} students</div>
+            <div className="scholr-accent-sf scholr-accent rounded px-2 py-1 font-medium text-center">A: {groupA.length} students</div>
+            <div className="scholr-sunk scholr-muted rounded px-2 py-1 font-medium text-center">B: {groupB.length} students</div>
           </div>
           <div className="space-y-1.5 overflow-y-auto max-h-52">
             {students.map(s => {
               const inA = groupA.includes(s.user_id);
               return (
-                <button key={s.user_id} onClick={() => toggle(s.user_id)} className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg border text-left transition-all text-sm ${inA ? 'bg-indigo-50 border-indigo-200' : 'bg-white border-slate-200'}`}>
-                  <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${inA ? 'bg-indigo-600 border-indigo-600' : 'border-slate-300'}`}>
+                <button key={s.user_id} onClick={() => toggle(s.user_id)} className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg border text-left transition-colors text-sm ${inA ? 'scholr-accent-sf scholr-accent-rule' : 'bg-white scholr-rule'}`}>
+                  <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${inA ? 'scholr-accent-sf scholr-accent-rule' : 'scholr-rule'}`}>
                     {inA && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
                   </div>
-                  <span className={inA ? 'text-indigo-800 font-medium' : 'text-slate-700'}>{s.user_name}</span>
-                  <span className={`ml-auto text-[11px] font-bold px-1.5 rounded ${inA ? 'bg-indigo-200 text-indigo-700' : 'bg-slate-200 text-slate-500'}`}>{inA ? 'A' : 'B'}</span>
+                  <span className={inA ? 'scholr-accent font-medium' : 'scholr-body'}>{s.user_name}</span>
+                  <span className={`ml-auto text-[11px] font-bold px-1.5 rounded ${inA ? 'bg-indigo-200 scholr-accent' : 'scholr-sunk scholr-muted'}`}>{inA ? 'A' : 'B'}</span>
                 </button>
               );
             })}
@@ -200,10 +200,10 @@ function SplitDialog({ classObj, onClose, schoolId, memberships }) {
             </AlertDescription>
           </Alert>
         </div>
-        <div className="flex gap-2 pt-3 border-t border-slate-100">
+        <div className="flex gap-2 pt-3 border-t scholr-rule-soft">
           <Button variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
           <Button
-            className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white"
+            className="flex-1 pub-btn pub-btn-gold"
             disabled={students.length === 0 || mutation.isPending}
             onClick={() => mutation.mutate()}
           >
@@ -271,14 +271,14 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
   const archivedClasses = classes.filter(c => c.status === 'archived');
 
   const ActionCard = ({ icon: Icon, title, description, color, children }) => (
-    <div className={`bg-white border border-slate-200 rounded-xl p-5 shadow-sm`}>
+    <div className={`app-group p-5 shadow-sm`}>
       <div className="flex items-center gap-3 mb-3">
         <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${color}`}>
           <Icon className="w-4 h-4" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
-          <p className="text-[11px] text-slate-400 mt-0.5">{description}</p>
+          <h3 className="text-sm font-semibold scholr-ink">{title}</h3>
+          <p className="text-[11px] scholr-faint mt-0.5">{description}</p>
         </div>
       </div>
       {children}
@@ -289,13 +289,13 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
     <div className="space-y-5 max-w-3xl">
       {/* Summary */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-white border border-slate-200 rounded-xl p-4 text-center shadow-sm">
+        <div className="app-group p-4 text-center shadow-sm">
           <p className="text-2xl font-bold text-emerald-600">{activeClasses.length}</p>
-          <p className="text-xs text-slate-400 mt-0.5">Active Classes</p>
+          <p className="text-xs scholr-faint mt-0.5">Active Classes</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4 text-center shadow-sm">
-          <p className="text-2xl font-bold text-slate-400">{archivedClasses.length}</p>
-          <p className="text-xs text-slate-400 mt-0.5">Archived Classes</p>
+        <div className="app-group p-4 text-center shadow-sm">
+          <p className="text-2xl font-bold scholr-faint">{archivedClasses.length}</p>
+          <p className="text-xs scholr-faint mt-0.5">Archived Classes</p>
         </div>
       </div>
 
@@ -307,10 +307,10 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
         color="bg-amber-100 text-amber-700"
       >
         {activeClasses.length === 0 ? (
-          <p className="text-xs text-slate-400">No active classes to archive.</p>
+          <p className="text-xs scholr-faint">No active classes to archive.</p>
         ) : (
           <div className="flex items-center justify-between">
-            <p className="text-xs text-slate-600">{activeClasses.length} active class{activeClasses.length !== 1 ? 'es' : ''} will be archived.</p>
+            <p className="text-xs scholr-muted">{activeClasses.length} active class{activeClasses.length !== 1 ? 'es' : ''} will be archived.</p>
             <Button
               variant="outline"
               size="sm"
@@ -331,15 +331,15 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
           icon={RotateCcw}
           title="Archive / Restore Individual Classes"
           description="Manage individual class lifecycle states."
-          color="bg-slate-100 text-slate-600"
+          color="scholr-sunk scholr-muted"
         >
           <div className="space-y-2 max-h-60 overflow-y-auto">
             {classes.map(c => (
-              <div key={c.id} className="flex items-center justify-between px-3 py-2.5 rounded-lg border border-slate-100 bg-slate-50 hover:bg-slate-100 transition-colors">
+              <div key={c.id} className="flex items-center justify-between px-3 py-2.5 rounded-lg border scholr-rule-soft scholr-sunk hover:scholr-sunk transition-colors">
                 <div className="flex items-center gap-2 min-w-0">
                   <span className={`w-2 h-2 rounded-full flex-shrink-0 ${c.status === 'active' ? 'bg-emerald-500' : 'bg-slate-400'}`} />
-                  <span className="text-sm font-medium text-slate-800 truncate">{c.name}</span>
-                  <span className="text-[11px] text-slate-400">{c.student_ids?.length || 0} students</span>
+                  <span className="text-sm font-medium scholr-ink truncate">{c.name}</span>
+                  <span className="text-[11px] scholr-faint">{c.student_ids?.length || 0} students</span>
                 </div>
                 <Button
                   variant="ghost"
@@ -364,22 +364,22 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
         icon={Copy}
         title="Duplicate for New Year"
         description="Copy a class structure to the next academic year, with optional roster carry-over."
-        color="bg-indigo-100 text-indigo-700"
+        color="scholr-accent-sf scholr-accent"
       >
         {activeClasses.length === 0 ? (
-          <p className="text-xs text-slate-400">No active classes to duplicate.</p>
+          <p className="text-xs scholr-faint">No active classes to duplicate.</p>
         ) : (
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {activeClasses.map(c => (
-              <div key={c.id} className="flex items-center justify-between px-3 py-2.5 rounded-lg border border-slate-100 bg-slate-50">
+              <div key={c.id} className="flex items-center justify-between px-3 py-2.5 rounded-lg border scholr-rule-soft scholr-sunk">
                 <div className="min-w-0 flex-1">
-                  <span className="text-sm font-medium text-slate-800 truncate block">{c.name}</span>
-                  <span className="text-[11px] text-slate-400">{c.student_ids?.length || 0} students · {c.teacher_ids?.length || 0} staff</span>
+                  <span className="text-sm font-medium scholr-ink truncate block">{c.name}</span>
+                  <span className="text-[11px] scholr-faint">{c.student_ids?.length || 0} students · {c.teacher_ids?.length || 0} staff</span>
                 </div>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-7 text-xs text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 gap-1 flex-shrink-0"
+                  className="h-7 text-xs scholr-accent hover:scholr-accent hover:scholr-accent-sf gap-1 flex-shrink-0"
                   onClick={() => setDuplicatingClass(c)}
                 >
                   <Copy className="w-3 h-3" /> Duplicate
@@ -398,14 +398,14 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
         color="bg-rose-100 text-rose-700"
       >
         {activeClasses.filter(c => (c.student_ids?.length || 0) >= 2).length === 0 ? (
-          <p className="text-xs text-slate-400">No classes with enough students to split (need ≥ 2).</p>
+          <p className="text-xs scholr-faint">No classes with enough students to split (need ≥ 2).</p>
         ) : (
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {activeClasses.filter(c => (c.student_ids?.length || 0) >= 2).map(c => (
-              <div key={c.id} className="flex items-center justify-between px-3 py-2.5 rounded-lg border border-slate-100 bg-slate-50">
+              <div key={c.id} className="flex items-center justify-between px-3 py-2.5 rounded-lg border scholr-rule-soft scholr-sunk">
                 <div className="min-w-0 flex-1">
-                  <span className="text-sm font-medium text-slate-800 truncate block">{c.name}</span>
-                  <span className="text-[11px] text-slate-400">{c.student_ids?.length || 0} students</span>
+                  <span className="text-sm font-medium scholr-ink truncate block">{c.name}</span>
+                  <span className="text-[11px] scholr-faint">{c.student_ids?.length || 0} students</span>
                 </div>
                 <Button
                   variant="ghost"

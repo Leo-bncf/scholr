@@ -37,13 +37,13 @@ export default function QuietHoursPanel({ form, onChange }) {
   return (
     <div className="space-y-6">
       {/* Quiet Hours */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-5">
+      <div className="bg-white rounded-xl border scholr-rule p-5 space-y-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Moon className="w-5 h-5 text-indigo-500" />
+            <Moon className="w-5 h-5 scholr-accent" />
             <div>
-              <h4 className="font-bold text-slate-900 text-sm">Quiet Hours</h4>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <h4 className="font-bold scholr-ink text-sm">Quiet Hours</h4>
+              <p className="text-xs scholr-muted mt-0.5">
                 Set recommended communication windows. Outside these hours, sending is either blocked or shows a respectful warning to the sender.
               </p>
             </div>
@@ -52,36 +52,36 @@ export default function QuietHoursPanel({ form, onChange }) {
         </div>
 
         {qh.enabled && (
-          <div className="space-y-5 pt-3 border-t border-slate-100">
+          <div className="space-y-5 pt-3 border-t scholr-rule-soft">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-semibold text-slate-600 block mb-1.5">
+                <label className="text-xs font-semibold scholr-muted block mb-1.5">
                   <Clock className="w-3.5 h-3.5 inline mr-1" />Quiet starts at
                 </label>
                 <input
                   type="time"
                   value={qh.start_time || '18:00'}
                   onChange={e => setQh('start_time', e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                  className="w-full px-3 py-2 border scholr-rule rounded-lg text-sm"
                 />
-                <p className="text-xs text-slate-400 mt-1">School timezone</p>
+                <p className="text-xs scholr-faint mt-1">School timezone</p>
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-600 block mb-1.5">
+                <label className="text-xs font-semibold scholr-muted block mb-1.5">
                   <Clock className="w-3.5 h-3.5 inline mr-1" />Quiet ends at
                 </label>
                 <input
                   type="time"
                   value={qh.end_time || '08:00'}
                   onChange={e => setQh('end_time', e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                  className="w-full px-3 py-2 border scholr-rule rounded-lg text-sm"
                 />
-                <p className="text-xs text-slate-400 mt-1">Overnight windows are supported</p>
+                <p className="text-xs scholr-faint mt-1">Overnight windows are supported</p>
               </div>
             </div>
 
             <div>
-              <p className="text-xs font-semibold text-slate-600 mb-2">Apply quiet hours to these roles</p>
+              <p className="text-xs font-semibold scholr-muted mb-2">Apply quiet hours to these roles</p>
               <div className="flex flex-wrap gap-3">
                 {ALL_ROLES.map(role => (
                   <label key={role} className="flex items-center gap-2 cursor-pointer">
@@ -91,17 +91,17 @@ export default function QuietHoursPanel({ form, onChange }) {
                       onChange={e => toggleRole(role, e.target.checked)}
                       className="w-4 h-4 accent-indigo-600"
                     />
-                    <span className="text-sm text-slate-700">{ROLE_LABELS[role]}</span>
+                    <span className="text-sm scholr-body">{ROLE_LABELS[role]}</span>
                   </label>
                 ))}
               </div>
             </div>
 
-            <div className="flex items-start gap-3 pt-2 border-t border-slate-100">
+            <div className="flex items-start gap-3 pt-2 border-t scholr-rule-soft">
               <Switch checked={qh.block_send_during_quiet ?? false} onCheckedChange={v => setQh('block_send_during_quiet', v)} />
               <div>
-                <p className="text-sm font-semibold text-slate-800">Block sending during quiet hours</p>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-sm font-semibold scholr-ink">Block sending during quiet hours</p>
+                <p className="text-xs scholr-muted mt-0.5">
                   If <span className="font-semibold">on</span>: messages cannot be sent during quiet hours. 
                   If <span className="font-semibold">off</span>: a polite banner is shown but sending is still allowed.
                 </p>
@@ -111,33 +111,33 @@ export default function QuietHoursPanel({ form, onChange }) {
             <div className="flex items-start gap-3">
               <Switch checked={qh.weekend_quiet_hours_enabled ?? false} onCheckedChange={v => setQh('weekend_quiet_hours_enabled', v)} />
               <div>
-                <p className="text-sm font-semibold text-slate-800">Apply quiet hours on weekends</p>
-                <p className="text-xs text-slate-500 mt-0.5">Extends the quiet-hours window to Saturday and Sunday.</p>
+                <p className="text-sm font-semibold scholr-ink">Apply quiet hours on weekends</p>
+                <p className="text-xs scholr-muted mt-0.5">Extends the quiet-hours window to Saturday and Sunday.</p>
               </div>
             </div>
           </div>
         )}
 
         {!qh.enabled && (
-          <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-500 italic">
+          <div className="scholr-sunk border scholr-rule rounded-lg p-3 text-xs scholr-muted italic">
             Quiet hours are currently disabled. All messages can be sent at any time with no warnings.
           </div>
         )}
       </div>
 
       {/* Notification Defaults */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-5">
+      <div className="bg-white rounded-xl border scholr-rule p-5 space-y-5">
         <div className="flex items-center gap-2">
           <Bell className="w-5 h-5 text-amber-500" />
           <div>
-            <h4 className="font-bold text-slate-900 text-sm">Default Notification Preferences</h4>
-            <p className="text-xs text-slate-500 mt-0.5">School-wide defaults for how users are notified. Users can override these if permitted.</p>
+            <h4 className="font-bold scholr-ink text-sm">Default Notification Preferences</h4>
+            <p className="text-xs scholr-muted mt-0.5">School-wide defaults for how users are notified. Users can override these if permitted.</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
-            <label className="text-xs font-semibold text-slate-600 block mb-2">Direct message notifications</label>
+            <label className="text-xs font-semibold scholr-muted block mb-2">Direct message notifications</label>
             <div className="space-y-2">
               {NOTIF_OPTIONS.map(opt => (
                 <label key={opt.value} className="flex items-start gap-2.5 cursor-pointer">
@@ -150,15 +150,15 @@ export default function QuietHoursPanel({ form, onChange }) {
                     className="mt-0.5 accent-indigo-600"
                   />
                   <div>
-                    <p className="text-sm font-medium text-slate-800">{opt.label}</p>
-                    <p className="text-xs text-slate-500">{opt.desc}</p>
+                    <p className="text-sm font-medium scholr-ink">{opt.label}</p>
+                    <p className="text-xs scholr-muted">{opt.desc}</p>
                   </div>
                 </label>
               ))}
             </div>
           </div>
           <div>
-            <label className="text-xs font-semibold text-slate-600 block mb-2">Announcement notifications</label>
+            <label className="text-xs font-semibold scholr-muted block mb-2">Announcement notifications</label>
             <div className="space-y-2">
               {NOTIF_ANNOUNCE_OPTIONS.map(opt => (
                 <label key={opt.value} className="flex items-center gap-2.5 cursor-pointer">
@@ -170,18 +170,18 @@ export default function QuietHoursPanel({ form, onChange }) {
                     onChange={() => setNd('default_announcement_notifications', opt.value)}
                     className="accent-indigo-600"
                   />
-                  <span className="text-sm text-slate-700">{opt.label}</span>
+                  <span className="text-sm scholr-body">{opt.label}</span>
                 </label>
               ))}
             </div>
           </div>
         </div>
 
-        <div className="flex items-start gap-3 pt-3 border-t border-slate-100">
+        <div className="flex items-start gap-3 pt-3 border-t scholr-rule-soft">
           <Switch checked={nd.allow_user_notification_override ?? true} onCheckedChange={v => setNd('allow_user_notification_override', v)} />
           <div>
-            <p className="text-sm font-semibold text-slate-800">Allow users to override their notification preferences</p>
-            <p className="text-xs text-slate-500 mt-0.5">If off, school defaults cannot be changed by individual users. Useful for ensuring compliance with communication commitments.</p>
+            <p className="text-sm font-semibold scholr-ink">Allow users to override their notification preferences</p>
+            <p className="text-xs scholr-muted mt-0.5">If off, school defaults cannot be changed by individual users. Useful for ensuring compliance with communication commitments.</p>
           </div>
         </div>
       </div>

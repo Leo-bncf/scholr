@@ -26,7 +26,7 @@ export default function SchoolAdminAcademicSetup() {
 
   return (
     <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar
           links={SCHOOL_ADMIN_SIDEBAR_LINKS}
           role="school_admin"

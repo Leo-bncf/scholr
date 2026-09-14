@@ -30,7 +30,7 @@ export default function SchoolAdminSupport() {
 
   return (
     <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar
           links={sidebarLinks}
           role="school_admin"
@@ -41,21 +41,21 @@ export default function SchoolAdminSupport() {
         />
 
         <main className="app-offset">
-          <div className="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-10 shadow-sm">
-            <h1 className="text-base font-black text-slate-900 tracking-tight">Support & Help</h1>
-            <p className="text-xs text-slate-400 mt-0.5">Guides, issue reporting, and platform status for {school?.name || 'your school'}</p>
+          <div className="bg-white border-b scholr-rule px-6 py-4 sticky top-0 z-10 shadow-sm">
+            <h1 className="text-base font-black scholr-ink tracking-tight">Support & Help</h1>
+            <p className="text-xs scholr-faint mt-0.5">Guides, issue reporting, and platform status for {school?.name || 'your school'}</p>
           </div>
 
           <div className="p-6 max-w-5xl">
             <Tabs defaultValue="help">
-              <TabsList className="bg-white border border-slate-200 h-auto mb-6">
-                <TabsTrigger value="help" className="text-xs gap-1.5 data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
+              <TabsList className="bg-white border scholr-rule h-auto mb-6">
+                <TabsTrigger value="help" className="text-xs gap-1.5 data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
                   <HelpCircle className="w-3.5 h-3.5" /> Help Center
                 </TabsTrigger>
-                <TabsTrigger value="report" className="text-xs gap-1.5 data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
+                <TabsTrigger value="report" className="text-xs gap-1.5 data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
                   <Bug className="w-3.5 h-3.5" /> Contact Support
                 </TabsTrigger>
-                <TabsTrigger value="status" className="text-xs gap-1.5 data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
+                <TabsTrigger value="status" className="text-xs gap-1.5 data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
                   <Activity className="w-3.5 h-3.5" /> System Status
                 </TabsTrigger>
               </TabsList>

@@ -5,14 +5,14 @@ import { getAtRiskStudents } from '@/components/demo-sandbox/mockSchoolData';
 const flagMeta = {
   grade_drop:     { Icon: TrendingDown, color: 'bg-rose-50 text-rose-700',       label: 'Grade drop' },
   missing_work:   { Icon: ClipboardX,   color: 'bg-amber-50 text-amber-700',     label: 'Missing work' },
-  low_attendance: { Icon: UserX,        color: 'bg-indigo-50 text-indigo-700',   label: 'Low attendance' },
-  behavior:       { Icon: Flag,         color: 'bg-violet-50 text-violet-700',   label: 'Behaviour' },
+  low_attendance: { Icon: UserX,        color: 'scholr-accent-sf scholr-accent',   label: 'Low attendance' },
+  behavior:       { Icon: Flag,         color: 'scholr-accent-sf scholr-accent',   label: 'Behaviour' },
 };
 
 const severityRail = {
   high:   'bg-rose-500',
   medium: 'bg-amber-500',
-  low:    'bg-slate-300',
+  low:    'scholr-sunk',
 };
 
 export default function AtRiskStudentsList({ yearGroup, subjectId, limit }) {
@@ -29,7 +29,7 @@ export default function AtRiskStudentsList({ yearGroup, subjectId, limit }) {
   }
 
   return (
-    <div className="divide-y divide-slate-100">
+    <div className="divide-y scholr-divide">
       {items.map((s) => {
         const { Icon, color, label } = flagMeta[s.flag] || flagMeta.grade_drop;
         return (

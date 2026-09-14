@@ -118,11 +118,11 @@ function CheckRow({ check, result, onRun, running }) {
   const ran = result !== undefined;
 
   return (
-    <div className="border border-slate-200 rounded-md overflow-hidden">
+    <div className="border scholr-rule rounded-md overflow-hidden">
       <div className="flex items-center justify-between px-4 py-3 bg-white gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <p className="text-sm font-semibold text-slate-800">{check.label}</p>
+            <p className="text-sm font-semibold scholr-ink">{check.label}</p>
             <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${s.badge}`}>{check.severity}</span>
             {ran && (
               issues.length === 0
@@ -130,13 +130,13 @@ function CheckRow({ check, result, onRun, running }) {
                 : <AlertTriangle className={`w-3.5 h-3.5 ${s.icon}`} />
             )}
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">{check.description}</p>
+          <p className="text-xs scholr-faint mt-0.5">{check.description}</p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           {ran && issues.length > 0 && (
             <button
               onClick={() => setExpanded(p => !p)}
-              className="text-xs text-slate-500 hover:text-slate-700 flex items-center gap-1"
+              className="text-xs scholr-muted hover:scholr-body flex items-center gap-1"
             >
               {issues.length} issue{issues.length > 1 ? 's' : ''}
               {expanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -149,12 +149,12 @@ function CheckRow({ check, result, onRun, running }) {
         </div>
       </div>
       {expanded && issues.length > 0 && (
-        <div className={`px-4 pb-3 pt-0 border-t border-slate-100 ${s.border}`}>
+        <div className={`px-4 pb-3 pt-0 border-t scholr-rule-soft ${s.border}`}>
           <div className="max-h-40 overflow-auto space-y-1 mt-2">
             {issues.map(issue => (
-              <div key={issue.id} className="flex items-center justify-between text-xs px-2 py-1.5 bg-white rounded border border-slate-100">
-                <span className="font-medium text-slate-700 truncate">{issue.label}</span>
-                <span className="text-slate-400 ml-2 flex-shrink-0">{issue.detail}</span>
+              <div key={issue.id} className="flex items-center justify-between text-xs px-2 py-1.5 bg-white rounded border scholr-rule-soft">
+                <span className="font-medium scholr-body truncate">{issue.label}</span>
+                <span className="scholr-faint ml-2 flex-shrink-0">{issue.detail}</span>
               </div>
             ))}
           </div>
@@ -201,7 +201,7 @@ export default function DataIntegrityChecker() {
           onClick={runAll}
           disabled={runningAll}
           size="sm"
-          className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 text-xs"
+          className="pub-btn pub-btn-gold gap-2 text-xs"
         >
           {runningAll ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Wrench className="w-3.5 h-3.5" />}
           Run All Checks

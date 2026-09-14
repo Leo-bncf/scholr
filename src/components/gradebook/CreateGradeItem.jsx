@@ -61,7 +61,7 @@ export default function CreateGradeItem({ classData, assignments = [], onClose, 
       {trigger ? (
         <div onClick={() => setOpen(true)}>{trigger}</div>
       ) : (
-        <Button onClick={() => setOpen(true)} className="bg-indigo-600 hover:bg-indigo-700">
+        <Button onClick={() => setOpen(true)} className="scholr-accent-sf hover:scholr-accent-sf">
           <Plus className="w-4 h-4 mr-2" /> New Grade Item
         </Button>
       )}
@@ -185,7 +185,7 @@ export default function CreateGradeItem({ classData, assignments = [], onClose, 
               <Button
                 onClick={handleCreate}
                 disabled={!form.title || createMutation.isPending}
-                className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+                className="flex-1 scholr-accent-sf hover:scholr-accent-sf"
               >
                 {createMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                 Create Grade Item

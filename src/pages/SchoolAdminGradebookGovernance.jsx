@@ -70,7 +70,7 @@ export default function SchoolAdminGradebookGovernance() {
 
   const onChange = (partial) => setForm(prev => ({ ...prev, ...partial }));
 
-  const tabTriggerClass = "text-xs gap-1.5 data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700";
+  const tabTriggerClass = "text-xs gap-1.5 data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent";
 
   // Tabs that share the policy save button vs tabs that manage their own data
   const POLICY_TABS = ['grading', 'visibility', 'locks', 'predicted'];
@@ -78,7 +78,7 @@ export default function SchoolAdminGradebookGovernance() {
   const SaveButton = ({ tab }) => (
     POLICY_TABS.includes(tab) ? (
       <div className="flex justify-end mt-6">
-        <Button onClick={() => saveMutation.mutate(form)} disabled={saveMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+        <Button onClick={() => saveMutation.mutate(form)} disabled={saveMutation.isPending} className="pub-btn pub-btn-gold">
           {saveMutation.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
           Save Policy
         </Button>
@@ -88,7 +88,7 @@ export default function SchoolAdminGradebookGovernance() {
 
   return (
     <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin', 'ib_coordinator']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar
           links={SCHOOL_ADMIN_SIDEBAR_LINKS}
           role={membership?.role || 'school_admin'}
@@ -99,14 +99,14 @@ export default function SchoolAdminGradebookGovernance() {
         />
 
         <main className="app-offset min-h-screen">
-          <div className="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-10 shadow-sm">
+          <div className="bg-white border-b scholr-rule px-6 py-4 sticky top-0 z-10 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 scholr-accent-sf rounded-lg flex items-center justify-center">
                 <BarChart3 className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h1 className="text-base font-black text-slate-900 tracking-tight">Gradebook Governance & IB Controls</h1>
-                <p className="text-xs text-slate-400 mt-0.5">Standardize grading models, visibility rules, grade locking, rubric templates, and IB predicted grade workflows</p>
+                <h1 className="text-base font-black scholr-ink tracking-tight">Gradebook Governance & IB Controls</h1>
+                <p className="text-xs scholr-faint mt-0.5">Standardize grading models, visibility rules, grade locking, rubric templates, and IB predicted grade workflows</p>
               </div>
             </div>
           </div>
@@ -121,11 +121,11 @@ export default function SchoolAdminGradebookGovernance() {
           )}
 
           {isLoading ? (
-            <div className="flex justify-center py-24"><Loader2 className="w-7 h-7 animate-spin text-indigo-400" /></div>
+            <div className="flex justify-center py-24"><Loader2 className="w-7 h-7 animate-spin scholr-accent" /></div>
           ) : (
             <div className="p-6 max-w-4xl">
               <Tabs defaultValue="grading">
-                <TabsList className="bg-white border border-slate-200 h-10 mb-6 flex flex-wrap gap-0.5">
+                <TabsList className="bg-white border scholr-rule h-10 mb-6 flex flex-wrap gap-0.5">
                   <TabsTrigger value="grading" className={tabTriggerClass}>
                     <BarChart3 className="w-3.5 h-3.5" /> Grading Model
                   </TabsTrigger>
@@ -144,34 +144,34 @@ export default function SchoolAdminGradebookGovernance() {
                 </TabsList>
 
                 <TabsContent value="grading">
-                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 max-w-2xl">
+                  <div className="app-group p-6 max-w-2xl">
                     <GradingModelPanel form={form} onChange={onChange} />
                   </div>
                   <SaveButton tab="grading" />
                 </TabsContent>
 
                 <TabsContent value="visibility">
-                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 max-w-2xl">
+                  <div className="app-group p-6 max-w-2xl">
                     <VisibilityRulesPanel form={form} onChange={onChange} />
                   </div>
                   <SaveButton tab="visibility" />
                 </TabsContent>
 
                 <TabsContent value="locks">
-                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 max-w-2xl">
+                  <div className="app-group p-6 max-w-2xl">
                     <GradeLocksPanel form={form} onChange={onChange} terms={terms} />
                   </div>
                   <SaveButton tab="locks" />
                 </TabsContent>
 
                 <TabsContent value="rubrics">
-                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+                  <div className="app-group p-6">
                     <RubricTemplateLibrary schoolId={schoolId} />
                   </div>
                 </TabsContent>
 
                 <TabsContent value="predicted">
-                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 max-w-2xl">
+                  <div className="app-group p-6 max-w-2xl">
                     <PredictedGradesPolicy form={form} onChange={onChange} />
                   </div>
                   <SaveButton tab="predicted" />

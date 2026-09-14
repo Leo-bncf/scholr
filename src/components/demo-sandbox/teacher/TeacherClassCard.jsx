@@ -24,7 +24,7 @@ export default function TeacherClassCard({ classId, avgGrade }) {
   return (
     <Link
       to={`/demo/teacher/class/${cls.id}`}
-      className="group block p-4 rounded-xl border border-slate-100 hover:border-emerald-200 hover:shadow-sm hover:bg-slate-50/50 transition"
+      className="group block p-4 rounded-xl border border-slate-100 hover:border-emerald-200 hover:shadow-sm scholr-hover/50 transition"
     >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
@@ -45,7 +45,7 @@ export default function TeacherClassCard({ classId, avgGrade }) {
               All clear
             </span>
           )}
-          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-0.5 transition" />
+          <ArrowRight className="w-4 h-4 text-slate-400 group-scholr-ink group-hover:translate-x-0.5 transition" />
         </div>
       </div>
       <div className="mt-3">
@@ -54,7 +54,7 @@ export default function TeacherClassCard({ classId, avgGrade }) {
           <span>{progress}%</span>
         </div>
         <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
-          <div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${progress}%` }} />
+          <div className="h-full bg-emerald-500 rounded-full transition-colors" style={{ width: `${progress}%` }} />
         </div>
       </div>
     </Link>

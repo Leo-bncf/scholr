@@ -43,8 +43,8 @@ export default function ClassSettings({ classData, isTeacher }) {
 
   if (!isTeacher) {
     return (
-      <div className="p-6 text-center text-slate-400">
-        <Settings className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+      <div className="p-6 text-center scholr-faint">
+        <Settings className="w-12 h-12 mx-auto mb-3 scholr-faint" />
         <p>Settings are only available to teachers</p>
       </div>
     );
@@ -52,9 +52,9 @@ export default function ClassSettings({ classData, isTeacher }) {
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold text-slate-900 mb-6">Class Settings</h2>
+      <h2 className="text-xl font-bold scholr-ink mb-6">Class Settings</h2>
       
-      <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-6">
+      <div className="bg-white rounded-xl border scholr-rule p-6 space-y-6">
         <div>
           <Label>Class Name</Label>
           <Input value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="mt-1" />
@@ -76,7 +76,7 @@ export default function ClassSettings({ classData, isTeacher }) {
           <Input value={form.schedule_info} onChange={e => setForm({...form, schedule_info: e.target.value})} placeholder="e.g. Mon/Wed/Fri 9:00-10:30" className="mt-1" />
         </div>
 
-        <Button onClick={handleSave} disabled={updateMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700">
+        <Button onClick={handleSave} disabled={updateMutation.isPending} className="scholr-accent-sf hover:scholr-accent-sf">
           {updateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
           Save Changes
         </Button>

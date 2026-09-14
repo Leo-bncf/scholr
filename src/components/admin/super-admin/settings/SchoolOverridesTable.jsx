@@ -7,24 +7,24 @@ export default function SchoolOverridesTable({ schools, flags, overridesMap, onT
     <div className="overflow-x-auto">
       <table className="w-full min-w-[760px]">
         <thead>
-          <tr className="border-b border-slate-200">
-            <th className="text-left text-xs font-medium text-slate-500 uppercase tracking-wide py-3 pr-4">School</th>
+          <tr className="border-b scholr-rule">
+            <th className="text-left text-xs font-medium scholr-muted uppercase tracking-wide py-3 pr-4">School</th>
             {flags.map((flag) => (
-              <th key={flag.key} className="text-center text-xs font-medium text-slate-500 uppercase tracking-wide px-2 py-3">
+              <th key={flag.key} className="text-center text-xs font-medium scholr-muted uppercase tracking-wide px-2 py-3">
                 {flag.shortLabel || flag.label}
               </th>
             ))}
-            <th className="text-right text-xs font-medium text-slate-500 uppercase tracking-wide py-3 pl-4">Actions</th>
+            <th className="text-right text-xs font-medium scholr-muted uppercase tracking-wide py-3 pl-4">Actions</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="divide-y scholr-divide">
           {schools.map((school) => {
             const current = overridesMap[school.id] || {};
             return (
               <tr key={school.id}>
                 <td className="py-3 pr-4">
-                  <p className="text-sm font-medium text-slate-900">{school.name}</p>
-                  <p className="text-xs text-slate-500">{school.plan || 'starter'} plan</p>
+                  <p className="text-sm font-medium scholr-ink">{school.name}</p>
+                  <p className="text-xs scholr-muted">{school.plan || 'starter'} plan</p>
                 </td>
                 {flags.map((flag) => (
                   <td key={flag.key} className="px-2 py-3 text-center">

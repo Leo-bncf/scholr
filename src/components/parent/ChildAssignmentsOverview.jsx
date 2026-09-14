@@ -44,7 +44,7 @@ export default function ChildAssignmentsOverview({ schoolId, studentId }) {
   });
 
   if (isLoading) {
-    return <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>;
+    return <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>;
   }
 
   const getAssignmentStatus = (assignment) => {
@@ -63,7 +63,7 @@ export default function ChildAssignmentsOverview({ schoolId, studentId }) {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <AlertCircle className="w-5 h-5 text-red-600" />
-            <h3 className="font-semibold text-slate-900">Missing Work ({missingAssignments.length})</h3>
+            <h3 className="font-semibold scholr-ink">Missing Work ({missingAssignments.length})</h3>
           </div>
           <div className="space-y-2">
             {missingAssignments.map(a => (
@@ -89,28 +89,28 @@ export default function ChildAssignmentsOverview({ schoolId, studentId }) {
       <div>
         <div className="flex items-center gap-2 mb-3">
           <Clock className="w-5 h-5 text-blue-600" />
-          <h3 className="font-semibold text-slate-900">Upcoming Assignments</h3>
+          <h3 className="font-semibold scholr-ink">Upcoming Assignments</h3>
         </div>
         {upcomingAssignments.length === 0 ? (
-          <div className="text-center py-6 text-slate-400">
-            <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-slate-300" />
+          <div className="text-center py-6 scholr-faint">
+            <CheckCircle2 className="w-8 h-8 mx-auto mb-2 scholr-faint" />
             <p className="text-sm">No upcoming assignments</p>
           </div>
         ) : (
           <div className="space-y-2">
             {upcomingAssignments.map(a => (
-              <div key={a.id} className="bg-white border border-slate-200 rounded-lg p-3">
+              <div key={a.id} className="app-group p-3">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <p className="font-medium text-slate-900">{a.title}</p>
-                    <p className="text-xs text-slate-600 mt-0.5">{a.class_name}</p>
+                    <p className="font-medium scholr-ink">{a.title}</p>
+                    <p className="text-xs scholr-muted mt-0.5">{a.class_name}</p>
                   </div>
                   {a.type && (
                     <Badge variant="outline" className="text-xs">{a.type}</Badge>
                   )}
                 </div>
                 {a.due_date && (
-                  <p className="text-xs text-slate-500 mt-2">
+                  <p className="text-xs scholr-muted mt-2">
                     Due: {format(new Date(a.due_date), 'MMM d, yyyy h:mm a')}
                   </p>
                 )}

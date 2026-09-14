@@ -116,8 +116,8 @@ const ARTICLES = [
 ];
 
 const COLOR_MAP = {
-  indigo: 'bg-indigo-100 text-indigo-600',
-  violet: 'bg-violet-100 text-violet-600',
+  indigo: 'scholr-accent-sf scholr-accent',
+  violet: 'scholr-accent-sf scholr-accent',
   blue: 'bg-blue-100 text-blue-600',
   emerald: 'bg-emerald-100 text-emerald-600',
   rose: 'bg-rose-100 text-rose-600',
@@ -126,20 +126,20 @@ const COLOR_MAP = {
 function ArticleItem({ article }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border-b border-slate-100 last:border-0">
+    <div className="border-b scholr-rule-soft last:border-0">
       <button
-        className="w-full flex items-center justify-between py-3 px-1 text-left hover:bg-slate-50 rounded transition-colors"
+        className="w-full flex items-center justify-between py-3 px-1 text-left hover:scholr-sunk rounded transition-colors"
         onClick={() => setOpen(o => !o)}
       >
-        <span className="text-sm font-medium text-slate-800">{article.title}</span>
-        {open ? <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" /> : <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />}
+        <span className="text-sm font-medium scholr-ink">{article.title}</span>
+        {open ? <ChevronDown className="w-4 h-4 scholr-faint shrink-0" /> : <ChevronRight className="w-4 h-4 scholr-faint shrink-0" />}
       </button>
       {open && (
         <div className="pb-4 px-1">
-          <p className="text-sm text-slate-600 leading-relaxed">{article.content}</p>
+          <p className="text-sm scholr-muted leading-relaxed">{article.content}</p>
           <div className="flex flex-wrap gap-1.5 mt-3">
             {article.tags.map(t => (
-              <span key={t} className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{t}</span>
+              <span key={t} className="text-xs scholr-sunk scholr-muted px-2 py-0.5 rounded-full">{t}</span>
             ))}
           </div>
         </div>
@@ -173,7 +173,7 @@ export default function HelpCenter() {
     <div className="space-y-5">
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 scholr-faint" />
         <Input
           className="pl-9"
           placeholder="Search help articles… (e.g. predicted grades, enrolment, audit)"
@@ -192,12 +192,12 @@ export default function HelpCenter() {
           ].map(link => {
             const Icon = link.icon;
             return (
-              <a key={link.label} href={link.href} className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-xl hover:border-indigo-300 hover:shadow-sm transition-all group">
+              <a key={link.label} href={link.href} className="flex items-center gap-3 p-3 app-group hover:scholr-accent-rule hover:shadow-sm transition-colors group">
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${COLOR_MAP[link.color]}`}>
                   <Icon className="w-4 h-4" />
                 </div>
-                <span className="text-sm font-semibold text-slate-700 group-hover:text-indigo-700">{link.label}</span>
-                <ExternalLink className="w-3 h-3 text-slate-300 ml-auto group-hover:text-indigo-400" />
+                <span className="text-sm font-semibold scholr-body group-hover:scholr-accent">{link.label}</span>
+                <ExternalLink className="w-3 h-3 scholr-faint ml-auto group-hover:scholr-accent" />
               </a>
             );
           })}
@@ -207,7 +207,7 @@ export default function HelpCenter() {
       {/* Articles */}
       <div className="space-y-3">
         {filtered.length === 0 && (
-          <div className="text-center py-12 text-slate-400">
+          <div className="text-center py-12 scholr-faint">
             <Search className="w-8 h-8 mx-auto mb-2 opacity-40" />
             <p className="text-sm">No articles match your search.</p>
           </div>
@@ -216,17 +216,17 @@ export default function HelpCenter() {
           const Icon = cat.icon;
           const isOpen = query ? true : openCats.has(cat.category);
           return (
-            <div key={cat.category} className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div key={cat.category} className="bg-white rounded-xl border scholr-rule overflow-hidden">
               <button
-                className="w-full flex items-center gap-3 px-5 py-4 hover:bg-slate-50 transition-colors"
+                className="w-full flex items-center gap-3 px-5 py-4 hover:scholr-sunk transition-colors"
                 onClick={() => !query && toggleCat(cat.category)}
               >
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${COLOR_MAP[cat.color]}`}>
                   <Icon className="w-4 h-4" />
                 </div>
-                <span className="text-sm font-bold text-slate-900 flex-1 text-left">{cat.category}</span>
-                <span className="text-xs text-slate-400 mr-2">{cat.articles.length} articles</span>
-                {!query && (isOpen ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />)}
+                <span className="text-sm font-bold scholr-ink flex-1 text-left">{cat.category}</span>
+                <span className="text-xs scholr-faint mr-2">{cat.articles.length} articles</span>
+                {!query && (isOpen ? <ChevronDown className="w-4 h-4 scholr-faint" /> : <ChevronRight className="w-4 h-4 scholr-faint" />)}
               </button>
               {isOpen && (
                 <div className="px-5 pb-2">

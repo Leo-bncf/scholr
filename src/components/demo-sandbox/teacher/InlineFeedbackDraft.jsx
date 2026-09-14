@@ -46,7 +46,7 @@ export default function InlineFeedbackDraft({ paragraphs, initialComments, onCha
                 className={`rounded-lg p-3 text-sm leading-relaxed transition cursor-text ${
                   paragraphComments.length > 0
                     ? 'bg-amber-50/60 border-l-2 border-amber-400'
-                    : 'hover:bg-slate-50'
+                    : 'scholr-hover'
                 }`}
               >
                 <p className="text-slate-800">{p.text}</p>
@@ -88,7 +88,7 @@ export default function InlineFeedbackDraft({ paragraphs, initialComments, onCha
                       </button>
                       <button
                         onClick={() => { setActiveId(null); setDraft(''); }}
-                        className="p-1.5 rounded-md bg-slate-100 text-slate-500 hover:bg-slate-200"
+                        className="p-1.5 rounded-md bg-slate-100 text-slate-500 hover:scholr-sunk"
                         aria-label="Cancel"
                       >
                         <X className="w-3.5 h-3.5" />

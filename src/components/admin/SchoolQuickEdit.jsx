@@ -169,7 +169,7 @@ export default function SchoolQuickEdit({ school, onUpdated, onCancel }) {
             value={formData.plan}
             onChange={handleChange}
             disabled={loading}
-            className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-3 py-2 border scholr-rule rounded-md text-sm scholr-focus"
           >
             <option value="starter">Starter</option>
             <option value="professional">Professional</option>
@@ -204,7 +204,7 @@ export default function SchoolQuickEdit({ school, onUpdated, onCancel }) {
         <Button
           type="submit"
           disabled={loading || !hasChanges}
-          className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+          className="flex-1 scholr-accent-sf hover:scholr-accent-sf"
         >
           {loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
           {loading ? 'Saving...' : 'Save Changes'}

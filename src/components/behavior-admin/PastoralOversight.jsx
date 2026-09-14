@@ -78,16 +78,16 @@ export default function PastoralOversight({ schoolId }) {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-slate-100 p-1 rounded-lg w-fit">
+      <div className="flex gap-1 scholr-sunk p-1 rounded-lg w-fit">
         {TABS.map(t => (
           <button
             key={t.id}
             onClick={() => setActiveTab(t.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-colors ${activeTab === t.id ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-colors ${activeTab === t.id ? 'bg-white scholr-ink shadow-sm' : 'scholr-muted hover:scholr-body'}`}
           >
             {t.label}
             {t.count > 0 && (
-              <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${t.urgent && t.count > 0 ? 'bg-red-500 text-white' : 'bg-slate-200 text-slate-600'}`}>
+              <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${t.urgent && t.count > 0 ? 'bg-red-500 text-white' : 'scholr-sunk scholr-muted'}`}>
                 {t.count}
               </span>
             )}
@@ -97,45 +97,45 @@ export default function PastoralOversight({ schoolId }) {
 
       {/* List */}
       {isLoading ? (
-        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>
       ) : currentList.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+        <div className="bg-white rounded-xl border scholr-rule p-12 text-center">
           <CheckCircle2 className="w-12 h-12 mx-auto mb-3 text-emerald-400" />
-          <p className="text-slate-600 font-medium">Nothing pending in this category.</p>
+          <p className="scholr-muted font-medium">Nothing pending in this category.</p>
         </div>
       ) : (
         <div className="space-y-3">
           {currentList.map(record => {
             const sm = record.severity ? SEV_META[record.severity] : null;
             return (
-              <div key={record.id} className={`bg-white rounded-xl border p-5 ${record.staff_only ? 'border-rose-200' : 'border-slate-200'}`}>
+              <div key={record.id} className={`bg-white rounded-xl border p-5 ${record.staff_only ? 'border-rose-200' : 'scholr-rule'}`}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 flex-wrap mb-2">
-                      <span className="font-bold text-slate-900">{record.student_name}</span>
-                      <span className="text-xs text-slate-400">{record.date}</span>
+                      <span className="font-bold scholr-ink">{record.student_name}</span>
+                      <span className="text-xs scholr-faint">{record.date}</span>
                       {sm && <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${sm.bg} ${sm.text} ${sm.border}`}>{record.severity}</span>}
                       {record.staff_only && <span className="text-xs px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-medium">Staff only</span>}
                       {record.follow_up_required && !record.follow_up_completed && (
                         <span className="text-xs px-2 py-0.5 rounded-full bg-orange-50 text-orange-700 border border-orange-200 flex items-center gap-1"><Clock className="w-3 h-3" /> Follow-up pending</span>
                       )}
                     </div>
-                    <p className="font-semibold text-slate-800">{record.title}</p>
-                    {record.description && <p className="text-sm text-slate-600 mt-1">{record.description}</p>}
+                    <p className="font-semibold scholr-ink">{record.title}</p>
+                    {record.description && <p className="text-sm scholr-muted mt-1">{record.description}</p>}
                     {record.action_taken && (
-                      <div className="mt-2 pt-2 border-t border-slate-100">
-                        <p className="text-xs font-bold text-slate-500 mb-0.5">Action Taken</p>
-                        <p className="text-sm text-slate-600">{record.action_taken}</p>
+                      <div className="mt-2 pt-2 border-t scholr-rule-soft">
+                        <p className="text-xs font-bold scholr-muted mb-0.5">Action Taken</p>
+                        <p className="text-sm scholr-muted">{record.action_taken}</p>
                       </div>
                     )}
-                    <p className="text-xs text-slate-400 mt-2">Recorded by {record.recorded_by_name} · {record.category?.replace(/_/g,' ')}</p>
+                    <p className="text-xs scholr-faint mt-2">Recorded by {record.recorded_by_name} · {record.category?.replace(/_/g,' ')}</p>
                     {record.pastoral_reviewed && (
                       <p className="text-xs text-emerald-700 mt-1 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Reviewed by {record.pastoral_reviewed_by} on {record.pastoral_reviewed_at ? format(new Date(record.pastoral_reviewed_at), 'dd MMM yyyy') : ''}</p>
                     )}
                   </div>
                   <div className="flex flex-col gap-2 flex-shrink-0">
                     {activeTab === 'needs_review' && !record.pastoral_reviewed && (
-                      <Button size="sm" onClick={() => { setReviewing({ record, mode: 'review' }); setReviewNote(''); }} className="bg-violet-600 hover:bg-violet-700 text-xs">
+                      <Button size="sm" onClick={() => { setReviewing({ record, mode: 'review' }); setReviewNote(''); }} className="scholr-accent-sf hover:scholr-accent-sf text-xs">
                         <ShieldCheck className="w-3 h-3 mr-1" /> Mark Reviewed
                       </Button>
                     )}
@@ -160,12 +160,12 @@ export default function PastoralOversight({ schoolId }) {
           </DialogHeader>
           {reviewing && (
             <div className="space-y-4">
-              <div className="bg-slate-50 rounded-lg p-3 text-sm">
-                <p className="font-semibold text-slate-900">{reviewing.record.student_name}</p>
-                <p className="text-slate-600 mt-0.5">{reviewing.record.title}</p>
+              <div className="scholr-sunk rounded-lg p-3 text-sm">
+                <p className="font-semibold scholr-ink">{reviewing.record.student_name}</p>
+                <p className="scholr-muted mt-0.5">{reviewing.record.title}</p>
               </div>
               <div>
-                <label className="text-sm font-semibold text-slate-700 block mb-1.5">
+                <label className="text-sm font-semibold scholr-body block mb-1.5">
                   {reviewing.mode === 'review' ? 'Review note (optional)' : 'Follow-up completion note'}
                 </label>
                 <Textarea
@@ -188,7 +188,7 @@ export default function PastoralOversight({ schoolId }) {
                 }
               }}
               disabled={markReviewedMutation.isPending || closeFollowUpMutation.isPending}
-              className={reviewing?.mode === 'review' ? 'bg-violet-600 hover:bg-violet-700' : 'bg-emerald-600 hover:bg-emerald-700'}
+              className={reviewing?.mode === 'review' ? 'scholr-accent-sf hover:scholr-accent-sf' : 'bg-emerald-600 hover:bg-emerald-700'}
             >
               {(markReviewedMutation.isPending || closeFollowUpMutation.isPending) ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
               {reviewing?.mode === 'review' ? 'Confirm Review' : 'Close Follow-up'}

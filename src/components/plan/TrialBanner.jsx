@@ -72,7 +72,7 @@ export default function TrialBanner() {
               onClick={handleSubscribe}
               disabled={loading}
               size="sm"
-              className="mt-3 bg-indigo-600 hover:bg-indigo-700"
+              className="mt-3 scholr-accent-sf hover:scholr-accent-sf"
             >
               <CreditCard className="w-3.5 h-3.5 mr-2" />
               Subscribe Now
@@ -81,7 +81,7 @@ export default function TrialBanner() {
         </div>
         <button
           onClick={() => setDismissed(true)}
-          className="text-slate-400 hover:text-slate-600"
+          className="scholr-faint hover:scholr-muted"
         >
           <X className="w-4 h-4" />
         </button>

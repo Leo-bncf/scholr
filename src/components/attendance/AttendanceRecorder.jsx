@@ -19,7 +19,7 @@ function StatusButton({ status, selected, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${
         selected ? status.activeBg + ' border-transparent shadow-sm' : status.bg + ' ' + status.color + ' hover:opacity-80'
       }`}
     >
@@ -142,14 +142,14 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
   const allMarked = markedCount === students.length && students.length > 0;
 
   if (loadingStudents) {
-    return <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>;
+    return <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>;
   }
 
   if (students.length === 0) {
     return (
-      <div className="text-center py-16 bg-white rounded-xl border border-slate-200">
-        <Users className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-        <p className="text-slate-500 font-medium">No students enrolled in this class.</p>
+      <div className="text-center py-16 bg-white rounded-xl border scholr-rule">
+        <Users className="w-12 h-12 scholr-faint mx-auto mb-3" />
+        <p className="scholr-muted font-medium">No students enrolled in this class.</p>
       </div>
     );
   }
@@ -157,29 +157,29 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
   return (
     <div className="space-y-5">
       {/* Toolbar */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 flex flex-wrap gap-4 items-end justify-between">
+      <div className="bg-white rounded-xl border scholr-rule p-4 flex flex-wrap gap-4 items-end justify-between">
         <div className="flex items-center gap-4">
           <div>
-            <label className="text-xs font-semibold text-slate-600 block mb-1">Date</label>
+            <label className="text-xs font-semibold scholr-muted block mb-1">Date</label>
             <input
               type="date"
               value={selectedDate}
               onChange={e => setSelectedDate(e.target.value)}
-              className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm"
+              className="px-3 py-1.5 border scholr-rule rounded-lg text-sm"
             />
           </div>
-          {loadingRecords && <Loader2 className="w-4 h-4 animate-spin text-slate-400 mt-5" />}
+          {loadingRecords && <Loader2 className="w-4 h-4 animate-spin scholr-faint mt-5" />}
         </div>
 
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
-            <span className="text-xs text-slate-500 mr-1">Mark all:</span>
+            <span className="text-xs scholr-muted mr-1">Mark all:</span>
             {DEFAULT_STATUSES.map(s => (
               <button
                 key={s.key}
                 onClick={() => markAll(s.key)}
                 title={`Mark all ${s.label}`}
-                className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all ${s.bg} ${s.color} hover:opacity-80`}
+                className={`px-2.5 py-1 rounded text-xs font-semibold border transition-colors ${s.bg} ${s.color} hover:opacity-80`}
               >
                 {s.label}
               </button>
@@ -188,7 +188,7 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
           <Button
             onClick={handleSave}
             disabled={saveMutation.isPending || markedCount === 0}
-            className="bg-indigo-600 hover:bg-indigo-700"
+            className="scholr-accent-sf hover:scholr-accent-sf"
           >
             {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             Save
@@ -198,7 +198,7 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
 
       {/* Summary row */}
       <div className="flex items-center gap-3 flex-wrap">
-        <span className="text-xs text-slate-500 font-medium">{markedCount}/{students.length} marked</span>
+        <span className="text-xs scholr-muted font-medium">{markedCount}/{students.length} marked</span>
         {DEFAULT_STATUSES.map(s => (statusCounts[s.key] || 0) > 0 && (
           <span key={s.key} className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border ${s.bg} ${s.color}`}>
             <s.icon className="w-3 h-3" /> {statusCounts[s.key]} {s.label}
@@ -211,24 +211,24 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
       </div>
 
       {/* Student Table */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50">
-              <th className="px-5 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Student</th>
-              <th className="px-5 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Status</th>
-              <th className="px-5 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Note</th>
+            <tr className="border-b scholr-rule scholr-sunk">
+              <th className="px-5 py-3 text-left text-xs font-semibold scholr-muted uppercase">Student</th>
+              <th className="px-5 py-3 text-left text-xs font-semibold scholr-muted uppercase">Status</th>
+              <th className="px-5 py-3 text-left text-xs font-semibold scholr-muted uppercase">Note</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y scholr-divide">
             {students.map(student => {
               const current = attendanceData[student.user_id];
               return (
-                <tr key={student.user_id} className={`${current ? '' : 'bg-slate-50/50'} hover:bg-slate-50 transition-colors`}>
+                <tr key={student.user_id} className={`${current ? '' : 'scholr-sunk/50'} hover:scholr-sunk transition-colors`}>
                   <td className="px-5 py-3.5">
                     <div>
-                      <p className="font-medium text-slate-900 text-sm">{student.user_name || student.user_email}</p>
-                      {student.grade_level && <p className="text-xs text-slate-400">{student.grade_level}</p>}
+                      <p className="font-medium scholr-ink text-sm">{student.user_name || student.user_email}</p>
+                      {student.grade_level && <p className="text-xs scholr-faint">{student.grade_level}</p>}
                     </div>
                   </td>
                   <td className="px-5 py-3.5">
@@ -254,15 +254,15 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
                           className="text-xs flex-1"
                           autoFocus
                         />
-                        <button onClick={() => setExpandedNote(null)} className="text-xs text-slate-400 hover:text-slate-600 mt-1">Done</button>
+                        <button onClick={() => setExpandedNote(null)} className="text-xs scholr-faint hover:scholr-muted mt-1">Done</button>
                       </div>
                     ) : (
                       <button
                         onClick={() => setExpandedNote(student.user_id)}
-                        className="text-xs text-slate-400 hover:text-indigo-600 transition-colors"
+                        className="text-xs scholr-faint hover:scholr-accent transition-colors"
                       >
                         {notes[student.user_id] ? (
-                          <span className="text-slate-600 italic">"{notes[student.user_id]}"</span>
+                          <span className="scholr-muted italic">"{notes[student.user_id]}"</span>
                         ) : '+ add note'}
                       </button>
                     )}

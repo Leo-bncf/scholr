@@ -781,6 +781,38 @@ body { background: var(--paper); color: var(--body); }
 .app-row { transition: background-color var(--dur-micro) var(--ease-out); }
 a.app-row:hover, button.app-row:hover { background: color-mix(in oklab, var(--ink) 4%, transparent); }
 
+
+/* ── Palette utilities ────────────────────────────────────────────────────
+   One class per role, so a component can say what a colour MEANS instead of
+   naming a Tailwind step. These exist because 31 pages carried ~1,200
+   hand-written slate/indigo classes left over from base44: the product had two
+   palettes, and the older one won on every screen a teacher actually opens.
+
+   Deliberately not a Tailwind theme extension — these are semantic roles
+   (ink / body / muted / faint), not a scale, and a scale is what invites
+   picking slate-450 because slate-400 looked slightly off. */
+.scholr-ink         { color: var(--ink); }
+.scholr-body        { color: var(--body); }
+.scholr-muted       { color: var(--muted); }
+.scholr-faint       { color: var(--faint); }
+.scholr-sunk        { background: var(--surface-sunk); }
+.scholr-rule        { border-color: var(--rule); }
+.scholr-rule-soft   { border-color: var(--rule-soft); }
+.scholr-divide > * + * { border-top: 1px solid var(--rule-soft); }
+.scholr-placeholder::placeholder { color: var(--faint); }
+
+.scholr-accent      { color: var(--brand); }
+.scholr-accent-sf   { background: var(--brand-sf); }
+.scholr-accent-rule { border-color: var(--brand); }
+.scholr-accent-ink  { color: var(--brand-ink); }
+.scholr-good        { color: var(--good); }
+.scholr-good-sf     { background: var(--good-sf); }
+.scholr-warn        { color: var(--warn); }
+.scholr-warn-sf     { background: var(--warn-sf); }
+.scholr-crit        { color: var(--crit); }
+.scholr-crit-sf     { background: var(--crit-sf); }
+.scholr-hover:hover { background: color-mix(in oklab, var(--ink) 4%, transparent); }
+
 /* ── Tables ───────────────────────────────────────────────────────────────
    A table lives INSIDE a Group, so it draws no border and no shadow of its
    own — the group is already the containment layer. Its job is only to line

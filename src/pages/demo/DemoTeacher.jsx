@@ -70,7 +70,7 @@ export default function DemoTeacher() {
           <DemoSectionCard title="Today's schedule">
             <div className="space-y-2">
               {TIMETABLE_TODAY.slice(0, 4).map((p, i) => (
-                <div key={i} className="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-50">
+                <div key={i} className="flex items-start gap-3 p-2 rounded-lg scholr-hover">
                   <div className="text-[10px] font-bold text-slate-500 w-20 pt-0.5 flex-shrink-0">{p.time.split(' – ')[0]}</div>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-slate-900 truncate">{p.subject}</p>

@@ -30,7 +30,7 @@ export default function SchoolAdminBehavior() {
 
   return (
     <RoleGuard allowedRoles={['school_admin', 'ib_coordinator', 'super_admin', 'admin']}>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen scholr-sunk">
         <AppSidebar
           links={SCHOOL_ADMIN_SIDEBAR_LINKS}
           role="school_admin"
@@ -49,7 +49,7 @@ export default function SchoolAdminBehavior() {
             title="Behavior & Pastoral Notes"
             subtitle={`${school?.name} · Governed pastoral operations`}
             rightContent={
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-500 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-lg">
+              <div className="flex items-center gap-2 text-xs font-bold scholr-muted scholr-sunk border scholr-rule px-3 py-1.5 rounded-lg">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
                 School-scoped · Role-protected
               </div>

@@ -10,21 +10,21 @@ import { logAudit, AuditActions } from '@/components/utils/auditLogger';
 
 function ExportCard({ title, description, recordCount, badge, onExport, loading }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5">
+    <div className="bg-white rounded-xl border scholr-rule p-5">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold text-slate-900">{title}</h3>
+            <h3 className="font-semibold scholr-ink">{title}</h3>
             {badge && <Badge variant="outline" className="text-xs">{badge}</Badge>}
           </div>
-          <p className="text-sm text-slate-500 mb-2">{description}</p>
-          <p className="text-xs text-slate-400">{recordCount} record{recordCount !== 1 ? 's' : ''} available</p>
+          <p className="text-sm scholr-muted mb-2">{description}</p>
+          <p className="text-xs scholr-faint">{recordCount} record{recordCount !== 1 ? 's' : ''} available</p>
         </div>
         <Button
           size="sm"
           onClick={onExport}
           disabled={loading || recordCount === 0}
-          className="bg-indigo-600 hover:bg-indigo-700 shrink-0"
+          className="scholr-accent-sf hover:scholr-accent-sf shrink-0"
         >
           {loading ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Download className="w-4 h-4 mr-1" />}
           Export CSV
@@ -137,14 +137,14 @@ export default function CSVExportToolkit({
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5">
+      <div className="bg-white rounded-xl border scholr-rule p-5">
         <div className="flex items-center gap-2 mb-4">
-          <h3 className="font-semibold text-slate-800">Export Filters</h3>
-          <span className="text-xs text-slate-400 flex items-center gap-1"><Info className="w-3 h-3" /> Filters apply to all exports below</span>
+          <h3 className="font-semibold scholr-ink">Export Filters</h3>
+          <span className="text-xs scholr-faint flex items-center gap-1"><Info className="w-3 h-3" /> Filters apply to all exports below</span>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
           <div>
-            <Label className="text-xs text-slate-500 mb-1 block">Class</Label>
+            <Label className="text-xs scholr-muted mb-1 block">Class</Label>
             <Select value={filters.classId} onValueChange={v => setFilter('classId', v)}>
               <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="All classes" /></SelectTrigger>
               <SelectContent>
@@ -154,7 +154,7 @@ export default function CSVExportToolkit({
             </Select>
           </div>
           <div>
-            <Label className="text-xs text-slate-500 mb-1 block">Term</Label>
+            <Label className="text-xs scholr-muted mb-1 block">Term</Label>
             <Select value={filters.termId} onValueChange={v => setFilter('termId', v)}>
               <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="All terms" /></SelectTrigger>
               <SelectContent>
@@ -164,7 +164,7 @@ export default function CSVExportToolkit({
             </Select>
           </div>
           <div>
-            <Label className="text-xs text-slate-500 mb-1 block">Cohort</Label>
+            <Label className="text-xs scholr-muted mb-1 block">Cohort</Label>
             <Select value={filters.cohortId} onValueChange={v => setFilter('cohortId', v)}>
               <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="All cohorts" /></SelectTrigger>
               <SelectContent>
@@ -174,11 +174,11 @@ export default function CSVExportToolkit({
             </Select>
           </div>
           <div>
-            <Label className="text-xs text-slate-500 mb-1 block">Date From</Label>
+            <Label className="text-xs scholr-muted mb-1 block">Date From</Label>
             <Input type="date" className="h-8 text-sm" value={filters.dateFrom} onChange={e => setFilter('dateFrom', e.target.value)} />
           </div>
           <div>
-            <Label className="text-xs text-slate-500 mb-1 block">Date To</Label>
+            <Label className="text-xs scholr-muted mb-1 block">Date To</Label>
             <Input type="date" className="h-8 text-sm" value={filters.dateTo} onChange={e => setFilter('dateTo', e.target.value)} />
           </div>
         </div>
@@ -186,7 +186,7 @@ export default function CSVExportToolkit({
 
       {/* User Exports */}
       <div>
-        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2"><FileSpreadsheet className="w-3.5 h-3.5" /> People & Enrollment</h3>
+        <h3 className="text-xs font-semibold scholr-faint uppercase tracking-wider mb-3 flex items-center gap-2"><FileSpreadsheet className="w-3.5 h-3.5" /> People & Enrollment</h3>
         <div className="space-y-3">
           <ExportCard title="Student Directory" description="Name, email, grade level, cohort, enrollment status" recordCount={filteredStudents.length} badge="Cohort filtered" onExport={() => doExport('students', filteredStudents, 'student_directory')} loading={exporting === 'students'} />
           <ExportCard title="Staff Directory" description="Teachers, coordinators, admins with department and role" recordCount={filteredTeachers.length} onExport={() => doExport('teachers', filteredTeachers, 'staff_directory')} loading={exporting === 'teachers'} />
@@ -198,7 +198,7 @@ export default function CSVExportToolkit({
 
       {/* Academic Exports */}
       <div>
-        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2"><FileSpreadsheet className="w-3.5 h-3.5" /> Academic</h3>
+        <h3 className="text-xs font-semibold scholr-faint uppercase tracking-wider mb-3 flex items-center gap-2"><FileSpreadsheet className="w-3.5 h-3.5" /> Academic</h3>
         <div className="space-y-3">
           <ExportCard title="Grade Records" description="All assessment scores, IB grades, status, and comments" recordCount={filteredGrades.length} badge="Class + Term filtered" onExport={() => doExport('grades', filteredGrades, 'grade_records')} loading={exporting === 'grades'} />
           <ExportCard title="Predicted Grades" description="Teacher-entered IB predicted grades with confidence and rationale" recordCount={filteredPG.length} badge="IB" onExport={() => doExport('predicted_grades', filteredPG, 'predicted_grades')} loading={exporting === 'predicted_grades'} />
@@ -207,7 +207,7 @@ export default function CSVExportToolkit({
 
       {/* Attendance */}
       <div>
-        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2"><FileSpreadsheet className="w-3.5 h-3.5" /> Attendance</h3>
+        <h3 className="text-xs font-semibold scholr-faint uppercase tracking-wider mb-3 flex items-center gap-2"><FileSpreadsheet className="w-3.5 h-3.5" /> Attendance</h3>
         <div className="space-y-3">
           <ExportCard title="Attendance Records" description="All attendance entries with status, reason, and correction history" recordCount={filteredAttendance.length} badge="Class + Date filtered" onExport={() => doExport('attendance', filteredAttendance, 'attendance_records')} loading={exporting === 'attendance'} />
         </div>
@@ -215,7 +215,7 @@ export default function CSVExportToolkit({
 
       {/* Pastoral */}
       <div>
-        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2"><FileSpreadsheet className="w-3.5 h-3.5" /> Pastoral & IB Core</h3>
+        <h3 className="text-xs font-semibold scholr-faint uppercase tracking-wider mb-3 flex items-center gap-2"><FileSpreadsheet className="w-3.5 h-3.5" /> Pastoral & IB Core</h3>
         <div className="space-y-3">
           <ExportCard title="Behavior Records" description="Incidents, concerns, positive notes, actions taken, and follow-up status" recordCount={filteredBehavior.length} badge="Date filtered" onExport={() => doExport('behavior', filteredBehavior, 'behavior_records')} loading={exporting === 'behavior'} />
           <ExportCard title="CAS Experiences" description="Student CAS activity log with strands, hours, supervisor, and approval status" recordCount={filteredCAS.length} badge="IB Core" onExport={() => doExport('cas', filteredCAS, 'cas_experiences')} loading={exporting === 'cas'} />

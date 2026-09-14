@@ -74,7 +74,7 @@ export default function DocumentPicker({ open, onClose, onAddDocuments, trigger 
       {trigger ? (
         <div onClick={() => onClose(false)}>{trigger}</div>
       ) : (
-        <Button onClick={() => onClose(false)} variant="outline" className="border-indigo-200 text-indigo-700">
+        <Button onClick={() => onClose(false)} variant="outline" className="scholr-accent-rule scholr-accent">
           <Plus className="w-4 h-4 mr-2" /> Add Document
         </Button>
       )}
@@ -83,7 +83,7 @@ export default function DocumentPicker({ open, onClose, onAddDocuments, trigger 
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Add Documents</DialogTitle>
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-sm scholr-muted mt-1">
               Upload files, add links, or connect cloud documents
             </p>
           </DialogHeader>
@@ -105,9 +105,9 @@ export default function DocumentPicker({ open, onClose, onAddDocuments, trigger 
             </TabsList>
 
             <TabsContent value="upload" className="space-y-4">
-              <div className="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center">
-                <Upload className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-                <p className="text-sm text-slate-600 mb-4">
+              <div className="border-2 border-dashed scholr-rule rounded-xl p-8 text-center">
+                <Upload className="w-12 h-12 scholr-faint mx-auto mb-3" />
+                <p className="text-sm scholr-muted mb-4">
                   {uploading ? 'Uploading...' : 'Click to upload a file from your device'}
                 </p>
                 <label className="inline-block">
@@ -148,7 +148,7 @@ export default function DocumentPicker({ open, onClose, onAddDocuments, trigger 
               <Button 
                 onClick={handleAddLink} 
                 disabled={!linkUrl.trim()}
-                className="w-full bg-indigo-600 hover:bg-indigo-700"
+                className="w-full scholr-accent-sf hover:scholr-accent-sf"
               >
                 Add Link
               </Button>
@@ -164,53 +164,53 @@ export default function DocumentPicker({ open, onClose, onAddDocuments, trigger 
               <div className="grid grid-cols-1 gap-3">
                 <button
                   onClick={() => handleGoogleDocCreate('Doc')}
-                  className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl hover:border-blue-300 hover:bg-blue-50/50 transition-all text-left"
+                  className="flex items-center gap-3 p-4 border-2 scholr-rule rounded-xl hover:border-blue-300 hover:bg-blue-50/50 transition-colors text-left"
                 >
                   <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                     <FileText className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
-                    <p className="font-semibold text-slate-900">Google Docs</p>
-                    <p className="text-xs text-slate-500">Create or attach a document</p>
+                    <p className="font-semibold scholr-ink">Google Docs</p>
+                    <p className="text-xs scholr-muted">Create or attach a document</p>
                   </div>
                 </button>
 
                 <button
                   onClick={() => handleGoogleDocCreate('Sheet')}
-                  className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl hover:border-emerald-300 hover:bg-emerald-50/50 transition-all text-left"
+                  className="flex items-center gap-3 p-4 border-2 scholr-rule rounded-xl hover:border-emerald-300 hover:bg-emerald-50/50 transition-colors text-left"
                 >
                   <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
                     <Sheet className="w-6 h-6 text-emerald-600" />
                   </div>
                   <div>
-                    <p className="font-semibold text-slate-900">Google Sheets</p>
-                    <p className="text-xs text-slate-500">Create or attach a spreadsheet</p>
+                    <p className="font-semibold scholr-ink">Google Sheets</p>
+                    <p className="text-xs scholr-muted">Create or attach a spreadsheet</p>
                   </div>
                 </button>
 
                 <button
                   onClick={() => handleGoogleDocCreate('Slides')}
-                  className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl hover:border-amber-300 hover:bg-amber-50/50 transition-all text-left"
+                  className="flex items-center gap-3 p-4 border-2 scholr-rule rounded-xl hover:border-amber-300 hover:bg-amber-50/50 transition-colors text-left"
                 >
                   <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
                     <Presentation className="w-6 h-6 text-amber-600" />
                   </div>
                   <div>
-                    <p className="font-semibold text-slate-900">Google Slides</p>
-                    <p className="text-xs text-slate-500">Create or attach a presentation</p>
+                    <p className="font-semibold scholr-ink">Google Slides</p>
+                    <p className="text-xs scholr-muted">Create or attach a presentation</p>
                   </div>
                 </button>
 
                 <button
                   onClick={() => handleGoogleDocCreate('Drive')}
-                  className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50/50 transition-all text-left"
+                  className="flex items-center gap-3 p-4 border-2 scholr-rule rounded-xl hover:scholr-accent-rule hover:scholr-accent-sf/50 transition-colors text-left"
                 >
-                  <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <FolderOpen className="w-6 h-6 text-indigo-600" />
+                  <div className="w-12 h-12 scholr-accent-sf rounded-lg flex items-center justify-center">
+                    <FolderOpen className="w-6 h-6 scholr-accent" />
                   </div>
                   <div>
-                    <p className="font-semibold text-slate-900">Google Drive</p>
-                    <p className="text-xs text-slate-500">Browse and attach from Drive</p>
+                    <p className="font-semibold scholr-ink">Google Drive</p>
+                    <p className="text-xs scholr-muted">Browse and attach from Drive</p>
                   </div>
                 </button>
               </div>

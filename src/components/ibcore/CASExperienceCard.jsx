@@ -10,23 +10,23 @@ const strandIcons = {
 };
 
 const strandColors = {
-  creativity: 'bg-purple-100 text-purple-700 border-purple-200',
+  creativity: 'scholr-accent-sf scholr-accent scholr-accent-rule',
   activity: 'bg-emerald-100 text-emerald-700 border-emerald-200',
   service: 'bg-blue-100 text-blue-700 border-blue-200'
 };
 
 const statusColors = {
-  planned: 'bg-slate-100 text-slate-700',
+  planned: 'scholr-sunk scholr-body',
   ongoing: 'bg-amber-100 text-amber-700',
   completed: 'bg-green-100 text-green-700',
-  approved: 'bg-indigo-100 text-indigo-700'
+  approved: 'scholr-accent-sf scholr-accent'
 };
 
 export default function CASExperienceCard({ experience, onEdit, onViewDetails }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-lg p-5 hover:shadow-md transition-shadow">
+    <div className="app-group p-5 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-3">
-        <h3 className="font-semibold text-slate-900 text-lg">{experience.title}</h3>
+        <h3 className="font-semibold scholr-ink text-lg">{experience.title}</h3>
         <Badge className={statusColors[experience.status]}>{experience.status}</Badge>
       </div>
 
@@ -43,10 +43,10 @@ export default function CASExperienceCard({ experience, onEdit, onViewDetails })
       </div>
 
       {experience.description && (
-        <p className="text-sm text-slate-600 mb-3 line-clamp-2">{experience.description}</p>
+        <p className="text-sm scholr-muted mb-3 line-clamp-2">{experience.description}</p>
       )}
 
-      <div className="flex items-center gap-4 text-xs text-slate-500 mb-4">
+      <div className="flex items-center gap-4 text-xs scholr-muted mb-4">
         {experience.start_date && (
           <span className="flex items-center gap-1">
             <Calendar className="w-3 h-3" />

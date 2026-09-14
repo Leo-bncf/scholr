@@ -17,7 +17,7 @@ export default function RecentFeedbackList({ studentId, limit = 3 }) {
   }
 
   return (
-    <div className="divide-y divide-slate-100">
+    <div className="divide-y scholr-divide">
       {feedback.map((f) => {
         const sub = getSubmissionById(f.submissionId);
         const assignment = sub ? getAssignment(sub.assignmentId) : null;
@@ -27,10 +27,10 @@ export default function RecentFeedbackList({ studentId, limit = 3 }) {
           <Link
             key={f.id}
             to={assignment ? `/demo/student/assignment/${assignment.id}` : '#'}
-            className="group block px-4 md:px-6 py-4 hover:bg-slate-50/70 transition-colors"
+            className="group block px-4 md:px-6 py-4 scholr-hover/70 transition-colors"
           >
             <div className="flex items-start gap-3">
-              <div className="h-9 w-9 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[11px] font-bold flex-shrink-0">
+              <div className="h-9 w-9 rounded-full scholr-accent-sf scholr-accent flex items-center justify-center text-[11px] font-bold flex-shrink-0">
                 {teacher?.initials || '??'}
               </div>
               <div className="min-w-0 flex-1">
@@ -45,7 +45,7 @@ export default function RecentFeedbackList({ studentId, limit = 3 }) {
                 </p>
                 <p className="text-sm text-slate-700 line-clamp-2 leading-snug">{f.body}</p>
               </div>
-              <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-0.5 transition mt-1" />
+              <ArrowRight className="w-4 h-4 scholr-faint group-scholr-ink group-hover:translate-x-0.5 transition mt-1" />
             </div>
           </Link>
         );

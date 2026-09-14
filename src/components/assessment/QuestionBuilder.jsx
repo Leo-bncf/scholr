@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 export default function QuestionBuilder({ question, onChange, onDelete }) {
   return (
-    <div className="border rounded-xl p-4 space-y-3 bg-slate-50">
+    <div className="border rounded-xl p-4 space-y-3 scholr-sunk">
       <div className="flex gap-3">
         <div className="flex-1">
           <Label>Question</Label>

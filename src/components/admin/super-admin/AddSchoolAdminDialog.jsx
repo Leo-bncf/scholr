@@ -221,9 +221,9 @@ export default function AddSchoolAdminDialog({ open, onOpenChange, school }) {
             />
           </div>
 
-          <Alert className="border-indigo-200 bg-indigo-50">
-            <Mail className="w-4 h-4 text-indigo-700" />
-            <AlertDescription className="text-sm text-indigo-900">
+          <Alert className="scholr-accent-rule scholr-accent-sf">
+            <Mail className="w-4 h-4 scholr-accent" />
+            <AlertDescription className="text-sm scholr-accent">
               This will send a school admin invitation for <strong>{school?.name}</strong>.
             </AlertDescription>
           </Alert>
@@ -232,7 +232,7 @@ export default function AddSchoolAdminDialog({ open, onOpenChange, school }) {
             <Button type="button" onClick={() => onOpenChange(false)} variant="outline" className="flex-1">
               Cancel
             </Button>
-            <Button type="submit" disabled={loading || !form.email.trim()} className="flex-1 bg-indigo-600 hover:bg-indigo-700">
+            <Button type="submit" disabled={loading || !form.email.trim()} className="flex-1 scholr-accent-sf hover:scholr-accent-sf">
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
