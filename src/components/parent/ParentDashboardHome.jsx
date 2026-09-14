@@ -165,7 +165,7 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
             {unreadMessages.map(msg => (
               <div
                 key={msg.id}
-                className="app-row" style={{ display: 'flex', alignItems: 'flex-start', gap: '.75rem', padding: '.7rem .9rem' }}
+                className="app-row"
                 style={{ display: 'flex', alignItems: 'flex-start', gap: '.75rem', padding: '.7rem .9rem', background: 'var(--brand-sf)' }}
               >
                 <div className="min-w-0 flex-1">
@@ -195,7 +195,7 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
             {readMessages.map(msg => (
               <div
                 key={msg.id}
-                style={{ padding: '.7rem .9rem' }}
+                className="app-row"
                 style={{ padding: '.7rem .9rem', opacity: 0.6 }}
               >
                 <p className="m-0 text-sm" style={{ color: 'var(--body)' }}>{msg.subject}</p>
