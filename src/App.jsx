@@ -45,6 +45,7 @@ import SchoolAdminGovernance from './pages/SchoolAdminGovernance';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { ImpersonationProvider, useImpersonation } from '@/components/auth/ImpersonationContext';
+import { UserProvider } from '@/components/auth/UserContext';
 import ImpersonationBanner from '@/components/auth/ImpersonationBanner';
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -354,10 +355,21 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <ImpersonationProvider>
-          <Router>
-            <ImpersonationBanner />
-            <AuthenticatedApp />
-          </Router>
+          {/* UserProvider lives HERE, above the router, and not inside Layout.
+              Layout is rendered per route by LayoutWrapper, so a provider
+              inside it unmounts and remounts on every navigation — and its
+              mount effect is loadUser(), which is four serial round trips:
+              auth.getUser (~127ms), the profiles row (~106ms), the active
+              membership, then the school. Every page change paid all four and
+              showed a blank shell while it waited.
+
+              Mounted once here, the session is loaded once and stays. */}
+          <UserProvider>
+            <Router>
+              <ImpersonationBanner />
+              <AuthenticatedApp />
+            </Router>
+          </UserProvider>
           <Toaster />
         </ImpersonationProvider>
       </QueryClientProvider>

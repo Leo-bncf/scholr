@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { applyTheme, getStoredTheme } from '@/lib/theme';
-import { UserProvider, useUser } from '@/components/auth/UserContext';
+import { useUser } from '@/components/auth/UserContext';
 import { PlanProvider } from '@/components/plan/PlanProvider';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import BellBoundary from '@/components/notifications/BellBoundary';
@@ -58,15 +58,15 @@ export default function Layout({ children, currentPageName }) {
     return <>{children}</>;
   }
 
+  // UserProvider used to wrap this. It is in App now, above the router — see
+  // the comment there. PlanProvider stays: it is cheap and reads from context.
   return (
-    <UserProvider>
-      <PlanProvider>
-        {isFullScreen ? (
-          <NotificationWrapper>{children}</NotificationWrapper>
-        ) : (
-          children
-        )}
-      </PlanProvider>
-    </UserProvider>
+    <PlanProvider>
+      {isFullScreen ? (
+        <NotificationWrapper>{children}</NotificationWrapper>
+      ) : (
+        children
+      )}
+    </PlanProvider>
   );
 }
