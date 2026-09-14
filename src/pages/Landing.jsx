@@ -383,8 +383,8 @@ export default function Landing() {
           document flow (not fixed) so it scrolls away with the hero rather
           than bleeding into later sections. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[28rem] overflow-hidden">
-        <div className="mkt-bloom-a absolute -top-24 left-[8%] h-96 w-96 rounded-full bg-[var(--mkt-accent)] opacity-[0.55] blur-2xl sm:h-[28rem] sm:w-[28rem]" />
-        <div className="mkt-bloom-b absolute -top-16 right-[8%] h-80 w-80 rounded-full bg-[var(--mkt-accent)] opacity-[0.46] blur-2xl sm:h-[30rem] sm:w-[30rem]" />
+        <div className="mkt-bloom-a absolute -top-24 left-[8%] h-96 w-96 rounded-full bg-[var(--mkt-accent)] opacity-[0.85] blur-xl sm:h-[30rem] sm:w-[30rem]" />
+        <div className="mkt-bloom-b absolute -top-16 right-[8%] h-80 w-80 rounded-full bg-[var(--mkt-accent)] opacity-[0.75] blur-xl sm:h-[32rem] sm:w-[32rem]" />
       </div>
 
       <div className="fixed top-4 left-0 right-0 z-50 px-4 flex justify-center sm:top-6">
