@@ -67,15 +67,90 @@ export function listVersions(assignmentId, studentId) {
   );
 }
 
+/** The student's in-progress draft for an assignment, if there is one. */
+export function getDraft(assignmentId, studentId) {
+  return maybeOne(
+    supabase
+      .from('submissions')
+      .select(COLUMNS)
+      .eq('assignment_id', assignmentId)
+      .eq('student_id', studentId)
+      .eq('status', 'draft')
+      .eq('is_current_version', true),
+    'submissions.getDraft',
+  );
+}
+
+/**
+ * Save work in progress.
+ *
+ * Editing an existing draft updates it in place — a draft is a scratchpad, not
+ * a version. Only submitting creates one.
+ */
+export async function saveDraft({ assignmentId, studentId, ...payload }) {
+  const draft = await getDraft(assignmentId, studentId);
+
+  if (draft) {
+    return one(
+      supabase.from('submissions').update(payload).eq('id', draft.id).select(COLUMNS),
+      'submissions.saveDraft/update',
+    );
+  }
+
+  const previous = await getForStudent(assignmentId, studentId);
+  if (previous) {
+    await supabase.from('submissions').update({ is_current_version: false }).eq('id', previous.id);
+  }
+
+  return one(
+    supabase
+      .from('submissions')
+      .insert({
+        ...payload,
+        assignment_id: assignmentId,
+        student_id: studentId,
+        previous_submission_id: previous?.id ?? null,
+        version_number: (previous?.version_number ?? 0) + 1,
+        is_current_version: true,
+        status: 'draft',
+      })
+      .select(COLUMNS),
+    'submissions.saveDraft/insert',
+  );
+}
+
 /**
  * Submit, or resubmit.
  *
- * Two statements: demote the previous current version, then insert the new one.
- * If the second fails the student briefly has no current version, which reads
- * as "not submitted" — recoverable by resubmitting. Making this atomic needs a
- * Postgres function, worth doing if resubmission turns out to be common.
+ * If the student has a draft open, submitting promotes that row rather than
+ * inserting beside it — otherwise the draft would linger as a second current
+ * version and the marking queue would show the work twice.
+ *
+ * Otherwise: demote the previous current version, then insert the new one. If
+ * the second statement fails the student briefly has no current version, which
+ * reads as "not submitted" — recoverable by resubmitting. Making it atomic
+ * needs a Postgres function, worth doing if resubmission turns out to be
+ * common.
+ *
+ * `late` is decided by the caller, which is the only place that knows the
+ * assignment's due date.
  */
-export async function submit({ assignmentId, studentId, ...payload }) {
+export async function submit({ assignmentId, studentId, late = false, ...payload }) {
+  const status = late ? 'late' : 'submitted';
+  const now = new Date().toISOString();
+
+  const draft = await getDraft(assignmentId, studentId);
+  if (draft) {
+    return one(
+      supabase
+        .from('submissions')
+        .update({ ...payload, status, submitted_at: now, submission_time: now })
+        .eq('id', draft.id)
+        .select(COLUMNS),
+      'submissions.submit/promoteDraft',
+    );
+  }
+
   const previous = await getForStudent(assignmentId, studentId);
 
   if (previous) {
@@ -92,29 +167,70 @@ export async function submit({ assignmentId, studentId, ...payload }) {
         previous_submission_id: previous?.id ?? null,
         version_number: (previous?.version_number ?? 0) + 1,
         is_current_version: true,
-        submitted_at: new Date().toISOString(),
-        status: 'submitted',
+        submitted_at: now,
+        submission_time: now,
+        status,
       })
       .select(COLUMNS),
     'submissions.submit',
   );
 }
 
-/** Record a mark and feedback against a submission. */
-export function grade(id, { score, feedback, annotations }) {
+/**
+ * Record a mark and feedback.
+ *
+ * `publish: false` returns the work to the student with the feedback attached
+ * but stops short of calling it final — that is the "returned" state, which is
+ * what a teacher wants when they expect a resubmission. `score` is optional:
+ * marking something reviewed without a number is a normal thing to do.
+ */
+export function grade(id, { score, feedback, annotations, publish = true } = {}) {
   return one(
     supabase
       .from('submissions')
       .update({
-        score,
-        feedback,
+        ...(score !== undefined ? { score } : {}),
+        ...(feedback !== undefined ? { feedback } : {}),
         ...(annotations !== undefined ? { annotations } : {}),
-        status: 'graded',
+        status: publish ? 'graded' : 'returned',
         graded_at: new Date().toISOString(),
       })
       .eq('id', id)
       .select(COLUMNS),
     'submissions.grade',
+  );
+}
+
+/** Send work back for another attempt, with written feedback and no mark. */
+export function returnForRevision(id, { feedback }) {
+  return one(
+    supabase
+      .from('submissions')
+      .update({ feedback, status: 'returned' })
+      .eq('id', id)
+      .select(COLUMNS),
+    'submissions.returnForRevision',
+  );
+}
+
+/** Replace the margin annotations on a submission. */
+export function setAnnotations(id, annotations) {
+  return one(
+    supabase.from('submissions').update({ annotations }).eq('id', id).select(COLUMNS),
+    'submissions.setAnnotations',
+  );
+}
+
+/**
+ * Overwrite the denormalised student name.
+ *
+ * Only for erasure requests: the row is kept because a mark is an academic
+ * record, but the name on it is replaced. Nothing else should call this.
+ */
+export function anonymiseStudentName(id, studentName) {
+  return none(
+    supabase.from('submissions').update({ student_name: studentName }).eq('id', id),
+    'submissions.anonymiseStudentName',
   );
 }
 

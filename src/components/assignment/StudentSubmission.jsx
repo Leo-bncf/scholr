@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -40,18 +40,17 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
   });
 
   const activeSubmission = selectedSubmission || existingSubmission;
-  const latestVersionNumber = useMemo(() => submissionHistory.length ? Math.max(...submissionHistory.map((item) => item.version_number || 1)) : 0, [submissionHistory]);
 
   const submitMutation = useMutation({
-    mutationFn: async (data) => {
-      if (data.status === 'draft' && activeSubmission && activeSubmission.status === 'draft') {
-        return submissionsData.update(activeSubmission.id, data);
-      }
-      if (activeSubmission && data.status !== 'draft') {
-        await submissionsData.update(activeSubmission.id, { is_current_version: false });
-      }
-      return submissionsData.create(data);
-    },
+    // The data layer owns versioning. This used to compute version_number,
+    // previous_submission_id and is_current_version here as well as in
+    // submit() — two implementations of one rule, waiting to disagree. It also
+    // called update() and create(), which submissions.js does not export, so
+    // every save threw "is not a function".
+    mutationFn: ({ draft, late, ...payload }) =>
+      (draft
+        ? submissionsData.saveDraft(payload)
+        : submissionsData.submit({ ...payload, late })),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assignment-detail'] });
       queryClient.invalidateQueries({ queryKey: ['student-submission'] });
@@ -229,23 +228,19 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
       setPolicyError('Late submissions are not accepted for this assignment.');
       return;
     }
-    const isLate = new Date() > new Date(assignment.due_date);
-    const submissionTime = status === 'submitted' ? new Date().toISOString() : activeSubmission?.submission_time || null;
+    // Lateness is decided here because this is the only place that knows the
+    // assignment's due date; everything about versions is the data layer's.
     submitMutation.mutate({
+      draft: status === 'draft',
+      late: new Date() > new Date(assignment.due_date),
+      assignmentId: assignment.id,
+      studentId,
       school_id: assignment.school_id,
-      assignment_id: assignment.id,
       class_id: assignment.class_id,
-      student_id: studentId,
       student_name: studentName,
       content,
       documents,
-      version_number: latestVersionNumber + (status === 'draft' && activeSubmission?.status === 'draft' ? 0 : 1),
-      submission_time: submissionTime,
       file_type: documents[0]?.file_type || documents[0]?.mime_type || null,
-      previous_submission_id: activeSubmission?.id || null,
-      is_current_version: true,
-      status: isLate && status === 'submitted' ? 'late' : status,
-      submitted_at: status === 'submitted' ? new Date().toISOString() : activeSubmission?.submitted_at,
     });
   };
 

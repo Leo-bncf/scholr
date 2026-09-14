@@ -45,8 +45,12 @@ export default function SubmissionReview() {
     enabled: !!submission?.assignment_id && !!schoolId,
   });
 
+  // Each caller says what it is doing rather than handing over a patch.
+  // submissions.js exports no update(), so the old form threw on every use;
+  // it also spread the whole row back as the patch, id and timestamps
+  // included.
   const updateMutation = useMutation({
-    mutationFn: (data) => submissionsData.update(submissionId, data),
+    mutationFn: (apply) => apply(submissionId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['submission-review'] });
       queryClient.invalidateQueries({ queryKey: ['assignment-submissions'] });
@@ -76,26 +80,20 @@ export default function SubmissionReview() {
   }
 
   const handleReturn = () => {
-    updateMutation.mutate({
-      ...submission,
-      feedback,
-      status: 'returned',
-    });
+    updateMutation.mutate((id) => submissionsData.returnForRevision(id, { feedback }));
   };
 
   const handleAddAnnotation = (annotation) => {
-    updateMutation.mutate({
-      ...submission,
-      annotations: [
-        ...(submission.annotations || []),
-        {
-          id: crypto.randomUUID(),
-          ...annotation,
-          created_by: user?.full_name || user?.email,
-          created_at: new Date().toISOString(),
-        }
-      ]
-    });
+    const next = [
+      ...(submission.annotations || []),
+      {
+        id: crypto.randomUUID(),
+        ...annotation,
+        created_by: user?.full_name || user?.email,
+        created_at: new Date().toISOString(),
+      },
+    ];
+    updateMutation.mutate((id) => submissionsData.setAnnotations(id, next));
   };
 
   const statusColors = {

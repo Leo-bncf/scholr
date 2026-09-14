@@ -52,10 +52,10 @@ export default function TeacherWorkspace() {
   });
 
   const reviewedMutation = useMutation({
-    mutationFn: (row) => submissionsData.update(row.submissionId, {
-      status: 'graded',
+    // Marking something reviewed carries no score, which grade() now allows.
+    mutationFn: (row) => submissionsData.grade(row.submissionId, {
       feedback: row.submission?.feedback || '',
-      graded_at: new Date().toISOString(),
+      publish: true,
     }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['teacher-workspace'] });
@@ -98,11 +98,10 @@ export default function TeacherWorkspace() {
         await gradebookData.create(gradeData);
       }
 
-      await submissionsData.update(row.submissionId, {
+      await submissionsData.grade(row.submissionId, {
         feedback: payload.overallFeedback,
         score: payload.totalScore,
-        status: publish ? 'graded' : 'returned',
-        graded_at: new Date().toISOString(),
+        publish,
       });
     },
     onSuccess: () => {

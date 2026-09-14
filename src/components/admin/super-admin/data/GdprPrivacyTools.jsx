@@ -98,7 +98,7 @@ export default function GdprPrivacyTools() {
     }
     // Anonymize submissions
     for (const id of summary.submissionIds) {
-      await submissionsData.update(id, { student_name: anonName });
+      await submissionsData.anonymiseStudentName(id, anonName);
     }
     // Anonymize attendance
     for (const id of summary.attendanceIds) {

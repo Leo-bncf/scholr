@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/gen-sitemap.mjs && vite build && node scripts/check-build-env.mjs && node scripts/prerender.mjs",
+    "build": "node scripts/gen-sitemap.mjs && node scripts/verify-data-calls.mjs && vite build && node scripts/check-build-env.mjs && node scripts/prerender.mjs",
     "prerender": "node scripts/prerender.mjs",
     "lint": "eslint . --quiet",
     "lint:fix": "eslint . --fix",
@@ -22,7 +22,8 @@
     "shots": "node scripts/shoot-marketing.mjs",
     "sitemap": "node scripts/gen-sitemap.mjs",
     "build:fast": "node scripts/gen-sitemap.mjs && vite build && node scripts/check-build-env.mjs",
-    "check:env": "node scripts/check-build-env.mjs"
+    "check:env": "node scripts/check-build-env.mjs",
+    "verify:calls": "node scripts/verify-data-calls.mjs"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
