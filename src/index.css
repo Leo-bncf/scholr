@@ -200,3 +200,38 @@
     transform: none;
   }
 }
+
+/* Landing hero's bloom — two low-opacity blurred circles, confined to the
+   hero only. Blooms in once on load, then drifts by a few px over a very
+   long, slow cycle. Kept deliberately restrained: <14% opacity, motion
+   amplitude under 20px, nothing else on the page moves on a loop. */
+@keyframes mkt-bloom-in {
+  from { opacity: 0; }
+}
+@keyframes mkt-bloom-drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(16px, -14px) scale(1.05); }
+}
+@keyframes mkt-bloom-drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-18px, 12px) scale(0.96); }
+}
+.mkt-bloom-a {
+  animation:
+    mkt-bloom-in 1.1s var(--mkt-ease-out) forwards,
+    mkt-bloom-drift-a 24s ease-in-out 1.1s infinite;
+}
+.mkt-bloom-b {
+  animation:
+    mkt-bloom-in 1.3s var(--mkt-ease-out) 0.15s forwards,
+    mkt-bloom-drift-b 28s ease-in-out 1.45s infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Cancel the animation only — opacity stays whatever the element's own
+     opacity-[…] utility sets. Forcing opacity:1 here previously overrode
+     that utility and turned the subtle bloom into a solid green blob. */
+  .mkt-bloom-a,
+  .mkt-bloom-b {
+    animation: none;
+  }
+}

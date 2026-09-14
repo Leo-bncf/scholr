@@ -61,22 +61,33 @@ function HeroSection() {
           edge — one deliberate grid-break rather than a flat, edge-to-edge paper. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute right-0 top-16 hidden h-[34rem] w-[60vw] rounded-l-[3rem] bg-[var(--mkt-paper-2)] lg:block"
-      />
+        className="pointer-events-none absolute right-0 top-16 hidden h-[34rem] w-[60vw] overflow-hidden rounded-l-[3rem] bg-[var(--mkt-paper-2)] lg:block"
+      >
+        {/* Two low-opacity blooms, confined to this wash — fade in once on
+            load, then drift a few px on a slow, restrained loop. */}
+        <div className="mkt-bloom-a absolute -top-16 right-10 h-72 w-72 rounded-full bg-[var(--mkt-accent)] opacity-[0.12] blur-3xl" />
+        <div className="mkt-bloom-b absolute bottom-0 left-10 h-64 w-64 rounded-full bg-[var(--mkt-accent)] opacity-[0.09] blur-3xl" />
+      </div>
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
           <div className="lg:col-span-4">
             <h1
-              className="font-[var(--mkt-font-display)] font-bold tracking-[-0.03em] text-[var(--mkt-ink)]"
-              style={{ fontSize: 'clamp(2.5rem, 4.2vw + 1rem, 3.75rem)', lineHeight: 1.05 }}
+              className="motion-safe:animate-[mkt-fade-in_550ms_var(--mkt-ease-out)_backwards] font-[var(--mkt-font-display)] font-bold tracking-[-0.03em] text-[var(--mkt-ink)]"
+              style={{ fontSize: 'clamp(2.5rem, 4.2vw + 1rem, 3.75rem)', lineHeight: 1.05, animationDelay: '0ms' }}
             >
               One system for every curriculum you teach.
             </h1>
-            <p className="mt-5 text-lg text-[var(--mkt-ink-2)] leading-relaxed max-w-md">
+            <p
+              className="motion-safe:animate-[mkt-fade-in_550ms_var(--mkt-ease-out)_backwards] mt-5 text-lg text-[var(--mkt-ink-2)] leading-relaxed max-w-md"
+              style={{ animationDelay: '80ms' }}
+            >
               Gradebooks, timetables, attendance and parent communication — for schools
               running IB, IGCSE, A&#8209;Level and US programmes side by side.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
+            <div
+              className="motion-safe:animate-[mkt-fade-in_550ms_var(--mkt-ease-out)_backwards] mt-8 flex flex-wrap items-center gap-4"
+              style={{ animationDelay: '160ms' }}
+            >
               <Link to="/BookDemo">
                 <Button className="h-12 px-7 rounded-lg bg-[var(--mkt-ink)] hover:bg-[var(--mkt-ink)]/90 text-[var(--mkt-paper)] text-base font-medium shadow-none whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[var(--mkt-focus)] focus-visible:ring-offset-2">
                   Book a demo <ArrowRight className="ml-2 w-4 h-4" />
@@ -90,7 +101,10 @@ function HeroSection() {
               </button>
             </div>
           </div>
-          <div className="relative lg:col-span-8">
+          <div
+            className="motion-safe:animate-[mkt-fade-in_650ms_var(--mkt-ease-out)_backwards] relative lg:col-span-8"
+            style={{ animationDelay: '120ms' }}
+          >
             <figure className="rounded-xl border border-[var(--mkt-rule)] shadow-[0_1px_2px_oklch(20%_0.01_150/0.06)] overflow-hidden bg-[var(--mkt-paper-2)]">
               <img
                 src="/product/teacher.png"
