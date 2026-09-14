@@ -1,529 +1,309 @@
-import React, { useState, useEffect } from 'react';
+/* Hallmark · genre: modern-minimal · macrostructure: Workbench · theme: Coral
+ * nav: N5 Floating pill · footer: Ft1 Mast-headed
+ * enrichment: real product screenshots (demo sandbox, no chrome redrawn)
+ * pre-emit critique: P5 H4 E5 S4 R4 V4
+ */
+import React, { useEffect, useRef, useState } from 'react';
 import DetachedNavbar from '@/components/public/DetachedNavbar';
-import { ExpandableCard } from '@/components/ui/expandable-card';
 import PublicFooter from '@/components/public/PublicFooter';
 import ConsentModal from '@/components/public/ConsentModal';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { isAuthenticated } from '@/data/session';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { ArrowRight, X } from 'lucide-react';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
-import TopMarqueeSection from '@/components/landing/TopMarqueeSection';
-import LandingAnimatedBackground from '@/components/landing/LandingAnimatedBackground';
-import {
-  ArrowRight,
-  BookOpen,
-  ChevronRight,
-  Sparkles,
-  GraduationCap,
-  UserCircle,
-  Compass,
-  Settings2,
-  CheckCircle2,
-  ShieldCheck,
-  PieChart,
-  ListChecks,
-  Award,
-  HeartHandshake,
-  CalendarDays,
-  MessageSquareShare,
-  Globe2,
-} from 'lucide-react';
 
-function HeroSection() {
-  const { scrollY } = useScroll();
-  const opacity = useTransform(scrollY, [0, 120, 260], [0, 0.4, 1]);
-  const y = useTransform(scrollY, [0, 260], [180, 0]);
-  const scale = useTransform(scrollY, [0, 260], [0.96, 1]);
-  const wordmarkY = useTransform(scrollY, [0, 220, 520], ["-35vh", "-65vh", "-95vh"]);
-  const wordmarkOpacity = useTransform(scrollY, [0, 180, 420, 620], [0.92, 1, 0.55, 0]);
-  const wordmarkScale = useTransform(scrollY, [0, 220, 520], [1.16, 1.08, 0.98]);
-  const wordmarkColor = useTransform(
-    scrollY,
-    [0, 260, 520],
-    ["rgba(255,255,255,0.36)", "rgba(20,20,20,0.65)", "rgba(0,0,0,0.94)"]
-  );
+const handleSignIn = async () => {
+  if (await isAuthenticated()) {
+    window.location.href = '/AppHome';
+  } else {
+    window.location.href = `/Login?next=${encodeURIComponent('/AppHome')}`;
+  }
+};
 
-  const handleSignIn = async () => {
-    if (await isAuthenticated()) {
-      window.location.href = '/AppHome';
-    } else {
-      window.location.href = `/Login?next=${encodeURIComponent('/AppHome')}`;
-    }
-  };
+function Reveal({ children, className = '' }) {
+  const ref = useRef(null);
+  const [shown, setShown] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShown(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   return (
-    <section className="relative overflow-hidden pt-28 pb-20 lg:pt-40 lg:pb-32 min-h-[145vh] flex items-center">
-      <motion.div
-        className="pointer-events-none absolute inset-x-0 z-0 overflow-hidden"
-        style={{ y: wordmarkY, opacity: wordmarkOpacity, scale: wordmarkScale }}
-      >
-        <motion.span
-          className="block w-full text-center select-none text-[8.5rem] sm:text-[13rem] lg:text-[18rem] font-semibold tracking-[0.02em] leading-none whitespace-nowrap scale-x-[1.18] origin-center [text-shadow:0_2px_10px_rgba(255,255,255,0.10)]"
-          style={{ color: wordmarkColor }}
-        >
-          Scholr
-        </motion.span>
-      </motion.div>
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div className="max-w-4xl mx-auto text-center pt-[70vh] lg:pt-[82vh]" style={{ opacity, y, scale }}>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1] drop-shadow-[0_6px_24px_rgba(0,0,0,0.22)]">
-           The LMS designed for
-           <span className="text-white"> the needs of</span>
-           {' '}International Schools
-          </h1>
+    <div
+      ref={ref}
+      className={`transition-[opacity,transform] duration-500 ease-out ${
+        shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+      } ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
 
-          <p className="mt-6 text-xl text-white leading-relaxed max-w-2xl mx-auto drop-shadow-[0_4px_18px_rgba(0,0,0,0.18)]">
-            A unified platform built for international schools — supporting multiple curricula, grading frameworks, and reporting standards.
-          </p>
-          
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-             <Button 
-               size="lg" 
-               className="bg-slate-900 hover:bg-slate-700 text-white rounded-full px-8 h-12 text-base font-medium shadow-sm transition-all"
-               onClick={handleSignIn}
-             >
-               Sign In <ArrowRight className="ml-2 w-4 h-4" />
-             </Button>
-             <Link to="/Demo">
-               <Button size="lg" variant="outline" className="rounded-full px-8 h-12 text-base font-medium border-slate-300 hover:bg-slate-50 text-slate-800">
-                 Contact Sales for a Free Demo
-               </Button>
-             </Link>
-           </div>
-        </motion.div>
-        
-        <div className="mt-40 lg:mt-52 mx-auto max-w-3xl">
-          <p className="text-lg text-white leading-relaxed text-center drop-shadow-[0_4px_18px_rgba(0,0,0,0.18)]">
-            <span className="font-semibold text-white">Multi-curricular</span> — built for schools running IB, IGCSE, A-Levels, US Common Core, and more. <span className="font-semibold text-white">Flexible frameworks</span> — every workflow adapts to your curriculum's structure, criteria, and terminology. <span className="font-semibold text-white">Zero noise</span> — trimmed to exactly what international educators and students need, nothing more.
-          </p>
+function HeroSection() {
+  return (
+    <section className="pt-32 pb-16 sm:pt-40 sm:pb-20">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+          <div className="lg:col-span-5">
+            <h1
+              className="font-[var(--coral-font-display)] font-bold tracking-[-0.03em] text-[var(--coral-ink)]"
+              style={{ fontSize: 'clamp(2.25rem, 3.4vw + 1.2rem, 3.5rem)', lineHeight: 1.08 }}
+            >
+              One system for every curriculum you teach.
+            </h1>
+            <p className="mt-5 text-lg text-[var(--coral-ink-2)] leading-relaxed max-w-md">
+              Gradebooks, timetables, attendance and parent communication — for schools
+              running IB, IGCSE, A&#8209;Level and US programmes side by side.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <Link to="/Demo">
+                <Button className="h-12 px-7 rounded-lg bg-[var(--coral-ink)] hover:bg-[var(--coral-ink)]/90 text-[var(--coral-paper)] text-base font-medium shadow-none whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[var(--coral-focus)] focus-visible:ring-offset-2">
+                  Book a demo <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </Link>
+              <button
+                onClick={handleSignIn}
+                className="h-12 px-2 text-base font-medium text-[var(--coral-ink-2)] hover:text-[var(--coral-ink)] transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--coral-focus)] focus-visible:ring-offset-2 rounded-md"
+              >
+                Sign in
+              </button>
+            </div>
+          </div>
+          <div className="lg:col-span-7">
+            <figure className="rounded-xl border border-[var(--coral-rule)] shadow-[0_1px_2px_oklch(20%_0.01_40/0.06)] overflow-hidden bg-[var(--coral-paper-2)]">
+              <img
+                src="/product/teacher.png"
+                alt="A teacher's Scholr dashboard showing assignments to grade, today's schedule and class overview"
+                width={1400}
+                height={933}
+                fetchPriority="high"
+                className="block w-full h-auto"
+              />
+            </figure>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-function ProblemSection() {
-  const problems = [
-    { text: 'Scattered data across spreadsheets, email, and disconnected tools' },
-    { text: "Weak role-based access — teachers see data they shouldn't" },
-    { text: 'Parents lack real-time visibility into their child\'s progress' },
-    { text: 'Tedious manual workflows for assignments, grading, and reporting' },
-  ];
-
+function WalkthroughBlock({ eyebrow, title, body, src, alt, align, sentinelRef }) {
+  const imageFirst = align === 'right';
   return (
-    <motion.section
-      className="py-20"
-      initial={{ opacity: 0, y: 70, scale: 0.96 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.55, ease: 'easeOut' }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white">International schools deserve better tools</h2>
-          <p className="mt-3 text-lg text-white">Current platforms weren't built for the unique demands of multi-curricular international schools</p>
+    <Reveal className="py-14 sm:py-20">
+      <div ref={sentinelRef} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+          <div className={`lg:col-span-5 ${imageFirst ? 'lg:order-2' : ''}`}>
+            <p className="text-sm font-semibold text-[var(--coral-accent)]">{eyebrow}</p>
+            <h2 className="mt-2 text-2xl sm:text-[1.75rem] font-semibold tracking-[-0.02em] text-[var(--coral-ink)]">
+              {title}
+            </h2>
+            <p className="mt-4 text-[15px] leading-relaxed text-[var(--coral-ink-2)] max-w-md">{body}</p>
+          </div>
+          <div className={`lg:col-span-7 ${imageFirst ? 'lg:order-1' : ''}`}>
+            <figure className="rounded-xl border border-[var(--coral-rule)] shadow-[0_1px_2px_oklch(20%_0.01_40/0.06)] overflow-hidden bg-[var(--coral-paper-2)]">
+              <img src={src} alt={alt} width={1400} height={933} loading="lazy" className="block w-full h-auto" />
+            </figure>
+          </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl mx-auto">
-          {problems.map((p, i) => (
-            <div key={i} className="flex items-start gap-4 p-5 bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200 shadow-sm">
-              <div className="w-1 h-1 rounded-full bg-primary600 mt-2 flex-shrink-0"></div>
-              <p className="text-sm text-slate-600 leading-relaxed">{p.text}</p>
+      </div>
+    </Reveal>
+  );
+}
+
+function ProductWalkthrough({ thirdBlockRef }) {
+  return (
+    <div className="divide-y divide-[var(--coral-rule)]">
+      <WalkthroughBlock
+        eyebrow="For students"
+        title="Every deadline, grade and class in one dashboard."
+        body="Upcoming work sorted by urgency, predicted grades trending by subject, and today's timetable — the same view whether a student is doing IB, IGCSE, or A-Levels."
+        src="/product/student.png"
+        alt="Student dashboard showing upcoming deadlines, performance by subject and today's schedule"
+        align="left"
+      />
+      <div ref={thirdBlockRef}>
+        <WalkthroughBlock
+          eyebrow="For parents"
+          title="Real-time visibility across every child at the school."
+          body="Grades, attendance and teacher feedback per child, switchable from one login. No chasing emails for a progress update that's already on the screen."
+          src="/product/parent.png"
+          alt="Parent dashboard showing multiple children, grades, attendance and upcoming deadlines"
+          align="right"
+        />
+      </div>
+      <WalkthroughBlock
+        eyebrow="For school leadership"
+        title="School-wide performance, with problems flagged before they grow."
+        body="Subject performance trends term over term, at-risk students surfaced automatically, filterable by year group and subject — the view a head of school actually needs."
+        src="/product/leader.png"
+        alt="School leadership dashboard showing subject performance trends and flagged at-risk students"
+        align="left"
+      />
+    </div>
+  );
+}
+
+const CAPABILITIES = [
+  {
+    name: 'Multi-curriculum grading',
+    desc: '1–7 IB, A*–E, letter grades and percentages, with predicted-grade tracking and criterion-based rubrics.',
+  },
+  {
+    name: 'IB Core suite',
+    desc: 'CAS, Extended Essay and TOK tracked from proposal to final submission, with coordinator approval built in.',
+  },
+  {
+    name: 'Timetable integration',
+    desc: 'Syncs with Veracross and iSAMS, resolves scheduling conflicts, and handles exam-period changes.',
+  },
+  {
+    name: 'Internal messaging',
+    desc: 'Role-aware threads between teachers, students and parents, with quiet-hours policies and compliance logging.',
+  },
+  {
+    name: 'Enterprise security',
+    desc: 'Multi-tenant isolation, audit logging and GDPR export/deletion tools, encrypted at rest and in transit.',
+  },
+  {
+    name: 'Curriculum-aware interface',
+    desc: 'IB-only tools stay hidden at IGCSE and A-Level schools. Terminology adapts to your framework automatically.',
+  },
+];
+
+function CapabilitiesSection() {
+  return (
+    <Reveal className="py-16 sm:py-24 bg-[var(--coral-paper-2)]">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-2xl sm:text-[1.75rem] font-semibold tracking-[-0.02em] text-[var(--coral-ink)]">
+          Underneath the dashboards
+        </h2>
+        <div className="mt-8 border-t border-[var(--coral-rule)]">
+          {CAPABILITIES.map((c) => (
+            <div
+              key={c.name}
+              className="grid grid-cols-1 sm:grid-cols-[minmax(0,15rem)_1fr] gap-x-8 gap-y-1 py-5 border-b border-[var(--coral-rule)]"
+            >
+              <p className="font-medium text-[var(--coral-ink)]">{c.name}</p>
+              <p className="text-[15px] leading-relaxed text-[var(--coral-ink-2)]">{c.desc}</p>
             </div>
           ))}
         </div>
       </div>
-    </motion.section>
+    </Reveal>
   );
 }
 
-function FeaturesGrid() {
-  const features = [
-    {
-      title: 'Executive Dashboards',
-      short: 'Role-specific insights',
-      desc: 'Personalized dashboards for every stakeholder — students see academic progress, teachers manage their classes, coordinators oversee cohorts, parents track their children, and admins control the entire school. Each role receives contextual information tailored to their responsibilities, with quick actions and performance indicators prominently displayed.',
-      icon: PieChart,
-      color: 'bg-gradient-to-br from-emerald-400 to-emerald-500 text-white shadow-inner'
-    },
-    {
-      title: 'Academic Workflows',
-      short: 'Complete assignment lifecycle',
-      desc: 'From creation to grading — publish assignments with IB criteria alignment, students submit work through Google Docs, files, or links, teachers provide criterion-based feedback, and grades sync automatically. Support for multiple submission formats, late submission handling, and comprehensive submission tracking ensure transparency throughout.',
-      icon: ListChecks,
-      color: 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-inner'
-    },
-    {
-      title: 'Gradebook',
-      short: 'Multi-framework grading',
-      desc: 'Support for multiple grading scales including 1-7 IB, A*-E, letter grades, and percentages. Predicted grade tracking with historical trends, rubric-based criterion assessment, and comprehensive term reports aligned to your curriculum. Generate assessment reports by criterion and lock grades for compliance.',
-      icon: Award,
-      color: 'bg-gradient-to-br from-teal-500 to-teal-600 text-white shadow-inner'
-    },
-    {
-      title: 'Parent Portal',
-      short: 'Real-time family engagement',
-      desc: 'Parents see grades, attendance records, upcoming assignments, teacher feedback, and behavioral notes — all updated in real-time. Direct messaging with teachers keeps communication secure, organised, and compliant with school policies. Parents can also receive progress alerts and attendance warnings.',
-      icon: HeartHandshake,
-      color: 'bg-gradient-to-br from-teal-600 to-emerald-600 text-white shadow-inner'
-    },
-    {
-      title: 'Timetable Integration',
-      short: 'Schedule synchronisation',
-      desc: 'Sync with external timetable systems like Veracross or iSAMS, display daily class schedules, manage periods and rooms, resolve scheduling conflicts automatically, and track historical schedule changes. Supports multiple concurrent timetables and handles special events and exam schedules.',
-      icon: CalendarDays,
-      color: 'bg-gradient-to-br from-emerald-600 to-emerald-700 text-white shadow-inner'
-    },
-    {
-      title: 'Internal Messaging',
-      short: 'Secure communication hub',
-      desc: 'Role-aware messaging between teachers, students, and parents with granular permission controls. Create class announcements, manage discussions, implement quiet hours policies, and maintain compliance logging for all communications. Thread-based conversations keep context clear and searchable.',
-      icon: MessageSquareShare,
-      color: 'bg-gradient-to-br from-emerald-700 to-green-700 text-white shadow-inner'
-    },
-    {
-      title: 'Enterprise Security',
-      short: 'Data protection',
-      desc: 'Complete multi-tenant isolation ensures schools cannot access each other\'s data. Granular role-based access control, audit logging of all critical actions, GDPR compliance tools including data export and deletion, and encrypted data storage at rest and in transit.',
-      icon: ShieldCheck,
-      color: 'bg-gradient-to-br from-green-600 to-green-700 text-white shadow-inner'
-    },
-    {
-      title: 'Extended Curriculum',
-      short: 'CAS, EE, TOK & more',
-      desc: 'Manage CAS experiences with strand mapping, supervisor tracking, and hourly reflection submissions. Track Extended Essay milestones from initial proposal through final viva voce. Manage TOK deadlines, student reflections, and coordinator approvals in one unified interface.',
-      icon: Globe2,
-      color: 'bg-gradient-to-br from-green-700 to-emerald-800 text-white shadow-inner'
-    },
-  ];
-
+function FinalCTA() {
   return (
-    <section className="py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-white">Comprehensive Platform Capabilities</h2>
-          <p className="mt-3 text-lg text-white">Engineered for the rigorous demands of international multi-curricular institutions</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((f, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 60, scale: 0.96 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.45, delay: i * 0.05, ease: 'easeOut' }}
-            >
-            <ExpandableCard
-              key={i}
-              title={f.title}
-              icon={f.icon}
-              color={f.color}
-              description={f.short}
-              classNameExpanded="[&_h4]:text-black dark:[&_h4]:text-white [&_h4]:font-medium"
-            >
-              <p className="text-lg leading-relaxed text-zinc-600 dark:text-zinc-300">
-                {f.desc}
-              </p>
-            </ExpandableCard>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FadeInCard({ children, delay = 0 }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.4, delay, ease: 'easeOut' }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function RolesSection() {
-  const [selectedRole, setSelectedRole] = React.useState(null);
-
-  const roles = [
-    {
-      name: 'Students',
-      short: 'Learn and track progress',
-      icon: GraduationCap,
-      color: 'sky',
-      desc: 'A personalised academic hub that keeps students on top of their workload, performance, and extended curriculum commitments.',
-      features: [
-        'Personal dashboard with grade trends and upcoming deadlines',
-        'Submit assignments via Google Docs, file upload, or links',
-        'View teacher feedback and criterion scores',
-        'Daily timetable with class schedule and room info',
-        'Track CAS, EE, and TOK milestones and reflections',
-        'Attendance history and absence notifications',
-      ]
-    },
-    {
-      name: 'Teachers',
-      short: 'Manage and assess',
-      icon: BookOpen,
-      color: 'blue',
-      desc: 'Everything a teacher needs to run their classes, assess students, and communicate — in one focused workspace.',
-      features: [
-        'Class workspace with stream, assignments, and gradebook',
-        'Publish assignments with curriculum-aligned criteria',
-        'Rubric and criterion-based grading with feedback',
-        'One-click attendance recording per class session',
-        'Class analytics showing performance trends',
-        'Direct messaging with students and parents',
-      ]
-    },
-    {
-      name: 'Parents',
-      short: 'Stay informed',
-      icon: UserCircle,
-      color: 'cyan',
-      desc: "Real-time visibility into your child's academic life - grades, attendance, deadlines, and direct communication with teachers.",
-      features: [
-        'Live grade and assessment overview per subject',
-        'Upcoming assignments and submission status',
-        'Attendance records with absence alerts',
-        'Behavioural notes visible to parents',
-        'Direct, secure messaging with teachers',
-        'Term report access and progress summaries',
-      ]
-    },
-    {
-      name: 'Coordinators',
-      short: 'Oversee programmes',
-      icon: Compass,
-      color: 'indigo',
-      desc: 'Oversight tools for programme coordinators to manage cohorts, predicted grades, extended curriculum, and compliance.',
-      features: [
-        'Cohort-level grade and performance dashboards',
-        'Predicted grade management with trend tracking',
-        'IB Core oversight — CAS, EE, and TOK tracking',
-        'Compliance reports and exam entry management',
-        'Subject registration and level (HL/SL) management',
-        'Coordinator approval workflows for student submissions',
-      ]
-    },
-    {
-      name: 'Administrators',
-      short: 'Control everything',
-      icon: Settings2,
-      color: 'violet',
-      desc: 'Full school management — users, policies, academic structure, billing, integrations, and security — from one admin panel.',
-      features: [
-        'User management, invitations, and role assignment',
-        'Academic calendar, terms, and cohort configuration',
-        'Attendance, behaviour, and gradebook policy controls',
-        'Timetable setup and external system integrations',
-        'Audit logs, GDPR tools, and access controls',
-        'Billing dashboard and subscription management',
-      ]
-    },
-    {
-      name: 'Curriculum-Aware UI',
-      short: 'No irrelevant clutter',
-      icon: Sparkles,
-      color: 'teal',
-      desc: 'Tools not designed for your curriculum stay completely hidden. IB-only features like CAS, EE, and TOK never appear in an IGCSE or A-Level school — and vice versa.',
-      features: [
-        'Curriculum detected at school setup — no manual toggles',
-        'IB Core tools hidden for non-IB programmes',
-        'Grading scales match your framework automatically',
-        'Terminology adapts to your curriculum automatically',
-        'Module visibility controlled by school administrators',
-        'Zero noise — only relevant tools in every workflow',
-      ]
-    },
-  ];
-
-  const colorMap = {
-    sky: { bg: 'bg-sky-50', border: 'border-sky-100', icon: 'text-sky-500', activeBorder: 'border-sky-400' },
-    blue: { bg: 'bg-primary50', border: 'border-primary100', icon: 'text-primary600', activeBorder: 'border-primary400' },
-    cyan: { bg: 'bg-cyan-50', border: 'border-cyan-100', icon: 'text-cyan-600', activeBorder: 'border-cyan-400' },
-    indigo: { bg: 'bg-indigo-50', border: 'border-indigo-100', icon: 'text-indigo-600', activeBorder: 'border-indigo-400' },
-    violet: { bg: 'bg-violet-50', border: 'border-violet-100', icon: 'text-violet-600', activeBorder: 'border-violet-400' },
-    teal: { bg: 'bg-teal-50', border: 'border-teal-100', icon: 'text-teal-600', activeBorder: 'border-teal-400' },
-  };
-
-  const selected = selectedRole !== null ? roles[selectedRole] : null;
-  const sc = selected ? colorMap[selected.color] : null;
-
-  return (
-    <section className="py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-white">Purpose-Built Roles</h2>
-          <p className="mt-3 text-lg text-white">Every user type has a tailored experience. Click a role to explore its features.</p>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
-          {roles.map((r, i) => {
-            const c = colorMap[r.color];
-            const isActive = selectedRole === i;
-            return (
-              <FadeInCard key={i} delay={i * 0.07}>
-                <button
-                  onClick={() => setSelectedRole(isActive ? null : i)}
-                  className={`w-full flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer ${
-                    isActive ? `${c.bg} ${c.activeBorder} shadow-md` : 'bg-white/70 backdrop-blur-sm border-slate-200 hover:shadow-md hover:border-slate-300'
-                  }`}
-                >
-                  <div className={`w-10 h-10 rounded-lg ${c.bg} ${c.border} border flex items-center justify-center`}>
-                    <r.icon className={`w-5 h-5 ${c.icon}`} />
-                  </div>
-                  <p className="text-sm font-semibold text-slate-900 text-center">{r.name}</p>
-                  <p className="text-xs text-slate-500 text-center leading-tight">{r.short}</p>
-                  <ChevronRight className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isActive ? 'rotate-90' : ''}`} />
-                </button>
-              </FadeInCard>
-            );
-          })}
-        </div>
-
-        <AnimatePresence mode="wait">
-          {selected && sc && (
-            <motion.div
-              key={selectedRole}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
-              className={`bg-white/80 backdrop-blur-sm rounded-2xl border-2 ${sc.activeBorder} shadow-lg p-8`}
-            >
-              <div className="flex items-start gap-4 mb-5">
-                <div className={`w-12 h-12 rounded-xl ${sc.bg} ${sc.border} border flex items-center justify-center flex-shrink-0`}>
-                  <selected.icon className={`w-6 h-6 ${sc.icon}`} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-slate-900">{selected.name}</h3>
-                  <p className="text-sm text-slate-500 mt-0.5">{selected.short}</p>
-                </div>
-              </div>
-              <p className="text-slate-600 leading-relaxed mb-6">{selected.desc}</p>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {selected.features.map((f, j) => (
-                  <li key={j} className="flex items-start gap-2.5 bg-slate-50 rounded-lg p-3">
-                    <CheckCircle2 className={`w-4 h-4 ${sc.icon} flex-shrink-0 mt-0.5`} />
-                    <span className="text-sm text-slate-600 leading-relaxed">{f}</span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </section>
-  );
-}
-
-function CTASection() {
-  const benefits = [
-    { title: 'Lightning Fast', desc: 'Deploy in days, not months. Get up and running quickly.' },
-    { title: 'Enterprise Grade', desc: 'Bank-level security with full GDPR compliance.' },
-    { title: 'Dedicated Support', desc: 'Expert team available to help you succeed.' },
-    { title: 'Always Improving', desc: 'Regular updates and new features based on school feedback.' },
-  ];
-
-  return (
-    <motion.section
-      className="py-24"
-      initial={{ opacity: 0, y: 70, scale: 0.96 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.18 }}
-      transition={{ duration: 0.55, ease: 'easeOut' }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-white">Why Choose Scholr?</h2>
-          <p className="mt-3 text-lg text-white">Built by educators, for educators.</p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
-          {benefits.map((b, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 60, scale: 0.96 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.45, delay: i * 0.05, ease: 'easeOut' }}
-              className="bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200 shadow-sm p-6"
-            >
-              <div className="w-3 h-3 rounded-full bg-primary mb-4"></div>
-              <h3 className="font-bold text-slate-900 mb-2">{b.title}</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">{b.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-        <motion.div
-          className="bg-white/70 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-sm p-12 text-center"
-          initial={{ opacity: 0, y: 70, scale: 0.96 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, amount: 0.25 }}
-          transition={{ duration: 0.55, delay: 0.1, ease: 'easeOut' }}
+    <section className="bg-[var(--coral-dark)] py-20 sm:py-28">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2
+          className="font-[var(--coral-font-display)] font-bold tracking-[-0.02em] text-[var(--coral-dark-ink)]"
+          style={{ fontSize: 'clamp(1.75rem, 2vw + 1.2rem, 2.5rem)', lineHeight: 1.15 }}
         >
-          <h3 className="text-2xl font-bold text-slate-900 mb-4">Ready to transform your school?</h3>
-          <p className="text-slate-600 mb-8 max-w-2xl mx-auto">See how Scholr can streamline your academic operations. Request a personalized demo or explore our flexible licensing plans.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          See it running in your school.
+        </h2>
+        <p className="mt-4 text-[var(--coral-dark-ink-2)] text-lg">
+          A 20-minute walkthrough with your own curriculum mix, not a generic script.
+        </p>
+        <div className="mt-8">
+          <Link to="/Demo">
+            <Button className="h-12 px-8 rounded-lg bg-[var(--coral-accent)] hover:bg-[var(--coral-accent)]/90 text-[var(--coral-accent-ink)] text-base font-medium shadow-none whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[var(--coral-dark-ink)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--coral-dark)]">
+              Book a demo <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function StickyDemoBar({ visible, onDismiss }) {
+  return (
+    <div
+      className={`fixed inset-x-0 bottom-0 z-40 transition-transform duration-300 ease-out ${
+        visible ? 'translate-y-0' : 'translate-y-full'
+      }`}
+      aria-hidden={!visible}
+    >
+      <div className="mx-auto max-w-6xl px-4 pb-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-4 rounded-xl border border-[var(--coral-rule)] bg-[var(--coral-paper)]/95 backdrop-blur-md shadow-[0_8px_24px_-12px_oklch(0%_0_0/0.22)] px-5 py-3">
+          <p className="text-sm font-medium text-[var(--coral-ink)] truncate">
+            See how this looks with your school's curriculum.
+          </p>
+          <div className="flex items-center gap-2 shrink-0">
             <Link to="/Demo">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-8 h-12 text-base font-medium shadow-sm border-none">
-                Schedule Demo <ArrowRight className="ml-2 w-4 h-4" />
+              <Button className="h-9 px-4 rounded-lg bg-[var(--coral-ink)] hover:bg-[var(--coral-ink)]/90 text-[var(--coral-paper)] text-sm font-medium shadow-none whitespace-nowrap">
+                Book a demo
               </Button>
             </Link>
+            <button
+              onClick={onDismiss}
+              aria-label="Dismiss"
+              className="h-9 w-9 flex items-center justify-center rounded-lg text-[var(--coral-ink-3)] hover:text-[var(--coral-ink)] hover:bg-[var(--coral-paper-2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--coral-focus)]"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
-        </motion.div>
+        </div>
       </div>
-    </motion.section>
+    </div>
   );
 }
 
 export default function Landing() {
   const [showConsent, setShowConsent] = useState(true);
+  const [barVisible, setBarVisible] = useState(false);
+  const [barDismissed, setBarDismissed] = useState(false);
+  const thirdBlockRef = useRef(null);
 
   useEffect(() => {
-    const checkConsent = async () => {
-      try {
-        const consentGiven = localStorage.getItem('scholr_consent_accepted');
-        
-        if (consentGiven === 'true') {
-          setShowConsent(false);
-        } else {
-          setShowConsent(true);
-        }
-      } catch (error) {
-        console.error('Error checking consent:', error);
-        setShowConsent(true);
-      }
-    };
+    try {
+      setShowConsent(localStorage.getItem('scholr_consent_accepted') !== 'true');
+    } catch {
+      setShowConsent(true);
+    }
+  }, []);
 
-    checkConsent();
+  useEffect(() => {
+    const el = thirdBlockRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([entry]) => setBarVisible(entry.isIntersecting || entry.boundingClientRect.top < 0), {
+      threshold: 0,
+    });
+    io.observe(el);
+    return () => io.disconnect();
   }, []);
 
   return (
-    <div className="min-h-screen bg-transparent font-landing">
-      <LandingAnimatedBackground />
-      <div
-        className="fixed top-6 left-0 right-0 z-50 px-4 flex justify-center sm:top-8"
-      >
+    <div className="min-h-screen bg-[var(--coral-paper)] font-[var(--coral-font-body)]">
+      <div className="fixed top-4 left-0 right-0 z-50 px-4 flex justify-center sm:top-6">
         <DetachedNavbar />
       </div>
-      <div className="relative z-20">
-        <div className="relative z-20">
-        <TopMarqueeSection />
-        <HeroSection />
-        <FeaturesGrid />
-        <RolesSection />
-        <ProblemSection />
-        <PricingTiersSection />
-        <CTASection />
-        <PublicFooter />
-        </div>
-      </div>
+
+      <HeroSection />
+      <ProductWalkthrough thirdBlockRef={thirdBlockRef} />
+      <CapabilitiesSection />
+      <PricingTiersSection />
+      <FinalCTA />
+      <PublicFooter />
+
+      <StickyDemoBar visible={barVisible && !barDismissed} onDismiss={() => setBarDismissed(true)} />
       <ConsentModal isOpen={showConsent} onClose={() => setShowConsent(false)} />
     </div>
   );

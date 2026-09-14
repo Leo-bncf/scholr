@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { isAuthenticated, redirectToLogin } from '@/data/session';
+import { Menu, X } from 'lucide-react';
+
+const LINKS = [
+  { to: '/Features', label: 'Features' },
+  { to: '/#pricing', label: 'Pricing' },
+  { to: '/Contact', label: 'Contact' },
+];
 
 export default function DetachedNavbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const handleLogin = async () => {
     const isAuthed = await isAuthenticated();
     if (isAuthed) {
@@ -13,39 +22,90 @@ export default function DetachedNavbar() {
     }
   };
 
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
+
   return (
-    <nav className="w-full max-w-6xl rounded-full border border-white/40 bg-white/55 backdrop-blur-xl shadow-[0_10px_40px_rgba(15,40,35,0.18)] px-4 sm:px-6 py-3">
-      <div className="flex items-center justify-between gap-4">
-        <Link to="/" className="flex items-center gap-3 shrink-0">
-          <img
-            src="/brand/scholr-mark.png"
-            alt="Scholr"
-            className="h-9 w-9 rounded-xl shadow-sm object-cover"
-          />
-          <span className="text-2xl font-semibold text-slate-900 tracking-tight">Scholr</span>
-        </Link>
-
-        <div className="hidden md:flex items-center gap-8 text-sm font-bold text-slate-900">
-          <Link to="/" className="hover:text-primary transition-colors">Platform</Link>
-          <Link to="/Features" className="hover:text-primary transition-colors">Features</Link>
-          <Link to="/Pricing" className="hover:text-primary transition-colors">Pricing</Link>
-          <Link to="/Contact" className="hover:text-primary transition-colors">Contact</Link>
-        </div>
-
-        <div className="flex items-center gap-3 shrink-0">
-          <button
-            onClick={handleLogin}
-            className="hidden sm:inline-flex text-sm font-bold text-slate-900 hover:text-primary transition-colors"
-          >
-            Log in
-          </button>
-          <Link to="/Demo">
-            <Button className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-5 h-10 text-sm font-semibold shadow-md">
-              Book Demo
-            </Button>
+    <div className="relative w-full max-w-3xl">
+      <nav
+        aria-label="Primary"
+        className="rounded-full border border-[var(--coral-rule)] bg-[var(--coral-paper)]/80 backdrop-blur-md shadow-[0_8px_24px_-12px_oklch(0%_0_0/0.18)] px-3 sm:px-4 py-2"
+      >
+        <div className="flex items-center justify-between gap-3">
+          <Link to="/" className="flex items-center gap-2.5 shrink-0">
+            <img
+              src="/brand/scholr-mark.png"
+              alt="Scholr"
+              className="h-8 w-8 rounded-lg object-cover"
+            />
+            <span className="text-lg font-semibold text-[var(--coral-ink)] tracking-tight whitespace-nowrap">Scholr</span>
           </Link>
+
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-[var(--coral-ink-2)]">
+            {LINKS.map((l) => (
+              <a key={l.label} href={l.to} className="hover:text-[var(--coral-ink)] transition-colors whitespace-nowrap">
+                {l.label}
+              </a>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={handleLogin}
+              className="hidden md:inline-flex text-sm font-medium text-[var(--coral-ink-2)] hover:text-[var(--coral-ink)] transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--coral-focus)] rounded-md px-1"
+            >
+              Sign in
+            </button>
+            <Link to="/Demo">
+              <Button className="rounded-full bg-[var(--coral-ink)] hover:bg-[var(--coral-ink)]/90 text-[var(--coral-paper)] px-4 h-9 text-sm font-medium shadow-none whitespace-nowrap">
+                Book a demo
+              </Button>
+            </Link>
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-nav-menu"
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              className="md:hidden h-9 w-9 flex items-center justify-center rounded-full text-[var(--coral-ink)] hover:bg-[var(--coral-paper-2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--coral-focus)]"
+            >
+              {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </button>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {menuOpen && (
+        <div
+          id="mobile-nav-menu"
+          className="md:hidden absolute inset-x-0 top-[calc(100%+0.5rem)] rounded-2xl border border-[var(--coral-rule)] bg-[var(--coral-paper)] shadow-[0_8px_24px_-12px_oklch(0%_0_0/0.22)] p-4 flex flex-col gap-1"
+        >
+          {LINKS.map((l) => (
+            <a
+              key={l.label}
+              href={l.to}
+              onClick={() => setMenuOpen(false)}
+              className="px-3 py-2.5 rounded-lg text-[15px] font-medium text-[var(--coral-ink)] hover:bg-[var(--coral-paper-2)] transition-colors"
+            >
+              {l.label}
+            </a>
+          ))}
+          <button
+            onClick={() => {
+              setMenuOpen(false);
+              handleLogin();
+            }}
+            className="text-left px-3 py-2.5 rounded-lg text-[15px] font-medium text-[var(--coral-ink)] hover:bg-[var(--coral-paper-2)] transition-colors"
+          >
+            Sign in
+          </button>
+        </div>
+      )}
+    </div>
   );
 }

@@ -40,6 +40,29 @@
     --sidebar-border: 168 28% 86%;
     --sidebar-ring: 170 72% 18%;
     --font-landing-display: 'Merriweather', serif;
+
+    /* Hallmark · Coral theme tokens — scoped to the public marketing surface
+       (Landing + shared nav/footer). Additive: the shadcn HSL variables above
+       remain untouched so the authenticated app is unaffected. */
+    --coral-paper:       oklch(97.5% 0.010 46);
+    --coral-paper-2:     oklch(94.5% 0.016 46);
+    --coral-ink:         oklch(21%   0.014 40);
+    --coral-ink-2:       oklch(40%   0.014 42);
+    --coral-ink-3:       oklch(58%   0.012 42);
+    --coral-rule:        oklch(88%   0.014 46);
+    --coral-accent:      oklch(66%   0.19  32);
+    --coral-accent-ink:  oklch(99%   0.008 46);
+    --coral-focus:       oklch(66%   0.19  32);
+    --coral-dark:        oklch(20%   0.014 40);
+    --coral-dark-ink:    oklch(96%   0.010 46);
+    --coral-dark-ink-2:  oklch(78%   0.014 44);
+
+    --coral-font-display: 'Geist', ui-sans-serif, system-ui, sans-serif;
+    --coral-font-body:    'Geist', ui-sans-serif, system-ui, sans-serif;
+    --coral-font-mono:    'Geist Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+    --coral-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --coral-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   }
 
   .dark {

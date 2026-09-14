@@ -1,52 +1,45 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+const LINKS = [
+  { to: '/Features', label: 'Features' },
+  { to: '/#pricing', label: 'Pricing' },
+  { to: '/Security', label: 'Security' },
+  { to: '/SecurityAndCompliance', label: 'Compliance' },
+  { to: '/Demo', label: 'Demo' },
+  { to: '/Contact', label: 'Contact' },
+  { to: '/PrivacyPolicy', label: 'Privacy policy' },
+  { to: '/TermsOfService', label: 'Terms of service' },
+];
+
 export default function PublicFooter() {
   return (
-    <footer className="bg-emerald-950 py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
-          <div className="md:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <img
-                src="/brand/scholr-mark.png"
-                alt="Scholr"
-                className="w-8 h-8 rounded-lg object-cover"
-              />
-              <span className="text-xl font-bold text-white">Scholr</span>
-            </Link>
-            <p className="text-emerald-200 text-sm leading-relaxed">
-              The premier LMS designed exclusively for international schools, offering seamless curriculum integration and role-specific dashboards.
-            </p>
-          </div>
-          <div>
-            <h4 className="text-white font-semibold mb-4">Product</h4>
-            <ul className="space-y-3">
-              <li><Link to="/Features" className="text-emerald-300 hover:text-white transition-colors text-sm">Features</Link></li>
-              <li><Link to="/Pricing" className="text-emerald-300 hover:text-white transition-colors text-sm">Pricing</Link></li>
-              <li><Link to="/Security" className="text-emerald-300 hover:text-white transition-colors text-sm">Security</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-white font-semibold mb-4">Company</h4>
-            <ul className="space-y-3">
-              <li><Link to="/About" className="text-emerald-300 hover:text-white transition-colors text-sm">About Us</Link></li>
-              <li><Link to="/Contact" className="text-emerald-300 hover:text-white transition-colors text-sm">Contact</Link></li>
-              <li><Link to="/Careers" className="text-emerald-300 hover:text-white transition-colors text-sm">Careers</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-white font-semibold mb-4">Legal</h4>
-            <ul className="space-y-3">
-              <li><Link to="/PrivacyPolicy" className="text-emerald-300 hover:text-white transition-colors text-sm">Privacy Policy</Link></li>
-              <li><Link to="/TermsOfService" className="text-emerald-300 hover:text-white transition-colors text-sm">Terms of Service</Link></li>
-            </ul>
-          </div>
-        </div>
-        <div className="border-t border-emerald-900 mt-16 pt-8 flex flex-col md:flex-row items-center justify-between">
-          <p className="text-emerald-400 text-sm">
-            © {new Date().getFullYear()} Scholr Inc. All rights reserved.
-          </p>
+    <footer className="bg-[var(--coral-paper)] border-t border-[var(--coral-rule)] py-14">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="inline-flex items-center gap-2.5">
+          <img src="/brand/scholr-mark.png" alt="Scholr" className="w-7 h-7 rounded-lg object-cover" />
+          <span className="text-lg font-semibold text-[var(--coral-ink)] tracking-tight">Scholr</span>
+        </Link>
+        <p className="mt-3 text-sm text-[var(--coral-ink-3)] max-w-sm">
+          School management for international schools running IB, IGCSE, A&#8209;Level and US programmes side by side.
+        </p>
+
+        <nav aria-label="Footer" className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+          {LINKS.map((l) =>
+            l.to.startsWith('/#') ? (
+              <a key={l.label} href={l.to} className="text-sm text-[var(--coral-ink-2)] hover:text-[var(--coral-ink)] transition-colors whitespace-nowrap">
+                {l.label}
+              </a>
+            ) : (
+              <Link key={l.label} to={l.to} className="text-sm text-[var(--coral-ink-2)] hover:text-[var(--coral-ink)] transition-colors whitespace-nowrap">
+                {l.label}
+              </Link>
+            )
+          )}
+        </nav>
+
+        <div className="mt-10 pt-6 border-t border-[var(--coral-rule)]">
+          <p className="text-sm text-[var(--coral-ink-3)]">© {new Date().getFullYear()} Scholr. Built in Ireland.</p>
         </div>
       </div>
     </footer>

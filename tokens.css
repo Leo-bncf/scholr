@@ -1,0 +1,33 @@
+/* Hallmark · Coral theme tokens for Scholr's public marketing surface
+   (Landing page + shared DetachedNavbar / PublicFooter).
+   Portable export — mirrors the --coral-* custom properties defined in
+   src/index.css. Paper band: light · Display style: grotesk-sans (Geist) ·
+   Accent hue: warm coral (~32°). */
+
+:root {
+  --color-paper:       oklch(97.5% 0.010 46);
+  --color-paper-2:     oklch(94.5% 0.016 46);
+  --color-ink:         oklch(21%   0.014 40);
+  --color-ink-2:       oklch(40%   0.014 42);
+  --color-ink-3:       oklch(58%   0.012 42);
+  --color-rule:        oklch(88%   0.014 46);
+  --color-accent:      oklch(66%   0.19  32);
+  --color-accent-ink:  oklch(99%   0.008 46);
+  --color-focus:       oklch(66%   0.19  32);
+  --color-dark:        oklch(20%   0.014 40);
+  --color-dark-ink:    oklch(96%   0.010 46);
+  --color-dark-ink-2:  oklch(78%   0.014 44);
+
+  --font-display: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-body:    'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    'Geist Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --space-3xs: 0.25rem;  --space-2xs: 0.5rem;  --space-xs: 0.75rem;
+  --space-sm:  1rem;     --space-md:  1.5rem;  --space-lg: 2rem;
+  --space-xl:  3rem;     --space-2xl: 4.5rem;  --space-3xl: 7rem;
+
+  --radius-card: 12px; --radius-pill: 999px; --radius-input: 8px;
+}

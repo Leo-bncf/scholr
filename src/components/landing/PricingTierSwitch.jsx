@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 export default function PricingTierSwitch({ options, value, onChange, className }) {
   return (
-    <div className={cn('grid grid-cols-3 rounded-full border border-slate-200 bg-white/80 p-1 shadow-sm', className)}>
+    <div className={cn('grid grid-cols-3 rounded-full border border-[var(--coral-rule)] bg-[var(--coral-paper)] p-1', className)}>
       {options.map((option) => {
         const active = option.value === value;
         return (
@@ -13,14 +13,14 @@ export default function PricingTierSwitch({ options, value, onChange, className 
             type="button"
             onClick={() => onChange(option.value)}
             className={cn(
-              'relative rounded-full px-4 py-3 text-sm font-semibold transition-colors',
-              active ? 'text-white' : 'text-slate-500 hover:text-slate-900'
+              'relative rounded-full px-4 py-3 text-sm font-semibold transition-colors whitespace-nowrap',
+              active ? 'text-[var(--coral-paper)]' : 'text-[var(--coral-ink-3)] hover:text-[var(--coral-ink)]'
             )}
           >
             {active && (
               <motion.span
                 layoutId="pricing-tier-switch"
-                className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 shadow-lg"
+                className="absolute inset-0 rounded-full bg-[var(--coral-ink)]"
                 transition={{ type: 'spring', stiffness: 500, damping: 35 }}
               />
             )}
