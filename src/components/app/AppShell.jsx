@@ -36,14 +36,12 @@ export default function AppShell({ title, eyebrow, actions, children }) {
         style={{
           position: 'sticky', top: 0, zIndex: 30,
           display: 'flex', alignItems: 'center', gap: 'var(--space-sm)',
-          minHeight: '3.25rem', padding: '0 var(--space-md)',
+          minHeight: '3.25rem',
         }}
       >
         <span
-          style={{
-            maxWidth: '68rem', margin: '0 auto', width: '100%',
-            display: 'flex', alignItems: 'center', gap: 'var(--space-sm)',
-          }}
+          className="app-measure"
+          style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}
         >
           <span className="app-toolbar-title" style={{ minWidth: 0 }}>{title}</span>
           {actions && <span style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--space-2xs)' }}>{actions}</span>}
@@ -53,7 +51,7 @@ export default function AppShell({ title, eyebrow, actions, children }) {
       {/* Content is held to a measure. Left to fill a 1440px window the groups
           sprawl, a row's label and its value end up a hand-span apart, and the
           page reads as unfinished rather than spacious. */}
-      <div style={{ maxWidth: '68rem', margin: '0 auto', padding: '0 var(--space-md) var(--space-3xl)' }}>
+      <div className="app-measure" style={{ paddingBottom: 'var(--space-3xl)' }}>
         <header style={{ padding: 'var(--space-lg) 0 var(--space-xl)' }}>
           {eyebrow && <p className="scholr-label" style={{ margin: '0 0 .4rem' }}>{eyebrow}</p>}
           <h1 className="app-title">{title}</h1>

@@ -40,7 +40,7 @@ export default function SchoolAdminSupport() {
           schoolId={schoolId}
         />
 
-        <main className="md:ml-64">
+        <main className="app-offset">
           <div className="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-10 shadow-sm">
             <h1 className="text-base font-black text-slate-900 tracking-tight">Support & Help</h1>
             <p className="text-xs text-slate-400 mt-0.5">Guides, issue reporting, and platform status for {school?.name || 'your school'}</p>

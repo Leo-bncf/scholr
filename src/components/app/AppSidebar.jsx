@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { LogOut, Search } from 'lucide-react';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import BellBoundary from '@/components/notifications/BellBoundary';
 import { signOut } from '@/data/session';
 
 const ROLE_LABELS = {
@@ -86,7 +87,9 @@ export default function AppSidebar({ links, role, schoolName, userName, userId, 
             Scholr
           </span>
         </Link>
-        {userId && schoolId && <NotificationBell userId={userId} schoolId={schoolId} />}
+        {userId && schoolId && (
+          <BellBoundary><NotificationBell userId={userId} schoolId={schoolId} /></BellBoundary>
+        )}
       </div>
 
       <div className="app-navsearch" style={{ padding: '0 .35rem' }}>

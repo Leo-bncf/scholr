@@ -79,7 +79,7 @@ export default function SchoolAdminDashboard() {
         userId={user?.id}
         schoolId={schoolId}
       />
-      <div className="md:pl-[15.5rem]">
+      <div className="app-offset">
         <AppShell
           eyebrow={`${school?.name} · ${shortLabel} · ${today}`}
           title="Operations"

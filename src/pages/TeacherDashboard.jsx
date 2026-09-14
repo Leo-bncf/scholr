@@ -45,7 +45,7 @@ export default function TeacherDashboard() {
         userId={user?.id}
         schoolId={schoolId}
       />
-      <div className="md:pl-[15.5rem]">
+      <div className="app-offset">
         <AppShell
           eyebrow={format(new Date(), 'EEEE d MMMM')}
           title={firstName ? `Good ${new Date().getHours() < 12 ? 'morning' : 'afternoon'}, ${firstName}` : 'Today'}

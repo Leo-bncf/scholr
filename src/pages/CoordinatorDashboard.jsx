@@ -75,7 +75,7 @@ export default function CoordinatorDashboard() {
   return (
     <RoleGuard allowedRoles={['ib_coordinator', 'school_admin', 'super_admin', 'admin']}>
       <AppSidebar links={sidebarLinks} role="ib_coordinator" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-      <div className="md:pl-[15.5rem]">
+      <div className="app-offset">
         <AppShell eyebrow={`${shortLabel} · ${format(new Date(), 'd MMMM yyyy')}`} title={coordinatorLabel}>
           {isLoading ? (
             <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-2xl) 0' }}>

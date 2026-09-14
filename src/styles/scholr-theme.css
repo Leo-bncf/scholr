@@ -146,6 +146,11 @@
   /* Radii nest: an inner corner is the outer corner minus the padding between
      them, or the two curves fight. --radius-inset is what a row highlight uses
      inside a --radius-surface group with 6px of padding. */
+  /* The sidebar width lives here, not in a Tailwind class on 43 pages. It was
+     changed in the component and 38 pages kept `ml-64`, leaving a half-rem
+     seam beside the nav on every screen that isn't a dashboard. */
+  --sidebar-w: 15.5rem;
+
   --radius-inset:   8px;   /* a highlighted row inside a group */
   --radius-control: 10px;  /* buttons, inputs */
   --radius-surface: 14px;  /* grouped lists, panels */
@@ -640,7 +645,13 @@ body { background: var(--paper); color: var(--body); }
    The selected row is a raised white card with an accent ring, not a filled
    pill: at 14px a fill competes with the group it sits in, while a lift reads
    as "this one is in front". */
-.app-sidebar { background: color-mix(in oklab, var(--paper) 82%, var(--rule)); }
+.app-sidebar { background: color-mix(in oklab, var(--paper) 82%, var(--rule)); width: var(--sidebar-w); }
+
+/* Every page beside the sidebar offsets by the same token.
+   margin, not padding: most of these pages also carry a Tailwind `p-8`, and a
+   utility class beats this rule in the cascade — the offset silently collapsed
+   to 2rem and the content slid under the nav. Margin has no such collision. */
+@media (min-width: 768px) { .app-offset { margin-left: var(--sidebar-w); } }
 .app-nav-group {
   background: var(--surface);
   border-radius: var(--radius-surface);
@@ -700,6 +711,16 @@ body { background: var(--paper); color: var(--body); }
 .app-group-head {
   display: flex; align-items: baseline; gap: .75rem;
   padding: 0 .3rem .45rem;
+}
+
+/* One measure, used by the toolbar and by the content beneath it. Declaring
+   it twice by hand is how the toolbar's action button ended up 24px past the
+   right edge of everything below it. */
+.app-measure {
+  max-width: 68rem;
+  margin-inline: auto;
+  padding-inline: var(--space-md);
+  width: 100%;
 }
 
 /* The large title, and the compact one that replaces it in the toolbar. */

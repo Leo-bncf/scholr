@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { UserProvider, useUser } from '@/components/auth/UserContext';
 import { PlanProvider } from '@/components/plan/PlanProvider';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import BellBoundary from '@/components/notifications/BellBoundary';
 
 // React Router v6 matches paths case-INSENSITIVELY by default, so 'Demo' and
 // 'demo' are the same route. The interactive sandbox owns /demo (and its
@@ -15,7 +16,12 @@ const publicPages = [
   'a-level-school-management-software', 'us-school-management-software',
   'AcceptInvitation', 'FirstLogin', 'PasswordReset', 'Login',
 ];
-const fullScreenPages = ['ClassWorkspace', 'AssignmentDetail', 'SubmissionReview', 'ClassGradebook', 'Messages', 'SchoolOnboarding'];
+// Pages with no sidebar of their own, which therefore need the floating
+// notification bell from NotificationWrapper below.
+//
+// Messages is deliberately NOT in this list: it renders its own AppSidebar,
+// which already carries a bell. Having both mounted was what crashed the page.
+const fullScreenPages = ['ClassWorkspace', 'AssignmentDetail', 'SubmissionReview', 'ClassGradebook', 'SchoolOnboarding'];
 const adminPages = ['SuperAdminProduction'];
 
 function NotificationWrapper({ children }) {
@@ -25,7 +31,7 @@ function NotificationWrapper({ children }) {
     <>
       {user && schoolId && (
         <div className="fixed top-4 right-4 z-50">
-          <NotificationBell userId={user.id} schoolId={schoolId} />
+          <BellBoundary><NotificationBell userId={user.id} schoolId={schoolId} /></BellBoundary>
         </div>
       )}
       {children}

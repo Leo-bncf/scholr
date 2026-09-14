@@ -56,7 +56,7 @@ export default function StudentDashboard() {
   return (
     <RoleGuard allowedRoles={['student', 'school_admin', 'super_admin', 'admin']}>
       <AppSidebar links={studentLinks} role="student" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-      <div className="md:pl-[15.5rem]">
+      <div className="app-offset">
         <AppShell
           eyebrow={format(new Date(), 'EEEE d MMMM')}
           title={user?.full_name?.split(' ')[0] ? `Hello, ${user.full_name.split(' ')[0]}` : 'Today'}

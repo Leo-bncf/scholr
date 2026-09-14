@@ -74,8 +74,15 @@ export function remove(id) {
 export function subscribe({ userId, schoolId }, onChange) {
   if (!userId || !schoolId) return () => {};
 
+  // The channel name must be unique per subscriber, not per user.
+  // supabase.channel(name) RETURNS AN EXISTING channel if one is already open
+  // under that name — so a second component subscribing with the same name got
+  // the already-subscribed channel, and calling .on() after .subscribe() threw.
+  // That error propagated out of NotificationBell and unmounted the whole React
+  // tree: /Messages rendered a completely blank page, because the sidebar and
+  // the layout each mounted a bell.
   const channel = supabase
-    .channel(`notifications:${schoolId}:${userId}`)
+    .channel(`notifications:${schoolId}:${userId}:${Math.random().toString(36).slice(2, 10)}`)
     .on(
       'postgres_changes',
       {

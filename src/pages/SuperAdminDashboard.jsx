@@ -64,29 +64,25 @@ export default function SuperAdminDashboard() {
 
   return (
     <>
-      <SuperAdminShell activeItem="overview" currentUser={currentUser}>
-        <div className="max-w-6xl mx-auto flex flex-col" style={{ gap: 'var(--space-md)' }}>
-          <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div className="min-w-0">
-              <p className="scholr-label m-0">Every school, every tenant</p>
-              <h1 className="scholr-h1 m-0 mt-1.5 text-2xl md:text-3xl">Platform</h1>
-            </div>
-            <button
-              type="button"
-              onClick={() => setCreateDialogOpen(true)}
-              className="scholr-focus inline-flex items-center gap-2 self-start sm:self-auto shrink-0 text-sm font-medium"
-              style={{
-                background: 'var(--brand)',
-                color: 'var(--brand-ink)',
-                borderRadius: 'var(--radius-control)',
-                padding: '0.5rem 0.85rem',
-              }}
-            >
-              <Plus className="w-4 h-4" />
-              New school
-            </button>
-          </header>
-
+      <SuperAdminShell
+        activeItem="overview"
+        currentUser={currentUser}
+        title="Platform"
+        eyebrow="Every school, every tenant"
+        actions={
+          <button
+            type="button"
+            onClick={() => setCreateDialogOpen(true)}
+            className="pub-btn pub-btn-gold scholr-focus"
+          >
+            <Plus className="w-4 h-4" />
+            New school
+          </button>
+        }
+      >
+        {/* No second container: AppShell already holds the measure, and
+            nesting another one indented every group past the title. */}
+        <>
           <StatRow>
             <StatCard label="Schools" value={metrics.total} hint={`${metrics.onboarding} still in setup`} />
             <StatCard label="Active" value={metrics.active} hint="fully onboarded" />
@@ -181,7 +177,7 @@ export default function SuperAdminDashboard() {
               </Group>
             </div>
           </div>
-        </div>
+        </>
       </SuperAdminShell>
 
       <CreateSchoolDialog

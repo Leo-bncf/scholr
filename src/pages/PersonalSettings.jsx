@@ -49,7 +49,7 @@ export default function PersonalSettings() {
     <RoleGuard allowedRoles={['teacher', 'student', 'school_admin', 'super_admin', 'admin']}>
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
         <AppSidebar links={sidebarLinks} role={role} schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="ml-0 md:ml-64 p-4 md:p-8">
+        <main className="app-offset p-4 md:p-8">
           <div className="max-w-3xl mx-auto space-y-6">
             <div>
               <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Personal Settings</h1>

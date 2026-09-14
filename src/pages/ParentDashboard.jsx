@@ -43,7 +43,7 @@ export default function ParentDashboard() {
   return (
     <RoleGuard allowedRoles={['parent', 'super_admin', 'admin']}>
       <AppSidebar links={sidebarLinks} role="parent" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-      <div className="md:pl-[15.5rem]">
+      <div className="app-offset">
         <AppShell eyebrow={school?.name} title="Family portal">
             <ChildSelector
               parentId={user?.id}

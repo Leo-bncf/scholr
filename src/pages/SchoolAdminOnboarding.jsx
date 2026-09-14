@@ -55,7 +55,7 @@ export default function SchoolAdminOnboarding() {
           schoolId={schoolId}
         />
 
-        <main className="md:ml-64">
+        <main className="app-offset">
           <div className="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-10 shadow-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">

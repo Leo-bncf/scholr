@@ -179,7 +179,7 @@ export default function SchoolAdminEnrollments() {
           schoolId={schoolId}
         />
 
-        <main className="md:ml-64 min-h-screen flex flex-col">
+        <main className="app-offset min-h-screen flex flex-col">
           <header className="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-10 shadow-sm">
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div>

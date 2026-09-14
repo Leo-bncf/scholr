@@ -1,91 +1,56 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
-import { Button } from '@/components/ui/button';
-import { signOut } from '@/data/session';
 import {
-  Activity,
-  BarChart3,
-  BookOpen,
-  Building2,
-  CalendarClock,
-  CreditCard,
-  FileText,
-  Headphones,
-  School,
-  Settings,
-  Users,
-  Zap,
+  Activity, BarChart3, BookOpen, CalendarClock, CreditCard, FileText,
+  Headphones, School, Settings, Users, Zap,
 } from 'lucide-react';
+import AppSidebar from '@/components/app/AppSidebar';
+import AppShell from '@/components/app/AppShell';
 
-const navItems = [
-  { key: 'overview', label: 'Overview', page: 'SuperAdminDashboard', icon: Activity },
-  { key: 'schools', label: 'Schools', page: 'SuperAdminSchools', icon: School },
-  { key: 'users', label: 'Users', page: 'SuperAdminUsers', icon: Users },
+/**
+ * The platform console.
+ *
+ * This used to carry its own chrome — a white top bar with a wordmark, plus a
+ * separate slate side rail — written before AppSidebar existed and never
+ * revisited. Twelve pages hung off it, so a super admin saw a completely
+ * different product from the one everyone else uses: none of the material,
+ * none of the grouped lists, none of the nav search.
+ *
+ * It is the same sidebar and the same shell as the rest of the app now. The
+ * only thing it keeps of its own is the destination list, because those pages
+ * genuinely exist only here.
+ */
+const NAV = [
+  { key: 'overview',   label: 'Overview',   page: 'SuperAdminDashboard',  icon: Activity },
+  { key: 'schools',    label: 'Schools',    page: 'SuperAdminSchools',    icon: School },
+  { key: 'users',      label: 'Users',      page: 'SuperAdminUsers',      icon: Users },
   { key: 'timetables', label: 'Timetables', page: 'SuperAdminTimetables', icon: CalendarClock },
-  { key: 'billing', label: 'Billing', page: 'SuperAdminBilling', icon: CreditCard },
-  { key: 'analytics', label: 'Analytics', page: 'SuperAdminAnalytics', icon: BarChart3 },
+  { key: 'billing',    label: 'Billing',    page: 'SuperAdminBilling',    icon: CreditCard },
+  { key: 'analytics',  label: 'Analytics',  page: 'SuperAdminAnalytics',  icon: BarChart3 },
   { key: 'automation', label: 'Automation', page: 'SuperAdminAutomation', icon: Zap },
-  { key: 'settings', label: 'Settings', page: 'SuperAdminSettings', icon: Settings },
-  { key: 'plans', label: 'Plans', page: 'SuperAdminPlans', icon: BookOpen },
-  { key: 'audit-logs', label: 'Audit Logs', page: 'SuperAdminAuditLogs', icon: FileText },
-  { key: 'support', label: 'Support', page: 'SuperAdminSupport', icon: Headphones },
+  { key: 'plans',      label: 'Plans',      page: 'SuperAdminPlans',      icon: BookOpen },
+  { key: 'audit-logs', label: 'Audit log',  page: 'SuperAdminAuditLogs',  icon: FileText },
+  { key: 'support',    label: 'Support',    page: 'SuperAdminSupport',    icon: Headphones },
+  { key: 'settings',   label: 'Settings',   page: 'SuperAdminSettings',   icon: Settings },
 ];
 
-export default function SuperAdminShell({ activeItem, currentUser, children }) {
+export default function SuperAdminShell({ activeItem, currentUser, title, eyebrow, actions, children }) {
   return (
-    <div className="h-screen flex flex-col bg-slate-50 text-slate-900 overflow-hidden">
-      <div className="flex-shrink-0 bg-white border-b border-slate-200 px-4 md:px-6 py-4 flex items-center justify-between gap-4">
-        <Link to={createPageUrl('Landing')} className="flex items-center gap-3 hover:opacity-90 transition-opacity min-w-0">
-          <div className="w-8 h-8 bg-indigo-600 rounded-md flex items-center justify-center flex-shrink-0">
-            <Building2 className="w-4 h-4 text-white" />
-          </div>
-          <div className="min-w-0">
-            <p className="text-slate-900 font-semibold text-sm truncate">IB Platform</p>
-            <p className="text-slate-500 text-xs truncate">Super Admin Console</p>
-          </div>
-        </Link>
-
-        {currentUser ? (
-          <div className="flex items-center gap-3 min-w-0">
-            <span className="hidden md:block text-slate-500 text-sm truncate max-w-[240px]">{currentUser.email}</span>
-            <Button
-              onClick={() => signOut()}
-              variant="ghost"
-              size="sm"
-              className="text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-xs"
-            >
-              Sign out
-            </Button>
-          </div>
-        ) : null}
+    <>
+      <AppSidebar
+        links={NAV}
+        role="super_admin"
+        schoolName="Every school"
+        userName={currentUser?.full_name || currentUser?.email}
+      />
+      <div className="app-offset">
+        <AppShell
+          title={title || NAV.find(n => n.key === activeItem)?.label || 'Platform'}
+          eyebrow={eyebrow}
+          actions={actions}
+        >
+          {children}
+        </AppShell>
       </div>
-
-      <div className="flex flex-1 overflow-hidden">
-        <aside className="hidden lg:flex lg:w-56 bg-white border-r border-slate-200 p-4 flex-col gap-1 flex-shrink-0 overflow-y-auto">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeItem === item.key;
-
-            return (
-              <Link
-                key={item.key}
-                to={createPageUrl(item.page)}
-                className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
-                  isActive
-                    ? 'bg-slate-100 text-slate-900 font-medium'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                {item.label}
-              </Link>
-            );
-          })}
-        </aside>
-
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
-      </div>
-    </div>
+    </>
   );
 }

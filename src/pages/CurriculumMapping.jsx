@@ -125,7 +125,7 @@ export default function CurriculumMapping() {
     <RoleGuard allowedRoles={['teacher', 'school_admin', 'ib_coordinator', 'admin', 'super_admin']}>
       <div className="min-h-screen bg-slate-50">
         <AppSidebar links={sidebarLinks} role={sidebarRole} schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="ml-0 md:ml-64 p-4 md:p-6">
+        <main className="app-offset p-4 md:p-6">
           <div className="max-w-[1500px] mx-auto space-y-6">
             <div>
               <h1 className="text-2xl font-bold text-slate-900">Curriculum Mapping</h1>
