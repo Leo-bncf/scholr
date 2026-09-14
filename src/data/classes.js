@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { rows, maybeOne, one, none } from './_query';
+import { rows, maybeOne, one, none, raise } from './_query';
 
 /**
  * Classes — the busiest table in the app (72 base44 call sites).
@@ -122,4 +122,21 @@ export function where(filters = {}, { order, ascending = false, limit } = {}) {
   if (order) q = q.order(order, { ascending });
   if (limit) q = q.limit(limit);
   return rows(q, 'classes.where');
+}
+
+/**
+ * Per-class assignment completion for a school.
+ *
+ * One RPC rather than "fetch every assignment, fetch every submission, join
+ * them in the browser". Submissions grow as students x assignments, so the old
+ * shape transferred the whole table to compute a handful of percentages.
+ * See supabase/migrations/0014_coordinator_completion.sql — it is SECURITY
+ * INVOKER, so the caller's row-level policies still decide what counts.
+ */
+export async function completionBySchool(schoolId) {
+  const { data, error } = await supabase.rpc('coordinator_class_completion', {
+    p_school_id: schoolId,
+  });
+  if (error) raise(error, 'classes.completionBySchool');
+  return data || [];
 }

@@ -15,8 +15,6 @@ import AssignmentCompletionChart from '@/components/coordinator/AssignmentComple
 import * as membershipsData from '@/data/memberships';
 import * as classesData from '@/data/classes';
 import * as academics from '@/data/academics';
-import * as assignmentsData from '@/data/assignments';
-import * as submissionsData from '@/data/submissions';
 
 export default function CoordinatorDashboard() {
   const { user, school, schoolId } = useUser();
@@ -38,30 +36,22 @@ export default function CoordinatorDashboard() {
     queryFn: () => academics.whereSubjects({ school_id: schoolId, status: 'active' }),
     enabled: !!schoolId,
   });
-  const { data: assignments = [] } = useQuery({
-    queryKey: ['school-assignments-coord', schoolId],
-    queryFn: () => assignmentsData.where({ school_id: schoolId }),
-    enabled: !!schoolId,
-  });
-  const { data: submissions = [] } = useQuery({
-    queryKey: ['school-submissions-coord', schoolId],
-    queryFn: () => submissionsData.where({ school_id: schoolId }),
+  // One aggregate, computed in Postgres. This used to pull every assignment
+  // and every submission in the school and join them here — submissions grow
+  // as students x assignments, so that shape transfers the whole table to
+  // produce six percentages.
+  const { data: completionRows = [] } = useQuery({
+    queryKey: ['school-completion-coord', schoolId],
+    queryFn: () => classesData.completionBySchool(schoolId),
     enabled: !!schoolId,
   });
 
   const students = memberships.filter(m => m.role === 'student');
   const teachers = memberships.filter(m => m.role === 'teacher');
 
-  const completion = classes
-    .map((cls) => {
-      const classAssignments = assignments.filter(a => a.class_id === cls.id);
-      const expected = classAssignments.length * (cls.student_ids || []).length;
-      const submitted = submissions.filter(
-        s => s.class_id === cls.id && ['submitted', 'graded', 'returned', 'resubmitted', 'late'].includes(s.status),
-      ).length;
-      return { name: cls.name, completionRate: expected > 0 ? Math.round((submitted / expected) * 100) : 0 };
-    })
-    .filter(i => i.completionRate > 0)
+  const completion = completionRows
+    .filter(row => row.completion_rate > 0)
+    .map(row => ({ name: row.class_name, completionRate: row.completion_rate }))
     .slice(0, 6);
 
   const cohorts = Object.entries(
