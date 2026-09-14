@@ -57,8 +57,7 @@ export default function SchoolAdminTimetable() {
             ]}
             activeTab={activeTab}
             onTabChange={setActiveTab}
-            colorScheme="indigo"
-            title="Timetable & Integration Controls"
+            title="Timetable"
             subtitle={`${scheduleEntries.filter(e => e.status === 'active').length} schedule entries · ${periods.length} periods · ${rooms.length} rooms`}
           />
 

@@ -113,9 +113,8 @@ export default function SchoolAdminBilling() {
             ]}
             activeTab={billingTab}
             onTabChange={setBillingTab}
-            colorScheme="indigo"
-            title="Billing & Subscription"
-            subtitle="Per-student annual pricing — unlimited teachers included"
+            title="Billing"
+            subtitle="Per student, per year"
             rightContent={
               <Button size="sm" variant="ghost" onClick={() => refetch()} className="gap-1.5 scholr-muted">
                 <RefreshCw className="w-3.5 h-3.5" /> Refresh

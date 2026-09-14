@@ -62,9 +62,8 @@ export default function SchoolAdminUsers() {
             tabs={TABS}
             activeTab={tab}
             onTabChange={setTab}
-            colorScheme="emerald"
-            title="User & Membership Administration"
-            subtitle={`${memberships.length} members · ${school?.name}`}
+            title="Users"
+            subtitle={`${memberships.length} members`}
             rightContent={
               pendingInviteCount > 0 && (
                 <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium px-3 py-1.5 rounded-lg">

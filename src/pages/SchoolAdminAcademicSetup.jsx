@@ -41,9 +41,8 @@ export default function SchoolAdminAcademicSetup() {
             tabs={TABS}
             activeTab={activeTab}
             onTabChange={setActiveTab}
-            colorScheme="indigo"
             title="Academic Setup"
-            subtitle="School structure & academic framework configuration"
+            subtitle="Years, terms, subjects, cohorts"
           />
 
           <div className="flex-1 p-6">

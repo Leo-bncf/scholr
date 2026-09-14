@@ -49,8 +49,7 @@ export default function SchoolAdminClasses() {
             tabs={TABS}
             activeTab={tab}
             onTabChange={setTab}
-            colorScheme="blue"
-            title="Class & Roster Management"
+            title="Classes"
             subtitle={`${activeCount} active · ${archivedCount} archived${unstaffed > 0 ? ` · ${unstaffed} unstaffed` : ''}`}
           />
 

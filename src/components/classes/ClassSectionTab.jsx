@@ -254,19 +254,38 @@ export default function ClassSectionTab({ schoolId, classes, subjects, academicY
                     )}
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 text-center">
-                    <div className="scholr-sunk rounded-lg py-2">
-                      <p className="text-sm font-bold scholr-ink">{c.teacher_ids?.length || 0}</p>
-                      <p className="text-[10px] scholr-faint">Staff</p>
-                    </div>
-                    <div className={`rounded-lg py-2 ${isFull ? 'bg-red-50' : 'scholr-sunk'}`}>
-                      <p className={`text-sm font-bold ${isFull ? 'text-red-600' : 'scholr-ink'}`}>{enrolled}{capacity ? `/${capacity}` : ''}</p>
-                      <p className="text-[10px] scholr-faint">Students</p>
-                    </div>
-                    <div className="scholr-sunk rounded-lg py-2">
-                      <p className="text-sm font-bold scholr-ink">{c.subject_teacher_assignments?.length || 0}</p>
-                      <p className="text-[10px] scholr-faint">Subjects</p>
-                    </div>
+                  {/* One hairline row of figures, not three filled tiles.
+                      A box inside a box is the card-in-card tell, and these
+                      boxes carried no information the numbers did not already
+                      carry. Only a full class earns colour — that is a state
+                      someone has to act on. */}
+                  <div
+                    className="flex items-baseline gap-5 pt-2.5"
+                    style={{ borderTop: '1px solid var(--rule-soft)' }}
+                  >
+                    <span className="flex items-baseline gap-1.5">
+                      <span className="text-sm scholr-num" style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink)' }}>
+                        {c.teacher_ids?.length || 0}
+                      </span>
+                      <span className="scholr-label">staff</span>
+                    </span>
+                    <span className="flex items-baseline gap-1.5">
+                      <span
+                        className="text-sm scholr-num"
+                        style={{ fontFamily: 'var(--font-mono)', color: isFull ? 'var(--crit)' : 'var(--ink)' }}
+                      >
+                        {enrolled}{capacity ? `/${capacity}` : ''}
+                      </span>
+                      <span className="scholr-label">{isFull ? 'full' : 'students'}</span>
+                    </span>
+                    {c.subject_teacher_assignments?.length > 0 && (
+                      <span className="flex items-baseline gap-1.5">
+                        <span className="text-sm scholr-num" style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink)' }}>
+                          {c.subject_teacher_assignments.length}
+                        </span>
+                        <span className="scholr-label">subjects</span>
+                      </span>
+                    )}
                   </div>
 
                   {c.room && (

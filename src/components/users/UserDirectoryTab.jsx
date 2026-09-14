@@ -236,6 +236,10 @@ export default function UserDirectoryTab({ schoolId }) {
     return map;
   }, [cohorts]);
 
+  // A column where every cell reads "—" is noise. Departments are optional,
+  // and most schools never set them, so the column appears only if used.
+  const showDetail = memberships.some((m) => m.department);
+
   const filtered = useMemo(() => memberships.filter(m => {
     const q = search.toLowerCase();
     const matchSearch = !q ||
@@ -367,7 +371,7 @@ export default function UserDirectoryTab({ schoolId }) {
                   <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide">Member</th>
                   <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide hidden sm:table-cell">Email</th>
                   <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide">Role</th>
-                  <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide hidden md:table-cell">Detail</th>
+                  {showDetail && <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide hidden md:table-cell">Detail</th>}
                   <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide">Status</th>
                   <th className="px-5 py-3 text-right text-[11px] font-semibold scholr-muted uppercase tracking-wide">Actions</th>
                 </tr>
@@ -393,6 +397,7 @@ export default function UserDirectoryTab({ schoolId }) {
                       <td className="px-5 py-3">
                         <Badge className={`role-chip border text-[11px] font-medium`}>{rc.label}</Badge>
                       </td>
+                      {showDetail && (
                       <td className="px-5 py-3 hidden md:table-cell text-xs scholr-muted">
                         {m.grade_level
                           ? <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded">{m.grade_level}</span>
@@ -400,6 +405,7 @@ export default function UserDirectoryTab({ schoolId }) {
                           ? <span className="scholr-sunk scholr-muted px-2 py-0.5 rounded">{m.department}</span>
                           : '—'}
                       </td>
+                      )}
                       <td className="px-5 py-3">
                         <span className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2 py-0.5 rounded-full ${sc.classes}`}>
                           <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />

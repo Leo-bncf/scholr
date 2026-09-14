@@ -41,7 +41,6 @@ export default function SchoolAdminAttendance() {
             tabs={TABS}
             activeTab={tab}
             onTabChange={setTab}
-            colorScheme="indigo"
             title={
               <div className="flex items-center gap-2">
                 <Calendar className="w-5 h-5 scholr-accent" />

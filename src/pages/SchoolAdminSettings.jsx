@@ -142,9 +142,8 @@ export default function SchoolAdminSettings() {
             ]}
             activeTab={settingsTab}
             onTabChange={setSettingsTab}
-            colorScheme="indigo"
-            title="School Settings"
-            subtitle="Manage your school profile, preferences, and governance policies"
+            title="Settings"
+            subtitle="Profile, preferences and policy"
           />
 
           {message && (

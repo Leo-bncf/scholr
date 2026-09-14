@@ -104,9 +104,8 @@ export default function SchoolAdminReports() {
             tabs={TABS}
             activeTab={tab}
             onTabChange={setTab}
-            colorScheme="indigo"
-            title="Reports Center"
-            subtitle="Generate operational and academic reports, export datasets, and print progress documents."
+            title="Reports"
+            subtitle="Export and print"
           />
 
           <div className="flex-1 p-6 max-w-7xl mx-auto w-full">

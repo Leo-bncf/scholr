@@ -45,8 +45,7 @@ export default function SchoolAdminBehavior() {
             tabs={TABS}
             activeTab={tab}
             onTabChange={setTab}
-            colorScheme="emerald"
-            title="Behavior & Pastoral Notes"
+            title="Behaviour"
             subtitle={`${school?.name} · Governed pastoral operations`}
             rightContent={
               <div className="flex items-center gap-2 text-xs font-bold scholr-muted scholr-sunk border scholr-rule px-3 py-1.5 rounded-lg">
