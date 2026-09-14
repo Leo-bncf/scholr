@@ -75,6 +75,12 @@ if [ -d .git ] && [ "${ALLOW_ROLLBACK:-}" != "1" ]; then
     | sed -n 's/.*"commit"[[:space:]]*:[[:space:]]*"\([a-f0-9]*\)".*/\1/p' | head -1)
   here=$(git rev-parse HEAD)
 
+  # No build-info on the live site means it predates this guard; say so once
+  # rather than blocking a deploy over a missing file.
+  if [ -z "$live_commit" ]; then
+    echo "Note: no build-info.json live yet — rollback check skipped this once." >&2
+  fi
+
   if [ -n "$live_commit" ] && [ "$live_commit" != "unknown" ] && [ "$live_commit" != "$here" ]; then
     if git cat-file -e "$live_commit^{commit}" 2>/dev/null; then
       if git merge-base --is-ancestor "$here" "$live_commit"; then

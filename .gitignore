@@ -42,3 +42,9 @@ graphify-out/
 
 # Local credentials written by the seed and super-admin scripts. Never committed.
 .local/
+
+# Written by scripts/gen-sitemap.mjs on every build so the deploy can tell
+# which commit is live. Generated, therefore not tracked — a committed copy
+# would leave the tree dirty after every build and trip the deploy's own
+# dirty-checkout guard.
+public/build-info.json
