@@ -5,7 +5,7 @@ import { useSuperAdminSchoolsQuery } from '@/components/hooks/useSuperAdminData'
 import { useTimetableData } from '@/components/timetable/useTimetableData';
 import SuperAdminShell from '@/components/admin/super-admin/SuperAdminShell';
 import SuperAdminLoadingState from '@/components/admin/super-admin/SuperAdminLoadingState';
-import SuperAdminPageHeader from '@/components/admin/super-admin/SuperAdminPageHeader';
+import { Group, GroupEmpty, Segmented } from '@/components/app/AppShell';
 import TimetableGrid from '@/components/admin/super-admin/timetables/TimetableGrid';
 import {
   Select,
@@ -124,18 +124,18 @@ export default function SuperAdminTimetables() {
   const selectedEntityLabel = entityOptions.find((o) => o.id === selectedEntityId)?.label;
 
   return (
-    <SuperAdminShell activeItem="timetables" currentUser={currentUser}>
-      <SuperAdminPageHeader
-        title="Timetables"
-        subtitle="View any school's schedule by class, teacher, or student"
-      />
-
-      {/* Selectors */}
-      <div className="bg-white border border-slate-200 rounded-md shadow-sm p-5 mb-6 space-y-4">
+    <SuperAdminShell
+      activeItem="timetables"
+      currentUser={currentUser}
+      title="Timetables"
+      eyebrow="Any school, by class, teacher or student"
+    >
+      <Group title="Pick a timetable">
+        <div className="px-4 py-3.5 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* School */}
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5 block">
+            <label className="scholr-label" style={{ display: 'block', marginBottom: '.3rem' }}>
               School
             </label>
             <Select value={selectedSchoolId} onValueChange={handleSchoolChange}>
@@ -154,35 +154,20 @@ export default function SuperAdminTimetables() {
 
           {/* View mode */}
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5 block">
+            <label className="scholr-label" style={{ display: 'block', marginBottom: '.3rem' }}>
               View by
             </label>
-            <div className="grid grid-cols-3 gap-1.5 bg-slate-100 rounded-md p-1">
-              {VIEW_MODES.map((mode) => {
-                const Icon = mode.icon;
-                const isActive = viewMode === mode.value;
-                return (
-                  <button
-                    key={mode.value}
-                    type="button"
-                    onClick={() => handleViewModeChange(mode.value)}
-                    className={`flex items-center justify-center gap-1.5 px-2 py-1.5 rounded text-xs font-medium transition-colors ${
-                      isActive
-                        ? 'bg-white text-slate-900 shadow-sm'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    <Icon className="w-3.5 h-3.5" />
-                    {mode.label}
-                  </button>
-                );
-              })}
-            </div>
+            <Segmented
+              label="View by"
+              value={viewMode}
+              onChange={handleViewModeChange}
+              options={VIEW_MODES.map((m) => ({ value: m.value, label: m.label }))}
+            />
           </div>
 
           {/* Entity selector */}
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5 block">
+            <label className="scholr-label" style={{ display: 'block', marginBottom: '.3rem' }}>
               {viewMode === 'class' ? 'Class / Grade' : viewMode === 'teacher' ? 'Teacher' : 'Student'}
             </label>
             <Select
@@ -202,9 +187,9 @@ export default function SuperAdminTimetables() {
                 />
               </SelectTrigger>
               <SelectContent className="max-h-80">
-                <div className="sticky top-0 bg-white p-2 border-b border-slate-100">
+                <div className="sticky top-0 p-2" style={{ background: 'var(--surface)', borderBottom: '1px solid var(--rule-soft)' }}>
                   <div className="relative">
-                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                    <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--faint)' }} />
                     <Input
                       value={entitySearch}
                       onChange={(e) => setEntitySearch(e.target.value)}
@@ -216,14 +201,14 @@ export default function SuperAdminTimetables() {
                   </div>
                 </div>
                 {filteredEntityOptions.length === 0 ? (
-                  <p className="text-xs text-slate-400 text-center py-3">No results</p>
+                  <p className="text-xs text-center py-3" style={{ color: 'var(--faint)' }}>No results</p>
                 ) : (
                   filteredEntityOptions.map((opt) => (
                     <SelectItem key={opt.id} value={opt.id}>
                       <div className="flex flex-col">
                         <span className="text-sm">{opt.label}</span>
                         {opt.subtext && (
-                          <span className="text-xs text-slate-400">{opt.subtext}</span>
+                          <span className="text-xs" style={{ color: 'var(--faint)' }}>{opt.subtext}</span>
                         )}
                       </div>
                     </SelectItem>
@@ -235,34 +220,30 @@ export default function SuperAdminTimetables() {
         </div>
 
         {selectedEntityLabel && (
-          <div className="flex items-center gap-2 text-xs text-slate-500 border-t border-slate-100 pt-3">
+          <div className="flex items-center gap-2 text-xs pt-3" style={{ color: 'var(--muted)', borderTop: '1px solid var(--rule-soft)' }}>
             <CalendarClock className="w-3.5 h-3.5" />
-            Viewing <span className="font-medium text-slate-700">{selectedEntityLabel}</span>
+            Viewing <span className="font-medium" style={{ color: 'var(--ink)' }}>{selectedEntityLabel}</span>
             {' · '}
             <span>{filteredEntries.length} scheduled {filteredEntries.length === 1 ? 'entry' : 'entries'}</span>
           </div>
         )}
-      </div>
+        </div>
+      </Group>
 
-      {/* Timetable grid */}
       {!selectedSchoolId ? (
-        <div className="bg-white border border-slate-200 rounded-md p-10 text-center">
-          <CalendarClock className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-600 text-sm font-medium">Select a school to begin</p>
-          <p className="text-slate-400 text-xs mt-1">
-            Choose a school, then pick a class, teacher, or student to view their timetable.
-          </p>
-        </div>
+        <Group title="Timetable">
+          <GroupEmpty>
+            Choose a school above, then a class, teacher or student.
+          </GroupEmpty>
+        </Group>
       ) : isLoadingTimetable ? (
-        <div className="bg-white border border-slate-200 rounded-md p-10 text-center">
-          <p className="text-slate-500 text-sm">Loading timetable data...</p>
-        </div>
+        <Group title="Timetable">
+          <GroupEmpty>Loading…</GroupEmpty>
+        </Group>
       ) : !selectedEntityId ? (
-        <div className="bg-white border border-slate-200 rounded-md p-10 text-center">
-          <p className="text-slate-600 text-sm font-medium">
-            Select a {viewMode} to view their timetable
-          </p>
-        </div>
+        <Group title="Timetable">
+          <GroupEmpty>Pick a {viewMode} to see their week.</GroupEmpty>
+        </Group>
       ) : (
         <TimetableGrid
           entries={filteredEntries}

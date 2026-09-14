@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Group, GroupEmpty, Row } from '@/components/app/AppShell';
+import StatusChip from '@/components/app/StatusChip';
+import { Field, SelectField } from '@/components/app/Field';
+import { getBillingStatusMeta, getPlanMeta } from '@/components/admin/super-admin/superAdminConfig';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
-  AlertCircle,
   ChevronLeft,
   DollarSign,
   Edit2,
@@ -107,16 +106,18 @@ export default function SuperAdminSchoolDetail() {
 
   if (!school) {
     return (
-      <SuperAdminShell activeItem="schools" currentUser={currentUser}>
-        <Button onClick={() => navigate('/SuperAdminSchools')} variant="outline" className="mb-4">
-          <ChevronLeft className="w-4 h-4 mr-2" />
-          Back to Schools
-        </Button>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-center text-slate-600">School not found</p>
-          </CardContent>
-        </Card>
+      <SuperAdminShell
+        activeItem="schools"
+        currentUser={currentUser}
+        title="School not found"
+        eyebrow="It may have been deleted"
+      >
+        <Group title="Nothing here">
+          <GroupEmpty>
+            No school matches that id. It was probably deleted.
+          </GroupEmpty>
+          <Row label="Back to all schools" href="/SuperAdminSchools" />
+        </Group>
       </SuperAdminShell>
     );
   }
@@ -124,282 +125,193 @@ export default function SuperAdminSchoolDetail() {
   const healthIssues = getSchoolHealthIssues(school);
   const isAtRisk = healthIssues.length > 0;
 
+  const day = (v) => (v ? new Date(v).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : null);
+  const planMeta = getPlanMeta(school.plan);
+  const billingMeta = getBillingStatusMeta(school.billing_status);
+  const trialDaysLeft = school.trial_end_date
+    ? Math.ceil((new Date(school.trial_end_date) - new Date()) / (1000 * 60 * 60 * 24))
+    : null;
+
+  const actionBtn = 'pub-btn pub-btn-line scholr-focus';
+  const actionStyle = { width: '100%', justifyContent: 'flex-start', fontSize: '.83rem' };
+  const dangerStyle = { ...actionStyle, color: 'var(--crit)', borderColor: 'var(--crit)' };
+
   return (
     <>
-      <SuperAdminShell activeItem="schools" currentUser={currentUser}>
-        <Button onClick={() => navigate('/SuperAdminSchools')} variant="outline" className="mb-6 text-xs md:text-sm">
-          <ChevronLeft className="w-3 md:w-4 h-3 md:h-4 mr-1 md:mr-2" />
-          Back to Schools
-        </Button>
+      <SuperAdminShell
+        activeItem="schools"
+        currentUser={currentUser}
+        title={school.name}
+        eyebrow={[
+          [school.city, school.country].filter(Boolean).join(', '),
+          school.created_at ? `since ${day(school.created_at)}` : null,
+        ].filter(Boolean).join(' · ')}
+        actions={<SchoolStatusBadge status={school.status} billingStatus={school.billing_status} />}
+      >
+        <Link
+          to="/SuperAdminSchools"
+          className="scholr-focus"
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: '.3rem',
+            marginBottom: 'var(--space-md)', fontSize: '.82rem',
+            color: 'var(--brand)', textDecoration: 'none',
+          }}
+        >
+          <ChevronLeft className="w-3.5 h-3.5" />
+          All schools
+        </Link>
 
-        <Card className="mb-6">
-          <CardContent className="pt-4 md:pt-6 p-4 md:p-6">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
-              <div className="min-w-0">
-                <h1 className="text-2xl md:text-3xl font-bold text-slate-900 truncate">{school.name}</h1>
-                <p className="text-xs md:text-sm text-slate-600 mt-1 truncate">
-                  {school.city}, {school.country} • Created {new Date(school.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                </p>
-              </div>
-              <div className="flex-shrink-0">
-                <SchoolStatusBadge status={school.status} billingStatus={school.billing_status} />
-              </div>
-            </div>
+        {isAtRisk && (
+          <div
+            role="status"
+            style={{
+              margin: '0 0 var(--space-md)', padding: '.6rem .8rem',
+              fontSize: '.85rem', color: 'var(--crit)',
+              background: 'var(--crit-sf)', border: '1px solid var(--crit)',
+              borderRadius: 'var(--radius-control)',
+            }}
+          >
+            <strong>Needs attention.</strong> {healthIssues.join(', ')}
+          </div>
+        )}
 
-            {isAtRisk && (
-              <Alert className="bg-red-50 border-red-200 mt-4">
-                <AlertCircle className="w-4 h-4 text-red-600" />
-                <AlertDescription className="text-red-800 ml-3">
-                  <strong>Attention needed:</strong> {healthIssues.join(', ')}
-                </AlertDescription>
-              </Alert>
-            )}
-          </CardContent>
-        </Card>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-          <div className="lg:col-span-2 space-y-4 md:space-y-6">
-            <Card>
-              <CardHeader className="p-4 md:p-6">
-                <CardTitle className="text-base md:text-lg">Onboarding Status</CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 md:p-6 pt-0 md:pt-0">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6">
+          <div className="lg:col-span-2 flex flex-col gap-5 md:gap-6">
+            <Group title="Onboarding">
+              <div className="px-4 py-3.5">
                 <SchoolOnboardingProgress schoolId={schoolId} />
-              </CardContent>
-            </Card>
+              </div>
+            </Group>
 
-            <Card>
-              <CardHeader className="p-4 md:p-6">
-                <CardTitle className="text-base md:text-lg">School Setup</CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 md:p-6 pt-0 md:pt-0">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-                  <div>
-                    <p className="text-xs md:text-sm text-slate-600 font-semibold">Academic Years</p>
-                    <p className="text-2xl md:text-3xl font-bold text-slate-900 mt-1">{stats?.academicYears || 0}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs md:text-sm text-slate-600 font-semibold">Terms</p>
-                    <p className="text-2xl md:text-3xl font-bold text-slate-900 mt-1">{stats?.terms || 0}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs md:text-sm text-slate-600 font-semibold">Subjects</p>
-                    <p className="text-2xl md:text-3xl font-bold text-slate-900 mt-1">{stats?.subjects || 0}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs md:text-sm text-slate-600 font-semibold">Classes</p>
-                    <p className="text-2xl md:text-3xl font-bold text-slate-900 mt-1">{stats?.classes || 0}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs md:text-sm text-slate-600 font-semibold">Staff</p>
-                    <p className="text-2xl md:text-3xl font-bold text-slate-900 mt-1">{stats?.staff || 0}</p>
-                  </div>
+            <Group title="Setup">
+              <Row label="Academic years" value={stats?.academicYears ?? 0} />
+              <Row label="Terms" value={stats?.terms ?? 0} />
+              <Row label="Subjects" value={stats?.subjects ?? 0} />
+              <Row label="Classes" value={stats?.classes ?? 0} />
+              <Row label="Staff" value={stats?.staff ?? 0} />
+            </Group>
+
+            <Group title="Billing">
+              <Row label="Plan"><StatusChip>{planMeta.label}</StatusChip></Row>
+              <Row label="Status"><StatusChip tone={billingMeta.tone}>{billingMeta.label}</StatusChip></Row>
+              {school.billing_status === 'trial' && school.trial_end_date && (
+                <Row
+                  label="Trial ends"
+                  detail={trialDaysLeft >= 0 ? `${trialDaysLeft} days left` : `${Math.abs(trialDaysLeft)} days ago`}
+                  value={day(school.trial_end_date)}
+                />
+              )}
+              {school.subscription_current_period_end && (
+                <Row label="Period ends" value={day(school.subscription_current_period_end)} />
+              )}
+              {school.stripe_subscription_id && (
+                <Row label="Stripe subscription" value={school.stripe_subscription_id} />
+              )}
+            </Group>
+
+            <Group title={`People · ${members.length}`}>
+              {members.length === 0 ? (
+                <GroupEmpty>Nobody has been added to this school yet.</GroupEmpty>
+              ) : (
+                <div className="max-h-72 overflow-y-auto">
+                  {members.map((member) => (
+                    <Row
+                      key={member.id}
+                      label={member.user_name || 'No name on file'}
+                      detail={member.user_email}
+                    >
+                      <StatusChip>{member.role}</StatusChip>
+                    </Row>
+                  ))}
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="p-4 md:p-6">
-                <CardTitle className="text-base md:text-lg">Billing & Subscription</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 p-4 md:p-6 pt-0 md:pt-0">
-                <div className="grid grid-cols-2 gap-2 md:gap-4">
-                  <div className="p-3 bg-slate-50 rounded-lg">
-                    <p className="text-xs text-slate-600 font-semibold">Plan</p>
-                    <p className="text-lg font-bold text-slate-900 mt-1 capitalize">{school.plan || 'Starter'}</p>
-                  </div>
-                  <div className="p-3 bg-slate-50 rounded-lg">
-                    <p className="text-xs text-slate-600 font-semibold">Billing Status</p>
-                    <p className="text-lg font-bold text-slate-900 mt-1 capitalize">{school.billing_status || 'No Plan'}</p>
-                  </div>
-
-                  {school.billing_status === 'trial' && school.trial_end_date && (
-                    <div className="p-3 bg-blue-50 rounded-lg">
-                      <p className="text-xs text-slate-600 font-semibold">Trial Ends</p>
-                      <p className="text-lg font-bold text-blue-900 mt-1">{new Date(school.trial_end_date).toLocaleDateString()}</p>
-                      <p className="text-xs text-blue-700 mt-1">
-                        {Math.ceil((new Date(school.trial_end_date) - new Date()) / (1000 * 60 * 60 * 24))} days remaining
-                      </p>
-                    </div>
-                  )}
-
-                  {school.subscription_current_period_end && (
-                    <div className="p-3 bg-slate-50 rounded-lg">
-                      <p className="text-xs text-slate-600 font-semibold">Billing Period Ends</p>
-                      <p className="text-lg font-bold text-slate-900 mt-1">{new Date(school.subscription_current_period_end).toLocaleDateString()}</p>
-                    </div>
-                  )}
-                </div>
-
-                {school.stripe_subscription_id && (
-                  <div className="p-3 bg-slate-50 rounded-lg">
-                    <p className="text-xs text-slate-600 font-semibold">Stripe Subscription ID</p>
-                    <p className="text-sm font-mono text-slate-900 mt-1 break-all">{school.stripe_subscription_id}</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="p-4 md:p-6">
-                <CardTitle className="flex items-center gap-2 text-base md:text-lg">
-                  <Users className="w-4 md:w-5 h-4 md:h-5" />
-                  Staff & Members ({members.length})
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 md:p-6 pt-0 md:pt-0">
-                {members.length === 0 ? (
-                  <p className="text-xs md:text-sm text-slate-600">No staff members added yet</p>
-                ) : (
-                  <div className="space-y-2 max-h-64 overflow-y-auto">
-                    {members.map((member) => (
-                      <div key={member.id} className="flex items-center justify-between p-2 border border-slate-200 rounded text-xs md:text-sm gap-2">
-                        <div className="min-w-0 flex-1">
-                          <p className="font-semibold text-slate-900 truncate">{member.user_name || 'Unknown'}</p>
-                          <p className="text-xs text-slate-600 mt-0.5 truncate">{member.user_email}</p>
-                        </div>
-                        <Badge variant="outline" className="text-xs flex-shrink-0">{member.role}</Badge>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+              )}
+            </Group>
           </div>
 
-          <div className="space-y-4 md:space-y-6">
-            <Card>
-              <CardHeader className="p-4 md:p-6">
-                <CardTitle className="text-base md:text-lg">Details</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 text-xs md:text-sm p-4 md:p-6 pt-0 md:pt-0">
-                <div className="min-w-0">
-                  <p className="text-slate-600">Email</p>
-                  <p className="font-semibold text-slate-900 truncate">{school.email || 'N/A'}</p>
-                </div>
-                <div>
-                  <p className="text-slate-600">Phone</p>
-                  <p className="font-semibold text-slate-900">{school.phone || 'N/A'}</p>
-                </div>
-                <div className="min-w-0">
-                  <p className="text-slate-600">Address</p>
-                  <p className="font-semibold text-slate-900 truncate">{school.address || 'N/A'}</p>
-                </div>
-                <div>
-                  <p className="text-slate-600">Timezone</p>
-                  <p className="font-semibold text-slate-900">{school.timezone || 'UTC'}</p>
-                </div>
-              </CardContent>
-            </Card>
+          <div className="flex flex-col gap-5 md:gap-6">
+            <Group title="Details">
+              <Row label="Email" value={school.email || 'Not set'} />
+              <Row label="Phone" value={school.phone || 'Not set'} />
+              <Row label="Address" value={school.address || 'Not set'} />
+              <Row label="Timezone" value={school.timezone || 'UTC'} />
+            </Group>
 
-            <Card>
-              <CardHeader className="p-4 md:p-6">
-                <CardTitle className="text-base md:text-lg">Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 p-4 md:p-6 pt-0 md:pt-0">
-                <div className="pb-3 mb-1 border-b border-slate-100 space-y-2">
-                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Impersonate</p>
-                  <div>
-                    <p className="text-xs text-slate-500 mb-1">Curriculum override</p>
-                    <select
-                      value={curriculumOverride}
-                      onChange={e => setCurriculumOverride(e.target.value)}
-                      className="w-full text-xs border border-slate-200 rounded-md px-2 py-1.5 bg-white text-slate-800 focus:outline-none focus:ring-1 focus:ring-amber-400"
-                    >
-                      {CURRICULUM_OPTIONS.map(opt => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <Button
-                    onClick={() => handleImpersonate('school_admin')}
-                    className="w-full justify-start text-xs md:text-sm bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200"
-                    variant="outline"
+            {/* Impersonation is separated from the ordinary actions: it changes
+                whose eyes you are looking through, and it is audited. */}
+            <Group title="View as">
+              <div className="px-4 py-3.5 flex flex-col gap-2">
+                <Field label="Curriculum override" htmlFor="curriculum-override">
+                  <SelectField
+                    id="curriculum-override"
+                    value={curriculumOverride}
+                    onChange={setCurriculumOverride}
+                    label="Curriculum override"
+                    options={CURRICULUM_OPTIONS}
+                  />
+                </Field>
+                {[
+                  ['school_admin', 'School admin'],
+                  ['teacher', 'Teacher'],
+                  ['student', 'Student'],
+                ].map(([role, label]) => (
+                  <button
+                    key={role}
+                    type="button"
+                    onClick={() => handleImpersonate(role)}
+                    className={actionBtn}
+                    style={actionStyle}
                   >
-                    <Eye className="w-3 md:w-4 h-3 md:h-4 mr-1 md:mr-2" />
-                    View as School Admin
-                  </Button>
-                  <Button
-                    onClick={() => handleImpersonate('teacher')}
-                    className="w-full justify-start text-xs md:text-sm bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200"
-                    variant="outline"
-                  >
-                    <Eye className="w-3 md:w-4 h-3 md:h-4 mr-1 md:mr-2" />
-                    View as Teacher
-                  </Button>
-                  <Button
-                    onClick={() => handleImpersonate('student')}
-                    className="w-full justify-start text-xs md:text-sm bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200"
-                    variant="outline"
-                  >
-                    <Eye className="w-3 md:w-4 h-3 md:h-4 mr-1 md:mr-2" />
-                    View as Student
-                  </Button>
-                </div>
+                    <Eye className="w-4 h-4" />
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </Group>
 
-                <Button onClick={() => setEditDialogOpen(true)} disabled={actionLoading} className="w-full justify-start text-xs md:text-sm" variant="outline">
-                  <Edit2 className="w-3 md:w-4 h-3 md:h-4 mr-1 md:mr-2" />
-                  Edit Details
-                </Button>
-
-                <Button onClick={() => setBillingDialogOpen(true)} disabled={actionLoading} className="w-full justify-start text-xs md:text-sm" variant="outline">
-                  <DollarSign className="w-3 md:w-4 h-3 md:h-4 mr-1 md:mr-2" />
-                  Manage Billing
-                </Button>
-
-                <Button onClick={() => setAddAdminDialogOpen(true)} disabled={actionLoading} className="w-full justify-start text-xs md:text-sm" variant="outline">
-                  <Users className="w-3 md:w-4 h-3 md:h-4 mr-1 md:mr-2" />
-                  Add School Admin
-                </Button>
+            <Group title="Actions">
+              <div className="px-4 py-3.5 flex flex-col gap-2">
+                <button type="button" onClick={() => setEditDialogOpen(true)} disabled={actionLoading} className={actionBtn} style={actionStyle}>
+                  <Edit2 className="w-4 h-4" />
+                  Edit details
+                </button>
+                <button type="button" onClick={() => setBillingDialogOpen(true)} disabled={actionLoading} className={actionBtn} style={actionStyle}>
+                  <DollarSign className="w-4 h-4" />
+                  Manage billing
+                </button>
+                <button type="button" onClick={() => setAddAdminDialogOpen(true)} disabled={actionLoading} className={actionBtn} style={actionStyle}>
+                  <Users className="w-4 h-4" />
+                  Add school admin
+                </button>
 
                 {school.status === 'onboarding' && (
-                  <Button onClick={handleActivateSchool} disabled={actionLoading} className="w-full justify-start text-xs md:text-sm" variant="outline">
-                    {actionLoading && <Loader2 className="w-3 md:w-4 h-3 md:h-4 mr-1 md:mr-2 animate-spin" />}
-                    <Zap className="w-3 md:w-4 h-3 md:h-4 mr-1 md:mr-2" />
-                    Activate School
-                  </Button>
+                  <button type="button" onClick={handleActivateSchool} disabled={actionLoading} className={actionBtn} style={actionStyle}>
+                    {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+                    Activate school
+                  </button>
                 )}
-
                 {school.status === 'active' && (
-                  <Button onClick={handleSuspendSchool} disabled={actionLoading} className="w-full justify-start text-xs md:text-sm text-red-600 hover:text-red-700" variant="outline">
-                    {actionLoading && <Loader2 className="w-3 md:w-4 h-3 md:h-4 mr-1 md:mr-2 animate-spin" />}
-                    <Lock className="w-3 md:w-4 h-3 md:h-4 mr-1 md:mr-2" />
-                    Suspend School
-                  </Button>
+                  <button type="button" onClick={handleSuspendSchool} disabled={actionLoading} className={actionBtn} style={dangerStyle}>
+                    {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
+                    Suspend school
+                  </button>
                 )}
-
                 {school.status === 'suspended' && (
-                  <Button onClick={handleActivateSchool} disabled={actionLoading} className="w-full justify-start text-xs md:text-sm" variant="outline">
-                    {actionLoading && <Loader2 className="w-3 md:w-4 h-3 md:h-4 mr-1 md:mr-2 animate-spin" />}
-                    <Unlock className="w-3 md:w-4 h-3 md:h-4 mr-1 md:mr-2" />
-                    Reactivate School
-                  </Button>
+                  <button type="button" onClick={handleActivateSchool} disabled={actionLoading} className={actionBtn} style={actionStyle}>
+                    {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Unlock className="w-4 h-4" />}
+                    Reactivate school
+                  </button>
                 )}
+                <button type="button" onClick={handleDeleteSchool} disabled={actionLoading} className={actionBtn} style={dangerStyle}>
+                  {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                  Delete school
+                </button>
+              </div>
+            </Group>
 
-                <div className="pt-2 mt-1 border-t border-slate-100">
-                  <Button onClick={handleDeleteSchool} disabled={actionLoading} className="w-full justify-start text-xs md:text-sm text-red-600 hover:text-red-700 hover:bg-red-50" variant="outline">
-                    {actionLoading ? <Loader2 className="w-3 md:w-4 h-3 md:h-4 mr-1 md:mr-2 animate-spin" /> : <Trash2 className="w-3 md:w-4 h-3 md:h-4 mr-1 md:mr-2" />}
-                    Delete School
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="p-4 md:p-6">
-                <CardTitle className="text-base md:text-lg">System</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 text-xs p-4 md:p-6 pt-0 md:pt-0">
-                <div className="min-w-0">
-                  <p className="text-slate-600">School ID</p>
-                  <p className="font-mono text-slate-900 break-all text-xs">{school.id}</p>
-                </div>
-                <div className="min-w-0">
-                  <p className="text-slate-600">Stripe Customer ID</p>
-                  <p className="font-mono text-slate-900 break-all text-xs">{school.stripe_customer_id || 'None'}</p>
-                </div>
-              </CardContent>
-            </Card>
+            <Group title="System">
+              <Row label="School ID" value={school.id} />
+              <Row label="Stripe customer" value={school.stripe_customer_id || 'None'} />
+            </Group>
           </div>
         </div>
       </SuperAdminShell>

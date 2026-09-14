@@ -10,7 +10,6 @@ import { lazy, Suspense } from 'react';
  * 421 kB charting library in the entry graph. Every visitor to the
  * marketing site downloaded it. */
 const SuperAdminAnalytics = lazy(() => import('./pages/SuperAdminAnalytics'));
-const SuperAdminAutomation = lazy(() => import('./pages/SuperAdminAutomation'));
 const SuperAdminSupport = lazy(() => import('./pages/SuperAdminSupport'));
 const SuperAdminTimetables = lazy(() => import('./pages/SuperAdminTimetables'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
@@ -148,14 +147,6 @@ const AuthenticatedApp = () => {
         element={
           <LayoutWrapper currentPageName="SuperAdminSettings">
             <SuperAdminSettings />
-          </LayoutWrapper>
-        }
-      />
-      <Route
-        path="/SuperAdminAutomation"
-        element={
-          <LayoutWrapper currentPageName="SuperAdminAutomation">
-            <SuperAdminAutomation />
           </LayoutWrapper>
         }
       />
