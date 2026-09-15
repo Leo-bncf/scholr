@@ -1,3 +1,4 @@
+import { Row } from '@/components/app/AppShell';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -32,7 +33,7 @@ export default function ClassCard({
   const studentName = (id) => studentsByUserId[id]?.user_name || 'Unknown';
 
   return (
-    <div className="bg-white rounded-xl border scholr-rule shadow-sm overflow-hidden">
+    <div className="app-group" style={{ overflow: 'hidden' }}>
       <Collapsible open={expanded} onOpenChange={onToggleExpand}>
         <div className="flex items-center justify-between pr-3 hover:scholr-sunk transition-colors">
           <CollapsibleTrigger asChild>
@@ -85,7 +86,7 @@ export default function ClassCard({
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                className="text-red-600 focus:text-red-700"
+                style={{ color: 'var(--crit)' }}
                 onClick={() => {
                   if (window.confirm(`Delete "${classItem.name}"? This cannot be undone.`)) {
                     onDeleteClass(classItem.id);
@@ -117,10 +118,7 @@ export default function ClassCard({
           ) : (
             <div className="flex flex-wrap gap-2">
               {classTeacherIds.map((id) => (
-                <Badge key={id} variant="secondary" className="gap-1 py-1 px-2 text-xs font-medium">
-                  <div className="w-4 h-4 rounded-full bg-emerald-200 text-emerald-800 flex items-center justify-center text-[9px] font-bold">
-                    {teacherName(id)[0]?.toUpperCase() || '?'}
-                  </div>
+                <Badge key={id} variant="secondary" className="py-1 px-2 text-xs font-medium">
                   {teacherName(id)}
                 </Badge>
               ))}
@@ -143,24 +141,22 @@ export default function ClassCard({
           {subjectAssignments.length === 0 ? (
             <EmptyInlineNote text="No subjects mapped to teachers yet" />
           ) : (
-            <div className="space-y-2">
+            <div className="app-group">
               {subjectAssignments.map((a) => (
-                <div key={a.id} className="bg-white rounded-lg border scholr-rule p-3 flex items-center justify-between">
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium scholr-ink truncate">{subjectName(a.subject_id)}</p>
-                    <p className="text-xs scholr-muted mt-0.5 truncate">
-                      {a.teacher_ids?.length
-                        ? a.teacher_ids.map(teacherName).join(', ')
-                        : 'No teachers assigned'}
-                    </p>
-                  </div>
+                <Row
+                  key={a.id}
+                  label={subjectName(a.subject_id)}
+                  detail={a.teacher_ids?.length ? a.teacher_ids.map(teacherName).join(', ') : 'No teachers assigned'}
+                >
                   <Button
-                    size="sm" variant="ghost" className="h-7 w-7 p-0 scholr-faint hover:text-red-600"
+                    size="sm" variant="ghost" className="h-7 w-7 p-0"
+                    style={{ color: 'var(--faint)' }}
+                    aria-label={`Remove ${subjectName(a.subject_id)}`}
                     onClick={() => onRemoveSubjectAssignment(classItem.id, a.id)}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </Button>
-                </div>
+                </Row>
               ))}
             </div>
           )}
@@ -181,27 +177,24 @@ export default function ClassCard({
           {studentIds.length === 0 ? (
             <EmptyInlineNote text="No students enrolled yet" />
           ) : (
-            <div className="grid gap-2 sm:grid-cols-2">
+            <div className="app-group">
               {studentIds.map((studentId) => {
                 const s = studentsByUserId[studentId];
                 return (
-                  <div key={studentId} className="bg-white rounded-lg border scholr-rule p-2.5 flex items-center justify-between">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <div className="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-700 flex-shrink-0">
-                        {s?.user_name?.[0]?.toUpperCase() || '?'}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium scholr-ink truncate">{studentName(studentId)}</p>
-                        <p className="text-xs scholr-muted truncate">{s?.grade_level || 'Grade —'}</p>
-                      </div>
-                    </div>
+                  <Row
+                    key={studentId}
+                    label={studentName(studentId)}
+                    detail={s?.grade_level || 'No year group set'}
+                  >
                     <Button
-                      size="sm" variant="ghost" className="h-7 w-7 p-0 scholr-faint hover:text-red-600 flex-shrink-0"
+                      size="sm" variant="ghost" className="h-7 w-7 p-0 flex-shrink-0"
+                      style={{ color: 'var(--faint)' }}
+                      aria-label={`Remove ${studentName(studentId)}`}
                       onClick={() => onRemoveStudent(classItem.id, studentId)}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </Button>
-                  </div>
+                  </Row>
                 );
               })}
             </div>
@@ -225,5 +218,5 @@ function SectionHeader({ icon, title, action }) {
 }
 
 function EmptyInlineNote({ text }) {
-  return <p className="text-xs scholr-muted italic">{text}</p>;
+  return <p style={{ margin: 0, fontSize: '.82rem', color: 'var(--faint)' }}>{text}</p>;
 }

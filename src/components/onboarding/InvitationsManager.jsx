@@ -117,7 +117,7 @@ export default function InvitationsManager({ schoolId, schoolName }) {
           </Button>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border scholr-rule divide-y scholr-divide">
+        <div className="app-group divide-y scholr-divide">
           {invitations.map((invitation) => {
             const statusConfig = getStatusConfig(invitation);
             const StatusIcon = statusConfig.icon;

@@ -12,18 +12,18 @@ import { format, addDays } from 'date-fns';
 import * as privacyRequestsData from '@/data/privacyRequests';
 
 const REQUEST_TYPES = {
-  data_export: { label: 'Data Export', color: 'bg-sky-100 text-sky-700' },
+  data_export: { label: 'Data Export', color: 'scholr-sunk scholr-muted' },
   account_deletion: { label: 'Account Deletion', color: 'bg-red-100 text-red-700' },
   anonymization: { label: 'Anonymization', color: 'scholr-accent-sf scholr-accent' },
-  data_correction: { label: 'Data Correction', color: 'bg-amber-100 text-amber-700' },
-  access_request: { label: 'Access Request', color: 'bg-emerald-100 text-emerald-700' },
+  data_correction: { label: 'Data Correction', color: 'scholr-sunk scholr-muted' },
+  access_request: { label: 'Access Request', color: 'scholr-sunk scholr-muted' },
 };
 
 const STATUS_CONFIG = {
-  pending:     { label: 'Pending',     color: 'bg-amber-100 text-amber-700',    icon: Clock },
-  acknowledged:{ label: 'Acknowledged',color: 'bg-blue-100 text-blue-700',      icon: Info },
+  pending:     { label: 'Pending',     color: 'scholr-sunk scholr-muted',    icon: Clock },
+  acknowledged:{ label: 'Acknowledged',color: 'scholr-sunk scholr-muted',      icon: Info },
   in_progress: { label: 'In Progress', color: 'scholr-accent-sf scholr-accent',  icon: Loader2 },
-  completed:   { label: 'Completed',   color: 'bg-emerald-100 text-emerald-700',icon: CheckCircle2 },
+  completed:   { label: 'Completed',   color: 'scholr-sunk scholr-muted',icon: CheckCircle2 },
   rejected:    { label: 'Rejected',    color: 'bg-red-100 text-red-700',        icon: XCircle },
   withdrawn:   { label: 'Withdrawn',   color: 'scholr-sunk scholr-muted',    icon: XCircle },
 };

@@ -19,10 +19,10 @@ const SERVICES = [
 ];
 
 const STATUS_CONFIG = {
-  operational: { label: 'Operational', color: 'bg-emerald-100 text-emerald-700 border-emerald-200', dot: 'bg-emerald-500', icon: CheckCircle2 },
-  degraded:    { label: 'Degraded',    color: 'bg-amber-100 text-amber-700 border-amber-200',       dot: 'bg-amber-500',   icon: AlertTriangle },
+  operational: { label: 'Operational', color: 'scholr-sunk scholr-muted border-emerald-200', dot: 'bg-emerald-500', icon: CheckCircle2 },
+  degraded:    { label: 'Degraded',    color: 'scholr-sunk scholr-muted border-amber-200',       dot: 'bg-amber-500',   icon: AlertTriangle },
   outage:      { label: 'Outage',      color: 'bg-red-100 text-red-700 border-red-200',             dot: 'bg-red-500 animate-pulse', icon: XCircle },
-  maintenance: { label: 'Maintenance', color: 'bg-blue-100 text-blue-700 border-blue-200',          dot: 'bg-blue-500',    icon: Clock },
+  maintenance: { label: 'Maintenance', color: 'scholr-sunk scholr-muted border-blue-200',          dot: 'bg-blue-500',    icon: Clock },
 };
 
 // Static maintenance / incident notices — would be fetched from a status endpoint in production
@@ -136,7 +136,7 @@ export default function SystemStatus({ schoolId, school }) {
       </div>
 
       {/* Service grid */}
-      <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+      <div className="app-group overflow-hidden">
         <div className="px-5 py-3 border-b scholr-rule-soft flex items-center justify-between">
           <p className="text-xs font-bold scholr-muted uppercase tracking-wide">Service Status</p>
           <Badge className="scholr-sunk scholr-muted border-0 text-xs">{Object.values(serviceStatuses).filter(s => s === 'operational').length}/{SERVICES.length} operational</Badge>
@@ -185,7 +185,7 @@ export default function SystemStatus({ schoolId, school }) {
                     <p className="text-xs scholr-faint mt-2">{formatDistanceToNow(new Date(notice.date), { addSuffix: true })}</p>
                   </div>
                   {!notice.resolved && (
-                    <Badge className="bg-blue-100 text-blue-700 border-0 text-xs shrink-0">Upcoming</Badge>
+                    <Badge className="scholr-sunk scholr-muted border-0 text-xs shrink-0">Upcoming</Badge>
                   )}
                 </div>
               </div>

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
+import Notice from '@/components/app/Notice';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Archive, RotateCcw, Copy, Scissors,
-  Loader2, AlertTriangle, Info
+  Loader2
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
@@ -94,12 +94,9 @@ function DuplicateDialog({ classObj, onClose, schoolId, academicYears }) {
               </label>
             ))}
           </div>
-          <Alert className="border-blue-200 bg-blue-50">
-            <Info className="w-4 h-4 text-blue-600" />
-            <AlertDescription className="text-xs text-blue-700">
-              A new active class section will be created. The roster lock will be cleared on the copy.
-            </AlertDescription>
-          </Alert>
+          <Notice tone="info">
+            A new active class section will be created. The roster lock will be cleared on the copy.
+          </Notice>
           <div className="flex gap-2 pt-1">
             <Button variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
             <Button
@@ -193,12 +190,9 @@ function SplitDialog({ classObj, onClose, schoolId, memberships }) {
               );
             })}
           </div>
-          <Alert className="border-amber-200 bg-amber-50">
-            <AlertTriangle className="w-4 h-4 text-amber-600" />
-            <AlertDescription className="text-xs text-amber-700">
-              The original class will be archived. Two new sections will be created with the same teacher assignments and subject mappings.
-            </AlertDescription>
-          </Alert>
+          <Notice tone="warn">
+            The original class will be archived. Two new sections will be created with the same teacher assignments and subject mappings.
+          </Notice>
         </div>
         <div className="flex gap-2 pt-3 border-t scholr-rule-soft">
           <Button variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
@@ -304,7 +298,7 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
         icon={Archive}
         title="End-of-Year Archive"
         description="Archive all active classes at once when the academic year concludes."
-        color="bg-amber-100 text-amber-700"
+        color="scholr-sunk scholr-muted"
       >
         {activeClasses.length === 0 ? (
           <p className="text-xs scholr-faint">No active classes to archive.</p>
@@ -395,7 +389,7 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
         icon={Scissors}
         title="Split Class Section"
         description="Divide a class into two sections and assign students to each group."
-        color="bg-rose-100 text-rose-700"
+        color="scholr-sunk scholr-muted"
       >
         {activeClasses.filter(c => (c.student_ids?.length || 0) >= 2).length === 0 ? (
           <p className="text-xs scholr-faint">No classes with enough students to split (need ≥ 2).</p>
@@ -410,7 +404,7 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-7 text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50 gap-1 flex-shrink-0"
+                  className="h-7 text-xs gap-1 flex-shrink-0" style={{ color: 'var(--crit)' }}
                   onClick={() => setSplittingClass(c)}
                 >
                   <Scissors className="w-3 h-3" /> Split

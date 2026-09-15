@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 
 export default function TopicCoverageTable({ rows = [] }) {
   return (
-    <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+    <div className="app-group overflow-hidden">
       <div className="px-5 py-4 border-b scholr-rule">
         <h3 className="font-semibold scholr-ink">Topic Coverage & Mastery</h3>
       </div>

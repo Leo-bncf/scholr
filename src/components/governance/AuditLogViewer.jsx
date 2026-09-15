@@ -29,7 +29,7 @@ const CATEGORIES = ['All', 'Users', 'Grades', 'Attendance', 'Behaviour', 'Classe
 
 const LEVEL_CONFIG = {
   info:     { label: 'Info',     color: 'scholr-sunk scholr-muted',   icon: Info },
-  warning:  { label: 'Warning',  color: 'bg-amber-100 text-amber-700',   icon: AlertTriangle },
+  warning:  { label: 'Warning',  color: 'scholr-sunk scholr-muted',   icon: AlertTriangle },
   critical: { label: 'Critical', color: 'bg-red-100 text-red-700',       icon: ShieldAlert },
 };
 
@@ -206,7 +206,7 @@ export default function AuditLogViewer({ schoolId }) {
       </div>
 
       {/* Log table */}
-      <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+      <div className="app-group overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 border-b scholr-rule-soft scholr-sunk">
           <p className="text-xs font-semibold scholr-muted uppercase tracking-wide">Audit Events</p>
           <p className="text-xs scholr-faint">Showing {paginated.length} of {filtered.length} results</p>

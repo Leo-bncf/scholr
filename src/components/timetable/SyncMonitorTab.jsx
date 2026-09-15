@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+import Notice from '@/components/app/Notice';
 import { humanise } from '@/lib/labels';
 import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   CheckCircle, XCircle, AlertTriangle, Clock, RefreshCw, ChevronDown, Activity, Calendar, MapPin
 } from 'lucide-react';
@@ -103,10 +103,9 @@ function SyncRowDetail({ sync }) {
 
         {/* Errors */}
         {sync.status === 'failed' && sync.error_message && (
-          <Alert className="border-red-200 bg-red-50">
-            <XCircle className="w-4 h-4 text-red-600" />
-            <AlertDescription className="text-xs text-red-700">{sync.error_message}</AlertDescription>
-          </Alert>
+          <Notice tone="crit">
+            {sync.error_message}
+          </Notice>
         )}
         {errors.length > 0 && (
           <div>

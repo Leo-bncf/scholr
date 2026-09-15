@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+import Notice from '@/components/app/Notice';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Search, Users, UserPlus, UserMinus, Loader2, Lock, ChevronDown,
   BookOpen, Check, Filter
@@ -53,12 +53,9 @@ function EnrollDialog({ classObj, onClose, schoolId, memberships }) {
         </DialogHeader>
 
         {classObj.roster_locked ? (
-          <Alert className="border-amber-200 bg-amber-50">
-            <Lock className="w-4 h-4 text-amber-600" />
-            <AlertDescription className="text-xs text-amber-700">
-              Roster is locked (timetable sync active). Manual enrolment is disabled.
-            </AlertDescription>
-          </Alert>
+          <Notice tone="warn">
+            Roster is locked (timetable sync active). Manual enrolment is disabled.
+          </Notice>
         ) : (
           <>
             <div className="flex gap-2 pt-1">
@@ -204,7 +201,7 @@ export default function StudentEnrollmentTab({ schoolId, classes, memberships })
             const isLocked    = c.roster_locked;
 
             return (
-              <div key={c.id} className="bg-white rounded-xl border scholr-rule shadow-sm overflow-hidden">
+              <div key={c.id} className="app-group overflow-hidden">
                 <Collapsible open={isExpanded} onOpenChange={open => setExpandedClass(open ? c.id : null)}>
                   <CollapsibleTrigger asChild>
                     <button className="w-full px-5 py-4 flex items-center justify-between hover:scholr-sunk transition-colors text-left">

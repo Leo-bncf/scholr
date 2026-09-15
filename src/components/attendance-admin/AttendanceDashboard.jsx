@@ -90,7 +90,7 @@ function StudentDrilldown({ student, records, onBack }) {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+      <div className="app-group overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="scholr-sunk border-b scholr-rule">

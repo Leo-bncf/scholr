@@ -83,7 +83,7 @@ export default function PermissionRulesPanel({ form, onChange }) {
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-semibold scholr-ink">{rule.label}</p>
                       {rule.sensitive && (
-                        <span className="text-xs px-1.5 py-0.5 bg-amber-100 text-amber-700 border border-amber-200 rounded font-medium">Review carefully</span>
+                        <span className="text-xs px-1.5 py-0.5 scholr-sunk scholr-muted border border-amber-200 rounded font-medium">Review carefully</span>
                       )}
                     </div>
                     <p className="text-xs scholr-muted mt-0.5">{rule.desc}</p>

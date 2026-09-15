@@ -186,7 +186,7 @@ export default function TimetableStructureTab({ schoolId, periods, rooms, schedu
 
       {/* PERIODS */}
       {activeSection === 'periods' && (
-        <div className="bg-white rounded-xl border scholr-rule shadow-sm overflow-hidden">
+        <div className="app-group overflow-hidden">
           <div className="px-5 py-4 border-b scholr-rule-soft flex items-center justify-between">
             <div>
               <h3 className="text-sm font-semibold scholr-ink">Time Periods</h3>
@@ -264,7 +264,7 @@ export default function TimetableStructureTab({ schoolId, periods, rooms, schedu
 
       {/* ROOMS */}
       {activeSection === 'rooms' && (
-        <div className="bg-white rounded-xl border scholr-rule shadow-sm overflow-hidden">
+        <div className="app-group overflow-hidden">
           <div className="px-5 py-4 border-b scholr-rule-soft flex items-center justify-between">
             <div>
               <h3 className="text-sm font-semibold scholr-ink">Rooms & Facilities</h3>
@@ -343,7 +343,7 @@ export default function TimetableStructureTab({ schoolId, periods, rooms, schedu
 
       {/* SCHEDULE VIEW */}
       {activeSection === 'schedule' && (
-        <div className="bg-white rounded-xl border scholr-rule shadow-sm overflow-hidden">
+        <div className="app-group overflow-hidden">
           <div className="px-5 py-4 border-b scholr-rule-soft">
             <h3 className="text-sm font-semibold scholr-ink mb-3">Schedule Entries</h3>
             <div className="flex gap-1 flex-wrap">

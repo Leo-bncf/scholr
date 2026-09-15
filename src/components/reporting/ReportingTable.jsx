@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function ReportingTable({ columns = [], rows = [] }) {
   return (
-    <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+    <div className="app-group overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="scholr-sunk border-b scholr-rule">

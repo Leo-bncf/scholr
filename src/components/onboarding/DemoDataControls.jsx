@@ -133,7 +133,7 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-xl font-bold scholr-ink">Demo and sample data</h3>
-              <Badge className="bg-emerald-100 text-emerald-700 border-0">Safe sandbox</Badge>
+              <Badge className="scholr-sunk scholr-muted border-0">Safe sandbox</Badge>
             </div>
             <p className="text-sm leading-7 scholr-muted">
               Use this area to quickly load realistic school records for testing, onboarding, and walkthroughs. All generated items are tagged as demo data so they can be removed cleanly later.

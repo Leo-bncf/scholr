@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Notice from '@/components/app/Notice';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as email from '@/data/email';
 import { Button } from '@/components/ui/button';
@@ -12,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Mail, XCircle, UserPlus, RefreshCw, Copy,
-  Loader2, Send, MoreHorizontal, AlertCircle
+  Loader2, Send, MoreHorizontal
 } from 'lucide-react';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
@@ -111,10 +112,9 @@ function InviteDialog({ open, onClose, schoolId, schoolName }) {
             </AlertDescription>
           </Alert>
           {inviteMutation.isError && (
-            <Alert className="border-red-200 bg-red-50">
-              <AlertCircle className="w-4 h-4 text-red-600" />
-              <AlertDescription className="text-xs text-red-700">Failed to send invitation. Please try again.</AlertDescription>
-            </Alert>
+            <Notice tone="crit">
+              Failed to send invitation. Please try again.
+            </Notice>
           )}
           <div className="flex gap-2 pt-2">
             <Button type="button" variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>

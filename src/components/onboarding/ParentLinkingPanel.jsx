@@ -98,7 +98,7 @@ export default function ParentLinkingPanel({ schoolId }) {
           <p className="text-xs scholr-muted mb-4">Link parent accounts to the students they're responsible for.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border scholr-rule divide-y scholr-divide">
+        <div className="app-group divide-y scholr-divide">
           {filteredLinks.map((link) => (
             <div key={link.id} className="p-4 flex items-center gap-3">
               <div className="w-8 h-8 scholr-accent-sf rounded-full flex items-center justify-center flex-shrink-0">
@@ -115,7 +115,7 @@ export default function ParentLinkingPanel({ schoolId }) {
                 size="sm"
                 onClick={() => deleteMutation.mutate(link.id)}
                 disabled={deleteMutation.isPending}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                className="" style={{ color: 'var(--crit)' }}
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </Button>

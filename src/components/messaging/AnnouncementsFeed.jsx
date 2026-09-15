@@ -22,7 +22,7 @@ function AnnouncementCard({ msg }) {
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2 mb-0.5">
               {isPinned && (
-                <Badge className="bg-amber-100 text-amber-700 border-0 text-xs flex items-center gap-1 py-0">
+                <Badge className="scholr-sunk scholr-muted border-0 text-xs flex items-center gap-1 py-0">
                   <Pin className="w-2.5 h-2.5" /> Pinned
                 </Badge>
               )}

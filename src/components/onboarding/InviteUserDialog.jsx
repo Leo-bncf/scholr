@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Notice from '@/components/app/Notice';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -160,11 +161,9 @@ export default function InviteUserDialog({ open, onClose, schoolId, schoolName }
           </Alert>
 
           {inviteMutation.isError && (
-            <Alert className="border-red-200 bg-red-50">
-              <AlertDescription className="text-sm text-red-900">
-                Failed to send invitation. Please try again.
-              </AlertDescription>
-            </Alert>
+            <Notice tone="crit">
+              Failed to send invitation. Please try again.
+            </Notice>
           )}
 
           <div className="flex items-center gap-3 pt-4">

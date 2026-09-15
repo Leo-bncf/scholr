@@ -55,12 +55,12 @@ export default function GradeLocksPanel({ form, onChange, terms = [] }) {
                           <Lock className="w-3 h-3" /> Locked
                         </Badge>
                       ) : (
-                        <Badge className="bg-emerald-100 text-emerald-700 border-0 text-xs gap-1 flex-shrink-0">
+                        <Badge className="scholr-sunk scholr-muted border-0 text-xs gap-1 flex-shrink-0">
                           <Unlock className="w-3 h-3" /> Open
                         </Badge>
                       )}
                       {expired && !win.locked && (
-                        <Badge className="bg-amber-100 text-amber-700 border-0 text-xs flex-shrink-0">Auto-locked</Badge>
+                        <Badge className="scholr-sunk scholr-muted border-0 text-xs flex-shrink-0">Auto-locked</Badge>
                       )}
                     </div>
                     <div className="grid grid-cols-2 gap-3">

@@ -1,21 +1,18 @@
 import React from 'react';
+import Notice from '@/components/app/Notice';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ShieldCheck, Eye, RotateCcw, AlertTriangle, Info } from 'lucide-react';
+import { ShieldCheck, Eye, RotateCcw, AlertTriangle } from 'lucide-react';
 
 export default function AcademicIntegrityPanel({ form, onChange }) {
   return (
     <div className="space-y-6">
-      <Alert className="border-blue-200 bg-blue-50">
-        <Info className="w-4 h-4 text-blue-600" />
-        <AlertDescription className="text-xs text-blue-800">
-          These tools help enforce academic integrity consistently. Each setting applies school-wide to all assignments and submissions.
-        </AlertDescription>
-      </Alert>
+      <Notice tone="info">
+        These tools help enforce academic integrity consistently. Each setting applies school-wide to all assignments and submissions.
+      </Notice>
 
       {/* Plagiarism flags */}
       <div className="app-group p-4 space-y-3">

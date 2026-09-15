@@ -396,7 +396,7 @@ export default function ClassProgressReport({
 
       {/* Student Progress Table */}
       {cls && filteredStudents.length > 0 ? (
-        <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+        <div className="app-group overflow-hidden">
           <div className="px-5 py-4 border-b scholr-rule flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 scholr-muted" />

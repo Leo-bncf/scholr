@@ -85,7 +85,7 @@ export default function SchoolReadiness({ schoolId }) {
   const isReady = doneCount === gates.length;
 
   return (
-    <div className="bg-white rounded-2xl border scholr-rule shadow-sm overflow-hidden">
+    <div className="app-group overflow-hidden">
       <div className={`px-6 py-5 ${isReady ? 'bg-gradient-to-r from-emerald-600 to-teal-600' : 'bg-gradient-to-r from-indigo-600 to-indigo-500'} text-white`}>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">

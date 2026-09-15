@@ -202,7 +202,7 @@ export default function TeacherAssignmentTab({ schoolId, classes, memberships })
           <p className="text-sm scholr-faint">No active classes found</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border scholr-rule divide-y scholr-divide overflow-hidden shadow-sm">
+        <div className="app-group divide-y scholr-divide overflow-hidden">
           {filtered.map(c => {
             const primaryId     = c.primary_teacher_id || c.teacher_ids?.[0];
             const primary       = primaryId ? getMember(primaryId) : null;

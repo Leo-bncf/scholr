@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Notice from '@/components/app/Notice';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -467,10 +468,9 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
 
       {/* Policy error */}
       {policyError && (
-        <Alert className="border-red-200 bg-red-50">
-          <AlertCircle className="w-4 h-4 text-red-600" />
-          <AlertDescription className="text-xs text-red-700">{policyError}</AlertDescription>
-        </Alert>
+        <Notice tone="crit">
+          {policyError}
+        </Notice>
       )}
 
       {/* Academic integrity acknowledgement */}

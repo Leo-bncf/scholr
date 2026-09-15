@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Notice from '@/components/app/Notice';
 import { humanise } from '@/lib/labels';
 import { useQuery } from '@tanstack/react-query';
 import * as storage from '@/data/storage';
@@ -6,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import * as admin from '@/data/admin';
 import * as supportTicketsData from '@/data/supportTickets';
@@ -103,7 +103,7 @@ export default function IssueReporter({ schoolId, user, school }) {
   if (submitted) {
     return (
       <div className="bg-white rounded-xl border border-emerald-200 p-10 text-center">
-        <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="w-14 h-14 scholr-sunk rounded-full flex items-center justify-center mx-auto mb-4">
           <CheckCircle2 className="w-7 h-7 text-emerald-600" />
         </div>
         <h3 className="text-lg font-bold scholr-ink mb-2">Request submitted</h3>
@@ -198,7 +198,7 @@ export default function IssueReporter({ schoolId, user, school }) {
             <div className="flex items-center gap-2">
               <Info className="w-3.5 h-3.5 scholr-faint" />
               <span className="text-xs font-semibold scholr-muted">Include diagnostic context</span>
-              <Badge className={`${includeContext ? 'bg-emerald-100 text-emerald-700' : 'scholr-sunk scholr-muted'} border-0 text-xs`}>
+              <Badge className={`${includeContext ? 'scholr-sunk scholr-muted' : 'scholr-sunk scholr-muted'} border-0 text-xs`}>
                 {includeContext ? 'Included' : 'Off'}
               </Badge>
             </div>
@@ -231,10 +231,9 @@ export default function IssueReporter({ schoolId, user, school }) {
         </div>
 
         {error && (
-          <Alert className="border-red-200 bg-red-50">
-            <AlertTriangle className="w-4 h-4 text-red-600" />
-            <AlertDescription className="text-red-800">{error}</AlertDescription>
-          </Alert>
+          <Notice tone="crit">
+            {error}
+          </Notice>
         )}
 
         <div className="flex items-center justify-between pt-1">

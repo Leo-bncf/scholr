@@ -144,7 +144,7 @@ export default function AssignTeachersDialog({
                         onChange={() => toggle(t.user_id)}
                         className="rounded scholr-rule"
                       />
-                      <div className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">
+                      <div className="w-7 h-7 rounded-full scholr-sunk scholr-muted flex items-center justify-center text-xs font-bold">
                         {t.user_name?.[0]?.toUpperCase() || '?'}
                       </div>
                       <div className="flex-1 min-w-0">

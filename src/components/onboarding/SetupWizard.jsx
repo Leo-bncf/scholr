@@ -150,7 +150,7 @@ export default function SetupWizard({ onComplete }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl border scholr-rule shadow-sm overflow-hidden">
+    <div className="app-group overflow-hidden">
       {/* Wizard header */}
       <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-5 text-white">
         <div className="flex items-center gap-3 mb-4">

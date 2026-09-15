@@ -1,11 +1,10 @@
 import { Group, Row, GroupEmpty } from '@/components/app/AppShell';
+import Notice from '@/components/app/Notice';
 import StatusChip from '@/components/app/StatusChip';
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import {
-  ShieldAlert, Loader2, UserX, RefreshCw, Trash2, Wand2
+import { Loader2, UserX, RefreshCw, Trash2
 } from 'lucide-react';
 import { ROLE_CONFIG } from './userConstants';
 import { useToast } from '@/components/ui/use-toast';
@@ -222,25 +221,9 @@ export default function MembershipHealthTab({ schoolId }) {
       </div>
 
       {totalIssues > 0 && (
-        <Alert className="border-red-200 bg-red-50">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex items-start gap-2">
-              <ShieldAlert className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
-              <AlertDescription className="text-xs text-red-700">
-                Found <strong>{totalIssues} issue{totalIssues !== 1 ? 's' : ''}</strong> across your school memberships that require attention.
-              </AlertDescription>
-            </div>
-            <Button
-              size="sm"
-              className="h-7 text-xs bg-red-600 hover:bg-red-700 text-white gap-1 flex-shrink-0"
-              onClick={() => setFixAllOpen(true)}
-              disabled={fixingAll}
-            >
-              {fixingAll ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
-              Fix everything
-            </Button>
-          </div>
-        </Alert>
+        <Notice tone="crit">
+          Found <strong>{totalIssues} issue{totalIssues !== 1 ? 's' : ''}</strong> across your school memberships that require attention.
+        </Notice>
       )}
 
       <IssueSection

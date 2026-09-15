@@ -64,7 +64,7 @@ const LEVEL_COLORS = {
 };
 const LEVEL_BADGE = {
   critical: 'bg-red-100 text-red-700',
-  warning: 'bg-amber-100 text-amber-700',
+  warning: 'scholr-sunk scholr-muted',
   info: 'scholr-sunk scholr-muted',
 };
 

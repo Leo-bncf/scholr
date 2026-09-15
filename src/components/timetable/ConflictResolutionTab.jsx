@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+import Notice from '@/components/app/Notice';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import * as timetableSettingsData from '@/data/timetableSettings';
@@ -182,13 +182,10 @@ export default function ConflictResolutionTab({ schoolId, syncHistory, settings,
     <div className="space-y-4">
       {/* Unresolved conflicts banner */}
       {unresolvedConflicts.length > 0 && (
-        <Alert className="border-amber-200 bg-amber-50">
-          <AlertTriangle className="w-4 h-4 text-amber-600" />
-          <AlertDescription className="text-xs text-amber-800">
-            <strong>{unresolvedConflicts.length} unresolved conflict{unresolvedConflicts.length !== 1 ? 's' : ''}</strong> detected from recent syncs. 
-            Fix mapping mismatches below or add explicit ID mappings, then retry the sync.
-          </AlertDescription>
-        </Alert>
+        <Notice tone="warn">
+          <strong>{unresolvedConflicts.length} unresolved conflict{unresolvedConflicts.length !== 1 ? 's' : ''}</strong> detected from recent syncs. 
+          Fix mapping mismatches below or add explicit ID mappings, then retry the sync.
+        </Notice>
       )}
 
       {/* Unresolved conflicts list */}
@@ -315,7 +312,7 @@ export default function ConflictResolutionTab({ schoolId, syncHistory, settings,
                     {!m.validated && (
                       <Button
                         variant="ghost" size="sm"
-                        className="h-7 text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 gap-1"
+                        className="h-7 text-xs gap-1" style={{ color: 'var(--good)' }}
                         disabled={validateMutation.isPending}
                         onClick={() => validateMutation.mutate(m.id)}
                       >

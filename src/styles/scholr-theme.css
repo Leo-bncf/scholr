@@ -1198,3 +1198,14 @@ select.app-input { appearance: none; padding-right: 1.9rem; cursor: pointer; }
 .app-offset tbody tr { transition: background-color var(--dur-micro) var(--ease-out); }
 .app-offset tbody tr:hover { background: color-mix(in oklab, var(--ink) 3%, transparent); }
 .app-offset .scholr-num, .app-offset td:has(> .tabular) { font-variant-numeric: tabular-nums; }
+
+/* Status dots.
+ *
+ * Every list that showed "active / archived" beside a coloured disc picked its
+ * own tailwind hue for it, so the same state was emerald here and green there,
+ * and none of them followed the theme. These four are the reserved palette,
+ * and they are always paired with the word — a dot alone is not a label. */
+.scholr-dot-good { background: var(--good); }
+.scholr-dot-warn { background: var(--warn); }
+.scholr-dot-crit { background: var(--crit); }
+.scholr-dot-mute { background: var(--muted); }

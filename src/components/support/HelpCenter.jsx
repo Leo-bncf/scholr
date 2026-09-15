@@ -216,7 +216,7 @@ export default function HelpCenter() {
           const Icon = cat.icon;
           const isOpen = query ? true : openCats.has(cat.category);
           return (
-            <div key={cat.category} className="bg-white rounded-xl border scholr-rule overflow-hidden">
+            <div key={cat.category} className="app-group overflow-hidden">
               <button
                 className="w-full flex items-center gap-3 px-5 py-4 hover:scholr-sunk transition-colors"
                 onClick={() => !query && toggleCat(cat.category)}

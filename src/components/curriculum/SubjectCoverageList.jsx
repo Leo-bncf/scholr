@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 
 export default function SubjectCoverageList({ subjects = [], onSelectSubject, selectedSubjectId }) {
   return (
-    <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+    <div className="app-group overflow-hidden">
       <div className="px-5 py-4 border-b scholr-rule">
         <h3 className="font-semibold scholr-ink">Subjects</h3>
       </div>

@@ -158,7 +158,7 @@ export default function BehaviorDashboard({ schoolId, isPastoral = false }) {
       </div>
 
       {/* Records list */}
-      <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
+      <div className="app-group overflow-hidden">
         {isLoading ? (
           <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>
         ) : filtered.length === 0 ? (
