@@ -45,6 +45,19 @@ export default function Contact() {
         <p className="m-0 mt-4 text-lg leading-relaxed" style={{ color: 'var(--muted)', maxWidth: '50ch' }}>
           Two people build Scholr. Whoever replies wrote the part you are asking about.
         </p>
+        <p className="m-0 mt-4 text-base leading-relaxed" style={{ color: 'var(--muted)', maxWidth: '54ch' }}>
+          Scholr is a record system for international and independent schools that teach more than
+          one curriculum — IB Diploma and MYP, IGCSE, A&#8209;Level, a US diploma — in the same
+          building. Enrolment, a gradebook that marks on each programme&rsquo;s own scale, attendance,
+          behaviour, the timetable as taught, messaging, and portals for students and families, with
+          CAS, the Extended Essay and TOK included rather than sold as a module. It is built and
+          hosted in Europe by a small company in Dublin.
+        </p>
+        <p className="m-0 mt-3 text-base leading-relaxed" style={{ color: 'var(--muted)', maxWidth: '54ch' }}>
+          There is no switchboard and no sales team, which cuts both ways: you will get a straight
+          answer about what the software does and does not do, and you will sometimes wait a day for
+          it. If the question is urgent, say so in the subject line.
+        </p>
 
         <div className="mt-9 scholr-panel px-6 py-7" style={{ maxWidth: '34rem' }}>
           <p className="scholr-label m-0">Email</p>

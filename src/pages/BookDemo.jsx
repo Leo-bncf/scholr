@@ -91,12 +91,22 @@ export default function Demo() {
               call, so you are looking at your own subjects and your own grading rather than a demo
               school.
             </p>
+            <p className="m-0 mt-3 text-base leading-relaxed" style={{ color: 'var(--muted)', maxWidth: '46ch' }}>
+              Most of the half hour goes on the awkward parts rather than the tour: how your two
+              programmes differ once a mark is entered, who in your school should be able to see a
+              draft grade, what happens to the data you already hold, and what a migration week
+              actually looks like. If you would rather click around first, the sandbox needs no
+              sign-up and nobody will email you about it.
+            </p>
 
             <div className="mt-8" style={{ maxWidth: '34rem' }}>
               {[
                 ['Who you will be talking to', 'One of the two people who build it. There is no sales team to hand you on to.'],
                 ['What we will cover', 'Your curricula and how they map, what migration from your current system involves, and the price for your roll.'],
                 ['What we will not do', 'Claim something is finished when it is not. The security page already lists what is missing; the call is the same.'],
+                ['How long before we could use it', 'The import side is quick — years, terms, subjects, cohorts and classes come in as files. What takes time is the decisions: which scale each programme marks on, who sees draft grades, whether families see attendance. A working week with someone who can decide those is a realistic plan.'],
+                ['What it will cost', 'You can work it out before the call: €22 per student a year for the first two hundred, €17 for the next four hundred, €13 beyond that, minimum €2,400. The pricing page has a calculator. Staff, admin and parent accounts are free and uncounted.'],
+                ['Who else is using it', 'Not many schools yet, and we would rather say so than imply otherwise. If being early is a problem for your board, that is a fair reason to wait — and a fair thing to raise on the call.'],
               ].map(([t, d]) => (
                 <div key={t} className="py-3.5" style={{ borderTop: '1px solid var(--rule)' }}>
                   <h2 className="m-0 text-base font-medium" style={{ color: 'var(--ink)' }}>{t}</h2>

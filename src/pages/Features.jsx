@@ -62,6 +62,7 @@ const FEATURES = [
   {
     title: 'A page per role',
     body: 'Nobody gets a general-purpose dashboard. A teacher opens theirs between periods and sees what is on now; a head opens theirs and sees what needs a decision.',
+    more: 'The difference is not cosmetic. A teacher between lessons has about four minutes and a specific question — which room, who was away, did the drafts come in — and a dashboard that opens on a summary of the term costs them all four. Every role’s first screen answers the question that role asks most often; the rest is one click away rather than the other way round.',
     bullets: [
       'Students: today, what is due, what has been released',
       'Teachers: classes, submissions to mark, the register',
@@ -80,6 +81,7 @@ const FEATURES = [
   {
     title: 'Assignments, end to end',
     body: 'Set the task with its criteria, watch submissions arrive, mark against the rubric, release when you are ready. Late and missing are states the system knows about, not something a teacher tracks in a spreadsheet.',
+    more: 'A piece of work has a life: set, drafted, submitted, marked, returned, sometimes resubmitted. Scholr keeps every version rather than overwriting, so a teacher can see what changed between a draft and a final, and a resubmission does not erase the history that justified the first mark. Late work is flagged against the due date the assignment actually carried, not against when someone got round to marking it.',
     bullets: [
       'Criteria and rubrics attached to the assignment, not bolted on at marking',
       'File upload or link submission',
@@ -98,6 +100,7 @@ const FEATURES = [
   {
     title: 'A gradebook that speaks your framework',
     body: 'IB 1–7, A*–G, 9–1, GPA and percentages are different systems, not different labels on the same number. Predicted grades carry their history so a coordinator can see the trend behind the figure.',
+    more: 'This is the part that breaks when a school adds a second programme. An IB Diploma mark is a level 1–7 against published criteria; MYP is A–D across four criteria; IGCSE is a letter; A-Level is A*–E; a US class wants a percentage that rolls into a GPA with credit hours. Scholr stores a mark in the shape its programme expects rather than storing a number and relabelling it — which is why reports come out right at the end of term instead of needing a spreadsheet to fix.',
     bullets: [
       'Grading scales per curriculum, chosen at setup',
       'Criterion-level marks that roll up to the subject grade',
@@ -116,6 +119,7 @@ const FEATURES = [
   {
     title: 'Families see the right things',
     body: 'A parent portal is only useful if the school controls it. Grades appear when a teacher releases them, attendance visibility is a school-level setting, and pastoral notes marked staff-only never leave the staff room.',
+    more: 'Two rules do most of the work, and both are enforced in the database rather than by hiding a button. A parent is linked to specific children and cannot reach another family’s record by any route, including one we forgot to guard. And a mark is invisible to students and families until a teacher releases it — so a teacher can mark a whole set over a weekend and publish when it is complete, rather than drip-feeding grades as they go.',
     bullets: [
       'Parents are linked to specific students, and see only those',
       'Per-grade release to students and to families, separately',
@@ -141,6 +145,7 @@ const FEATURES = [
   {
     title: 'The IB Core, properly',
     body: 'CAS, the Extended Essay and TOK have their own deadlines, their own supervisors and their own approval steps. They are modules here, not a folder of uploads.',
+    more: 'CAS, the Extended Essay and TOK are where IB schools usually fall back on spreadsheets, because general-purpose systems treat them as custom fields. Here they are first-class: CAS experiences are logged and approved per strand with reflections attached, EE progress moves through proposal, first draft and viva with a supervisor against each, and a coordinator sees the whole cohort’s position on all three at once — including the students who have gone quiet.',
     bullets: [
       'CAS experiences with strand mapping and reflections',
       'EE milestones from proposal through viva',
@@ -162,6 +167,7 @@ const FEATURES = [
   {
     title: 'One school cannot read another',
     body: 'Separation is a database policy rather than a filter in the interface, so it holds for anything that talks to the API — not just for the screens we remembered to guard.',
+    more: 'That distinction matters more than it sounds. A policy in the database applies to every query that reaches the data, including one written next year by someone who has never read this page. A filter in the interface only protects the screens somebody remembered to guard. The same mechanism decides what a teacher, a student and a parent each see, so a student and their teacher running the identical query get different rows back.',
     bullets: [
       'Row-level security in Postgres, per school',
       'Roles resolved from the signed-in token, not from the client',
@@ -213,6 +219,11 @@ No feature list padded to look longer. If something is not built yet, it is on t
                 <p className="m-0 mt-3 text-base leading-relaxed" style={{ color: 'var(--muted)', maxWidth: '52ch' }}>
                   {f.body}
                 </p>
+                {f.more && (
+                  <p className="m-0 mt-3 text-base leading-relaxed" style={{ color: 'var(--muted)', maxWidth: '52ch' }}>
+                    {f.more}
+                  </p>
+                )}
                 <ul className="m-0 mt-5 p-0 list-none">
                   {f.bullets.map(b => (
                     <li

@@ -130,6 +130,72 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Explanation sits BELOW the map, never inside it. The macrostructure is
+          a single spatial composition; prose poured into it would turn it back
+          into a scroll of sections. */}
+      <section
+        aria-labelledby="what-it-is-heading"
+        style={{ padding: 'clamp(2.5rem, 6vw, 4rem) var(--space-md)', borderTop: '1px solid var(--rule)' }}
+      >
+        <div style={{ maxWidth: '72rem', margin: '0 auto', display: 'grid', gap: 'var(--space-lg) var(--space-2xl)', gridTemplateColumns: 'repeat(auto-fit, minmax(min(26rem, 100%), 1fr))' }}>
+          <div>
+            <h2
+              id="what-it-is-heading"
+              style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--ink)' }}
+            >
+              What the software actually is
+            </h2>
+            <p style={{ margin: '0 0 var(--space-sm)', fontSize: '.96rem', lineHeight: 1.65, color: 'var(--muted)' }}>
+              Scholr is the system a school keeps its records in. Enrolment and class lists, a
+              gradebook, attendance, behaviour notes, the timetable as it is taught, messaging, and
+              portals for students and families. For IB schools it also carries CAS, the Extended
+              Essay and TOK, which are usually the first things to fall back into a spreadsheet.
+            </p>
+            <p style={{ margin: 0, fontSize: '.96rem', lineHeight: 1.65, color: 'var(--muted)' }}>
+              All of it sits in one database, so a mark a teacher enters is the same mark a parent
+              eventually sees and the same mark a report is built from. Nothing is re-keyed between
+              a gradebook and a report, because there is only one place the number lives.
+            </p>
+          </div>
+
+          <div>
+            <h2 style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--ink)' }}>
+              What a second programme costs you elsewhere
+            </h2>
+            <p style={{ margin: '0 0 var(--space-sm)', fontSize: '.96rem', lineHeight: 1.65, color: 'var(--muted)' }}>
+              Not the timetable — that is the easy part. It is everything downstream of a mark. A
+              Diploma class is marked 1&ndash;7 against published criteria, MYP on four criteria
+              A&ndash;D, IGCSE in letters, A&#8209;Level in A*&ndash;E, a US class in a percentage that
+              rolls into a GPA. Reports differ, release rules differ, and the vocabulary differs.
+            </p>
+            <p style={{ margin: 0, fontSize: '.96rem', lineHeight: 1.65, color: 'var(--muted)' }}>
+              Software that offers &ldquo;multi-curriculum support&rdquo; usually means one gradebook
+              with a dropdown on top. Here a school declares its programmes once and the software
+              stores each mark in the shape its programme expects — which is why the reports come out
+              right in July rather than needing a spreadsheet to fix.
+            </p>
+          </div>
+
+          <div>
+            <h2 style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--ink)' }}>
+              What it does not do yet
+            </h2>
+            <p style={{ margin: '0 0 var(--space-sm)', fontSize: '.96rem', lineHeight: 1.65, color: 'var(--muted)' }}>
+              PDF and Excel export are not finished. The Google Drive and Docs integrations are not
+              connected. Report generation exists as a screen, not as a document you can hand to a
+              parent. Card payment is not switched on — schools are invoiced, with a purchase-order
+              reference and thirty days.
+            </p>
+            <p style={{ margin: 0, fontSize: '.96rem', lineHeight: 1.65, color: 'var(--muted)' }}>
+              Scholr holds and displays a timetable but does not build one; that is{' '}
+              <Link to="/Schedual" className="scholr-focus" style={{ color: 'var(--brand)' }}>Schedual</Link>,
+              our other product, and the automatic sync between them is not live. We would rather you
+              found this here than in week three.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <PricingTiersSection />
 
       <section

@@ -42,6 +42,15 @@ export default function CurriculumPage({ curriculum: c }) {
 
       <Section eyebrow="What Scholr does" title="How it is modelled here">
         <RuledList items={c.does} termWidth="15rem" />
+        {c.detail && (
+          <div style={{ display: 'grid', gap: 'var(--space-md)', maxWidth: '60ch', marginTop: 'var(--space-lg)' }}>
+            {c.detail.map((para) => (
+              <p key={para.slice(0, 40)} style={{ margin: 0, fontSize: 'var(--text-base)', lineHeight: 'var(--lh-body)', color: 'var(--body)' }}>
+                {para}
+              </p>
+            ))}
+          </div>
+        )}
         <p
           style={{
             margin: 'var(--space-md) 0 0', padding: 'var(--space-sm) var(--space-md)',

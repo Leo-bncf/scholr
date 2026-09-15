@@ -63,13 +63,45 @@ export default function Security() {
         </p>
       </Section>
 
+      <Section eyebrow="How it is built" title="Where the boundary actually sits">
+        <div style={{ display: 'grid', gap: 'var(--space-md)', maxWidth: '60ch' }}>
+          <p style={{ margin: 0, fontSize: 'var(--text-base)', lineHeight: 'var(--lh-body)', color: 'var(--body)' }}>
+            Almost every access-control bug in a school system has the same shape: the rule was
+            written into a screen, and someone later reached the data by a route that screen did not
+            cover — an export, an API call, a report, a page written a year afterwards by someone
+            who had never read the original. The rule was real, and it was in the wrong place.
+          </p>
+          <p style={{ margin: 0, fontSize: 'var(--text-base)', lineHeight: 'var(--lh-body)', color: 'var(--body)' }}>
+            In Scholr the rules live in Postgres as row-level security policies. The database decides
+            which rows a request is allowed to see, using the identity in the signed-in token rather
+            than anything the browser claims. A teacher and a student can issue the identical query
+            and get different rows back, because the filtering is not happening in the page at all.
+            A screen we forget to guard returns nothing rather than everything.
+          </p>
+          <p style={{ margin: 0, fontSize: 'var(--text-base)', lineHeight: 'var(--lh-body)', color: 'var(--body)' }}>
+            The same mechanism carries the rules a school actually cares about day to day. A parent
+            is attached to specific children and cannot reach another family’s record. A grade is
+            invisible to students and families until a teacher publishes it, so marking a whole set
+            over a weekend does not leak results one at a time. A behaviour note marked staff-only
+            is filtered out of every family-facing query at source.
+          </p>
+          <p style={{ margin: 0, fontSize: 'var(--text-base)', lineHeight: 'var(--lh-body)', color: 'var(--body)' }}>
+            Every school’s data sits in the same database, separated by policy rather than by
+            deployment. That is a deliberate trade: it makes upgrades and backups uniform, and it
+            means the isolation has to be right. It is covered by tests that assert the negative
+            case — that a signed-in user of one school reading another school’s table gets zero
+            rows, not an error page.
+          </p>
+        </div>
+      </Section>
+
       <Section eyebrow="What holds" title="Four things, each checkable">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(21rem, 100%), 1fr))', gap: '0 3rem' }}>
           {[
-            ['One school cannot read another', 'Tenant separation is a database policy. There is no request a signed-in user can craft that returns another school\u2019s rows.', 'Row-level security, per query'],
+            ['One school cannot read another', 'Tenant separation is a database policy. There is no request a signed-in user can craft that returns another school’s rows.', 'Row-level security, per query'],
             ['A grade is invisible until released', 'Marks are private to the teacher until published. Behaviour notes marked staff-only override both flags and never reach a student or a parent.', 'Students and families, separately'],
-            ['Access follows the class', 'A teacher who takes over a class sees its history. A teacher who leaves it stops seeing anything \u2014 including work they graded themselves.', 'Not authorship'],
-            ['Isolation is covered by tests', 'The suite checks that a classmate cannot read another student\u2019s grades and that a teacher outside a class sees nothing.', 'Negative cases asserted'],
+            ['Access follows the class', 'A teacher who takes over a class sees its history. A teacher who leaves it stops seeing anything — including work they graded themselves.', 'Not authorship'],
+            ['Isolation is covered by tests', 'The suite checks that a classmate cannot read another student’s grades and that a teacher outside a class sees nothing.', 'Negative cases asserted'],
           ].map(([h, body, proof]) => (
             <div key={h} style={{ padding: '1.2rem 0', borderTop: '1px solid var(--rule)' }}>
               <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.02rem', letterSpacing: '-0.02em', color: 'var(--ink)' }}>{h}</h3>

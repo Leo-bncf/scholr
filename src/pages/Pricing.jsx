@@ -14,7 +14,11 @@ import { ArrowRight } from 'lucide-react';
  */
 const QUESTIONS = [
   ['What counts as a student?', 'An enrolled student with an active account at the point the year is billed. Staff, parents and admin accounts are free and unlimited.'],
-  ['What happens if we grow past the cap?', "You move up a tier and the per-student rate drops. We'll tell you before it happens rather than after."],
+  ['What happens as we grow?', 'Nothing sudden. There are no caps and no tier to move up into — each band applies only to the students inside it, so student 201 is charged at €17 while the first two hundred stay at €22. The bill rises by the cost of the child you enrolled, never more, and the blended rate per student keeps falling.'],
+  ['Why not one flat rate per student?', 'Because a school of nine hundred would be subsidising nothing and paying the same as a school of ninety. The bands are how a volume discount works without creating a cliff: the old scheme applied one falling rate to the whole roll, which meant a school of 201 paid less than a school of 199. That is indefensible, so it is gone.'],
+  ['Is the price on the website the price?', 'Yes. There is no list price and a real price. iSAMS, Veracross and ManageBac all answer the cost question with “contact sales”; we would rather you could shortlist us without an email.'],
+  ['What if we join in February?', 'You pay for the months left in the academic year, which runs 1 August to 31 July. A four-hundred-student school signing in January pays seven twelfths — €4,550 rather than €7,800.'],
+  ['How do we actually pay?', 'By invoice, with a purchase-order reference and thirty days. Card checkout is not switched on, and for a commitment of this size most bursars would not use it anyway.'],
   ['Is there a setup fee?', 'No. Migration from your current system is part of onboarding.'],
   ['Can we try it first?', 'Yes — a demo against your own timetable, and a trial before any commitment.'],
 ];

@@ -94,6 +94,30 @@ export default function Schedual() {
         </div>
       </Section>
 
+      <Section eyebrow="Two products" title="Why they are separate at all">
+        <div style={{ display: 'grid', gap: 'var(--space-md)', maxWidth: '60ch' }}>
+          <p style={{ margin: 0, fontSize: 'var(--text-base)', lineHeight: 'var(--lh-body)', color: 'var(--body)' }}>
+            Building a timetable and running a school are different problems, and conflating them is
+            why so much school software does one of them badly. A timetable is a constraint-solving
+            job: several hundred students with individual subject combinations, teachers who cannot
+            be in two rooms, labs that seat twenty-four, and a solution that has to satisfy all of it
+            at once. It runs for minutes and it either works or it does not.
+          </p>
+          <p style={{ margin: 0, fontSize: 'var(--text-base)', lineHeight: 'var(--lh-body)', color: 'var(--body)' }}>
+            Everything after that is record-keeping across a year: marks, attendance, reports,
+            messages, the things a school touches every day. Scholr is that half. Schedual is the
+            solver, and it exists because an IB Diploma block structure — six groups, individual
+            combinations, HL and SL running concurrently — defeats a general-purpose timetabler.
+          </p>
+          <p style={{ margin: 0, fontSize: 'var(--text-base)', lineHeight: 'var(--lh-body)', color: 'var(--body)' }}>
+            A school can use either on its own. Scholr holds and displays a timetable however it was
+            produced, including one built by hand in a spreadsheet, and Schedual will export to a
+            system that is not Scholr. Using both is a convenience, not a requirement, and we would
+            rather say that than sell a suite.
+          </p>
+        </div>
+      </Section>
+
       <Section eyebrow="The split" title="Which product does what" tint>
         <RuledList items={SPLIT} termWidth="9rem" />
       </Section>

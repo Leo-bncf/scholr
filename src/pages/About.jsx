@@ -40,6 +40,41 @@ export default function About() {
         </p>
       </Section>
 
+      <Section eyebrow="The product" title="What Scholr is, in one place">
+        <div style={{ display: 'grid', gap: 'var(--space-md)', maxWidth: '60ch' }}>
+          <p style={{ margin: 0, fontSize: 'var(--text-base)', lineHeight: 'var(--lh-body)', color: 'var(--body)' }}>
+            Scholr is the system a school keeps its records in. Enrolment and class lists, a
+            gradebook, attendance, behaviour notes, the timetable as it is actually taught,
+            messaging between staff and families, and portals for students and parents. For IB
+            schools it also carries CAS, the Extended Essay and TOK, which are usually the first
+            things to fall back into a spreadsheet. All of it sits in one database, so a mark
+            entered by a teacher is the same mark a parent eventually sees and the same mark a
+            report is built from.
+          </p>
+          <p style={{ margin: 0, fontSize: 'var(--text-base)', lineHeight: 'var(--lh-body)', color: 'var(--body)' }}>
+            The part that is unusual is what happens when a school teaches two programmes. A school
+            declares its curricula once; from then on every class belongs to one, and the programme
+            decides what the software asks for. A Diploma class is marked on levels 1&ndash;7 against
+            published criteria, an MYP class on four criteria A&ndash;D, IGCSE in letters, A&#8209;Level
+            in A*&ndash;E, a US class in a percentage that rolls into a GPA. A teacher who takes an
+            IGCSE set at nine and a Diploma set at eleven does not change systems in between, and
+            neither class is shown a field that belongs to the other.
+          </p>
+          <p style={{ margin: 0, fontSize: 'var(--text-base)', lineHeight: 'var(--lh-body)', color: 'var(--body)' }}>
+            Who can see what is decided in the database rather than in the interface. Separation
+            between schools, and between a teacher, a student and a parent, is a row-level security
+            policy in Postgres — so it holds for anything that reaches the data, not only for the
+            screens we remembered to guard. A mark is invisible to a family until a teacher releases
+            it. A note marked staff-only never leaves the staff room.
+          </p>
+          <p style={{ margin: 0, fontSize: 'var(--text-base)', lineHeight: 'var(--lh-body)', color: 'var(--body)' }}>
+            What it does not do yet: PDF and Excel export, the Google Drive and Docs integrations,
+            report generation as a document you can hand to a parent, and card payment — schools
+            are invoiced. Those are listed on the security page rather than left to be discovered.
+          </p>
+        </div>
+      </Section>
+
       <Section eyebrow="How we work" title="What being small actually means here" tint>
         <RuledList items={HOW} termWidth="12rem" />
       </Section>
