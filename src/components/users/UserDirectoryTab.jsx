@@ -1,8 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
+import { Group } from '@/components/app/AppShell';
+import DataTable from '@/components/app/DataTable';
+import StatusChip from '@/components/app/StatusChip';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
@@ -20,11 +22,12 @@ import * as membershipsData from '@/data/memberships';
 import * as academics from '@/data/academics';
 import * as fns from '@/data/functions';
 
-const STATUS_CONFIG = {
-  active:   { label: 'Active',    classes: 'bg-emerald-50 text-emerald-700', dot: 'bg-emerald-500' },
-  inactive: { label: 'Inactive',  classes: 'scholr-sunk scholr-muted',   dot: 'bg-slate-400' },
-  pending:  { label: 'Pending',   classes: 'bg-amber-50 text-amber-700',    dot: 'bg-amber-400' },
-};
+/* Only two of these are a judgement. Active is the normal case and gets no
+   colour at all — a directory where every row glows green tells you nothing.
+   Suspended is something someone did on purpose, and pending is unfinished
+   work, so those two draw from the reserved palette. */
+const STATUS_TONE = { active: 'mute', inactive: 'crit', pending: 'warn' };
+const STATUS_LABEL = { active: 'Active', inactive: 'Suspended', pending: 'Pending' };
 
 function EditMemberDialog({ member, onClose, schoolId }) {
   const queryClient = useQueryClient();
@@ -280,24 +283,99 @@ export default function UserDirectoryTab({ schoolId }) {
 
   const activeFilters = [roleFilter !== 'all', statusFilter !== 'all', cohortFilter !== 'all'].filter(Boolean).length;
 
+  const columns = [
+    {
+      key: 'name',
+      header: 'Member',
+      render: (m) => (
+        <>
+          <span style={{ display: 'block', color: 'var(--ink)' }}>{m.user_name || '—'}</span>
+          <span className="sm:hidden" style={{ display: 'block', fontSize: '.76rem', color: 'var(--muted)' }}>
+            {m.user_email}
+          </span>
+        </>
+      ),
+    },
+    { key: 'user_email', header: 'Email' },
+    { key: 'role', header: 'Role', render: (m) => ROLE_CONFIG[m.role]?.label || m.role },
+    ...(showDetail ? [{ key: 'detail', header: 'Detail', render: (m) => m.grade_level || m.department || '—' }] : []),
+    {
+      key: 'status',
+      header: 'Status',
+      /* Active is the normal case, so it shows nothing. A column where every
+         cell says ACTIVE is a column of noise, and the two rows that need
+         someone's attention were the same weight as the five that did not. */
+      render: (m) => (m.status === 'active' ? null : (
+        <StatusChip tone={STATUS_TONE[m.status] || 'mute'}>
+          {STATUS_LABEL[m.status] || m.status}
+        </StatusChip>
+      )),
+    },
+    {
+      key: 'actions',
+      header: '',
+      width: '3rem',
+      render: (m) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" aria-label={`Actions for ${m.user_name || m.user_email}`}>
+              <MoreHorizontal className="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-44">
+            <DropdownMenuItem onClick={() => setEditingMember(m)} className="text-xs gap-2">
+              <Pencil className="w-3.5 h-3.5" /> Edit member
+            </DropdownMenuItem>
+            {m.status === 'active' ? (
+              <DropdownMenuItem onClick={() => setMemberToSuspend(m)} className="text-xs gap-2">
+                <UserX className="w-3.5 h-3.5" /> Suspend account
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem onClick={() => reactivateMutation.mutate(m.id)} className="text-xs gap-2">
+                <UserCheck className="w-3.5 h-3.5" /> Reactivate
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => setMemberToRemove(m)} className="text-xs gap-2" style={{ color: 'var(--crit)' }}>
+              <Trash2 className="w-3.5 h-3.5" /> Remove from school
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    },
+  ];
+
   return (
     <div className="space-y-4">
-      {/* Role summary pills */}
-      <div className="flex flex-wrap gap-2">
-        {roleSummary.map(({ role, label, color, count }) => (
-          <button
-            key={role}
-            onClick={() => setRoleFilter(roleFilter === role ? 'all' : role)}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
-              roleFilter === role ? 'ring-2 scholr-accent-rule ring-offset-1' : ''
-            } ${color}`}
-          >
-            {label} <span className="font-bold">{count}</span>
-          </button>
-        ))}
+      {/* Counts that are also the role filter — the number and the way to see
+          those people are the same control, rather than a row of tiles above a
+          separate dropdown saying the same thing. */}
+      <div className="flex flex-wrap gap-1.5">
+        {roleSummary.map(({ role, label, count }) => {
+          const on = roleFilter === role;
+          return (
+            <button
+              key={role}
+              type="button"
+              aria-pressed={on}
+              onClick={() => setRoleFilter(on ? 'all' : role)}
+              className="scholr-focus"
+              style={{
+                display: 'inline-flex', alignItems: 'baseline', gap: '.4rem',
+                padding: '.3rem .6rem', borderRadius: '6px', fontSize: '.82rem',
+                border: `1px solid ${on ? 'var(--brand)' : 'var(--rule)'}`,
+                background: on ? 'var(--brand-sf)' : 'var(--surface)',
+                color: on ? 'var(--brand)' : 'var(--body)',
+                cursor: 'pointer',
+              }}
+            >
+              {label}
+              <span className="scholr-num" style={{ fontFamily: 'var(--font-mono)', fontSize: '.8rem' }}>{count}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* Search + filters bar */}
       <div className="flex flex-wrap gap-2 items-center">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 scholr-faint" />
@@ -306,6 +384,7 @@ export default function UserDirectoryTab({ schoolId }) {
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="pl-9 bg-white h-9"
+            aria-label="Search members"
           />
         </div>
 
@@ -315,9 +394,9 @@ export default function UserDirectoryTab({ schoolId }) {
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="all">All statuses</SelectItem>
             <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="inactive">Inactive</SelectItem>
+            <SelectItem value="inactive">Suspended</SelectItem>
             <SelectItem value="pending">Pending</SelectItem>
           </SelectContent>
         </Select>
@@ -328,7 +407,7 @@ export default function UserDirectoryTab({ schoolId }) {
               <SelectValue placeholder="Cohort" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Cohorts</SelectItem>
+              <SelectItem value="all">All cohorts</SelectItem>
               {cohorts.map(c => (
                 <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
               ))}
@@ -338,8 +417,9 @@ export default function UserDirectoryTab({ schoolId }) {
 
         {activeFilters > 0 && (
           <button
+            type="button"
             onClick={() => { setRoleFilter('all'); setStatusFilter('all'); setCohortFilter('all'); setSearch(''); }}
-            className="text-xs scholr-faint hover:scholr-muted px-2 h-9"
+            className="text-xs scholr-faint hover:scholr-muted px-2 h-9 scholr-focus"
           >
             Clear {activeFilters} filter{activeFilters > 1 ? 's' : ''} ×
           </button>
@@ -352,115 +432,33 @@ export default function UserDirectoryTab({ schoolId }) {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl border scholr-rule overflow-hidden shadow-sm">
+      <Group
+        title="Members"
+        action={
+          <span className="scholr-label">
+            {filtered.length === memberships.length
+              ? `${memberships.length} total`
+              : `${filtered.length} of ${memberships.length}`}
+          </span>
+        }
+      >
         {isLoading ? (
-          <div className="p-16 text-center">
-            <Loader2 className="w-6 h-6 animate-spin scholr-faint mx-auto" />
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className="p-16 text-center">
-            <UserX className="w-10 h-10 scholr-faint mx-auto mb-3" />
-            <p className="scholr-faint text-sm">No users match your filters</p>
+          <div className="p-10 text-center">
+            <Loader2 className="w-5 h-5 animate-spin scholr-faint mx-auto" />
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b scholr-rule-soft scholr-sunk">
-                  <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide">Member</th>
-                  <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide hidden sm:table-cell">Email</th>
-                  <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide">Role</th>
-                  {showDetail && <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide hidden md:table-cell">Detail</th>}
-                  <th className="px-5 py-3 text-left text-[11px] font-semibold scholr-muted uppercase tracking-wide">Status</th>
-                  <th className="px-5 py-3 text-right text-[11px] font-semibold scholr-muted uppercase tracking-wide">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y scholr-divide">
-                {filtered.map(m => {
-                  const rc = ROLE_CONFIG[m.role] || { label: m.role, color: 'scholr-sunk scholr-muted scholr-rule' };
-                  const sc = STATUS_CONFIG[m.status] || STATUS_CONFIG.pending;
-                  return (
-                    <tr key={m.id} className="hover:scholr-sunk transition-colors group">
-                      <td className="px-5 py-3">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 border role-chip`}>
-                            {(m.user_name || m.user_email || '?')[0]?.toUpperCase()}
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium scholr-ink leading-none">{m.user_name || '—'}</p>
-                            <p className="text-[11px] scholr-faint sm:hidden mt-0.5 truncate max-w-[160px]">{m.user_email}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-5 py-3 hidden sm:table-cell text-sm scholr-muted">{m.user_email}</td>
-                      <td className="px-5 py-3">
-                        <Badge className={`role-chip border text-[11px] font-medium`}>{rc.label}</Badge>
-                      </td>
-                      {showDetail && (
-                      <td className="px-5 py-3 hidden md:table-cell text-xs scholr-muted">
-                        {m.grade_level
-                          ? <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded">{m.grade_level}</span>
-                          : m.department
-                          ? <span className="scholr-sunk scholr-muted px-2 py-0.5 rounded">{m.department}</span>
-                          : '—'}
-                      </td>
-                      )}
-                      <td className="px-5 py-3">
-                        <span className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2 py-0.5 rounded-full ${sc.classes}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />
-                          {sc.label}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3 text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <MoreHorizontal className="w-4 h-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-44">
-                            <DropdownMenuItem onClick={() => setEditingMember(m)} className="text-xs gap-2">
-                              <Pencil className="w-3.5 h-3.5" /> Edit Member
-                            </DropdownMenuItem>
-                            {m.status === 'active' ? (
-                              <DropdownMenuItem
-                                onClick={() => setMemberToSuspend(m)}
-                                className="text-xs gap-2 text-amber-600 focus:text-amber-700"
-                              >
-                                <UserX className="w-3.5 h-3.5" /> Suspend Account
-                              </DropdownMenuItem>
-                            ) : (
-                              <DropdownMenuItem
-                                onClick={() => reactivateMutation.mutate(m.id)}
-                                className="text-xs gap-2 text-emerald-600 focus:text-emerald-700"
-                              >
-                                <UserCheck className="w-3.5 h-3.5" /> Reactivate
-                              </DropdownMenuItem>
-                            )}
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() => setMemberToRemove(m)}
-                              className="text-xs gap-2 text-red-600 focus:text-red-700"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" /> Remove from School
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-            <div className="px-5 py-2.5 border-t scholr-rule-soft scholr-sunk">
-              <p className="text-[11px] scholr-faint">
-                Showing {filtered.length} of {memberships.length} members
-              </p>
-            </div>
-          </div>
+          <DataTable
+            columns={columns}
+            rows={filtered}
+            rowKey={(m) => m.id}
+            empty={
+              memberships.length === 0
+                ? 'Nobody has joined this school yet. Invite staff from the Invitations tab, or import a roster.'
+                : 'No members match these filters.'
+            }
+          />
         )}
-      </div>
+      </Group>
 
       {editingMember && (
         <EditMemberDialog

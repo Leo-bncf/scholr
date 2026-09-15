@@ -81,18 +81,19 @@ export default function SchoolAdminPage({
         schoolId={schoolId}
       />
       <div className="app-offset">
-        <AppShell title={title} eyebrow={eyebrow} actions={actions}>
-          {tabs?.length > 0 && (
-            <div style={{ marginBottom: 'var(--space-xs)' }}>
-              <Segmented
-                label={`${title} sections`}
-                value={activeTab}
-                onChange={selectTab}
-                options={tabs}
-              />
-            </div>
-          )}
-
+        <AppShell
+          title={title}
+          eyebrow={eyebrow}
+          actions={actions}
+          tabs={tabs?.length > 0 ? (
+            <Segmented
+              label={`${title} sections`}
+              value={activeTab}
+              onChange={selectTab}
+              options={tabs}
+            />
+          ) : null}
+        >
           {children}
 
           {related?.length > 0 && (

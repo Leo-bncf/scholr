@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as email from '@/data/email';
 import { Button } from '@/components/ui/button';
+import { Group, Row, GroupEmpty } from '@/components/app/AppShell';
+import StatusChip from '@/components/app/StatusChip';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -9,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
-  Mail, Clock, CheckCircle, XCircle, UserPlus, RefreshCw, Copy,
+  Mail, XCircle, UserPlus, RefreshCw, Copy,
   Loader2, Send, MoreHorizontal, AlertCircle
 } from 'lucide-react';
 import {
@@ -126,11 +128,14 @@ function InviteDialog({ open, onClose, schoolId, schoolName }) {
   );
 }
 
+/* Accepted is the finished state and needs no colour — a list where every
+   settled row glows green hides the two that still need chasing. Expired is
+   the one that costs someone a login. */
 function getInviteStatus(inv) {
-  if (inv.status === 'accepted') return { label: 'Accepted', color: 'bg-emerald-50 text-emerald-700', Icon: CheckCircle };
-  if (inv.status === 'cancelled') return { label: 'Cancelled', color: 'scholr-sunk scholr-muted', Icon: XCircle };
-  if (inv.status === 'expired' || new Date(inv.expires_at) < new Date()) return { label: 'Expired', color: 'bg-red-50 text-red-600', Icon: XCircle };
-  return { label: 'Pending', color: 'bg-amber-50 text-amber-700', Icon: Clock };
+  if (inv.status === 'accepted') return { label: 'Accepted', tone: 'mute' };
+  if (inv.status === 'cancelled') return { label: 'Cancelled', tone: 'mute' };
+  if (inv.status === 'expired' || new Date(inv.expires_at) < new Date()) return { label: 'Expired', tone: 'crit' };
+  return { label: 'Pending', tone: 'warn' };
 }
 
 export default function InvitationsTab({ schoolId, schoolName }) {
@@ -173,107 +178,90 @@ export default function InvitationsTab({ schoolId, schoolName }) {
 
   return (
     <div className="space-y-4">
-      {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 scholr-sunk text-white text-sm px-4 py-2.5 rounded-lg shadow-lg animate-in slide-in-from-bottom-2">
+        <div className="fixed bottom-6 right-6 z-50 text-sm px-4 py-2.5 rounded-lg shadow-lg"
+             style={{ background: 'var(--ink)', color: 'var(--surface)' }}>
           {toast}
         </div>
       )}
 
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-semibold scholr-ink">
-            {invitations.length} total invitation{invitations.length !== 1 ? 's' : ''}
-            {pending.length > 0 && (
-              <span className="ml-2 text-amber-600 text-xs font-normal">· {pending.length} awaiting response</span>
-            )}
-          </p>
-        </div>
-        <Button onClick={() => setInviteOpen(true)} className="pub-btn pub-btn-primary h-9 text-xs gap-2">
-          <UserPlus className="w-3.5 h-3.5" /> Invite User
-        </Button>
-      </div>
+      {/* An invitation is a link. The email is a convenience on top of it, and
+          on a school whose SMTP is not set up it is the only part that fails —
+          so the link is named first, and copying it is the action that always
+          works. */}
+      <p style={{ margin: 0, fontSize: '.86rem', color: 'var(--muted)' }}>
+        Each invitation is a private link. Send it by email from here, or copy it and pass it on yourself.
+      </p>
 
-      {isLoading ? (
-        <div className="p-16 text-center"><Loader2 className="w-6 h-6 animate-spin scholr-faint mx-auto" /></div>
-      ) : invitations.length === 0 ? (
-        <div className="bg-white rounded-xl border scholr-rule p-16 text-center">
-          <Mail className="w-10 h-10 scholr-faint mx-auto mb-3" />
-          <p className="scholr-muted text-sm mb-4">No invitations sent yet</p>
-          <Button variant="outline" onClick={() => setInviteOpen(true)} className="text-xs gap-2">
-            <UserPlus className="w-3.5 h-3.5" /> Send First Invitation
-          </Button>
-        </div>
-      ) : (
-        <div className="bg-white rounded-xl border scholr-rule divide-y scholr-divide overflow-hidden">
-          {invitations.map(inv => {
+      <Group
+        title="Invitations"
+        action={
+          <span className="scholr-label">
+            {pending.length > 0 ? `${pending.length} awaiting reply` : `${invitations.length} sent`}
+          </span>
+        }
+      >
+        {isLoading ? (
+          <div className="p-10 text-center"><Loader2 className="w-5 h-5 animate-spin scholr-faint mx-auto" /></div>
+        ) : invitations.length === 0 ? (
+          <GroupEmpty>
+            No invitations yet. Invite a member to give them a sign-in link.
+          </GroupEmpty>
+        ) : (
+          invitations.map(inv => {
             const st = getInviteStatus(inv);
-            const StatusIcon = st.Icon;
             const canAct = inv.status === 'pending' && new Date(inv.expires_at) > new Date();
             const rc = ROLE_CONFIG[inv.role];
+            const detail = [
+              rc?.label,
+              `invited ${formatDistanceToNow(new Date(inv.created_at), { addSuffix: true })}`,
+              inv.invited_by_name && `by ${inv.invited_by_name}`,
+              inv.status === 'accepted' && inv.accepted_at && `accepted ${format(new Date(inv.accepted_at), 'd MMM yyyy')}`,
+            ].filter(Boolean).join(' · ');
 
             return (
-              <div key={inv.id} className="p-4 hover:scholr-sunk transition-colors">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 rounded-full scholr-accent-sf border border-indigo-100 flex items-center justify-center flex-shrink-0">
-                      <Mail className="w-4 h-4 scholr-accent" />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-medium scholr-ink truncate">{inv.email}</span>
-                        <span className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full role-chip`}>
-                          <StatusIcon className="w-3 h-3" />
-                          {st.label}
-                        </span>
-                        {rc && (
-                          <span className={`text-[11px] px-2 py-0.5 rounded-full border role-chip`}>{rc.label}</span>
-                        )}
-                      </div>
-                      <p className="text-[11px] scholr-faint mt-0.5">
-                        Invited {formatDistanceToNow(new Date(inv.created_at), { addSuffix: true })}
-                        {inv.invited_by_name && ` · by ${inv.invited_by_name}`}
-                        {inv.status === 'accepted' && inv.accepted_at && (
-                          ` · Accepted ${format(new Date(inv.accepted_at), 'MMM d, yyyy')}`
-                        )}
-                      </p>
-                    </div>
-                  </div>
-
-                  {canAct && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 flex-shrink-0">
-                          <MoreHorizontal className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-40">
-                        <DropdownMenuItem className="text-xs gap-2" onClick={() => copyLink(inv.invitation_token)}>
-                          <Copy className="w-3.5 h-3.5" /> Copy Link
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="text-xs gap-2"
-                          onClick={() => resendMutation.mutate(inv)}
-                          disabled={resendMutation.isPending}
-                        >
-                          <RefreshCw className="w-3.5 h-3.5" /> Resend Email
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="text-xs gap-2 text-red-600 focus:text-red-700"
-                          onClick={() => cancelMutation.mutate(inv.id)}
-                          disabled={cancelMutation.isPending}
-                        >
-                          <XCircle className="w-3.5 h-3.5" /> Cancel Invite
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
-                </div>
-              </div>
+              <Row key={inv.id} label={inv.email} detail={detail}>
+                <StatusChip tone={st.tone}>{st.label}</StatusChip>
+                {canAct && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 flex-shrink-0" aria-label={`Actions for ${inv.email}`}>
+                        <MoreHorizontal className="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-44">
+                      <DropdownMenuItem className="text-xs gap-2" onClick={() => copyLink(inv.invitation_token)}>
+                        <Copy className="w-3.5 h-3.5" /> Copy invitation link
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="text-xs gap-2"
+                        onClick={() => resendMutation.mutate(inv)}
+                        disabled={resendMutation.isPending}
+                      >
+                        <RefreshCw className="w-3.5 h-3.5" /> Send the email again
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="text-xs gap-2"
+                        style={{ color: 'var(--crit)' }}
+                        onClick={() => cancelMutation.mutate(inv.id)}
+                        disabled={cancelMutation.isPending}
+                      >
+                        <XCircle className="w-3.5 h-3.5" /> Cancel invitation
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+              </Row>
             );
-          })}
-        </div>
-      )}
+          })
+        )}
+      </Group>
+
+      <div>
+        <Button onClick={() => setInviteOpen(true)} className="pub-btn pub-btn-primary h-9 text-xs gap-2">
+          <UserPlus className="w-3.5 h-3.5" /> Invite a member
+        </Button>
+      </div>
 
       <InviteDialog
         open={inviteOpen}

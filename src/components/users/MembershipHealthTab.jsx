@@ -1,10 +1,11 @@
+import { Group, Row, GroupEmpty } from '@/components/app/AppShell';
+import StatusChip from '@/components/app/StatusChip';
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
 import {
-  ShieldAlert, CheckCircle, Loader2, UserX, RefreshCw, Trash2, Info, Wand2
+  ShieldAlert, Loader2, UserX, RefreshCw, Trash2, Wand2
 } from 'lucide-react';
 import { ROLE_CONFIG } from './userConstants';
 import { useToast } from '@/components/ui/use-toast';
@@ -155,48 +156,59 @@ export default function MembershipHealthTab({ schoolId }) {
 
   if (totalIssues === 0 && stalePending.length === 0) {
     return (
-      <div className="max-w-lg mx-auto py-12 text-center space-y-4">
-        <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">
-          <CheckCircle className="w-8 h-8 text-emerald-600" />
-        </div>
-        <h3 className="text-lg font-semibold scholr-ink">All memberships look healthy</h3>
-        <p className="text-sm scholr-muted">
-          No orphan accounts, no duplicates, no missing data. {memberships.length} active memberships in good shape.
-        </p>
-        <Alert className="border-blue-200 bg-blue-50 text-left">
-          <Info className="w-4 h-4 text-blue-600" />
-          <AlertDescription className="text-xs text-blue-700">
-            This check runs on your school's memberships. It detects orphan accounts (no school), duplicates, missing emails, invalid roles, and long-pending (30+ day) invitations.
-          </AlertDescription>
-        </Alert>
+      /* Nothing wrong is the ordinary case, so it reads like the rest of the
+         product rather than a centred green medal. What the check looks for
+         belongs here, where it answers "how do I know it actually ran". */
+      <div className="space-y-4">
+        <Group title="Membership health" action={<StatusChip tone="good">All clear</StatusChip>}>
+          <GroupEmpty>
+            Nothing to fix. All {memberships.length} memberships have a school, an email address and a
+            valid role, and none has been left pending.
+          </GroupEmpty>
+        </Group>
+
+        <Group title="What this checks">
+          {[
+            ['Orphan accounts', 'A membership with no school attached.'],
+            ['Duplicates', 'The same email holding more than one membership here.'],
+            ['Missing email', 'Nobody to send an invitation to.'],
+            ['Invalid roles', 'A role the platform does not recognise.'],
+            ['Long-pending', 'Invited over 30 days ago and never accepted.'],
+          ].map(([label, detail]) => (
+            <Row key={label} label={label} detail={detail} />
+          ))}
+        </Group>
       </div>
     );
   }
 
+  /* Each issue is a group, not a fully tinted card.
+   *
+   * Five tinted slabs — two red, two amber, one grey — meant a school with one
+   * duplicate membership and one stale invitation saw the same wall of colour
+   * as a school with two hundred broken records. The severity now rides on one
+   * chip, the count sits in the group header, and the rows underneath are the
+   * same hairline rows as everywhere else in the product. */
+  const SEVERITY_TONE = { high: 'crit', medium: 'warn', low: 'mute' };
+  const SEVERITY_LABEL = { high: 'Fix now', medium: 'Should fix', low: 'Worth a look' };
+
   const IssueSection = ({ title, description, severity, items, renderItem }) => {
     if (!items || items.length === 0) return null;
-    const colors = {
-      high:   'bg-red-50 border-red-200 text-red-700',
-      medium: 'bg-amber-50 border-amber-200 text-amber-700',
-      low:    'scholr-sunk scholr-rule scholr-muted',
-    };
-    const dotColors = { high: 'bg-red-500', medium: 'bg-amber-400', low: 'bg-slate-400' };
     return (
-      <div className={`rounded-xl border p-4 ${colors[severity]}`}>
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="flex items-center gap-2">
-            <span className={`w-2 h-2 rounded-full ${dotColors[severity]} mt-1 flex-shrink-0`} />
-            <div>
-              <p className="text-sm font-semibold">{title}</p>
-              <p className="text-xs opacity-80 mt-0.5">{description}</p>
-            </div>
-          </div>
-          <Badge className={`${colors[severity]} border text-xs flex-shrink-0`}>{items.length}</Badge>
-        </div>
-        <div className="space-y-2">
-          {items.map((item, i) => renderItem(item, i))}
-        </div>
-      </div>
+      <Group
+        title={title}
+        action={
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '.45rem' }}>
+            <StatusChip tone={SEVERITY_TONE[severity]}>{SEVERITY_LABEL[severity]}</StatusChip>
+            <span className="scholr-label">{items.length}</span>
+          </span>
+        }
+      >
+        <p style={{ margin: 0, padding: '.6rem .9rem 0', fontSize: '.8rem', color: 'var(--muted)' }}>
+          {description}
+        </p>
+        {items.map((item, i) => renderItem(item, i))}
+      </Group>
     );
   };
 
@@ -237,25 +249,21 @@ export default function MembershipHealthTab({ schoolId }) {
         severity="high"
         items={orphans}
         renderItem={(m, i) => (
-          <div key={i} className="flex items-center justify-between bg-white/60 rounded-lg px-3 py-2">
-            <div>
-              <p className="text-xs font-medium scholr-ink">{m.user_name || m.user_email || `ID: ${m.id}`}</p>
-              <p className="text-[11px] scholr-muted">role: {m.role} · status: {m.status}</p>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 gap-1"
-              onClick={() => setPendingDelete({
-                id: m.id,
-                title: 'Delete orphan membership?',
-                description: `This membership has no school assigned and cannot function. Deleting it permanently removes the record (the user account itself is not affected). This cannot be undone.`,
-                confirmLabel: 'Delete orphan',
-              })}
-            >
-              <Trash2 className="w-3 h-3" /> Delete
-            </Button>
-          </div>
+          <Row key={i} label={<>{m.user_name || m.user_email || `ID: ${m.id}`}</>} detail={<>role: {m.role} · status: {m.status}</>}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 text-xs gap-1" style={{ color: 'var(--crit)' }}
+            onClick={() => setPendingDelete({
+              id: m.id,
+              title: 'Delete orphan membership?',
+              description: `This membership has no school assigned and cannot function. Deleting it permanently removes the record (the user account itself is not affected). This cannot be undone.`,
+              confirmLabel: 'Delete orphan',
+            })}
+          >
+            <Trash2 className="w-3 h-3" /> Delete
+          </Button>
+          </Row>
         )}
       />
 
@@ -265,25 +273,21 @@ export default function MembershipHealthTab({ schoolId }) {
         severity="high"
         items={duplicates}
         renderItem={(m, i) => (
-          <div key={i} className="flex items-center justify-between bg-white/60 rounded-lg px-3 py-2">
-            <div>
-              <p className="text-xs font-medium scholr-ink">{m.user_email}</p>
-              <p className="text-[11px] scholr-muted">role: {ROLE_CONFIG[m.role]?.label || m.role} · id: {m.id?.slice(-8)}</p>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 gap-1"
-              onClick={() => setPendingDelete({
-                id: m.id,
-                title: 'Remove duplicate membership?',
-                description: `${m.user_email} has more than one membership in this school. Removing this entry (id …${m.id?.slice(-8)}) will not affect the user's other membership(s) or their account. This cannot be undone.`,
-                confirmLabel: 'Remove duplicate',
-              })}
-            >
-              <Trash2 className="w-3 h-3" /> Remove
-            </Button>
-          </div>
+          <Row key={i} label={<>{m.user_email}</>} detail={<>role: {ROLE_CONFIG[m.role]?.label || m.role} · id: {m.id?.slice(-8)}</>}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 text-xs gap-1" style={{ color: 'var(--crit)' }}
+            onClick={() => setPendingDelete({
+              id: m.id,
+              title: 'Remove duplicate membership?',
+              description: `${m.user_email} has more than one membership in this school. Removing this entry (id …${m.id?.slice(-8)}) will not affect the user's other membership(s) or their account. This cannot be undone.`,
+              confirmLabel: 'Remove duplicate',
+            })}
+          >
+            <Trash2 className="w-3 h-3" /> Remove
+          </Button>
+          </Row>
         )}
       />
 
@@ -293,25 +297,21 @@ export default function MembershipHealthTab({ schoolId }) {
         severity="medium"
         items={missingEmail}
         renderItem={(m, i) => (
-          <div key={i} className="flex items-center justify-between bg-white/60 rounded-lg px-3 py-2">
-            <div>
-              <p className="text-xs font-medium scholr-ink">{m.user_name || `ID: ${m.id}`}</p>
-              <p className="text-[11px] scholr-muted">role: {m.role} · created: {new Date(m.created_at).toLocaleDateString()}</p>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 gap-1"
-              onClick={() => setPendingDelete({
-                id: m.id,
-                title: 'Delete incomplete membership?',
-                description: `This membership has no email address, so it cannot receive invitations or be linked to a real user. Deleting it permanently removes the record. This cannot be undone.`,
-                confirmLabel: 'Delete record',
-              })}
-            >
-              <Trash2 className="w-3 h-3" /> Delete
-            </Button>
-          </div>
+          <Row key={i} label={<>{m.user_name || `ID: ${m.id}`}</>} detail={<>role: {m.role} · created: {new Date(m.created_at).toLocaleDateString()}</>}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 text-xs gap-1" style={{ color: 'var(--crit)' }}
+            onClick={() => setPendingDelete({
+              id: m.id,
+              title: 'Delete incomplete membership?',
+              description: `This membership has no email address, so it cannot receive invitations or be linked to a real user. Deleting it permanently removes the record. This cannot be undone.`,
+              confirmLabel: 'Delete record',
+            })}
+          >
+            <Trash2 className="w-3 h-3" /> Delete
+          </Button>
+          </Row>
         )}
       />
 
@@ -321,20 +321,16 @@ export default function MembershipHealthTab({ schoolId }) {
         severity="medium"
         items={invalidRoles}
         renderItem={(m, i) => (
-          <div key={i} className="flex items-center justify-between bg-white/60 rounded-lg px-3 py-2">
-            <div>
-              <p className="text-xs font-medium scholr-ink">{m.user_email || m.user_name}</p>
-              <p className="text-[11px] scholr-muted">current role: "{m.role}"</p>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 text-xs text-amber-600 hover:text-amber-700 hover:bg-amber-50 gap-1"
-              onClick={() => fixStatusMutation.mutate({ id: m.id, status: 'inactive' })}
-            >
-              <UserX className="w-3 h-3" /> Suspend
-            </Button>
-          </div>
+          <Row key={i} label={<>{m.user_email || m.user_name}</>} detail={<>current role: "{m.role}"</>}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 text-xs gap-1"
+            onClick={() => fixStatusMutation.mutate({ id: m.id, status: 'inactive' })}
+          >
+            <UserX className="w-3 h-3" /> Suspend
+          </Button>
+          </Row>
         )}
       />
 
@@ -344,38 +340,32 @@ export default function MembershipHealthTab({ schoolId }) {
         severity="low"
         items={stalePending}
         renderItem={(m, i) => (
-          <div key={i} className="flex items-center justify-between bg-white/60 rounded-lg px-3 py-2">
-            <div>
-              <p className="text-xs font-medium scholr-ink">{m.user_email || m.user_name}</p>
-              <p className="text-[11px] scholr-muted">
-                pending since {new Date(m.created_at).toLocaleDateString()} ·
-                {ROLE_CONFIG[m.role]?.label || m.role}
-              </p>
-            </div>
-            <div className="flex gap-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-7 text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 gap-1"
-                onClick={() => fixStatusMutation.mutate({ id: m.id, status: 'active' })}
-              >
-                <RefreshCw className="w-3 h-3" /> Activate
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-7 text-xs text-red-500 hover:text-red-600 hover:bg-red-50 gap-1"
-                onClick={() => setPendingDelete({
-                  id: m.id,
-                  title: 'Remove long-pending invitation?',
-                  description: `${m.user_email || m.user_name || 'This user'} has been pending since ${new Date(m.created_at).toLocaleDateString()}. Removing them clears the membership; they would need a fresh invitation to rejoin. This cannot be undone.`,
-                  confirmLabel: 'Remove member',
-                })}
-              >
-                <Trash2 className="w-3 h-3" /> Remove
-              </Button>
-            </div>
+          <Row key={i} label={<>{m.user_email || m.user_name}</>} detail={<>pending since {new Date(m.created_at).toLocaleDateString()} ·
+                {ROLE_CONFIG[m.role]?.label || m.role}</>}>
+          <div className="flex gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 text-xs gap-1"
+              onClick={() => fixStatusMutation.mutate({ id: m.id, status: 'active' })}
+            >
+              <RefreshCw className="w-3 h-3" /> Activate
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 text-xs gap-1" style={{ color: 'var(--crit)' }}
+              onClick={() => setPendingDelete({
+                id: m.id,
+                title: 'Remove long-pending invitation?',
+                description: `${m.user_email || m.user_name || 'This user'} has been pending since ${new Date(m.created_at).toLocaleDateString()}. Removing them clears the membership; they would need a fresh invitation to rejoin. This cannot be undone.`,
+                confirmLabel: 'Remove member',
+              })}
+            >
+              <Trash2 className="w-3 h-3" /> Remove
+            </Button>
           </div>
+          </Row>
         )}
       />
 
