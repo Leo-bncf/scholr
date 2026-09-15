@@ -1,50 +1,51 @@
 import { Toaster } from "@/components/ui/toaster"
+import { lazyPage } from '@/lib/lazyPage';
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
-import { lazy, Suspense } from 'react';
+import { Suspense } from 'react';
 
 /* Routes declared here, rather than through pages.config, are lazy for the
  * same reason the rest are — and one of them mattered more than the others:
  * SuperAdminAnalytics imports recharts, so a static import put the whole
  * 421 kB charting library in the entry graph. Every visitor to the
  * marketing site downloaded it. */
-const SuperAdminAnalytics = lazy(() => import('./pages/SuperAdminAnalytics'));
-const SuperAdminSupport = lazy(() => import('./pages/SuperAdminSupport'));
-const SuperAdminTimetables = lazy(() => import('./pages/SuperAdminTimetables'));
-const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
-const TermsOfService = lazy(() => import('./pages/TermsOfService'));
-const SecurityAndCompliance = lazy(() => import('./pages/SecurityAndCompliance'));
-const SuperAdminSchoolDetail = lazy(() => import('./pages/SuperAdminSchoolDetail'));
-const SuperAdminSettings = lazy(() => import('./pages/SuperAdminSettings'));
-const SchoolAdminAcademicSetup = lazy(() => import('./pages/SchoolAdminAcademicSetup'));
-const PersonalSettings = lazy(() => import('./pages/PersonalSettings'));
-const TeacherWorkspace = lazy(() => import('./pages/TeacherWorkspace'));
-const ParentInsightsDashboard = lazy(() => import('./pages/ParentInsightsDashboard'));
-const UnifiedCalendar = lazy(() => import('./pages/UnifiedCalendar'));
-const SchoolAnalytics = lazy(() => import('./pages/SchoolAnalytics'));
-const ReportingEngine = lazy(() => import('./pages/ReportingEngine'));
-const CurriculumMapping = lazy(() => import('./pages/CurriculumMapping'));
-const StudentAcademicDashboard = lazy(() => import('./pages/StudentAcademicDashboard'));
-const StudentTimetable = lazy(() => import('./pages/StudentTimetable'));
-const StudentAttendance = lazy(() => import('./pages/StudentAttendance'));
-const StudentCommunication = lazy(() => import('./pages/StudentCommunication'));
-const StudentIBCore = lazy(() => import('./pages/StudentIBCore'));
-const SchoolAdminOnboarding = lazy(() => import('./pages/SchoolAdminOnboarding'));
-const DemoHub = lazy(() => import('./pages/demo/DemoHub'));
-const DemoStudent = lazy(() => import('./pages/demo/DemoStudent'));
-const DemoStudentAssignment = lazy(() => import('./pages/demo/DemoStudentAssignment'));
-const DemoTeacher = lazy(() => import('./pages/demo/DemoTeacher'));
-const DemoTeacherClass = lazy(() => import('./pages/demo/DemoTeacherClass'));
-const DemoTeacherReview = lazy(() => import('./pages/demo/DemoTeacherReview'));
-const DemoParent = lazy(() => import('./pages/demo/DemoParent'));
-const DemoParentAssignment = lazy(() => import('./pages/demo/DemoParentAssignment'));
-const DemoLeader = lazy(() => import('./pages/demo/DemoLeader'));
-const SchoolAdminSupport = lazy(() => import('./pages/SchoolAdminSupport'));
-const SchoolAdminGradebookGovernance = lazy(() => import('./pages/SchoolAdminGradebookGovernance'));
-const SchoolAdminBehavior = lazy(() => import('./pages/SchoolAdminBehavior'));
-const SchoolAdminMessagingPolicy = lazy(() => import('./pages/SchoolAdminMessagingPolicy'));
-const SchoolAdminGovernance = lazy(() => import('./pages/SchoolAdminGovernance'));
+const SuperAdminAnalytics = lazyPage(() => import('./pages/SuperAdminAnalytics'));
+const SuperAdminSupport = lazyPage(() => import('./pages/SuperAdminSupport'));
+const SuperAdminTimetables = lazyPage(() => import('./pages/SuperAdminTimetables'));
+const PrivacyPolicy = lazyPage(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazyPage(() => import('./pages/TermsOfService'));
+const SecurityAndCompliance = lazyPage(() => import('./pages/SecurityAndCompliance'));
+const SuperAdminSchoolDetail = lazyPage(() => import('./pages/SuperAdminSchoolDetail'));
+const SuperAdminSettings = lazyPage(() => import('./pages/SuperAdminSettings'));
+const SchoolAdminAcademicSetup = lazyPage(() => import('./pages/SchoolAdminAcademicSetup'));
+const PersonalSettings = lazyPage(() => import('./pages/PersonalSettings'));
+const TeacherWorkspace = lazyPage(() => import('./pages/TeacherWorkspace'));
+const ParentInsightsDashboard = lazyPage(() => import('./pages/ParentInsightsDashboard'));
+const UnifiedCalendar = lazyPage(() => import('./pages/UnifiedCalendar'));
+const SchoolAnalytics = lazyPage(() => import('./pages/SchoolAnalytics'));
+const ReportingEngine = lazyPage(() => import('./pages/ReportingEngine'));
+const CurriculumMapping = lazyPage(() => import('./pages/CurriculumMapping'));
+const StudentAcademicDashboard = lazyPage(() => import('./pages/StudentAcademicDashboard'));
+const StudentTimetable = lazyPage(() => import('./pages/StudentTimetable'));
+const StudentAttendance = lazyPage(() => import('./pages/StudentAttendance'));
+const StudentCommunication = lazyPage(() => import('./pages/StudentCommunication'));
+const StudentIBCore = lazyPage(() => import('./pages/StudentIBCore'));
+const SchoolAdminOnboarding = lazyPage(() => import('./pages/SchoolAdminOnboarding'));
+const DemoHub = lazyPage(() => import('./pages/demo/DemoHub'));
+const DemoStudent = lazyPage(() => import('./pages/demo/DemoStudent'));
+const DemoStudentAssignment = lazyPage(() => import('./pages/demo/DemoStudentAssignment'));
+const DemoTeacher = lazyPage(() => import('./pages/demo/DemoTeacher'));
+const DemoTeacherClass = lazyPage(() => import('./pages/demo/DemoTeacherClass'));
+const DemoTeacherReview = lazyPage(() => import('./pages/demo/DemoTeacherReview'));
+const DemoParent = lazyPage(() => import('./pages/demo/DemoParent'));
+const DemoParentAssignment = lazyPage(() => import('./pages/demo/DemoParentAssignment'));
+const DemoLeader = lazyPage(() => import('./pages/demo/DemoLeader'));
+const SchoolAdminSupport = lazyPage(() => import('./pages/SchoolAdminSupport'));
+const SchoolAdminGradebookGovernance = lazyPage(() => import('./pages/SchoolAdminGradebookGovernance'));
+const SchoolAdminBehavior = lazyPage(() => import('./pages/SchoolAdminBehavior'));
+const SchoolAdminMessagingPolicy = lazyPage(() => import('./pages/SchoolAdminMessagingPolicy'));
+const SchoolAdminGovernance = lazyPage(() => import('./pages/SchoolAdminGovernance'));
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
