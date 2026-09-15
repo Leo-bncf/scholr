@@ -72,16 +72,31 @@ export function useTimetableData(schoolId) {
   };
 }
 
+/* A finished sync is the ordinary case and takes no colour. Five tailwind
+   tints meant a history of successful syncs was a wall of green with one red
+   line hidden in it. */
 export const SYNC_STATUS_CONFIG = {
-  completed: { color: 'bg-emerald-50 text-emerald-700 border-emerald-200', dot: 'bg-emerald-500', label: 'Completed' },
-  failed:    { color: 'bg-red-50 text-red-700 border-red-200',             dot: 'bg-red-500',     label: 'Failed' },
-  in_progress: { color: 'bg-blue-50 text-blue-700 border-blue-200',        dot: 'bg-blue-500',    label: 'In Progress' },
-  partial:   { color: 'bg-amber-50 text-amber-700 border-amber-200',       dot: 'bg-amber-500',   label: 'Partial' },
-  pending:   { color: 'scholr-sunk scholr-muted scholr-rule',       dot: 'bg-slate-400',   label: 'Pending' },
+  completed:   { tone: null,   label: 'Completed' },
+  failed:      { tone: 'crit', label: 'Failed' },
+  in_progress: { tone: 'mute', label: 'Running' },
+  partial:     { tone: 'warn', label: 'Partial' },
+  pending:     { tone: 'mute', label: 'Queued' },
 };
 
+/* Three policies, described by what they do rather than by a padlock emoji
+   and a parenthetical. None of them is good or bad — a school picks the one
+   that matches who owns its timetable — so none of them is coloured. */
 export const OVERRIDE_POLICY_CONFIG = {
-  read_only:         { label: 'Read-Only (External controls all)',    color: 'bg-red-50 text-red-700 border-red-200',       icon: '🔒' },
-  allow_local_edits: { label: 'Hybrid (Some local edits allowed)',    color: 'bg-amber-50 text-amber-700 border-amber-200', icon: '✏️' },
-  local_override:    { label: 'Local Override (Local takes precedence)', color: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: '🖊️' },
+  read_only: {
+    label: 'The external system owns it',
+    detail: 'Nothing here can be edited by hand. A sync is the only way anything changes.',
+  },
+  allow_local_edits: {
+    label: 'Shared',
+    detail: 'Staff can edit some fields. Synced fields are marked, and the next sync may overwrite local edits.',
+  },
+  local_override: {
+    label: 'Scholr owns it',
+    detail: 'Local edits win. What arrives from the external system is treated as information only.',
+  },
 };

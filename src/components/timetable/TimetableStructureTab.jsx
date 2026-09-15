@@ -1,3 +1,4 @@
+import StatusChip from '@/components/app/StatusChip';
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import * as periodsData from '@/data/periods';
 import * as roomsData from '@/data/rooms';
 import {
-  Plus, Pencil, Trash2, Clock, MapPin, Coffee, Lock, ExternalLink,
+  Plus, Pencil, Trash2, Clock, MapPin, Coffee, Lock,
   Calendar, Building2, Loader2
 } from 'lucide-react';
 
@@ -52,7 +53,7 @@ function PeriodForm({ initial, onSave, onCancel, isPending }) {
           </SelectContent>
         </Select>
       </div>
-      <div className="flex items-center gap-2 p-2 bg-amber-50 rounded-lg border border-amber-100">
+      <div className="flex items-center gap-2 p-2 rounded-lg" style={{ background: 'var(--warn-sf)' }}>
         <Switch checked={form.is_break} onCheckedChange={v => setForm({ ...form, is_break: v })} />
         <Label className="text-xs text-amber-800 cursor-pointer">This is a break / lunch period</Label>
       </div>
@@ -161,7 +162,7 @@ export default function TimetableStructureTab({ schoolId, periods, rooms, schedu
   return (
     <div className="space-y-4">
       {isReadOnly && (
-        <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5 text-xs text-red-700">
+        <div className="flex items-center gap-2 px-4 py-2.5 text-xs" style={{ borderLeft: '2px solid var(--crit)', background: 'var(--crit-sf)', color: 'var(--body)' }}>
           <Lock className="w-3.5 h-3.5 flex-shrink-0" />
           <span><strong>Read-Only mode active.</strong> Structure is controlled by the external timetable system. Local edits are disabled.</span>
         </div>
@@ -227,14 +228,14 @@ export default function TimetableStructureTab({ schoolId, periods, rooms, schedu
                   ) : (
                     <div className="px-5 py-3.5 flex items-center justify-between hover:scholr-sunk transition-colors group">
                       <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${p.is_break ? 'bg-amber-100' : 'scholr-accent-sf'}`}>
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 scholr-sunk">
                           {p.is_break ? <Coffee className="w-3.5 h-3.5 text-amber-600" /> : <Clock className="w-3.5 h-3.5 scholr-accent" />}
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
                             <span className="text-sm font-medium scholr-ink">{p.name}</span>
-                            {p.is_break && <Badge className="text-[10px] bg-amber-50 text-amber-700 border-amber-200 border">Break</Badge>}
-                            {p.external_sync_id && <Badge className="text-[10px] bg-blue-50 text-blue-700 border-blue-200 border flex items-center gap-1"><ExternalLink className="w-2.5 h-2.5" />Synced</Badge>}
+                            {p.is_break && <StatusChip tone="mute">Break</StatusChip>}
+                            {p.external_sync_id && <StatusChip tone="mute">Synced</StatusChip>}
                           </div>
                           <p className="text-[11px] scholr-faint mt-0.5">
                             {p.start_time} – {p.end_time}
@@ -383,9 +384,7 @@ export default function TimetableStructureTab({ schoolId, periods, rooms, schedu
                   </div>
                   <div className="flex items-center gap-2">
                     {e.external_sync_id && (
-                      <Badge className="text-[10px] bg-blue-50 text-blue-700 border-blue-200 border flex items-center gap-1">
-                        <ExternalLink className="w-2.5 h-2.5" />Synced
-                      </Badge>
+                      <StatusChip tone="mute">Synced</StatusChip>
                     )}
                     <Badge variant="outline" className="text-[10px] capitalize">{e.status}</Badge>
                   </div>

@@ -3,7 +3,7 @@ import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import { useUser } from '@/components/auth/UserContext';
 
 
-import { useTimetableData, OVERRIDE_POLICY_CONFIG } from '@/components/timetable/useTimetableData';
+import { useTimetableData } from '@/components/timetable/useTimetableData';
 import TimetableStructureTab from '@/components/timetable/TimetableStructureTab';
 import SyncSettingsTab       from '@/components/timetable/SyncSettingsTab';
 import SyncMonitorTab        from '@/components/timetable/SyncMonitorTab';
@@ -27,7 +27,6 @@ export default function SchoolAdminTimetable() {
   } = useTimetableData(schoolId);
 
   const overridePolicy = settings?.override_policy || 'allow_local_edits';
-  const policyCfg = OVERRIDE_POLICY_CONFIG[overridePolicy];
 
   const lastSync = syncHistory[0];
   const openConflicts = syncHistory.reduce(
