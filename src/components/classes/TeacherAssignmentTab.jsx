@@ -1,12 +1,13 @@
+import { Group, GroupEmpty } from '@/components/app/AppShell';
+import { SearchField } from '@/components/app/Field';
+import Notice from '@/components/app/Notice';
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import {
-  Search, Users, Pencil, Crown, Loader2, Lock, BookOpen
+import { Pencil, Loader2, Lock
 } from 'lucide-react';
 import { CO_TEACHER_PERMS } from './classConstants';
 import * as classesData from '@/data/classes';
@@ -183,24 +184,17 @@ export default function TeacherAssignmentTab({ schoolId, classes, memberships })
   return (
     <div className="space-y-4">
       {unstaffed > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 flex items-center gap-3">
-          <Users className="w-4 h-4 text-amber-600 flex-shrink-0" />
-          <p className="text-xs text-amber-700">
-            <strong>{unstaffed} class{unstaffed !== 1 ? 'es' : ''}</strong> have no staff assigned yet.
-          </p>
-        </div>
+        <Notice tone="warn">
+          {unstaffed} class{unstaffed !== 1 ? 'es have' : ' has'} nobody teaching {unstaffed !== 1 ? 'them' : 'it'} yet.
+        </Notice>
       )}
 
-      <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 scholr-faint" />
-        <Input placeholder="Search classes…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white h-9" />
-      </div>
+      <SearchField label="Search classes" value={search} onChange={setSearch} placeholder="Search classes…" />
 
       {filtered.length === 0 ? (
-        <div className="bg-white rounded-xl border scholr-rule p-12 text-center">
-          <BookOpen className="w-10 h-10 scholr-faint mx-auto mb-3" />
-          <p className="text-sm scholr-faint">No active classes found</p>
-        </div>
+        <Group>
+          <GroupEmpty>No active classes match this search.</GroupEmpty>
+        </Group>
       ) : (
         <div className="app-group divide-y scholr-divide overflow-hidden">
           {filtered.map(c => {
@@ -221,18 +215,23 @@ export default function TeacherAssignmentTab({ schoolId, classes, memberships })
                   {hasStaff ? (
                     <div className="flex flex-wrap items-center gap-2">
                       {primary && (
-                        <div className="flex items-center gap-1.5 scholr-accent-sf border border-violet-100 rounded-full px-2.5 py-1">
-                          <Crown className="w-3 h-3 scholr-accent" />
-                          <span className="text-xs font-medium scholr-accent">{primary.user_name || primary.user_email}</span>
-                        </div>
+                        <span
+                          style={{
+                            display: 'inline-flex', alignItems: 'center', gap: '.35rem',
+                            fontSize: '.8rem', color: 'var(--ink)',
+                          }}
+                        >
+                          {primary.user_name || primary.user_email}
+                          <span className="scholr-label" style={{ margin: 0 }}>lead</span>
+                        </span>
                       )}
                       {coTeacherIds.map(id => {
                         const m = getMember(id);
                         if (!m) return null;
                         const perms = c.co_teacher_permissions?.[id] || [];
                         return (
-                          <div key={id} className="flex items-center gap-1.5 scholr-sunk border scholr-rule rounded-full px-2.5 py-1">
-                            <span className="text-xs scholr-muted">{m.user_name || m.user_email}</span>
+                          <div key={id} className="flex items-center gap-1.5" style={{ fontSize: '.8rem', color: 'var(--muted)' }}>
+                            <span>{m.user_name || m.user_email}</span>
                             {perms.length > 0 && (
                               <span className="text-[10px] scholr-faint">{perms.length} perm{perms.length !== 1 ? 's' : ''}</span>
                             )}

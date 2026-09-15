@@ -1,3 +1,5 @@
+import { Group, Row, GroupEmpty } from '@/components/app/AppShell';
+import StatCard from '@/components/app/StatCard';
 import React, { useState } from 'react';
 import Notice from '@/components/app/Notice';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -185,7 +187,7 @@ function SplitDialog({ classObj, onClose, schoolId, memberships }) {
                     {inA && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
                   </div>
                   <span className={inA ? 'scholr-accent font-medium' : 'scholr-body'}>{s.user_name}</span>
-                  <span className={`ml-auto text-[11px] font-bold px-1.5 rounded ${inA ? 'bg-indigo-200 scholr-accent' : 'scholr-sunk scholr-muted'}`}>{inA ? 'A' : 'B'}</span>
+                  <span className="scholr-label" style={{ marginLeft: 'auto', color: inA ? 'var(--brand)' : 'var(--faint)' }}>{inA ? 'A' : 'B'}</span>
                 </button>
               );
             })}
@@ -264,81 +266,70 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
   const activeClasses   = classes.filter(c => c.status === 'active');
   const archivedClasses = classes.filter(c => c.status === 'archived');
 
-  const ActionCard = ({ icon: Icon, title, description, color, children }) => (
-    <div className={`app-group p-5 shadow-sm`}>
-      <div className="flex items-center gap-3 mb-3">
-        <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${color}`}>
-          <Icon className="w-4 h-4" />
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold scholr-ink">{title}</h3>
-          <p className="text-[11px] scholr-faint mt-0.5">{description}</p>
-        </div>
-      </div>
+/* Five cards, each with a filled icon chip in a colour picked per card. The
+   icons were decoration — a pair of scissors beside the word "Split" — and the
+   chips gave one page five accents. Each one is a group now. */
+  const ActionCard = ({ title, description, children }) => (
+    <Group title={title}>
+      <p style={{ margin: 0, padding: '.6rem .9rem 0', fontSize: '.82rem', color: 'var(--muted)' }}>
+        {description}
+      </p>
       {children}
-    </div>
+    </Group>
   );
 
   return (
     <div className="space-y-5 max-w-3xl">
-      {/* Summary */}
-      <div className="grid grid-cols-2 gap-3">
-        <div className="app-group p-4 text-center shadow-sm">
-          <p className="text-2xl font-bold text-emerald-600">{activeClasses.length}</p>
-          <p className="text-xs scholr-faint mt-0.5">Active Classes</p>
+      <Group>
+        <div className="scholr-grid app-cols-2">
+          <StatCard label="Active" value={activeClasses.length} hint="running now" />
+          <StatCard label="Archived" value={archivedClasses.length} hint="past years" />
         </div>
-        <div className="app-group p-4 text-center shadow-sm">
-          <p className="text-2xl font-bold scholr-faint">{archivedClasses.length}</p>
-          <p className="text-xs scholr-faint mt-0.5">Archived Classes</p>
-        </div>
-      </div>
+      </Group>
 
       {/* Bulk archive */}
       <ActionCard
-        icon={Archive}
-        title="End-of-Year Archive"
-        description="Archive all active classes at once when the academic year concludes."
-        color="scholr-sunk scholr-muted"
+        title="Archive the year"
+        description="Close every active class at once when the academic year ends."
       >
         {activeClasses.length === 0 ? (
-          <p className="text-xs scholr-faint">No active classes to archive.</p>
+          <GroupEmpty>Nothing to archive — no class is active.</GroupEmpty>
         ) : (
-          <div className="flex items-center justify-between">
-            <p className="text-xs scholr-muted">{activeClasses.length} active class{activeClasses.length !== 1 ? 'es' : ''} will be archived.</p>
+          <Row
+            label={`Archive all ${activeClasses.length} active class${activeClasses.length !== 1 ? 'es' : ''}`}
+            detail="They stay readable; they stop appearing in the timetable and in enrolment."
+          >
             <Button
               variant="outline"
               size="sm"
-              className="text-xs text-amber-700 border-amber-300 hover:bg-amber-50 gap-1.5"
+              className="text-xs gap-1.5"
               disabled={bulkArchiveMutation.isPending}
               onClick={() => setBulkArchiveOpen(true)}
             >
               {bulkArchiveMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Archive className="w-3.5 h-3.5" />}
-              Archive All Active
+              Archive all
             </Button>
-          </div>
+          </Row>
         )}
       </ActionCard>
 
       {/* Archive/Restore individual */}
       {classes.length > 0 && (
         <ActionCard
-          icon={RotateCcw}
-          title="Archive / Restore Individual Classes"
-          description="Manage individual class lifecycle states."
-          color="scholr-sunk scholr-muted"
+          title="One class at a time"
+          description="Archive a single class, or bring an archived one back."
         >
-          <div className="space-y-2 max-h-60 overflow-y-auto">
+          <div style={{ maxHeight: '18rem', overflowY: 'auto' }}>
             {classes.map(c => (
-              <div key={c.id} className="flex items-center justify-between px-3 py-2.5 rounded-lg border scholr-rule-soft scholr-sunk hover:scholr-sunk transition-colors">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className={`w-2 h-2 rounded-full flex-shrink-0 ${c.status === 'active' ? 'bg-emerald-500' : 'bg-slate-400'}`} />
-                  <span className="text-sm font-medium scholr-ink truncate">{c.name}</span>
-                  <span className="text-[11px] scholr-faint">{c.student_ids?.length || 0} students</span>
-                </div>
+              <Row
+                key={c.id}
+                label={c.name}
+                detail={`${c.student_ids?.length || 0} student${c.student_ids?.length === 1 ? '' : 's'}${c.status === 'archived' ? ' · archived' : ''}`}
+              >
                 <Button
                   variant="ghost"
                   size="sm"
-                  className={`h-7 text-xs flex-shrink-0 gap-1 ${c.status === 'active' ? 'text-amber-600 hover:text-amber-700 hover:bg-amber-50' : 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50'}`}
+                  className="h-7 text-xs flex-shrink-0 gap-1"
                   disabled={archiveMutation.isPending}
                   onClick={() => setPendingStatus({
                     classObj: c,
@@ -347,7 +338,7 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
                 >
                   {c.status === 'active' ? <><Archive className="w-3 h-3" />Archive</> : <><RotateCcw className="w-3 h-3" />Restore</>}
                 </Button>
-              </div>
+              </Row>
             ))}
           </div>
         </ActionCard>
@@ -355,30 +346,28 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
 
       {/* Duplicate for new year */}
       <ActionCard
-        icon={Copy}
-        title="Duplicate for New Year"
-        description="Copy a class structure to the next academic year, with optional roster carry-over."
-        color="scholr-accent-sf scholr-accent"
+        title="Copy into next year"
+        description="Reuse a class's structure — subject, staff, optionally the roster."
       >
         {activeClasses.length === 0 ? (
-          <p className="text-xs scholr-faint">No active classes to duplicate.</p>
+          <GroupEmpty>Nothing to copy — no class is active.</GroupEmpty>
         ) : (
-          <div className="space-y-2 max-h-48 overflow-y-auto">
+          <div style={{ maxHeight: '16rem', overflowY: 'auto' }}>
             {activeClasses.map(c => (
-              <div key={c.id} className="flex items-center justify-between px-3 py-2.5 rounded-lg border scholr-rule-soft scholr-sunk">
-                <div className="min-w-0 flex-1">
-                  <span className="text-sm font-medium scholr-ink truncate block">{c.name}</span>
-                  <span className="text-[11px] scholr-faint">{c.student_ids?.length || 0} students · {c.teacher_ids?.length || 0} staff</span>
-                </div>
+              <Row
+                key={c.id}
+                label={c.name}
+                detail={`${c.student_ids?.length || 0} students · ${c.teacher_ids?.length || 0} staff`}
+              >
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-7 text-xs scholr-accent hover:scholr-accent hover:scholr-accent-sf gap-1 flex-shrink-0"
+                  className="h-7 text-xs gap-1 flex-shrink-0"
                   onClick={() => setDuplicatingClass(c)}
                 >
-                  <Copy className="w-3 h-3" /> Duplicate
+                  <Copy className="w-3 h-3" /> Copy
                 </Button>
-              </div>
+              </Row>
             ))}
           </div>
         )}
@@ -386,30 +375,24 @@ export default function ClassLifecycleTab({ schoolId, classes, memberships, acad
 
       {/* Split class */}
       <ActionCard
-        icon={Scissors}
-        title="Split Class Section"
-        description="Divide a class into two sections and assign students to each group."
-        color="scholr-sunk scholr-muted"
+        title="Split a class in two"
+        description="Divide the students between two new sections. The original is archived."
       >
         {activeClasses.filter(c => (c.student_ids?.length || 0) >= 2).length === 0 ? (
-          <p className="text-xs scholr-faint">No classes with enough students to split (need ≥ 2).</p>
+          <GroupEmpty>No class has enough students to split — two is the minimum.</GroupEmpty>
         ) : (
-          <div className="space-y-2 max-h-48 overflow-y-auto">
+          <div style={{ maxHeight: '16rem', overflowY: 'auto' }}>
             {activeClasses.filter(c => (c.student_ids?.length || 0) >= 2).map(c => (
-              <div key={c.id} className="flex items-center justify-between px-3 py-2.5 rounded-lg border scholr-rule-soft scholr-sunk">
-                <div className="min-w-0 flex-1">
-                  <span className="text-sm font-medium scholr-ink truncate block">{c.name}</span>
-                  <span className="text-[11px] scholr-faint">{c.student_ids?.length || 0} students</span>
-                </div>
+              <Row key={c.id} label={c.name} detail={`${c.student_ids?.length || 0} students`}>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-7 text-xs gap-1 flex-shrink-0" style={{ color: 'var(--crit)' }}
+                  className="h-7 text-xs gap-1 flex-shrink-0"
                   onClick={() => setSplittingClass(c)}
                 >
                   <Scissors className="w-3 h-3" /> Split
                 </Button>
-              </div>
+              </Row>
             ))}
           </div>
         )}

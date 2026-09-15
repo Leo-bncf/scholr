@@ -14,11 +14,14 @@ import * as assignmentsData from '@/data/assignments';
 import * as gradebookData from '@/data/gradebook';
 import * as classesData from '@/data/classes';
 
+/* Three tailwind tints became three tones. "Strength" takes no colour: a
+   topic going well is the expected case, and a table where most rows glow
+   green buries the two that are not. */
 const indicatorMeta = (avg) => {
-  if (avg === null) return { label: 'No Data', className: 'scholr-sunk scholr-body border-0' };
-  if (avg >= 75) return { label: 'Strength', className: 'bg-emerald-100 text-emerald-700 border-0' };
-  if (avg < 60) return { label: 'Weakness', className: 'bg-red-100 text-red-700 border-0' };
-  return { label: 'Monitor', className: 'bg-amber-100 text-amber-700 border-0' };
+  if (avg === null) return { label: 'No data', tone: null };
+  if (avg >= 75) return { label: 'Strength', tone: null };
+  if (avg < 60) return { label: 'Weakness', tone: 'crit' };
+  return { label: 'Monitor', tone: 'warn' };
 };
 
 export default function CurriculumMapping() {
@@ -88,7 +91,7 @@ export default function CurriculumMapping() {
           averageScore,
           covered: uniqueAssignments.length > 0,
           indicatorLabel: indicator.label,
-          indicatorClass: indicator.className,
+          indicatorTone: indicator.tone,
         };
       });
 

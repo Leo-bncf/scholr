@@ -1,3 +1,4 @@
+import Notice from '@/components/app/Notice';
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -6,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Loader2, Plus, Send, Moon, AlertTriangle } from 'lucide-react';
+import { Loader2, Plus, Send } from 'lucide-react';
 import { useMessagingPolicy } from '@/hooks/useMessagingPolicy';
 import * as classesData from '@/data/classes';
 import * as parentStudentLinksData from '@/data/parentStudentLinks';
@@ -140,24 +141,20 @@ export default function NewMessageDialog({ userId, userName, userRole, schoolId,
 
           <div className="space-y-4">
             {quietHour && (policy?.quiet_hours?.applies_to_roles || []).includes(userRole) && (
-              <div className={`flex items-start gap-2 rounded-lg px-3 py-2.5 text-sm border ${quietBlocked ? 'bg-red-50 border-red-200 text-red-800' : 'bg-amber-50 border-amber-200 text-amber-800'}`}>
-                <Moon className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-semibold">{quietBlocked ? 'Quiet hours — sending disabled' : 'Quiet hours active'}</p>
-                  <p className="text-xs mt-0.5 opacity-80">
-                    {quietBlocked
-                      ? `Messaging is disabled between ${policy.quiet_hours.start_time} – ${policy.quiet_hours.end_time}.`
-                      : `Outside recommended hours (${policy.quiet_hours.start_time} – ${policy.quiet_hours.end_time}).`}
-                  </p>
-                </div>
-              </div>
+              <Notice
+                tone={quietBlocked ? 'crit' : 'warn'}
+                title={quietBlocked ? 'Quiet hours — you cannot send now' : 'Quiet hours are on'}
+              >
+                {quietBlocked
+                  ? `Nothing sends between ${policy.quiet_hours.start_time} and ${policy.quiet_hours.end_time}.`
+                  : `It is outside the hours your school asks staff to message in (${policy.quiet_hours.start_time} – ${policy.quiet_hours.end_time}).`}
+              </Notice>
             )}
 
             {policyBlocked && (
-              <div className="flex items-start gap-2 rounded-lg px-3 py-2.5 text-sm bg-red-50 border border-red-200 text-red-800">
-                <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                <p>School policy does not permit this type of message.</p>
-              </div>
+              <Notice tone="crit">
+                Your school&apos;s messaging rules do not allow this kind of message.
+              </Notice>
             )}
 
             {!isAdminOrCoord && contextClasses.length > 0 && (

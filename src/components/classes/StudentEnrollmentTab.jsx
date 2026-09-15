@@ -1,3 +1,5 @@
+import { Group, GroupEmpty } from '@/components/app/AppShell';
+import { SearchField } from '@/components/app/Field';
 import React, { useState } from 'react';
 import Notice from '@/components/app/Notice';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -6,8 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
-  Search, Users, UserPlus, UserMinus, Loader2, Lock, ChevronDown,
-  BookOpen, Check, Filter
+  Search, Users, UserPlus, UserMinus, Loader2, Lock, ChevronDown, Check, Filter
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import * as classesData from '@/data/classes';
@@ -182,15 +183,13 @@ export default function StudentEnrollmentTab({ schoolId, classes, memberships })
       </div>
 
       <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 scholr-faint" />
-        <Input placeholder="Search classes…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white h-9" />
+        <SearchField label="Search classes" value={search} onChange={setSearch} placeholder="Search classes…" />
       </div>
 
       {filtered.length === 0 ? (
-        <div className="bg-white rounded-xl border scholr-rule p-12 text-center">
-          <BookOpen className="w-10 h-10 scholr-faint mx-auto mb-3" />
-          <p className="text-sm scholr-faint">No active classes found</p>
-        </div>
+        <Group>
+          <GroupEmpty>No active classes match this search.</GroupEmpty>
+        </Group>
       ) : (
         <div className="space-y-2">
           {filtered.map(c => {
@@ -212,7 +211,7 @@ export default function StudentEnrollmentTab({ schoolId, classes, memberships })
                             {isLocked && <Lock className="w-3.5 h-3.5 text-amber-500" title="Roster locked" />}
                           </div>
                           <p className="text-xs scholr-faint mt-0.5">
-                            <span className={isFull ? 'text-red-600 font-medium' : ''}>
+                            <span style={isFull ? { color: 'var(--crit)' } : undefined}>
                               {enrolledIds.length}{capacity ? `/${capacity}` : ''} student{enrolledIds.length !== 1 ? 's' : ''}
                             </span>
                             {isFull && ' · Full'}
@@ -256,9 +255,6 @@ export default function StudentEnrollmentTab({ schoolId, classes, memberships })
                           return (
                             <div key={sid} className="px-5 py-2.5 flex items-center justify-between hover:scholr-sunk transition-colors">
                               <div className="flex items-center gap-2.5">
-                                <div className="w-7 h-7 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-xs font-bold text-blue-700 flex-shrink-0">
-                                  {(m?.user_name || '?')[0]?.toUpperCase()}
-                                </div>
                                 <div>
                                   <p className="text-sm font-medium scholr-ink">{m?.user_name || 'Unknown'}</p>
                                   <p className="text-[11px] scholr-faint">{m?.grade_level || m?.user_email || '—'}</p>

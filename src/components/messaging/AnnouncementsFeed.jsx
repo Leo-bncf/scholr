@@ -12,7 +12,10 @@ function AnnouncementCard({ msg }) {
 
   return (
     <div className={`rounded-xl border overflow-hidden ${isPinned ? 'border-amber-300' : isSchoolWide ? 'scholr-accent-rule' : 'scholr-rule'}`}>
-      <div className={`px-4 py-3 flex items-start justify-between gap-3 ${isPinned ? 'bg-amber-50' : isSchoolWide ? 'scholr-accent-sf' : 'bg-white'}`}>
+      {/* Pinned and school-wide were a tinted card body. That coloured a whole
+          announcement for a fact about where it sits in the list, which the
+          chips beside the title already say. */}
+      <div className="px-4 py-3 flex items-start justify-between gap-3">
         <div className="flex items-start gap-3 flex-1 min-w-0">
           <div className={`mt-0.5 flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${isSchoolWide ? 'scholr-accent-sf' : 'scholr-sunk'}`}>
             {isSchoolWide

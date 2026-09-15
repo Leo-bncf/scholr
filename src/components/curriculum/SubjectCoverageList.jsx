@@ -1,31 +1,43 @@
 import React from 'react';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
+import { Group, Row, GroupEmpty } from '@/components/app/AppShell';
+import Meter from '@/components/app/Meter';
 
+/**
+ * Pick a subject, and see at a glance how much of it has been taught.
+ *
+ * The bar was shadcn's Progress, which draws in its own primary colour rather
+ * than the theme's, and the percentage was an outline Badge — a chip for a
+ * number that is not a state. Meter draws against a 100% track, which is what
+ * "62% covered" has to be read against.
+ */
 export default function SubjectCoverageList({ subjects = [], onSelectSubject, selectedSubjectId }) {
   return (
-    <div className="app-group overflow-hidden">
-      <div className="px-5 py-4 border-b scholr-rule">
-        <h3 className="font-semibold scholr-ink">Subjects</h3>
-      </div>
-      <div className="divide-y scholr-divide">
-        {subjects.map((subject) => (
-          <button
+    <Group title="Subjects">
+      {subjects.length === 0 ? (
+        <GroupEmpty>No subjects have topics mapped yet.</GroupEmpty>
+      ) : (
+        subjects.map((subject) => (
+          <Row
             key={subject.id}
+            label={subject.name}
+            detail={`${subject.coveredCount} of ${subject.totalCount} topics taught`}
             onClick={() => onSelectSubject(subject.id)}
-            className={`w-full text-left px-5 py-4 hover:scholr-sunk transition-colors ${selectedSubjectId === subject.id ? 'scholr-sunk' : ''}`}
           >
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <p className="font-medium scholr-ink">{subject.name}</p>
-                <p className="text-xs scholr-muted mt-1">{subject.coveredCount} / {subject.totalCount} topics covered</p>
-              </div>
-              <Badge variant="outline">{subject.coveragePercent}%</Badge>
-            </div>
-            <Progress value={subject.coveragePercent} className="mt-3 h-2" />
-          </button>
-        ))}
-      </div>
-    </div>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '.6rem', minWidth: '7rem' }}>
+              <span style={{ flex: 1 }}>
+                <Meter
+                  value={subject.coveragePercent}
+                  tone={selectedSubjectId === subject.id ? 'accent' : 'mute'}
+                  height={4}
+                />
+              </span>
+              <span className="scholr-num" style={{ fontFamily: 'var(--font-mono)', fontSize: '.82rem' }}>
+                {subject.coveragePercent}%
+              </span>
+            </span>
+          </Row>
+        ))
+      )}
+    </Group>
   );
 }
