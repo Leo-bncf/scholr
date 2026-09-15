@@ -120,7 +120,7 @@ export default function CompliancePanel({ form, onChange }) {
               <button
                 onClick={addKeyword}
                 disabled={!newKeyword.trim()}
-                className="px-3 py-1.5 pub-btn pub-btn-gold rounded-lg text-sm font-medium hover:scholr-accent-sf disabled:opacity-40 flex items-center gap-1"
+                className="px-3 py-1.5 pub-btn pub-btn-primary rounded-lg text-sm font-medium hover:scholr-accent-sf disabled:opacity-40 flex items-center gap-1"
               >
                 <Plus className="w-4 h-4" /> Add
               </button>

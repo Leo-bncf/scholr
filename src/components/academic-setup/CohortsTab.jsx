@@ -164,14 +164,14 @@ export default function CohortsTab({ schoolId }) {
 
       {/* Type filter chips */}
       <div className="flex gap-1.5 flex-wrap">
-        <button onClick={() => setTypeFilter('all')} className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${typeFilter === 'all' ? 'pub-btn pub-btn-gold' : 'bg-white border scholr-rule scholr-muted hover:scholr-sunk'}`}>
+        <button onClick={() => setTypeFilter('all')} className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${typeFilter === 'all' ? 'pub-btn pub-btn-primary' : 'bg-white border scholr-rule scholr-muted hover:scholr-sunk'}`}>
           All ({cohorts.length})
         </button>
         {COHORT_TYPES.map(t => {
           const count = cohorts.filter(c => c.type === t.value).length;
           if (count === 0) return null;
           return (
-            <button key={t.value} onClick={() => setTypeFilter(t.value)} className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${typeFilter === t.value ? 'pub-btn pub-btn-gold' : 'bg-white border scholr-rule scholr-muted hover:scholr-sunk'}`}>
+            <button key={t.value} onClick={() => setTypeFilter(t.value)} className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${typeFilter === t.value ? 'pub-btn pub-btn-primary' : 'bg-white border scholr-rule scholr-muted hover:scholr-sunk'}`}>
               {t.label.split('—')[0].trim()} ({count})
             </button>
           );
@@ -281,7 +281,7 @@ export default function CohortsTab({ schoolId }) {
                   <button key={s.id} onClick={() => toggleStudentMutation.mutate({ cohort: studentDialog, userId: s.user_id })}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-colors text-left ${enrolled ? 'scholr-accent-sf scholr-accent-rule' : 'bg-white scholr-rule hover:scholr-rule'}`}
                   >
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${enrolled ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-muted'}`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${enrolled ? 'pub-btn pub-btn-primary' : 'scholr-sunk scholr-muted'}`}>
                       {s.user_name?.[0]?.toUpperCase() || '?'}
                     </div>
                     <div className="flex-1 min-w-0">

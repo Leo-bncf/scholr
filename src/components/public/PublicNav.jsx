@@ -96,7 +96,7 @@ export default function PublicNav() {
             <button type="button" onClick={signIn} className="scholr-focus" style={{ background: 'none', border: 'none', font: 'inherit', fontSize: '.89rem', color: 'var(--body)', cursor: 'pointer' }}>
               Sign in
             </button>
-            <Link to="/BookDemo" className="pub-btn pub-btn-gold scholr-focus">Book a demo</Link>
+            <Link to="/BookDemo" className="pub-btn pub-btn-primary scholr-focus">Book a demo</Link>
           </div>
 
           <button
@@ -121,7 +121,7 @@ export default function PublicNav() {
           ))}
           <div style={{ display: 'flex', alignItems: 'center', gap: '.8rem', paddingTop: '.9rem' }}>
             <button type="button" onClick={signIn} className="scholr-focus" style={{ background: 'none', border: 'none', font: 'inherit', fontSize: '.9rem', color: 'var(--body)', cursor: 'pointer' }}>Sign in</button>
-            <Link to="/BookDemo" onClick={() => setOpen(false)} className="pub-btn pub-btn-gold scholr-focus" style={{ marginLeft: 'auto' }}>Book a demo</Link>
+            <Link to="/BookDemo" onClick={() => setOpen(false)} className="pub-btn pub-btn-primary scholr-focus" style={{ marginLeft: 'auto' }}>Book a demo</Link>
           </div>
         </div>
       )}

@@ -101,7 +101,7 @@ export default function ConversationView({ conversation, userId, userName, userR
           const isSender = msg.sender_id === userId;
           return (
             <div key={msg.id} className={`flex ${isSender ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-lg ${isSender ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-ink'} rounded-2xl px-4 py-3`}>
+              <div className={`max-w-lg ${isSender ? 'pub-btn pub-btn-primary' : 'scholr-sunk scholr-ink'} rounded-2xl px-4 py-3`}>
                 {!isSender && (
                   <p className="text-xs font-semibold mb-1 opacity-70">{msg.sender_name}</p>
                 )}

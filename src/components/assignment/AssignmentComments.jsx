@@ -95,7 +95,7 @@ export default function AssignmentComments({ assignment, submissionId, userId, u
                 <div className={`flex-1 max-w-lg ${isOwn ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
                   <div className={`rounded-xl px-4 py-3 text-sm ${
                     isOwn
-                      ? 'pub-btn pub-btn-gold'
+                      ? 'pub-btn pub-btn-primary'
                       : isTeacherComment
                         ? 'scholr-accent-sf border border-indigo-100 scholr-ink'
                         : 'scholr-sunk border scholr-rule scholr-ink'

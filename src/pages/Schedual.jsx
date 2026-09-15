@@ -87,7 +87,7 @@ export default function Schedual() {
           same infrastructure.
         </p>
         <div className="reveal" style={{ display: 'flex', gap: 'var(--space-2xs)', marginTop: 'var(--space-md)', flexWrap: 'wrap', '--i': 3 }}>
-          <a href={SCHEDUAL_HOME} target="_blank" rel="noopener" className="pub-btn pub-btn-gold pub-btn-lg scholr-focus">
+          <a href={SCHEDUAL_HOME} target="_blank" rel="noopener" className="pub-btn pub-btn-primary pub-btn-lg scholr-focus">
             Visit schedual-pro.com <ArrowUpRight className="w-4 h-4" />
           </a>
           <CTA to="/BookDemo" tone="line">See both together</CTA>

@@ -76,13 +76,13 @@ export default function AnnouncementsPanel({ schools }) {
         <div className="mt-2 flex gap-3">
           <button
             onClick={() => setTargetMode('all')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${targetMode === 'all' ? 'pub-btn pub-btn-gold scholr-accent-rule' : 'bg-white scholr-body scholr-rule hover:scholr-sunk'}`}
+            className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${targetMode === 'all' ? 'pub-btn pub-btn-primary scholr-accent-rule' : 'bg-white scholr-body scholr-rule hover:scholr-sunk'}`}
           >
             All Schools
           </button>
           <button
             onClick={() => setTargetMode('specific')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${targetMode === 'specific' ? 'pub-btn pub-btn-gold scholr-accent-rule' : 'bg-white scholr-body scholr-rule hover:scholr-sunk'}`}
+            className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${targetMode === 'specific' ? 'pub-btn pub-btn-primary scholr-accent-rule' : 'bg-white scholr-body scholr-rule hover:scholr-sunk'}`}
           >
             Specific Schools
           </button>
@@ -133,7 +133,7 @@ export default function AnnouncementsPanel({ schools }) {
       <Button
         onClick={handleSend}
         disabled={sending}
-        className="pub-btn pub-btn-gold gap-2"
+        className="pub-btn pub-btn-primary gap-2"
       >
         {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
         Send Announcement

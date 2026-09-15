@@ -169,7 +169,7 @@ function LessonFormDialog({ open, onClose, classData, userId, lesson = null }) {
             <div className="flex gap-2">
               {['planned', 'completed'].map(s => (
                 <button key={s} onClick={() => setForm({ ...form, status: s })}
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium capitalize transition-colors ${form.status === s ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-muted hover:scholr-sunk'}`}>
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium capitalize transition-colors ${form.status === s ? 'pub-btn pub-btn-primary' : 'scholr-sunk scholr-muted hover:scholr-sunk'}`}>
                   {s}
                 </button>
               ))}

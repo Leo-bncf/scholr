@@ -109,7 +109,7 @@ function TeacherAssignDialog({ classObj, onClose, schoolId, memberships }) {
                         onClick={() => toggleCoTeacher(tid)}
                         className="w-full flex items-center gap-3 px-3 py-2.5 text-left"
                       >
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${isAssigned ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-muted'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${isAssigned ? 'pub-btn pub-btn-primary' : 'scholr-sunk scholr-muted'}`}>
                           {(t.user_name || '?')[0]?.toUpperCase()}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -147,7 +147,7 @@ function TeacherAssignDialog({ classObj, onClose, schoolId, memberships }) {
           <div className="flex gap-2 pt-2">
             <Button type="button" variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
             <Button
-              className="flex-1 pub-btn pub-btn-gold"
+              className="flex-1 pub-btn pub-btn-primary"
               disabled={mutation.isPending}
               onClick={handleSave}
             >

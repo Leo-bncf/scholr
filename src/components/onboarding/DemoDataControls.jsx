@@ -153,7 +153,7 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
           action={handleSeed}
           loading={seeding}
           disabled={clearing}
-          actionClassName="w-full h-12 pub-btn pub-btn-gold"
+          actionClassName="w-full h-12 pub-btn pub-btn-primary"
         />
 
         <DemoActionCard

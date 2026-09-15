@@ -256,7 +256,7 @@ export default function BulkImportTab({ schoolId, schoolName }) {
             Cancel
           </Button>
           <Button
-            className="flex-1 pub-btn pub-btn-gold gap-2"
+            className="flex-1 pub-btn pub-btn-primary gap-2"
             disabled={validRows.length === 0 || importMutation.isPending}
             onClick={() => importMutation.mutate(validRows)}
           >

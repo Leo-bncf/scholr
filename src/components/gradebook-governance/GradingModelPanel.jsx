@@ -48,7 +48,7 @@ export default function GradingModelPanel({ form, onChange }) {
                 onClick={() => onChange({ grading_model: opt.value })}
                 className={`flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-colors ${active ? 'scholr-accent-rule scholr-accent-sf' : 'scholr-rule hover:scholr-rule bg-white'}`}
               >
-                <div className={`mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${active ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-muted'}`}>
+                <div className={`mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${active ? 'pub-btn pub-btn-primary' : 'scholr-sunk scholr-muted'}`}>
                   <Icon className="w-4 h-4" />
                 </div>
                 <div>

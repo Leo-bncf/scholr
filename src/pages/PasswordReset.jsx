@@ -196,7 +196,7 @@ export default function PasswordReset() {
           <button
             type="button"
             onClick={() => navigate('/Login')}
-            className="pub-btn pub-btn-gold scholr-focus w-full justify-center"
+            className="pub-btn pub-btn-primary scholr-focus w-full justify-center"
           >
             Sign in
           </button>

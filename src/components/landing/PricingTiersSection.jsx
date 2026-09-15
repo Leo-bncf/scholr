@@ -209,7 +209,7 @@ export default function PricingTiersSection() {
         </div>
 
         <div style={{ marginTop: '2rem', display: 'flex', gap: '.8rem', flexWrap: 'wrap', alignItems: 'center' }}>
-          <a href="/BookDemo" className="pub-btn pub-btn-gold scholr-focus">
+          <a href="/BookDemo" className="pub-btn pub-btn-primary scholr-focus">
             Book a demo
           </a>
           {!CHECKOUT_ENABLED && (

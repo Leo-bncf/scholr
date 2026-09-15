@@ -122,7 +122,7 @@ function WeekView({ entries, weekStart }) {
 
         return (
           <div key={dow} className={`rounded-xl border overflow-hidden ${isToday ? 'scholr-accent-rule' : 'scholr-rule'}`}>
-            <div className={`px-2 py-2 text-center text-xs font-bold uppercase tracking-wide ${isToday ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-muted'}`}>
+            <div className={`px-2 py-2 text-center text-xs font-bold uppercase tracking-wide ${isToday ? 'pub-btn pub-btn-primary' : 'scholr-sunk scholr-muted'}`}>
               <p>{DAY_NAMES[dow]}</p>
               <p className={`text-lg font-bold leading-tight ${isToday ? 'text-white' : 'scholr-ink'}`}>{format(date, 'd')}</p>
             </div>
@@ -289,7 +289,7 @@ export default function StudentTimetable() {
                         <button
                           key={v}
                           onClick={() => setView(v)}
-                          className={`px-4 py-1.5 font-medium capitalize transition-colors ${view === v ? 'pub-btn pub-btn-gold' : 'scholr-muted hover:scholr-sunk'}`}
+                          className={`px-4 py-1.5 font-medium capitalize transition-colors ${view === v ? 'pub-btn pub-btn-primary' : 'scholr-muted hover:scholr-sunk'}`}
                         >
                           {v}
                         </button>

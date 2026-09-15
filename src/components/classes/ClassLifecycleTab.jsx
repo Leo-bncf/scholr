@@ -103,7 +103,7 @@ function DuplicateDialog({ classObj, onClose, schoolId, academicYears }) {
           <div className="flex gap-2 pt-1">
             <Button variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
             <Button
-              className="flex-1 pub-btn pub-btn-gold"
+              className="flex-1 pub-btn pub-btn-primary"
               disabled={!newName || mutation.isPending}
               onClick={() => mutation.mutate()}
             >
@@ -203,7 +203,7 @@ function SplitDialog({ classObj, onClose, schoolId, memberships }) {
         <div className="flex gap-2 pt-3 border-t scholr-rule-soft">
           <Button variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
           <Button
-            className="flex-1 pub-btn pub-btn-gold"
+            className="flex-1 pub-btn pub-btn-primary"
             disabled={students.length === 0 || mutation.isPending}
             onClick={() => mutation.mutate()}
           >

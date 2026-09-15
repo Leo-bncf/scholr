@@ -135,7 +135,7 @@ function EditMemberDialog({ member, onClose, schoolId }) {
           )}
           <div className="flex gap-2 pt-2">
             <Button type="button" variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={updateMutation.isPending} className="flex-1 pub-btn pub-btn-gold">
+            <Button type="submit" disabled={updateMutation.isPending} className="flex-1 pub-btn pub-btn-primary">
               {updateMutation.isPending && <Loader2 className="w-3.5 h-3.5 animate-spin mr-2" />}
               Save Changes
             </Button>

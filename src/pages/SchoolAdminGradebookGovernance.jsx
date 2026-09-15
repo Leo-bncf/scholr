@@ -78,7 +78,7 @@ export default function SchoolAdminGradebookGovernance() {
   const SaveButton = ({ tab }) => (
     POLICY_TABS.includes(tab) ? (
       <div className="flex justify-end mt-6">
-        <Button onClick={() => saveMutation.mutate(form)} disabled={saveMutation.isPending} className="pub-btn pub-btn-gold">
+        <Button onClick={() => saveMutation.mutate(form)} disabled={saveMutation.isPending} className="pub-btn pub-btn-primary">
           {saveMutation.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
           Save Policy
         </Button>

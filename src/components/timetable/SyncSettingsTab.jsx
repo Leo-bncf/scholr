@@ -216,7 +216,7 @@ export default function SyncSettingsTab({ schoolId, settings }) {
         <Button
           onClick={() => saveMutation.mutate(form)}
           disabled={saveMutation.isPending}
-          className="pub-btn pub-btn-gold gap-2"
+          className="pub-btn pub-btn-primary gap-2"
         >
           {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           {saveMutation.isPending ? 'Saving…' : 'Save Settings'}

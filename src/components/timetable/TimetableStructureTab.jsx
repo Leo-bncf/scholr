@@ -58,7 +58,7 @@ function PeriodForm({ initial, onSave, onCancel, isPending }) {
       </div>
       <div className="flex gap-2 pt-1">
         <Button type="button" variant="outline" size="sm" className="flex-1" onClick={onCancel}>Cancel</Button>
-        <Button type="submit" size="sm" disabled={isPending} className="flex-1 pub-btn pub-btn-gold">
+        <Button type="submit" size="sm" disabled={isPending} className="flex-1 pub-btn pub-btn-primary">
           {isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Save Period'}
         </Button>
       </div>
@@ -103,7 +103,7 @@ function RoomForm({ initial, onSave, onCancel, isPending }) {
       </div>
       <div className="flex gap-2 pt-1">
         <Button type="button" variant="outline" size="sm" className="flex-1" onClick={onCancel}>Cancel</Button>
-        <Button type="submit" size="sm" disabled={isPending} className="flex-1 pub-btn pub-btn-gold">
+        <Button type="submit" size="sm" disabled={isPending} className="flex-1 pub-btn pub-btn-primary">
           {isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Save Room'}
         </Button>
       </div>
@@ -177,7 +177,7 @@ export default function TimetableStructureTab({ schoolId, periods, rooms, schedu
           <button
             key={key}
             onClick={() => setActiveSection(key)}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-colors ${activeSection === key ? 'pub-btn pub-btn-gold shadow-sm' : 'scholr-muted hover:scholr-ink'}`}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-colors ${activeSection === key ? 'pub-btn pub-btn-primary shadow-sm' : 'scholr-muted hover:scholr-ink'}`}
           >
             <Icon className="w-3.5 h-3.5" />{label}
           </button>
@@ -193,7 +193,7 @@ export default function TimetableStructureTab({ schoolId, periods, rooms, schedu
               <p className="text-[11px] scholr-faint mt-0.5">{periods.length} periods · {periods.filter(p => p.is_break).length} breaks</p>
             </div>
             {!isReadOnly && (
-              <Button size="sm" className="h-8 text-xs pub-btn pub-btn-gold gap-1" onClick={() => setAddingPeriod(true)}>
+              <Button size="sm" className="h-8 text-xs pub-btn pub-btn-primary gap-1" onClick={() => setAddingPeriod(true)}>
                 <Plus className="w-3.5 h-3.5" /> Add Period
               </Button>
             )}
@@ -271,7 +271,7 @@ export default function TimetableStructureTab({ schoolId, periods, rooms, schedu
               <p className="text-[11px] scholr-faint mt-0.5">{rooms.length} rooms configured</p>
             </div>
             {!isReadOnly && (
-              <Button size="sm" className="h-8 text-xs pub-btn pub-btn-gold gap-1" onClick={() => setAddingRoom(true)}>
+              <Button size="sm" className="h-8 text-xs pub-btn pub-btn-primary gap-1" onClick={() => setAddingRoom(true)}>
                 <Plus className="w-3.5 h-3.5" /> Add Room
               </Button>
             )}
@@ -351,7 +351,7 @@ export default function TimetableStructureTab({ schoolId, periods, rooms, schedu
                 <button
                   key={d}
                   onClick={() => setSelectedDay(d)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${selectedDay === d ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-muted hover:scholr-sunk'}`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${selectedDay === d ? 'pub-btn pub-btn-primary' : 'scholr-sunk scholr-muted hover:scholr-sunk'}`}
                 >
                   {DAY_NAMES[d]}
                 </button>

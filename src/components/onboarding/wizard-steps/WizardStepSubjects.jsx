@@ -100,13 +100,13 @@ export default function WizardStepSubjects({ schoolId, curriculum = 'ib_dp', onD
         <div className="flex gap-2">
           <button
             onClick={() => setUseTemplate(true)}
-            className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-colors ${useTemplate ? 'pub-btn pub-btn-gold scholr-accent-rule' : 'scholr-rule scholr-muted'}`}
+            className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-colors ${useTemplate ? 'pub-btn pub-btn-primary scholr-accent-rule' : 'scholr-rule scholr-muted'}`}
           >
             {config.shortLabel} Template
           </button>
           <button
             onClick={() => setUseTemplate(false)}
-            className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-colors ${!useTemplate ? 'pub-btn pub-btn-gold scholr-accent-rule' : 'scholr-rule scholr-muted'}`}
+            className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-colors ${!useTemplate ? 'pub-btn pub-btn-primary scholr-accent-rule' : 'scholr-rule scholr-muted'}`}
           >
             Custom Subjects
           </button>

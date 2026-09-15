@@ -73,7 +73,7 @@ export default function SuperAdminDashboard() {
           <button
             type="button"
             onClick={() => setCreateDialogOpen(true)}
-            className="pub-btn pub-btn-gold scholr-focus"
+            className="pub-btn pub-btn-primary scholr-focus"
           >
             <Plus className="w-4 h-4" />
             New school

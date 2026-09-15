@@ -114,7 +114,7 @@ function AddMappingDialog({ onClose, schoolId, settings, memberships, classes, r
           <div className="flex gap-2 pt-1">
             <Button variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
             <Button
-              className="flex-1 pub-btn pub-btn-gold"
+              className="flex-1 pub-btn pub-btn-primary"
               disabled={!form.external_id || !form.internal_id || mutation.isPending}
               onClick={() => mutation.mutate()}
             >
@@ -260,7 +260,7 @@ export default function ConflictResolutionTab({ schoolId, syncHistory, settings,
             <h3 className="text-sm font-semibold scholr-ink">ID Mapping Registry</h3>
             <p className="text-[11px] scholr-faint mt-0.5">{idMappings.length} mappings · {idMappings.filter(m => m.validated).length} validated</p>
           </div>
-          <Button size="sm" className="h-8 text-xs pub-btn pub-btn-gold gap-1" onClick={() => setAddMappingOpen(true)}>
+          <Button size="sm" className="h-8 text-xs pub-btn pub-btn-primary gap-1" onClick={() => setAddMappingOpen(true)}>
             <Plus className="w-3.5 h-3.5" /> Add Mapping
           </Button>
         </div>

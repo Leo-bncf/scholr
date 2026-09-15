@@ -107,7 +107,7 @@ export default function GradebookView({ classData, assignments = [] }) {
               onClick={() => setViewMode('grades')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 viewMode === 'grades' 
-                  ? 'pub-btn pub-btn-gold' 
+                  ? 'pub-btn pub-btn-primary' 
                   : 'scholr-sunk scholr-muted hover:scholr-sunk'
               }`}
             >

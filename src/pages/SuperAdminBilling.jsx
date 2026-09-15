@@ -289,7 +289,7 @@ function EditPlanDialog({ school, onClose, onSave, saving, error, onOpenSchool }
           </button>
           <button
             type="button"
-            className="pub-btn pub-btn-gold scholr-focus"
+            className="pub-btn pub-btn-primary scholr-focus"
             disabled={!changed || saving}
             onClick={() => onSave({ max_students: seatCount, billing_status: billing })}
           >

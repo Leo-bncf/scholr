@@ -189,7 +189,7 @@ export default function SuperAdminSettings() {
             type="button"
             onClick={() => saveMutation.mutate()}
             disabled={saveMutation.isPending}
-            className="pub-btn pub-btn-gold scholr-focus"
+            className="pub-btn pub-btn-primary scholr-focus"
           >
             {saveMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             Save changes

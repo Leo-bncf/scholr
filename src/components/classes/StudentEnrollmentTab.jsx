@@ -102,7 +102,7 @@ function EnrollDialog({ classObj, onClose, schoolId, memberships }) {
                     onClick={() => toggle(s.user_id)}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border text-left transition-colors ${isSelected ? 'scholr-accent-sf scholr-accent-rule' : 'bg-white scholr-rule hover:scholr-rule'}`}
                   >
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${isSelected ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-muted'}`}>
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${isSelected ? 'pub-btn pub-btn-primary' : 'scholr-sunk scholr-muted'}`}>
                       {(s.user_name || '?')[0]?.toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -118,7 +118,7 @@ function EnrollDialog({ classObj, onClose, schoolId, memberships }) {
             <div className="pt-3 border-t scholr-rule-soft flex gap-2">
               <Button variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
               <Button
-                className="flex-1 pub-btn pub-btn-gold"
+                className="flex-1 pub-btn pub-btn-primary"
                 disabled={selected.length === 0 || enrollMutation.isPending}
                 onClick={() => enrollMutation.mutate(selected)}
               >

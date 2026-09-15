@@ -86,7 +86,11 @@
   --surface:      oklch(99.6% 0.004 120);
   --surface-sunk: oklch(97% 0.012 130);
   --wash:         oklch(96.2% 0.028 152);
-  --wash-warm:    oklch(96.8% 0.032 92);
+  /* The second light source. It was oklch(96.8% .032 92) — an amber cream —
+     which put the gold palette back into the hero after the buttons stopped
+     using it. Nearly all the chroma is gone: this is a LIGHT, giving the field
+     a direction, not a second colour competing with the green. */
+  --wash-2:       oklch(97.4% 0.005 210);
   --ink:          oklch(21% 0.032 152);
   --body:         oklch(41% 0.024 150);
   --muted:        oklch(57% 0.018 148);
@@ -202,7 +206,7 @@
   --d-surface:      oklch(20% 0.022 152);
   --d-sunk:         oklch(18% 0.021 152);
   --d-wash:         oklch(24% 0.035 152);
-  --d-wash-warm:    oklch(24% 0.03 92);
+  --d-wash-2:       oklch(23% 0.008 210);
   --d-ink:          oklch(96% 0.01 130);
   --d-body:         oklch(83% 0.014 135);
   --d-muted:        oklch(65% 0.016 140);
@@ -249,6 +253,7 @@
   --body: var(--d-body);          --muted: var(--d-muted);
   --faint: var(--d-faint);        --rule: var(--d-rule);
   --rule-soft: var(--d-rule-soft);
+  --wash: var(--d-wash);        --wash-2: var(--d-wash-2);
   --brand: var(--d-brand);      --brand-sf: var(--d-brand-sf);
   --brand-ink: var(--d-brand-ink);
   --gold: var(--d-gold);          --gold-ink: var(--d-gold-ink);
@@ -429,13 +434,13 @@ body { background: var(--paper); color: var(--body); }
    nav and the closing block appear on more than one route and had already
    drifted apart once. */
 
-/* The hero ground: two light sources, not a gradient sweep. A cool green wash
-   from the upper left and a warm one from the right, so the field has a
-   direction instead of a direction-less fade. */
+/* The hero ground: two light sources, not a gradient sweep. A green wash from
+   the upper left and an almost colourless one from the right, so the field has
+   a direction instead of a direction-less fade — and only one hue in it. */
 .pub-wash {
   background:
     radial-gradient(90% 70% at 14% -10%, var(--wash) 0%, transparent 58%),
-    radial-gradient(70% 55% at 92% 2%, var(--wash-warm) 0%, transparent 62%),
+    radial-gradient(70% 55% at 92% 2%, var(--wash-2) 0%, transparent 62%),
     var(--paper);
 }
 /* Six ruled columns — a school week plus the period gutter. The texture is the
@@ -459,18 +464,34 @@ body { background: var(--paper); color: var(--body); }
 
 .pub-btn {
   font-family: var(--font-sans); font-weight: 550; font-size: 0.88rem;
-  border-radius: var(--radius-pill); padding: 0.5rem 1.05rem;
+  /* A rectangle with a small radius, not a pill. The fully-rounded button is
+     the single most recognisable shape of 2020s SaaS marketing, and a page
+     wearing it reads as generated before anyone reads a word of it. */
+  border-radius: var(--radius-control); padding: 0.55rem 1.1rem;
   display: inline-flex; align-items: center; gap: 0.4rem;
   border: 1px solid transparent; white-space: nowrap; cursor: pointer;
   text-decoration: none;
 }
 .pub-btn-lg { padding: 0.7rem 1.35rem; font-size: 0.95rem; }
-/* The gold sits on the one action that matters and nowhere else. */
-.pub-btn-gold {
-  background: var(--gold); color: var(--gold-ink);
-  box-shadow: 0 1px 0 var(--sheen) inset, 0 8px 18px -8px var(--gold-glow);
+/* The primary action, in the brand green.
+ *
+ * This was gold — oklch(81% .145 78), a bright amber — on a product whose
+ * brand is green. The loudest element on every page belonged to a second,
+ * invented palette, and two accents is no accent: the eye has nowhere to
+ * land and the page reads as assembled rather than designed.
+ *
+ * The coloured glow is gone too. A tinted halo under a button
+ * (0 8px 18px -8px <accent>) says nothing about the button and is one of the
+ * more reliable tells of a generated page. An ordinary lift is left, so the
+ * colour does the work.
+ *
+ * Gold survives in exactly one place — the dot in the logo mark. Used once it
+ * reads as a choice; used on every call to action it read as a theme. */
+.pub-btn-primary {
+  background: var(--brand); color: var(--brand-ink);
+  box-shadow: var(--lift-sm);
 }
-.pub-btn-gold:hover { filter: brightness(1.04); }
+.pub-btn-primary:hover { background: color-mix(in oklab, var(--brand) 88%, black); }
 .pub-btn:hover { transform: translateY(-1px); }
 .pub-btn:active { transform: translateY(0); transition-duration: var(--dur-micro); }
 .pub-btn:disabled, .pub-btn[aria-disabled='true'] {

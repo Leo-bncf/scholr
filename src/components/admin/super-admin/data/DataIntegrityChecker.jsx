@@ -201,7 +201,7 @@ export default function DataIntegrityChecker() {
           onClick={runAll}
           disabled={runningAll}
           size="sm"
-          className="pub-btn pub-btn-gold gap-2 text-xs"
+          className="pub-btn pub-btn-primary gap-2 text-xs"
         >
           {runningAll ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Wrench className="w-3.5 h-3.5" />}
           Run All Checks

@@ -116,7 +116,7 @@ function InviteDialog({ open, onClose, schoolId, schoolName }) {
           )}
           <div className="flex gap-2 pt-2">
             <Button type="button" variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={inviteMutation.isPending || !form.email} className="flex-1 pub-btn pub-btn-gold">
+            <Button type="submit" disabled={inviteMutation.isPending || !form.email} className="flex-1 pub-btn pub-btn-primary">
               {inviteMutation.isPending ? <><Loader2 className="w-3.5 h-3.5 animate-spin mr-2" />Sending…</> : <><Send className="w-3.5 h-3.5 mr-2" />Send Invitation</>}
             </Button>
           </div>
@@ -189,7 +189,7 @@ export default function InvitationsTab({ schoolId, schoolName }) {
             )}
           </p>
         </div>
-        <Button onClick={() => setInviteOpen(true)} className="pub-btn pub-btn-gold h-9 text-xs gap-2">
+        <Button onClick={() => setInviteOpen(true)} className="pub-btn pub-btn-primary h-9 text-xs gap-2">
           <UserPlus className="w-3.5 h-3.5" /> Invite User
         </Button>
       </div>

@@ -68,7 +68,7 @@ export function CTA({ to, children, tone = 'gold', size = 'lg' }) {
   return (
     <a
       href={to}
-      className={`pub-btn ${tone === 'gold' ? 'pub-btn-gold' : 'pub-btn-line'} ${size === 'lg' ? 'pub-btn-lg' : ''} scholr-focus`}
+      className={`pub-btn ${tone === 'gold' ? 'pub-btn-primary' : 'pub-btn-line'} ${size === 'lg' ? 'pub-btn-lg' : ''} scholr-focus`}
     >
       {children}
     </a>

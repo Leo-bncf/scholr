@@ -157,7 +157,7 @@ export default function StudentPricingUpgrade({ schoolId, currentStudents }) {
           type="button"
           onClick={handleCheckout}
           disabled={loading || !changed || beyondPublished || count === 0}
-          className="pub-btn pub-btn-gold scholr-focus"
+          className="pub-btn pub-btn-primary scholr-focus"
         >
           {loading && <Loader2 className="w-4 h-4 animate-spin" />}
           {changed ? `Change to ${count.toLocaleString('en-IE')} seats` : 'No change'}

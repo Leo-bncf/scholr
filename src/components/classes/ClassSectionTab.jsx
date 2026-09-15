@@ -138,7 +138,7 @@ function ClassFormDialog({ open, onClose, initialData, schoolId, subjects, acade
 
           <div className="flex gap-2 pt-2">
             <Button type="button" variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={mutation.isPending} className="flex-1 pub-btn pub-btn-gold">
+            <Button type="submit" disabled={mutation.isPending} className="flex-1 pub-btn pub-btn-primary">
               {mutation.isPending && <Loader2 className="w-3.5 h-3.5 animate-spin mr-2" />}
               {isEdit ? 'Save Changes' : 'Create Class'}
             </Button>
@@ -194,7 +194,7 @@ export default function ClassSectionTab({ schoolId, classes, subjects, academicY
         ))}
 
         <div className="ml-auto">
-          <Button onClick={() => setCreateOpen(true)} className="pub-btn pub-btn-gold h-9 text-xs gap-1.5">
+          <Button onClick={() => setCreateOpen(true)} className="pub-btn pub-btn-primary h-9 text-xs gap-1.5">
             <Plus className="w-3.5 h-3.5" /> New Class Section
           </Button>
         </div>
@@ -212,7 +212,7 @@ export default function ClassSectionTab({ schoolId, classes, subjects, academicY
           <BookOpen className="w-10 h-10 scholr-faint mx-auto mb-3" />
           <p className="text-sm scholr-muted font-medium">No class sections found</p>
           {statusFilter === 'active' && (
-            <Button onClick={() => setCreateOpen(true)} className="mt-4 pub-btn pub-btn-gold h-8 text-xs gap-1.5">
+            <Button onClick={() => setCreateOpen(true)} className="mt-4 pub-btn pub-btn-primary h-8 text-xs gap-1.5">
               <Plus className="w-3.5 h-3.5" /> Create First Class
             </Button>
           )}

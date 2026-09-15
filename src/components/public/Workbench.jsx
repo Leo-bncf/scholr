@@ -156,7 +156,7 @@ export function StickyCTA({ afterRef, suppressed = false }) {
       <p style={{ margin: 0, fontSize: '.9rem', color: 'var(--body)' }}>
         Thirty minutes, against your own timetable.
       </p>
-      <a href="/BookDemo" className="pub-btn pub-btn-gold scholr-focus" style={{ marginLeft: 'auto' }} tabIndex={shown ? 0 : -1}>
+      <a href="/BookDemo" className="pub-btn pub-btn-primary scholr-focus" style={{ marginLeft: 'auto' }} tabIndex={shown ? 0 : -1}>
         Book a demo
       </a>
     </div>

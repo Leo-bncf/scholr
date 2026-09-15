@@ -171,7 +171,7 @@ export default function DataExportImport() {
           <Button
             onClick={handleImport}
             disabled={importing}
-            className="mt-3 pub-btn pub-btn-gold gap-2 text-xs"
+            className="mt-3 pub-btn pub-btn-primary gap-2 text-xs"
             size="sm"
           >
             {importing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}

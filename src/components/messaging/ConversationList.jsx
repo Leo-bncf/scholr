@@ -51,7 +51,7 @@ export default function ConversationList({ conversations, selectedId, onSelect }
                 </div>
               </div>
               {hasUnread && (
-                <Badge className="pub-btn pub-btn-gold border-0 text-xs px-2 py-0.5 ml-2 flex-shrink-0">
+                <Badge className="pub-btn pub-btn-primary border-0 text-xs px-2 py-0.5 ml-2 flex-shrink-0">
                   {conv.unread_count}
                 </Badge>
               )}

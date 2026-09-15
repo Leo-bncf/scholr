@@ -155,12 +155,12 @@ export default function ClassRubrics({ classData }) {
         </div>
         <div className="flex gap-2 flex-wrap">
           <button onClick={() => setFilterGroup('all')}
-            className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${filterGroup === 'all' ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-muted hover:scholr-sunk'}`}>
+            className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${filterGroup === 'all' ? 'pub-btn pub-btn-primary' : 'scholr-sunk scholr-muted hover:scholr-sunk'}`}>
             All
           </button>
           {groups.map(g => (
             <button key={g} onClick={() => setFilterGroup(g)}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${filterGroup === g ? 'pub-btn pub-btn-gold' : 'scholr-sunk scholr-muted hover:scholr-sunk'}`}>
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${filterGroup === g ? 'pub-btn pub-btn-primary' : 'scholr-sunk scholr-muted hover:scholr-sunk'}`}>
               {subjectLabels[g] || g}
             </button>
           ))}

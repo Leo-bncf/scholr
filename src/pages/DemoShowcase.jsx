@@ -128,7 +128,7 @@ export default function DemoShowcase() {
               <Button
                 onClick={handleSeedDemo}
                 disabled={isSeeding}
-                className="pub-btn pub-btn-gold whitespace-nowrap"
+                className="pub-btn pub-btn-primary whitespace-nowrap"
               >
                 {isSeeding ? (
                   <>

@@ -250,7 +250,7 @@ export default function SchoolAdminSettings() {
                     </Card>
 
                     <div className="flex justify-end">
-                      <Button type="submit" disabled={updateSchoolMutation.isPending} className="pub-btn pub-btn-gold">
+                      <Button type="submit" disabled={updateSchoolMutation.isPending} className="pub-btn pub-btn-primary">
                         {updateSchoolMutation.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                         Save School Settings
                       </Button>
@@ -270,7 +270,7 @@ export default function SchoolAdminSettings() {
                         <SubmissionRulesPanel form={policyForm} onChange={policyOnChange} />
                       </div>
                       <div className="flex justify-end">
-                        <Button onClick={() => updatePolicyMutation.mutate(policyForm)} disabled={updatePolicyMutation.isPending} className="pub-btn pub-btn-gold">
+                        <Button onClick={() => updatePolicyMutation.mutate(policyForm)} disabled={updatePolicyMutation.isPending} className="pub-btn pub-btn-primary">
                           {updatePolicyMutation.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                           Save Submission Policy
                         </Button>
@@ -291,7 +291,7 @@ export default function SchoolAdminSettings() {
                         <FileSecurityPanel form={policyForm} onChange={policyOnChange} schoolId={schoolId} plan={school?.plan} />
                       </div>
                       <div className="flex justify-end">
-                        <Button onClick={() => updatePolicyMutation.mutate(policyForm)} disabled={updatePolicyMutation.isPending} className="pub-btn pub-btn-gold">
+                        <Button onClick={() => updatePolicyMutation.mutate(policyForm)} disabled={updatePolicyMutation.isPending} className="pub-btn pub-btn-primary">
                           {updatePolicyMutation.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                           Save File Policy
                         </Button>
@@ -312,7 +312,7 @@ export default function SchoolAdminSettings() {
                         <AcademicIntegrityPanel form={policyForm} onChange={policyOnChange} />
                       </div>
                       <div className="flex justify-end">
-                        <Button onClick={() => updatePolicyMutation.mutate(policyForm)} disabled={updatePolicyMutation.isPending} className="pub-btn pub-btn-gold">
+                        <Button onClick={() => updatePolicyMutation.mutate(policyForm)} disabled={updatePolicyMutation.isPending} className="pub-btn pub-btn-primary">
                           {updatePolicyMutation.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                           Save Integrity Policy
                         </Button>
