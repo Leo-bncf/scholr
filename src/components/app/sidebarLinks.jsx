@@ -2,7 +2,17 @@ import {
   LayoutDashboard, BookOpen, ClipboardCheck, BarChart3,
   MessageSquare, Users, Settings, CalendarDays
 } from 'lucide-react';
+import { SCHOOL_ADMIN_SIDEBAR_LINKS } from './schoolAdminSidebarLinks';
 
+/**
+ * The sidebar for a role.
+ *
+ * school_admin used to be answered here with three links — Dashboard, Users,
+ * Messages — while every page that imported SCHOOL_ADMIN_SIDEBAR_LINKS showed
+ * twenty-three. So a school admin who opened Messages watched their navigation
+ * collapse, and the way back was the browser's back button. Two sources of
+ * truth for one menu; there is one now.
+ */
 export function getAppSidebarLinks(role) {
   switch (role) {
     case 'teacher':
@@ -29,11 +39,9 @@ export function getAppSidebarLinks(role) {
         { label: 'Messages', page: 'Messages', icon: MessageSquare },
       ];
     case 'school_admin':
-      return [
-        { label: 'Dashboard', page: 'SchoolAdminDashboard', icon: LayoutDashboard },
-        { label: 'Users', page: 'SchoolAdminUsers', icon: Users },
-        { label: 'Messages', page: 'Messages', icon: MessageSquare },
-      ];
+    case 'admin':
+    case 'super_admin':
+      return SCHOOL_ADMIN_SIDEBAR_LINKS;
     case 'ib_coordinator':
       return [
         { label: 'Dashboard', page: 'CoordinatorDashboard', icon: LayoutDashboard },

@@ -24,7 +24,6 @@ const ParentInsightsDashboard = lazy(() => import('./pages/ParentInsightsDashboa
 const UnifiedCalendar = lazy(() => import('./pages/UnifiedCalendar'));
 const SchoolAnalytics = lazy(() => import('./pages/SchoolAnalytics'));
 const ReportingEngine = lazy(() => import('./pages/ReportingEngine'));
-const SchoolOnboardingFlow = lazy(() => import('./pages/SchoolOnboardingFlow'));
 const CurriculumMapping = lazy(() => import('./pages/CurriculumMapping'));
 const StudentAcademicDashboard = lazy(() => import('./pages/StudentAcademicDashboard'));
 const StudentTimetable = lazy(() => import('./pages/StudentTimetable'));
@@ -275,14 +274,6 @@ const AuthenticatedApp = () => {
         element={
           <LayoutWrapper currentPageName="ReportingEngine">
             <ReportingEngine />
-          </LayoutWrapper>
-        }
-      />
-      <Route
-        path="/SchoolOnboardingFlow"
-        element={
-          <LayoutWrapper currentPageName="SchoolOnboardingFlow">
-            <SchoolOnboardingFlow />
           </LayoutWrapper>
         }
       />

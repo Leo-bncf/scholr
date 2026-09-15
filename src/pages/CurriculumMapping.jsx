@@ -128,7 +128,7 @@ export default function CurriculumMapping() {
         <main className="app-offset p-4 md:p-6">
           <div className="max-w-[1500px] mx-auto space-y-6">
             <div>
-              <h1 className="text-2xl font-bold scholr-ink">Curriculum Mapping</h1>
+              <h1 className="text-2xl font-bold scholr-ink">Curriculum</h1>
               <p className="text-sm scholr-muted mt-1">
                 {isAdminView ? 'School-wide curriculum coverage and topic performance insights.' : 'Track topic coverage and class mastery across your subjects.'}
               </p>

@@ -105,7 +105,7 @@ export default function SchoolAdminGradebookGovernance() {
                 <BarChart3 className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h1 className="text-base font-black scholr-ink tracking-tight">Gradebook Governance & IB Controls</h1>
+                <h1 className="text-base font-black scholr-ink tracking-tight">Gradebook rules</h1>
                 <p className="text-xs scholr-faint mt-0.5">Standardize grading models, visibility rules, grade locking, rubric templates, and IB predicted grade workflows</p>
               </div>
             </div>

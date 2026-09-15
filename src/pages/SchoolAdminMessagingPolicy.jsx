@@ -71,7 +71,7 @@ export default function SchoolAdminMessagingPolicy() {
         action: AuditActions.SCHOOL_SETTINGS_CHANGED,
         entityType: 'MessagingPolicy',
         entityId: schoolId,
-        details: `Messaging & Communication Policy updated by ${user?.full_name || user?.email}`,
+        details: `Messaging rules updated by ${user?.full_name || user?.email}`,
         level: AuditLevels.INFO,
         schoolId,
       });
@@ -101,7 +101,7 @@ export default function SchoolAdminMessagingPolicy() {
               <div>
                 <h1 className="text-xl font-black scholr-ink tracking-tight flex items-center gap-2">
                   <MessageSquare className="w-5 h-5 scholr-accent" />
-                  Messaging & Communication Policy
+                  Messaging rules
                 </h1>
                 <p className="text-xs scholr-muted mt-0.5">{school?.name} · Govern communication across the platform</p>
               </div>

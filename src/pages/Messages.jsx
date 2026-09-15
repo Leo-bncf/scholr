@@ -100,7 +100,7 @@ export default function Messages() {
           <div className="bg-white border-b scholr-rule px-4 md:px-6 py-4">
             <div className="flex items-center justify-between max-w-7xl mx-auto">
               <div>
-                <h1 className="text-xl md:text-2xl font-bold scholr-ink">Communications</h1>
+                <h1 className="text-xl md:text-2xl font-bold scholr-ink">Messages</h1>
                 <p className="text-sm scholr-muted mt-0.5">Messages &amp; Announcements</p>
               </div>
               <div className="flex items-center gap-2">

@@ -184,7 +184,7 @@ export default function SchoolAdminEnrollments() {
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div>
                 <h1 className="text-base font-black scholr-ink tracking-tight">
-                  Enrollments & Curriculum
+                  Enrolments
                 </h1>
                 <p className="text-xs scholr-faint mt-0.5">
                   Create classes, assign teachers, and enrol students

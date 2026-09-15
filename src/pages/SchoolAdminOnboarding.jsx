@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
+import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
 import SetupWizard from '@/components/onboarding/SetupWizard';
 import OnboardingChecklist from '@/components/onboarding/OnboardingChecklist';
 import DemoDataControls from '@/components/onboarding/DemoDataControls';
@@ -12,24 +13,10 @@ import ParentLinkingPanel from '@/components/onboarding/ParentLinkingPanel';
 import SchoolReadiness from '@/components/onboarding/SchoolReadiness';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  LayoutDashboard, Users, BookOpen, Calendar, CreditCard,
-  FileText, Settings, Sparkles, CheckSquare, FlaskConical,
-  ArrowLeft, Shield, MessageSquare, GraduationCap, Clock, Link2, Mail
+  LayoutDashboard, Sparkles, CheckSquare, FlaskConical,
+  ArrowLeft, Clock, Link2, Mail
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-const sidebarLinks = [
-  { label: 'Dashboard',        page: 'SchoolAdminDashboard',      icon: LayoutDashboard },
-  { label: 'Users',            page: 'SchoolAdminUsers',           icon: Users },
-  { label: 'Classes',          page: 'SchoolAdminClasses',         icon: BookOpen },
-  { label: 'Academic Setup',   page: 'SchoolAdminAcademicSetup',   icon: GraduationCap },
-  { label: 'Attendance',       page: 'SchoolAdminAttendance',      icon: Calendar },
-  { label: 'Reports',          page: 'SchoolAdminReports',         icon: FileText },
-  { label: 'Governance',       page: 'SchoolAdminGovernance',      icon: Shield },
-  { label: 'Messaging Policy', page: 'SchoolAdminMessagingPolicy', icon: MessageSquare },
-  { label: 'Billing',          page: 'SchoolAdminBilling',         icon: CreditCard },
-  { label: 'Settings',         page: 'SchoolAdminSettings',        icon: Settings },
-];
 
 export default function SchoolAdminOnboarding() {
   const navigate = useNavigate();
@@ -47,7 +34,7 @@ export default function SchoolAdminOnboarding() {
     <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
       <div className="min-h-screen scholr-sunk">
         <AppSidebar
-          links={sidebarLinks}
+          links={SCHOOL_ADMIN_SIDEBAR_LINKS}
           role="school_admin"
           schoolName={school?.name}
           userName={user?.full_name}
@@ -73,7 +60,7 @@ export default function SchoolAdminOnboarding() {
                     <Sparkles className="w-3.5 h-3.5 scholr-accent" />
                   </div>
                   <div>
-                    <h1 className="text-sm font-black scholr-ink">School Setup & Onboarding</h1>
+                    <h1 className="text-sm font-black scholr-ink">Onboarding</h1>
                     <p className="text-xs scholr-faint">Get your school operational in minutes</p>
                   </div>
                 </div>

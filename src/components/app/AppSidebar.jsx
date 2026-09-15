@@ -120,17 +120,37 @@ export default function AppSidebar({ links, role, schoolName, userName, userId, 
               Nothing matches “{query}”.
             </p>
           ) : (
-            shown.map((link) => (
-              <Link
-                key={link.page + link.label}
-                to={createPageUrl(link.page)}
-                className="app-nav-item scholr-focus"
-                aria-current={link.page === activePage ? 'page' : undefined}
-              >
-                <link.icon className="w-4 h-4 shrink-0" style={{ color: 'var(--muted)' }} />
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{link.label}</span>
-              </Link>
-            ))
+            shown.map((link, i) => {
+              /* A section label prints the first time a section appears.
+                 Suppressed while searching: with the list already filtered,
+                 a heading over one result each is noise and it breaks the run
+                 of matches into fragments. A school admin has twenty-one
+                 destinations — twice the super admin's — and the grouping is
+                 what makes that scannable rather than a wall. */
+              const heading = !query && link.section && link.section !== shown[i - 1]?.section
+                ? link.section
+                : null;
+              return (
+                <React.Fragment key={link.page + link.label}>
+                  {heading && (
+                    <p
+                      className="scholr-label"
+                      style={{ margin: i === 0 ? '.15rem .55rem .3rem' : '.7rem .55rem .3rem' }}
+                    >
+                      {heading}
+                    </p>
+                  )}
+                  <Link
+                    to={createPageUrl(link.page)}
+                    className="app-nav-item scholr-focus"
+                    aria-current={link.page === activePage ? 'page' : undefined}
+                  >
+                    <link.icon className="w-4 h-4 shrink-0" style={{ color: 'var(--muted)' }} />
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{link.label}</span>
+                  </Link>
+                </React.Fragment>
+              );
+            })
           )}
         </div>
       </nav>

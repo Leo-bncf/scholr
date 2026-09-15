@@ -44,7 +44,7 @@ export default function SchoolAdminAttendance() {
             title={
               <div className="flex items-center gap-2">
                 <Calendar className="w-5 h-5 scholr-accent" />
-                Attendance Administration
+                Attendance
               </div>
             }
             subtitle={`${school?.name} · Governed attendance operations`}

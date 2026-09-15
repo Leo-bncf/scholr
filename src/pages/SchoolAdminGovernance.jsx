@@ -133,7 +133,7 @@ export default function SchoolAdminGovernance() {
                 <Shield className="w-4 h-4 scholr-accent" />
               </div>
               <div>
-                <h1 className="text-base font-black scholr-ink tracking-tight">Audit, Compliance & Data Governance</h1>
+                <h1 className="text-base font-black scholr-ink tracking-tight">Governance</h1>
                 <p className="text-xs scholr-faint mt-0.5">School-scoped audit trail, change controls, retention policy, and privacy request management</p>
               </div>
             </div>

@@ -393,7 +393,7 @@ export default function SchoolAnalytics() {
           <div className="bg-white border-b scholr-rule px-6 py-4 sticky top-0 z-10 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-4 max-w-7xl mx-auto">
               <div>
-                <h1 className="text-base font-black scholr-ink tracking-tight">School Analytics</h1>
+                <h1 className="text-base font-black scholr-ink tracking-tight">Analytics</h1>
                 <p className="text-xs scholr-faint mt-0.5">Performance, attendance, and pastoral trends across your school.</p>
               </div>
               <div className="flex flex-wrap gap-3 items-end">

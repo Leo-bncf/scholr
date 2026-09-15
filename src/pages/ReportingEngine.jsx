@@ -178,7 +178,7 @@ export default function ReportingEngine() {
         <main className="app-offset p-6 max-w-7xl mx-auto space-y-6">
           <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold scholr-ink">Reporting Engine</h1>
+              <h1 className="text-2xl font-bold scholr-ink">Report builder</h1>
               <p className="text-sm scholr-muted mt-1">Fast operational reports for school leadership and admins.</p>
             </div>
             <div className="flex items-center gap-3">

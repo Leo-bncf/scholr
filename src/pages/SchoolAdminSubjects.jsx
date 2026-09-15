@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
+import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
 import { useUser } from '@/components/auth/UserContext';
-import {
-  LayoutDashboard, Users, BookOpen, Calendar, Clock, GraduationCap,
-  Settings, FileText, Plus, Loader2, Search, CreditCard, Pencil, Trash2
+import { GraduationCap, Plus, Loader2, Search, Pencil, Trash2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,19 +14,6 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import * as academics from '@/data/academics';
 import * as classesData from '@/data/classes';
-
-const sidebarLinks = [
-  { label: 'Dashboard', page: 'SchoolAdminDashboard', icon: LayoutDashboard },
-  { label: 'Users', page: 'SchoolAdminUsers', icon: Users },
-  { label: 'Classes', page: 'SchoolAdminClasses', icon: BookOpen },
-  { label: 'Enrollments', page: 'SchoolAdminEnrollments', icon: Users },
-  { label: 'Academic Setup', page: 'SchoolAdminAcademicSetup', icon: GraduationCap },
-  { label: 'Attendance', page: 'SchoolAdminAttendance', icon: Calendar },
-  { label: 'Timetable', page: 'SchoolAdminTimetable', icon: Clock },
-  { label: 'Reports', page: 'SchoolAdminReports', icon: FileText },
-  { label: 'Billing', page: 'SchoolAdminBilling', icon: CreditCard },
-  { label: 'Settings', page: 'SchoolAdminSettings', icon: Settings },
-];
 
 const IB_GROUPS = [
   { value: 'group1_language_literature', label: 'Group 1 – Language & Literature' },
@@ -107,12 +93,12 @@ export default function SchoolAdminSubjects() {
   return (
     <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
       <div className="min-h-screen scholr-sunk">
-        <AppSidebar links={sidebarLinks} role="school_admin" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
+        <AppSidebar links={SCHOOL_ADMIN_SIDEBAR_LINKS} role="school_admin" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
 
         <main className="app-offset min-h-screen flex flex-col">
           <div className="bg-white border-b scholr-rule px-6 py-4 flex items-center justify-between sticky top-0 z-10 shadow-sm">
             <div>
-              <h1 className="text-base font-semibold scholr-ink">Subject Catalogue</h1>
+              <h1 className="text-base font-semibold scholr-ink">Subjects</h1>
               <p className="text-xs scholr-faint mt-0.5">{subjects.length} subjects configured</p>
             </div>
             <Button onClick={() => { setForm(EMPTY_FORM); setShowCreate(true); }} className="scholr-accent-sf hover:scholr-accent-sf h-8 text-xs gap-1.5">

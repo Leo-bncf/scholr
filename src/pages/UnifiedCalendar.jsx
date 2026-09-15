@@ -196,7 +196,7 @@ export default function UnifiedCalendar() {
           <div className="max-w-7xl mx-auto space-y-6">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold scholr-ink">Unified Calendar</h1>
+                <h1 className="text-2xl md:text-3xl font-bold scholr-ink">Calendar</h1>
                 <p className="text-sm scholr-muted mt-1">Classes, deadlines, exams, and school events in one place.</p>
               </div>
               {canCreate && (
