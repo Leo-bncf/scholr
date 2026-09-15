@@ -1,9 +1,19 @@
-/* Hallmark · macrostructure: Workbench · genre: modern-minimal
+/* Hallmark · macrostructure: Long Document (Landing) · Workbench (other public
+ *   pages) · genre: modern-minimal
+ *
+ * One stylesheet serves several page shapes, so the stamp names more than one.
+ * That is the honest record: for a while every page in this project WAS
+ * Workbench — three consecutive entries in .hallmark/log.json — and a site
+ * whose every page shares a structural fingerprint reads as generated no
+ * matter how carefully it is coloured. The Landing is a memo now.
  * theme: custom (vibe: "Irish green, institutional, bright, product-led"
  *   · paper oklch(98.8% 0.007 120) · accent oklch(45% 0.115 152) chromatic-green
  *   · display Bricolage Grotesque · body Instrument Sans · mono Geist Mono)
  * axes: light paper · grotesk-sans display · chromatic-green accent
- * nav: N10 floating-on-scroll morph · footer: Ft5 Statement
+ * nav: masthead — full-bleed, one hairline, no radius. Was N5/N10, a floating
+ *   pill on scroll; that shape is the most recognisable piece of 2020s SaaS
+ *   chrome and announced the genre before a word was read.
+ * footer: Ft5 Statement
  * enrichment: none beyond the real product captures — Workbench's images ARE the content
  * tone: utilitarian · audience: heads of school, IB coordinators, IT directors
  *
@@ -452,14 +462,23 @@ body { background: var(--paper); color: var(--body); }
 }
 .pub-ruled > * { position: relative; }
 
+/* The masthead, once the page has scrolled.
+ *
+ * This was a floating pill: fully-rounded, blurred glass, its own shadow,
+ * detached from the page and sliding up on scroll. It is Hallmark nav
+ * archetype N5, and it has become the single most recognisable piece of
+ * 2020s SaaS chrome — a page wearing one announces its genre before a word
+ * is read.
+ *
+ * What replaces it is a masthead: full width, no radius, no shadow, one
+ * hairline under it. A newspaper or a memo has a masthead; it does not have
+ * a floating capsule. The paper stays behind it, lightly veiled, so text
+ * scrolling underneath does not collide with the links. */
 .pub-nav {
   display: flex; align-items: center; gap: 1.4rem;
-  padding: 0.5rem 0.6rem 0.5rem 1rem;
-  border-radius: var(--radius-pill);
-  background: var(--glass);
-  border: 1px solid var(--rule-soft);
-  backdrop-filter: blur(14px);
-  box-shadow: var(--lift-sm);
+  background: color-mix(in oklab, var(--paper) 88%, transparent);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--rule);
 }
 
 .pub-btn {

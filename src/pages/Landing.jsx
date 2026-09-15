@@ -1,155 +1,234 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import PublicShell, { Section, CTA, RuledList } from '@/components/public/PublicShell';
-import { Bench, StickyCTA } from '@/components/public/Workbench';
+import PublicShell from '@/components/public/PublicShell';
 import ConsentModal from '@/components/public/ConsentModal';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
-import { isAuthenticated } from '@/data/session';
 import SHOTS from '@/marketing/manifest.json';
 
-/* eslint-disable react/no-unescaped-entities */
-
 /**
- * Macrostructure 05 · Workbench.
+ * Hallmark · macrostructure: Long Document · genre: modern-minimal
  *
- * The captures are the page. Four screens in sequence — a teacher's morning, a
- * coordinator's cohort, a family's view, a school's operations — each with a
- * short caption and an annotation, separated by gap and frame rather than by
- * rules or coloured bands. The ask arrives as a sticky bar after the third,
- * once there is enough context for it to mean anything.
+ * Every previous Hallmark output in this project — the landing, the rest of
+ * the public site, the signed-in chrome — was Workbench: framed product
+ * captures as the primary content, a guided tour of the app. Three entries in
+ * .hallmark/log.json, three times the same shape. The diversification rule
+ * exists precisely because reusing a structural fingerprint is what makes a
+ * site feel generated, and no amount of recolouring reaches it.
  *
- * Workbench specifies small, functional headings: the page doesn't shout,
- * because the software is doing the talking. That is the opposite of the three
- * previous attempts, all of which opened on a large marketing headline and
- * then explained the product in prose.
+ * So this is a memo. Continuous prose at a reading measure, section heads
+ * emerging from the flow rather than announcing themselves, negative space as
+ * the only divider, captures sized to the text and never full-bleed, and no
+ * reveal-on-scroll — the page is simply there when you arrive.
+ *
+ * The known cost, named in the macrostructure's own notes: Long Document
+ * hides calls to action. Mitigated, not solved — the masthead keeps its
+ * button, the price is a real section rather than a link, and the close is a
+ * typographic ask. If bookings fall, this is the first thing to look at.
  */
 
-const CURRICULA = [
-  ['IB', 'DP, MYP and PYP. The 1–7 scale, predicted grades with their history, and CAS, EE and TOK as modules rather than a folder of uploads.'],
-  ['IGCSE / GCSE', 'A*–G and 9–1, tiered entry, and coursework tracked against the syllabus rather than against a generic assignment.'],
-  ['A-Level', 'AS and A2 units, UMS-style aggregation, and predicted grades in the shape UCAS wants them.'],
-  ['US / AP', 'GPA, letter grades and credits, with reporting that comes out looking like a transcript.'],
-];
-
-function Masthead() {
-  const signIn = async () => {
-    if (await isAuthenticated()) window.location.href = '/AppHome';
-    else window.location.href = `/Login?next=${encodeURIComponent('/AppHome')}`;
-  };
-
+/** A capture, sized to the measure. Never full-bleed — that is the Workbench move. */
+function Plate({ src, alt, caption }) {
   return (
-    <section className="pub-wash" style={{ paddingTop: '1.5rem', paddingBottom: '3rem' }}>
-      <div style={{ maxWidth: '76rem', margin: '0 auto', padding: '0 1.5rem' }}>
-        <p className="scholr-label reveal" style={{ margin: 0, color: 'var(--brand)', '--i': 0 }}>
-          Dublin · school management software
-        </p>
-        <h1
-          className="pub-display reveal"
-          style={{ margin: 'var(--space-xs) 0 0', fontSize: 'var(--text-3xl)', maxWidth: '22ch', '--i': 1 }}
-        >
-          Your school teaches more than one curriculum. Your software should know that.
-        </h1>
-        <p className="pub-lede reveal" style={{ margin: 'var(--space-sm) 0 0', maxWidth: '54ch', color: 'var(--muted)', '--i': 2 }}>
-          Scholr runs IB, IGCSE, A-Level and US programmes side by side in one school, on one set of
-          records — different grading scales, different reporting, different rules about who sees
-          what. Here is what that looks like on screen.
-        </p>
-        <div className="reveal" style={{ display: 'flex', gap: 'var(--space-2xs)', marginTop: 'var(--space-md)', flexWrap: 'wrap', '--i': 3 }}>
-          <CTA to="/BookDemo">Book a demo</CTA>
-          <button type="button" onClick={signIn} className="pub-btn pub-btn-line pub-btn-lg scholr-focus">
-            Sign in
-          </button>
-        </div>
-      </div>
-    </section>
+    <figure style={{ margin: 'var(--space-lg) 0' }}>
+      <img
+        src={src}
+        alt={alt}
+        width="1320"
+        height="840"
+        loading="lazy"
+        decoding="async"
+        style={{
+          width: '100%', height: 'auto', display: 'block',
+          border: '1px solid var(--rule)', borderRadius: '4px',
+        }}
+      />
+      <figcaption
+        style={{
+          marginTop: '.55rem', fontSize: '.8rem', lineHeight: 1.5,
+          color: 'var(--muted)', fontStyle: 'italic',
+        }}
+      >
+        {caption}
+      </figcaption>
+    </figure>
+  );
+}
+
+/** A heading that emerges from the prose rather than interrupting it. */
+function Head({ children }) {
+  return (
+    <h2
+      style={{
+        margin: 'var(--space-xl) 0 var(--space-2xs)',
+        fontSize: '1.02rem', fontWeight: 650, letterSpacing: '-0.01em',
+        color: 'var(--ink)',
+      }}
+    >
+      {children}
+    </h2>
   );
 }
 
 export default function Landing() {
   const [showConsent, setShowConsent] = useState(false);
-  const thirdBench = useRef(null);
 
   useEffect(() => {
     try {
-      // Either answer counts as answered — declining used to store nothing, so
-      // the notice came back on every visit.
       setShowConsent(localStorage.getItem('scholr_consent_accepted') === null);
     } catch {
       setShowConsent(true);
     }
   }, []);
 
+  const link = { color: 'var(--brand)', textUnderlineOffset: '2px' };
+  const para = { margin: '0 0 var(--space-md)' };
+
   return (
     <PublicShell>
-      <Masthead />
+      <article
+        style={{
+          maxWidth: '63ch',
+          margin: '0 auto',
+          padding: 'clamp(3rem, 8vw, 5.5rem) var(--space-md) var(--space-2xl)',
+          fontSize: '1.02rem',
+          lineHeight: 1.68,
+          color: 'var(--body)',
+        }}
+      >
+        <p
+          className="scholr-num"
+          style={{
+            fontFamily: 'var(--font-mono)', fontSize: '.72rem', letterSpacing: '.1em',
+            textTransform: 'uppercase', color: 'var(--muted)', margin: '0 0 var(--space-md)',
+          }}
+        >
+          Scholr — a note to schools · Dublin, September 2026
+        </p>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(3.5rem, 7vw, 6rem)', paddingBottom: '4rem' }}>
-        <Bench
-          n="Teacher"
-          caption="The period you are about to teach, not a homepage"
-          note="A teacher gets a few minutes between lessons. The dashboard opens on today's timetable with the current period marked, the room, and the work waiting to be marked — no navigating to find it."
+        <p style={{ margin: '0 0 var(--space-md)', fontSize: '1.22rem', lineHeight: 1.5, color: 'var(--ink)' }}>
+          08:26 on a Tuesday. A teacher has four minutes before Theory of Knowledge,
+          and needs to know which room, who was absent on Friday, and whether the
+          essay drafts came in. Most school software answers that in four clicks.
+        </p>
+
+        <p style={para}>
+          We are building Scholr because the schools we know teach more than one
+          curriculum and their software does not believe them. A school running IB
+          Diploma alongside IGCSE, or A&#8209;Level alongside a US high-school diploma,
+          ends up with two systems — or one system and a lot of spreadsheets, and a
+          registrar who reconciles them by hand every term.
+        </p>
+
+        <Head>What a second curriculum actually breaks</Head>
+
+        <p style={para}>
+          Not the timetable. The timetable is the easy part. What breaks is everything
+          downstream of a mark. An IB gradebook expects levels 1&ndash;7 against
+          published criteria; IGCSE expects letters; a US transcript expects a GPA and
+          credit hours. The reports look different, the parent sees different things at
+          different times, and the rules about who may see a draft grade are not the
+          same in either system.
+        </p>
+
+        <p style={para}>
+          Software that offers &ldquo;multi-curriculum support&rdquo; usually means one
+          gradebook with a dropdown on top. That holds until a coordinator has to
+          produce a predicted-grade report for one cohort and a progress report for
+          another in the same week.
+        </p>
+
+        <Head>What we built instead</Head>
+
+        <p style={para}>
+          One set of records. A school declares its programmes once, and the grading
+          scales, the reporting shape and the vocabulary follow from that — including
+          the parts that should disappear. An IGCSE school never sees a CAS tab. An IB
+          school is never asked for a GPA.
+        </p>
+
+        <Plate
           src={SHOTS['teacher-dashboard']}
           alt="A teacher's dashboard: today's timetable with the current period marked, twenty-three pieces of work waiting to be graded, and the term's deadlines."
-          annotations={[{ text: 'the current period, marked', top: '30%', right: '1.25rem' }]}
-          eager
+          caption="A teacher's first screen is the period they are about to teach — the room, the class, the work waiting. Not a homepage."
         />
 
-        <Bench
-          n="Coordinator"
-          caption="Predicted grades with the trend behind them"
-          note="A coordinator signs off predictions for the whole cohort. Each one shows its history and its target, so a number you disagree with can be questioned rather than simply overwritten — and Extended Essay progress is tracked per student, not per spreadsheet."
+        <p style={para}>
+          A coordinator signing off predictions for a whole cohort sees the history
+          behind each number and its target, so a prediction they disagree with can be
+          questioned rather than simply overwritten. Extended Essay progress is tracked
+          per student rather than in a shared spreadsheet somebody forgot to save.
+        </p>
+
+        <Plate
           src={SHOTS['coordinator-cohort']}
           alt="A coordinator's cohort view: predicted mean against target per subject, Extended Essay progress across the year group, and the students who need a conversation."
-          annotations={[{ text: 'the trend behind the number', top: '73%', right: '1.25rem' }]}
-          layout="left"
+          caption="Predicted against target, per subject, with the students who need a conversation named rather than buried in an average."
         />
 
-        <div ref={thirdBench}>
-          <Bench
-            n="Family"
-            caption="A parent's own children, and only what has been released"
-            note="Parents are linked to specific students and see nothing outside that link. Marks appear when the teacher publishes them; attendance visibility is a school-level setting; notes marked staff-only never leave the staff room."
-            src={SHOTS['parent-portal']}
-            alt="The family portal: attendance for the term, grades released by teachers, and what is due this week for one named child."
-            annotations={[{ text: 'released by the teacher, not automatic', top: '76%', right: '1.25rem' }]}
-            layout="right"
-          />
-        </div>
+        <Head>Who can see what</Head>
 
-        <Bench
-          n="Operations"
-          caption="What is broken this morning, in order"
-          note="Classes with no teacher assigned, students enrolled in nothing, attendance drifting, a reporting deadline approaching. The page is a ranked list of things that need a decision, not a wall of charts."
-          src={SHOTS['admin-operations']}
-          alt="The operations page: two classes without a teacher flagged critical, attendance at 87% flagged as a warning, and the term's reporting deadline nine days out."
-          annotations={[{ text: 'ranked, not an inbox', top: '62%', right: '1.25rem' }]}
-        />
-      </div>
-
-      <Section
-        eyebrow="Curricula"
-        title="Four frameworks, each behaving the way it actually works"
-        lede="Not four labels on the same gradebook. A school sets its programmes once; the grading scales, the reporting shape and the vocabulary follow, and anything that doesn't apply is hidden rather than greyed out. An IGCSE school never sees a CAS tab; an IB school is never asked for a GPA."
-        tint
-      >
-        <RuledList items={CURRICULA} />
-      </Section>
-
-      <Section
-        eyebrow="What holds"
-        title="One school cannot read another"
-        lede="Separation is a row-level security policy in the database, not a filter in the interface — so it holds for anything that reaches the data, not only for the screens we remembered to guard. The same page lists what we have not built yet, because you are going to ask."
-      >
-        <p style={{ margin: 0, fontSize: '.95rem' }}>
-          <Link to="/Security" className="scholr-focus" style={{ color: 'var(--brand)' }}>
-            How isolation works, and what we haven't done yet →
-          </Link>
+        <p style={para}>
+          This is the question a head of school asks second, and the one we would
+          rather answer precisely. Separation between schools is a row-level security
+          policy in Postgres, not a filter in the interface — so it holds for anything
+          that reaches the data, not only for the screens we remembered to guard. A
+          teacher and a student running the identical query get different rows, because
+          the database decides.
         </p>
-      </Section>
+
+        <p style={para}>
+          Parents are linked to specific children and see nothing outside that link.
+          Marks appear when a teacher publishes them, not when they are entered. Notes
+          marked staff-only never leave the staff room. There is a fuller account,
+          including the parts we have not finished, on the{' '}
+          <Link to="/Security" className="scholr-focus" style={link}>security page</Link>.
+        </p>
+
+        <Head>What we have not built</Head>
+
+        <p style={para}>
+          Putting this on a homepage is unusual, and we would rather you found it here
+          than in week three. PDF and Excel export are not finished. The Google Drive
+          and Docs integrations are not connected. Report generation exists as a
+          screen, not as a document you can hand to a parent. Card payment is not
+          switched on — we invoice.
+        </p>
+
+        <p style={para}>
+          Everything else on this page you can go and use right now, without talking to
+          anyone, in the{' '}
+          <Link to="/demo" className="scholr-focus" style={link}>demo sandbox</Link> —
+          real screens, a sample school, no sign-up.
+        </p>
+
+        <Head>What it costs</Head>
+
+        <p style={para}>
+          Published, which in this market is unusual enough to be worth stating: iSAMS,
+          Veracross and ManageBac all answer this question with &ldquo;contact
+          sales&rdquo;. Ours is €22 per student per year for the first two hundred, €17
+          for the next four hundred, €13 beyond that, with a minimum of €2,400 a year —
+          each rate applying only to the students inside its band, so the bill never
+          falls when you enrol one more child. The calculator below gives your exact
+          number.
+        </p>
+
+        <Head>If this sounds like your school</Head>
+
+        <p style={{ margin: 0 }}>
+          We would rather show you than write at you.{' '}
+          <Link to="/BookDemo" className="scholr-focus" style={{ ...link, fontWeight: 600 }}>
+            Book a demo
+          </Link>{' '}
+          and we will walk through your own programmes, or write to{' '}
+          <a href="mailto:contact@scholr.pro" className="scholr-focus" style={link}>contact@scholr.pro</a>{' '}
+          and ask the awkward question first. We are a small company in Dublin; you will
+          get one of us, not a form.
+        </p>
+      </article>
 
       <PricingTiersSection />
 
-      <StickyCTA afterRef={thirdBench} suppressed={showConsent} />
       <ConsentModal isOpen={showConsent} onClose={() => setShowConsent(false)} />
     </PublicShell>
   );

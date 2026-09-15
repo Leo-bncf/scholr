@@ -8,18 +8,18 @@
     "nav": "N5 floating pill",
     "footer": "Ft1 mast-headed",
     "enrichment": "real product screenshots (demo sandbox) + an interactive tab-driven role explorer (F5 annotated screenshot)",
-    "brief": "Scholr · school-management LMS for international schools — Landing page only, page-scoped theme"
+    "brief": "Scholr \u00b7 school-management LMS for international schools \u2014 Landing page only, page-scoped theme"
   },
   {
     "date": "2026-09-14",
-    "macrostructure": "n/a — app chrome, not a page shape",
+    "macrostructure": "n/a \u2014 app chrome, not a page shape",
     "theme": "custom",
     "theme_axes": "light / grotesk-sans / chromatic-green",
     "vibe": "Apple-minimalist grouped lists, Irish green",
     "nav": "app sidebar, translucent material",
     "footer": "n/a",
     "enrichment": "none",
-    "brief": "Scholr · signed-in dashboards · Apple minimalism within Hallmark"
+    "brief": "Scholr \u00b7 signed-in dashboards \u00b7 Apple minimalism within Hallmark"
   },
   {
     "date": "2026-09-14",
@@ -30,6 +30,17 @@
     "nav": "N10 floating-on-scroll morph",
     "footer": "Ft5 Statement",
     "enrichment": "none (real product captures)",
-    "brief": "Scholr · school management for international schools · public site (all pages except Landing)"
+    "brief": "Scholr \u00b7 school management for international schools \u00b7 public site (all pages except Landing)"
+  },
+  {
+    "date": "2026-09-15",
+    "macrostructure": "Long Document",
+    "theme": "custom",
+    "theme_axes": "light / grotesk-sans / chromatic-green",
+    "vibe": "a memo from a small Dublin company; prose at reading measure, no marketing scaffolding",
+    "nav": "masthead \u2014 full-bleed hairline, replacing the N5/N10 floating pill site-wide",
+    "footer": "Ft1 mast-headed (unchanged)",
+    "enrichment": "two inline product captures at text measure, never full-bleed",
+    "brief": "Scholr \u00b7 Landing. Leo: the site still reads AI-made. Cause was the log itself \u2014 three prior entries, all Workbench. Gate 8 fails against a project's own history."
   }
 ]
