@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { humanise } from '@/lib/labels';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -370,7 +371,7 @@ function SubjectRow({ subject, classCount, onEdit, onDelete }) {
           {subject.department && <span className="text-xs scholr-faint italic">{subject.department}</span>}
         </div>
         {subject.default_grading_type && (
-          <span className="text-[10px] scholr-faint mt-0.5 block">Grading: {subject.default_grading_type.replace(/_/g, ' ')}</span>
+          <span className="text-[10px] scholr-faint mt-0.5 block">Grading: {humanise(subject.default_grading_type)}</span>
         )}
       </td>
       <td className="px-4 py-3 w-16">

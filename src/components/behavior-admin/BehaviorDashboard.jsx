@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { humanise } from '@/lib/labels';
 import { useQuery } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Loader2, Search, AlertTriangle, Smile, FileText, AlertCircle, Eye, EyeOff, Clock, CheckCircle2 } from 'lucide-react';
@@ -144,7 +145,7 @@ export default function BehaviorDashboard({ schoolId, isPastoral = false }) {
           <label className="text-xs font-semibold scholr-muted block mb-1">Category</label>
           <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm bg-white">
             <option value="all">All Categories</option>
-            {categories.map(c => <option key={c} value={c}>{c.replace(/_/g, ' ')}</option>)}
+            {categories.map(c => <option key={c} value={c}>{humanise(c)}</option>)}
           </select>
         </div>
         <div>

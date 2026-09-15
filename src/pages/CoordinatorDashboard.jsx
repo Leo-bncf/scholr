@@ -1,4 +1,5 @@
 import React from 'react';
+import { humanise } from '@/lib/labels';
 import { useQuery } from '@tanstack/react-query';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -95,7 +96,7 @@ export default function CoordinatorDashboard() {
                   <GroupEmpty>No subjects configured for this programme yet.</GroupEmpty>
                 ) : (
                   subjects.slice(0, 10).map(s => (
-                    <Row key={s.id} label={s.name} detail={s.ib_group?.replace(/_/g, ' ') || ''}>
+                    <Row key={s.id} label={s.name} detail={humanise(s.ib_group)}>
                       {/* HL/SL is an attribute, not a health status, so it
                           wears the neutral chip — the reserved colours stay
                           for good/warn/crit. */}

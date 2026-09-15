@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { humanise } from '@/lib/labels';
 import { useQuery } from '@tanstack/react-query';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
@@ -224,7 +225,7 @@ export default function SchoolAdminBilling() {
                     {(planLimits.modules || []).map(mod => (
                       <div key={mod} className="flex items-center gap-2 text-sm scholr-body">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                        <span className="capitalize">{mod.replace(/_/g, ' ')}</span>
+                        <span>{humanise(mod)}</span>
                       </div>
                     ))}
                   </div>

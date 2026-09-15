@@ -1,4 +1,5 @@
 import React from 'react';
+import { humanise } from '@/lib/labels';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format, isAfter, addDays, differenceInCalendarDays } from 'date-fns';
 import { CheckCircle } from 'lucide-react';
@@ -112,7 +113,7 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
           <GroupEmpty>Nothing due in the near future.</GroupEmpty>
         ) : (
           assignments.slice(0, 6).map(a => (
-            <Row key={a.id} label={a.title} detail={a.type?.replace(/_/g, ' ')}>
+            <Row key={a.id} label={a.title} detail={humanise(a.type)}>
               <StatusChip tone={dueTone(a.due_date)}>{format(new Date(a.due_date), 'd MMM')}</StatusChip>
             </Row>
           ))

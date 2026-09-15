@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { humanise } from '@/lib/labels';
 import useLightTheme from '@/components/public/useLightTheme';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -249,7 +250,7 @@ export default function FirstLogin() {
                  <div>
                    <p className="text-xs font-semibold scholr-muted uppercase">Your Role</p>
                    <p className="scholr-ink mt-1 capitalize">
-                     {accountState.role.replace(/_/g, ' ')}
+                     {humanise(accountState.role)}
                    </p>
                  </div>
                </div>

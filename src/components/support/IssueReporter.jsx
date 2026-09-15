@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { humanise } from '@/lib/labels';
 import { useQuery } from '@tanstack/react-query';
 import * as storage from '@/data/storage';
 import { Button } from '@/components/ui/button';
@@ -220,7 +221,7 @@ export default function IssueReporter({ schoolId, user, school }) {
               <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                 {Object.entries(contextInfo).map(([k, v]) => (
                   <div key={k} className="flex gap-1.5 text-xs">
-                    <span className="scholr-faint shrink-0">{k.replace(/_/g, ' ')}:</span>
+                    <span className="scholr-faint shrink-0">{humanise(k)}:</span>
                     <span className="scholr-muted truncate">{String(v).slice(0, 60)}</span>
                   </div>
                 ))}

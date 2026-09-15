@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { humanise } from '@/lib/labels';
 import useLightTheme from '@/components/public/useLightTheme';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -210,7 +211,7 @@ export default function AcceptInvitation() {
                 <div>
                   <p className="text-xs font-semibold scholr-muted uppercase">Your Role</p>
                   <p className="text-lg font-semibold scholr-ink mt-1 capitalize">
-                    {invitation?.role.replace(/_/g, ' ')}
+                    {humanise(invitation?.role)}
                   </p>
                 </div>
 
