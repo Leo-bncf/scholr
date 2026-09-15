@@ -1,18 +1,21 @@
+import { Group, Row, GroupEmpty, Segmented } from '@/components/app/AppShell';
+import StatusChip from '@/components/app/StatusChip';
+import Notice from '@/components/app/Notice';
+import { humanise } from '@/lib/labels';
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Loader2, ShieldCheck, Clock, CheckCircle2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useUser } from '@/components/auth/UserContext';
 import { logAudit, AuditLevels } from '@/components/utils/auditLogger';
 import * as behaviorRecordsData from '@/data/behaviorRecords';
 
-const SEV_META = {
-  high:     { bg: 'bg-red-50',   text: 'text-red-700',   border: 'border-red-200' },
-  critical: { bg: 'bg-rose-50',  text: 'text-rose-700',  border: 'border-rose-200' },
-};
+/* Both of these are serious; red and rose were two names for the same signal
+   and the eye could not tell them apart anyway. The word carries the step. */
+const SEV_TONE = { high: 'crit', critical: 'crit' };
 
 export default function PastoralOversight({ schoolId }) {
   const queryClient = useQueryClient();
@@ -67,96 +70,91 @@ export default function PastoralOversight({ schoolId }) {
   const currentList = activeTab === 'needs_review' ? needsReview : activeTab === 'follow_up' ? pendingFollowUp : recentReviewed;
 
   return (
-    <div className="space-y-5">
-      {/* Header alert */}
-      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-start gap-3">
-        <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-        <div>
-          <p className="text-sm font-bold text-emerald-900">Pastoral Oversight — Authorized Staff View</p>
-          <p className="text-xs text-emerald-700 mt-0.5">This view includes all records including staff-only and safeguarding entries. Visible only to school admins and IB coordinators.</p>
-        </div>
-      </div>
+    <div className="space-y-4">
+      <Notice title="This view holds everything, including safeguarding">
+        Staff-only and safeguarding records appear here. Only school admins and IB coordinators can open
+        this page, and what you do on it is written to the audit trail.
+      </Notice>
 
-      {/* Tabs */}
-      <div className="flex gap-1 scholr-sunk p-1 rounded-lg w-fit">
-        {TABS.map(t => (
-          <button
-            key={t.id}
-            onClick={() => setActiveTab(t.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-colors ${activeTab === t.id ? 'bg-white scholr-ink shadow-sm' : 'scholr-muted hover:scholr-body'}`}
-          >
-            {t.label}
-            {t.count > 0 && (
-              <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${t.urgent && t.count > 0 ? 'bg-red-500 text-white' : 'scholr-sunk scholr-muted'}`}>
-                {t.count}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
+      <Segmented
+        label="Pastoral queues"
+        value={activeTab}
+        onChange={setActiveTab}
+        options={TABS.map(t => ({ value: t.id, label: t.count > 0 ? `${t.label} ${t.count}` : t.label }))}
+      />
 
-      {/* List */}
       {isLoading ? (
         <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>
       ) : currentList.length === 0 ? (
-        <div className="bg-white rounded-xl border scholr-rule p-12 text-center">
-          <CheckCircle2 className="w-12 h-12 mx-auto mb-3 text-emerald-400" />
-          <p className="scholr-muted font-medium">Nothing pending in this category.</p>
-        </div>
+        <Group>
+          <GroupEmpty>
+            {activeTab === 'needs_review'
+              ? 'Nothing is waiting for a pastoral review.'
+              : activeTab === 'follow_up'
+                ? 'Every follow-up has been closed.'
+                : 'Nothing has been reviewed yet.'}
+          </GroupEmpty>
+        </Group>
       ) : (
-        <div className="space-y-3">
-          {currentList.map(record => {
-            const sm = record.severity ? SEV_META[record.severity] : null;
-            return (
-              <div key={record.id} className={`bg-white rounded-xl border p-5 ${record.staff_only ? 'border-rose-200' : 'scholr-rule'}`}>
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 flex-wrap mb-2">
-                      <span className="font-bold scholr-ink">{record.student_name}</span>
-                      <span className="text-xs scholr-faint">{record.date}</span>
-                      {sm && <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${sm.bg} ${sm.text} ${sm.border}`}>{record.severity}</span>}
-                      {record.staff_only && <span className="text-xs px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-medium">Staff only</span>}
-                      {record.follow_up_required && !record.follow_up_completed && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-orange-50 text-orange-700 border border-orange-200 flex items-center gap-1"><Clock className="w-3 h-3" /> Follow-up pending</span>
-                      )}
-                    </div>
-                    <p className="font-semibold scholr-ink">{record.title}</p>
-                    {record.description && <p className="text-sm scholr-muted mt-1">{record.description}</p>}
-                    {record.action_taken && (
-                      <div className="mt-2 pt-2 border-t scholr-rule-soft">
-                        <p className="text-xs font-bold scholr-muted mb-0.5">Action Taken</p>
-                        <p className="text-sm scholr-muted">{record.action_taken}</p>
-                      </div>
-                    )}
-                    <p className="text-xs scholr-faint mt-2">Recorded by {record.recorded_by_name} · {record.category?.replace(/_/g,' ')}</p>
-                    {record.pastoral_reviewed && (
-                      <p className="text-xs text-emerald-700 mt-1 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Reviewed by {record.pastoral_reviewed_by} on {record.pastoral_reviewed_at ? format(new Date(record.pastoral_reviewed_at), 'dd MMM yyyy') : ''}</p>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2 flex-shrink-0">
-                    {activeTab === 'needs_review' && !record.pastoral_reviewed && (
-                      <Button size="sm" onClick={() => { setReviewing({ record, mode: 'review' }); setReviewNote(''); }} className="scholr-accent-sf hover:scholr-accent-sf text-xs">
-                        <ShieldCheck className="w-3 h-3 mr-1" /> Mark Reviewed
-                      </Button>
-                    )}
-                    {activeTab === 'follow_up' && record.follow_up_required && !record.follow_up_completed && (
-                      <Button size="sm" onClick={() => { setReviewing({ record, mode: 'followup' }); setFollowUpNote(''); }} className="bg-emerald-600 hover:bg-emerald-700 text-xs">
-                        <CheckCircle2 className="w-3 h-3 mr-1" /> Close Follow-up
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        currentList.map(record => (
+          <Group
+            key={record.id}
+            title={`${record.student_name} — ${record.date}`}
+            action={
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '.4rem' }}>
+                {record.severity && SEV_TONE[record.severity] && (
+                  <StatusChip tone={SEV_TONE[record.severity]}>{record.severity}</StatusChip>
+                )}
+                {record.staff_only && <StatusChip tone="crit">Staff only</StatusChip>}
+                {record.follow_up_required && !record.follow_up_completed && (
+                  <StatusChip tone="warn">Follow-up open</StatusChip>
+                )}
+              </span>
+            }
+          >
+            <Row label={record.title} detail={record.description || undefined} />
+            {record.action_taken && <Row label="Action taken" detail={record.action_taken} />}
+            <Row
+              label="Recorded by"
+              detail={[record.recorded_by_name, record.category && humanise(record.category)].filter(Boolean).join(' · ')}
+            />
+            {record.pastoral_reviewed && (
+              <Row
+                label="Reviewed"
+                detail={`${record.pastoral_reviewed_by}${record.pastoral_reviewed_at ? ` on ${format(new Date(record.pastoral_reviewed_at), 'd MMM yyyy')}` : ''}`}
+              />
+            )}
+            {activeTab === 'needs_review' && !record.pastoral_reviewed && (
+              <Row label="Pastoral review" detail="Confirm you have seen this and note the outcome.">
+                <Button
+                  size="sm"
+                  onClick={() => { setReviewing({ record, mode: 'review' }); setReviewNote(''); }}
+                  className="pub-btn pub-btn-primary text-xs"
+                >
+                  Mark reviewed
+                </Button>
+              </Row>
+            )}
+            {activeTab === 'follow_up' && record.follow_up_required && !record.follow_up_completed && (
+              <Row label="Follow-up" detail="Close it once the action has actually happened.">
+                <Button
+                  size="sm"
+                  onClick={() => { setReviewing({ record, mode: 'followup' }); setFollowUpNote(''); }}
+                  className="pub-btn pub-btn-primary text-xs"
+                >
+                  Close follow-up
+                </Button>
+              </Row>
+            )}
+          </Group>
+        ))
       )}
 
       {/* Review / Follow-up Dialog */}
       <Dialog open={!!reviewing} onOpenChange={() => setReviewing(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>{reviewing?.mode === 'review' ? 'Mark Pastoral Review Complete' : 'Close Follow-up'}</DialogTitle>
+            <DialogTitle>{reviewing?.mode === 'review' ? 'Mark pastoral review complete' : 'Close follow-up'}</DialogTitle>
           </DialogHeader>
           {reviewing && (
             <div className="space-y-4">
@@ -188,10 +186,10 @@ export default function PastoralOversight({ schoolId }) {
                 }
               }}
               disabled={markReviewedMutation.isPending || closeFollowUpMutation.isPending}
-              className={reviewing?.mode === 'review' ? 'scholr-accent-sf hover:scholr-accent-sf' : 'bg-emerald-600 hover:bg-emerald-700'}
+              className="pub-btn pub-btn-primary"
             >
               {(markReviewedMutation.isPending || closeFollowUpMutation.isPending) ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-              {reviewing?.mode === 'review' ? 'Confirm Review' : 'Close Follow-up'}
+              {reviewing?.mode === 'review' ? 'Confirm review' : 'Close follow-up'}
             </Button>
           </DialogFooter>
         </DialogContent>
