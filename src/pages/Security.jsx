@@ -42,6 +42,9 @@ const ROADMAP = [
   ['Encryption at rest', 'planned', 'Data is encrypted in transit today. Full-disk encryption on the database host is scheduled, and we will say so here when it is done rather than before.'],
   ['Independent penetration test', 'planned', 'Not yet carried out. We would rather tell you that than imply otherwise.'],
   ['Formal certification', 'not held', 'Scholr does not currently hold ISO 27001 or SOC 2. We can walk your team through the controls we do have.'],
+  ['Outbound email', 'not held', 'Mail is not configured on the production server, so invitations, password resets and notifications are written but never delivered. Accounts are created directly by an administrator in the meantime. This is the gap most likely to affect a school in week one, which is why it is listed first among the things that need doing.'],
+  ['Document export', 'planned', 'PDF and Excel export are not finished, and report generation exists as a screen rather than as a document you can hand to a parent. The Google Drive and Docs integrations are not connected.'],
+  ['Card payment', 'planned', 'Schools are invoiced, with a purchase-order reference and thirty days. Self-serve card checkout is not switched on.'],
 ];
 
 export default function Security() {

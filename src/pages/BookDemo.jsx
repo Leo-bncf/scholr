@@ -63,7 +63,7 @@ export default function Demo() {
       // The original awaited create() with no catch, so a failed submission
       // showed the thank-you screen anyway and the lead was simply lost.
       console.error('Demo request failed', err);
-      setError("We couldn't send that. Please try again, or email contact@scholr.pro directly.");
+      setError("We couldn't send that. Please try again, or email support@scholr.pro directly.");
     } finally {
       setLoading(false);
     }

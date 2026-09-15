@@ -15,7 +15,7 @@ import { ArrowRight } from 'lucide-react';
  *
  * One address that works beats three that don't.
  */
-const EMAIL = 'contact@scholr.pro';
+const EMAIL = 'support@scholr.pro';
 
 /**
  * What to send where. One address, but a school arrives with one of about four
@@ -34,7 +34,7 @@ export default function Contact() {
     <PublicShell>
       <Seo
         title="Contact"
-        description="One address, read by the two people who build Scholr: contact@scholr.pro. Evaluations, security questionnaires, procurement paperwork and data-protection requests."
+        description="One address, read by the two people who build Scholr: support@scholr.pro. Evaluations, security questionnaires, procurement paperwork and data-protection requests."
         canonical="/Contact"
       />
       <Section>

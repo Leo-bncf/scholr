@@ -56,8 +56,8 @@ export default function StudentPricingUpgrade({ schoolId, currentStudents }) {
       // decided to pay should not be met with silence.
       setError(
         err?.status === 503
-          ? 'Card payment is not switched on yet. Email contact@scholr.pro and we will invoice you.'
-          : err?.message || 'That could not be started. Try again, or email contact@scholr.pro.',
+          ? 'Card payment is not switched on yet. Email support@scholr.pro and we will invoice you.'
+          : err?.message || 'That could not be started. Try again, or email support@scholr.pro.',
       );
     } finally {
       setLoading(false);
@@ -105,7 +105,7 @@ export default function StudentPricingUpgrade({ schoolId, currentStudents }) {
         <p className="text-sm scholr-muted mt-4">
           Above {TALK_TO_US_ABOVE.toLocaleString('en-IE')} seats the hosting and support
           model change, so we quote rather than calculate. Email{' '}
-          <a href="mailto:contact@scholr.pro" className="scholr-accent">contact@scholr.pro</a>.
+          <a href="mailto:support@scholr.pro" className="scholr-accent">support@scholr.pro</a>.
         </p>
       ) : (
         count > 0 && (

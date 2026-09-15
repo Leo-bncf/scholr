@@ -34,8 +34,8 @@ export default function PrivacyPolicy() {
                 <p><span className="font-medium text-slate-800">Registered office:</span> To be completed — France</p>
                 <p><span className="font-medium text-slate-800">SIREN:</span> To be completed</p>
                 <p><span className="font-medium text-slate-800">Data Controller:</span> The Chief Executive Officer of Scholr SAS</p>
-                <p><span className="font-medium text-slate-800">Data Protection Officer (DPO):</span> <a href="mailto:contact@scholr.pro" className="text-blue-600 hover:underline">contact@scholr.pro</a></p>
-                <p><span className="font-medium text-slate-800">General privacy contact:</span> <a href="mailto:contact@scholr.pro" className="text-blue-600 hover:underline">contact@scholr.pro</a></p>
+                <p><span className="font-medium text-slate-800">Data Protection Officer (DPO):</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
+                <p><span className="font-medium text-slate-800">General privacy contact:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
                 <p><span className="font-medium text-slate-800">Website:</span> <a href="https://scholr.pro" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">scholr.pro</a></p>
               </div>
             </section>
@@ -182,7 +182,7 @@ export default function PrivacyPolicy() {
                 <li><span className="font-medium text-slate-800">Right to withdraw consent:</span> withdraw consent at any time without affecting the lawfulness of processing carried out prior to the withdrawal.</li>
                 <li><span className="font-medium text-slate-800">Right to set directives regarding the use of your data after your death</span> (French Loi Informatique et Libertés).</li>
               </ul>
-              <p className="mt-4">To exercise these rights, please send your request by email to <a href="mailto:contact@scholr.pro" className="text-blue-600 hover:underline">contact@scholr.pro</a> or by post to the registered office of Scholr SAS, enclosing a copy of your identity document. Scholr will respond within one (1) month, extendable by two months for complex requests.</p>
+              <p className="mt-4">To exercise these rights, please send your request by email to <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a> or by post to the registered office of Scholr SAS, enclosing a copy of your identity document. Scholr will respond within one (1) month, extendable by two months for complex requests.</p>
               <p className="mt-3">If you believe your rights are not being respected, you have the right to lodge a complaint with the CNIL (Commission Nationale de l'Informatique et des Libertés): <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">www.cnil.fr</a> — 3, Place de Fontenoy, TSA 80715, 75334 Paris Cedex 07, France.</p>
             </section>
 
@@ -237,7 +237,7 @@ export default function PrivacyPolicy() {
             <section>
               <h2 className="text-xl font-bold text-slate-900 mb-4">12. Data Protection Officer (DPO)</h2>
               <p className="mb-3">Scholr has appointed a Data Protection Officer (DPO) in accordance with Article 37 of the GDPR, given the large-scale processing of data relating to minors.</p>
-              <p>The DPO can be contacted at: <a href="mailto:contact@scholr.pro" className="text-blue-600 hover:underline">contact@scholr.pro</a></p>
+              <p>The DPO can be contacted at: <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
               <p className="mt-2">The DPO is also the primary point of contact with the CNIL for any questions relating to Scholr's data processing activities.</p>
             </section>
 
@@ -253,8 +253,8 @@ export default function PrivacyPolicy() {
               <h2 className="text-xl font-bold text-slate-900 mb-4">14. Contact Us</h2>
               <p className="mb-3">For any questions regarding this Privacy Policy or the exercise of your rights, please contact us:</p>
               <div className="bg-slate-50 rounded-lg p-5 space-y-2">
-                <p><span className="font-medium text-slate-800">By email:</span> <a href="mailto:contact@scholr.pro" className="text-blue-600 hover:underline">contact@scholr.pro</a></p>
-                <p><span className="font-medium text-slate-800">DPO:</span> <a href="mailto:contact@scholr.pro" className="text-blue-600 hover:underline">contact@scholr.pro</a></p>
+                <p><span className="font-medium text-slate-800">By email:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
+                <p><span className="font-medium text-slate-800">DPO:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
                 <p><span className="font-medium text-slate-800">By post:</span> Scholr SAS — Data Protection, [Registered office address], France</p>
                 <p><span className="font-medium text-slate-800">Website:</span> <a href="https://scholr.pro/PrivacyPolicy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">scholr.pro/PrivacyPolicy</a></p>
               </div>
