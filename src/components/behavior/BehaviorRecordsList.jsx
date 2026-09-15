@@ -6,27 +6,27 @@ import { format } from 'date-fns';
 export default function BehaviorRecordsList({ records, showVisibilityIndicators = false }) {
   const getTypeIcon = (type) => {
     switch (type) {
-      case 'positive': return <Smile className="w-5 h-5 text-emerald-600" />;
-      case 'concern': return <AlertTriangle className="w-5 h-5 text-amber-600" />;
-      case 'incident': return <AlertCircle className="w-5 h-5 text-red-600" />;
+      case 'positive': return <Smile className="w-5 h-5" style={{ color: 'var(--good)' }} />;
+      case 'concern': return <AlertTriangle className="w-5 h-5" style={{ color: 'var(--warn)' }} />;
+      case 'incident': return <AlertCircle className="w-5 h-5" style={{ color: 'var(--crit)' }} />;
       default: return <FileText className="w-5 h-5 scholr-muted" />;
     }
   };
 
   const getTypeColor = (type) => {
     switch (type) {
-      case 'positive': return 'bg-emerald-50 border-emerald-200 text-emerald-700';
-      case 'concern': return 'bg-amber-50 border-amber-200 text-amber-700';
-      case 'incident': return 'bg-red-50 border-red-200 text-red-700';
+      case 'positive': return 'scholr-sunk scholr-body';
+      case 'concern': return 'scholr-sunk scholr-body';
+      case 'incident': return 'scholr-sunk scholr-body';
       default: return 'scholr-sunk scholr-rule scholr-body';
     }
   };
 
   const getSeverityBadge = (severity) => {
     const colors = {
-      low: 'bg-blue-50 text-blue-700 border-0',
-      medium: 'bg-amber-50 text-amber-700 border-0',
-      high: 'bg-red-50 text-red-700 border-0',
+      low: 'scholr-sunk scholr-body',
+      medium: 'scholr-sunk scholr-body',
+      high: 'scholr-sunk scholr-body',
     };
     return <Badge className={colors[severity]}>{severity} severity</Badge>;
   };
@@ -59,10 +59,10 @@ export default function BehaviorRecordsList({ records, showVisibilityIndicators 
                 {showVisibilityIndicators && (
                   <div className="flex items-center gap-2">
                     {record.visible_to_student && (
-                      <Eye className="w-4 h-4 text-blue-600" title="Visible to student" />
+                      <Eye className="w-4 h-4" style={{ color: 'var(--ink)' }} title="Visible to student" />
                     )}
                     {record.visible_to_parent && (
-                      <Eye className="w-4 h-4 text-emerald-600" title="Visible to parent" />
+                      <Eye className="w-4 h-4" style={{ color: 'var(--good)' }} title="Visible to parent" />
                     )}
                     {!record.visible_to_student && !record.visible_to_parent && (
                       <EyeOff className="w-4 h-4 scholr-faint" title="Staff only" />
@@ -88,7 +88,7 @@ export default function BehaviorRecordsList({ records, showVisibilityIndicators 
               </div>
 
               {record.follow_up_required && (
-                <Badge className="bg-orange-50 text-orange-700 border-orange-200 mt-2">
+                <Badge className="bg-orange-50 border-orange-200 mt-2" style={{ color: 'var(--warn)' }}>
                   Follow-up required
                 </Badge>
               )}

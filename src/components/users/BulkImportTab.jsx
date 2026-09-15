@@ -1,11 +1,14 @@
+import { Group, Row, GroupEmpty } from '@/components/app/AppShell';
+import DataTable from '@/components/app/DataTable';
+import StatCard from '@/components/app/StatCard';
+import StatusChip from '@/components/app/StatusChip';
 import React, { useState, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import {
-  Upload, Download, FileText, CheckCircle, XCircle, AlertTriangle,
-  Loader2, ChevronRight, Info, Users, RefreshCw
+  Upload, Download, FileText,
+  Loader2, Users, RefreshCw
 } from 'lucide-react';
 import { ROLE_CONFIG } from './userConstants';
 import * as membershipsData from '@/data/memberships';
@@ -130,34 +133,28 @@ export default function BulkImportTab({ schoolId, schoolName }) {
 
   if (step === 'done' && result) {
     return (
-      <div className="max-w-lg mx-auto py-8 text-center space-y-4">
-        <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">
-          <CheckCircle className="w-8 h-8 text-emerald-600" />
-        </div>
-        <h3 className="text-lg font-semibold scholr-ink">Import Complete</h3>
-        <div className="grid grid-cols-3 gap-3">
-          <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-4">
-            <p className="text-2xl font-bold text-emerald-700">{result.created}</p>
-            <p className="text-xs text-emerald-600 mt-0.5">Imported</p>
+      <div className="space-y-4">
+        {/* Three tinted boxes, one of them red while reading zero, told a
+            clean import that something had gone wrong. The figures carry the
+            tone now, and only when the number is not zero. */}
+        <Group title="Import finished">
+          <div className="scholr-grid app-cols-3">
+            <StatCard label="Imported" value={result.created} tone={result.created > 0 ? 'good' : undefined} hint="new members" />
+            <StatCard label="Skipped" value={result.skipped} hint="already in this school" />
+            <StatCard label="Failed" value={result.errors.length} tone={result.errors.length > 0 ? 'crit' : undefined} hint="not imported" />
           </div>
-          <div className="bg-amber-50 border border-amber-100 rounded-lg p-4">
-            <p className="text-2xl font-bold text-amber-700">{result.skipped}</p>
-            <p className="text-xs text-amber-600 mt-0.5">Skipped (exists)</p>
-          </div>
-          <div className="bg-red-50 border border-red-100 rounded-lg p-4">
-            <p className="text-2xl font-bold text-red-700">{result.errors.length}</p>
-            <p className="text-xs text-red-600 mt-0.5">Errors</p>
-          </div>
-        </div>
+        </Group>
+
         {result.errors.length > 0 && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-left space-y-1">
+          <Group title="What failed">
             {result.errors.map((e, i) => (
-              <p key={i} className="text-xs text-red-700"><strong>{e.email}</strong>: {e.error}</p>
+              <Row key={i} label={e.email} detail={e.error} />
             ))}
-          </div>
+          </Group>
         )}
-        <Button variant="outline" className="gap-2 mt-4" onClick={() => { setStep('upload'); setPreview(null); setResult(null); if (fileRef.current) fileRef.current.value = ''; }}>
-          <RefreshCw className="w-4 h-4" /> Import Another File
+
+        <Button variant="outline" className="gap-2" onClick={() => { setStep('upload'); setPreview(null); setResult(null); if (fileRef.current) fileRef.current.value = ''; }}>
+          <RefreshCw className="w-4 h-4" /> Import another file
         </Button>
       </div>
     );
@@ -180,76 +177,53 @@ export default function BulkImportTab({ schoolId, schoolName }) {
           </button>
         </div>
 
-        <div className="grid grid-cols-3 gap-3">
-          <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-3 text-center">
-            <p className="text-xl font-bold text-emerald-700">{validRows.length}</p>
-            <p className="text-xs text-emerald-600">Ready to import</p>
+        <Group>
+          <div className="scholr-grid app-cols-3">
+            <StatCard label="Ready" value={validRows.length} hint="will be imported" />
+            <StatCard label="With errors" value={invalidRows.length} tone={invalidRows.length > 0 ? 'crit' : undefined} hint="will be skipped" />
+            <StatCard label="In the file" value={preview.validated.length} hint="rows read" />
           </div>
-          <div className="bg-red-50 border border-red-100 rounded-lg p-3 text-center">
-            <p className="text-xl font-bold text-red-700">{invalidRows.length}</p>
-            <p className="text-xs text-red-600">Rows with errors</p>
-          </div>
-          <div className="scholr-sunk border scholr-rule-soft rounded-lg p-3 text-center">
-            <p className="text-xl font-bold scholr-body">{preview.validated.length}</p>
-            <p className="text-xs scholr-muted">Total rows</p>
-          </div>
-        </div>
+        </Group>
 
         {invalidRows.length > 0 && (
-          <Alert className="border-red-200 bg-red-50">
-            <AlertTriangle className="w-4 h-4 text-red-600" />
-            <AlertDescription className="text-xs text-red-700 space-y-1">
-              <strong>{invalidRows.length} rows have errors and will be skipped:</strong>
-              {invalidRows.slice(0, 5).map((r, i) => (
-                <div key={i}>Line {r._line}: {r._errors.join('; ')}</div>
-              ))}
-              {invalidRows.length > 5 && <div>…and {invalidRows.length - 5} more</div>}
-            </AlertDescription>
-          </Alert>
+          <Group title="Rows that will be skipped">
+            {invalidRows.slice(0, 5).map((r, i) => (
+              <Row key={i} label={`Line ${r._line}`} detail={r._errors.join('; ')} />
+            ))}
+            {invalidRows.length > 5 && (
+              <GroupEmpty>…and {invalidRows.length - 5} more.</GroupEmpty>
+            )}
+          </Group>
         )}
 
-        {/* Preview table */}
-        <div className="bg-white rounded-xl border scholr-rule overflow-hidden shadow-sm max-h-80 overflow-y-auto">
-          <table className="w-full text-xs">
-            <thead className="scholr-sunk sticky top-0">
-              <tr className="border-b scholr-rule-soft">
-                <th className="px-4 py-2.5 text-left font-semibold scholr-muted uppercase tracking-wide">#</th>
-                <th className="px-4 py-2.5 text-left font-semibold scholr-muted uppercase tracking-wide">Email</th>
-                <th className="px-4 py-2.5 text-left font-semibold scholr-muted uppercase tracking-wide">Name</th>
-                <th className="px-4 py-2.5 text-left font-semibold scholr-muted uppercase tracking-wide">Role</th>
-                <th className="px-4 py-2.5 text-left font-semibold scholr-muted uppercase tracking-wide">Detail</th>
-                <th className="px-4 py-2.5 text-left font-semibold scholr-muted uppercase tracking-wide">Valid</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y scholr-divide">
-              {preview.validated.map((row, i) => (
-                <tr key={i} className={row._valid ? '' : 'bg-red-50'}>
-                  <td className="px-4 py-2 scholr-faint">{row._line}</td>
-                  <td className="px-4 py-2 scholr-body font-mono">{row.email}</td>
-                  <td className="px-4 py-2 scholr-muted">{row.name || '—'}</td>
-                  <td className="px-4 py-2">
-                    {ROLE_CONFIG[row.role]
-                      ? <span className={`px-2 py-0.5 rounded-full border text-[11px] role-chip`}>{ROLE_CONFIG[row.role].label}</span>
-                      : <span className="text-red-600">{row.role || '—'}</span>}
-                  </td>
-                  <td className="px-4 py-2 scholr-faint">{row.grade_level || row.department || '—'}</td>
-                  <td className="px-4 py-2">
-                    {row._valid
-                      ? <CheckCircle className="w-4 h-4 text-emerald-500" />
-                      : <span title={row._errors.join('; ')}><XCircle className="w-4 h-4 text-red-500" /></span>}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <Group title="What is in the file">
+          <div style={{ maxHeight: '22rem', overflowY: 'auto' }}>
+            <DataTable
+              columns={[
+                { key: '_line', header: 'Line', num: true },
+                { key: 'email', header: 'Email' },
+                { key: 'name', header: 'Name', render: (r) => r.name || '—' },
+                { key: 'role', header: 'Role', render: (r) => ROLE_CONFIG[r.role]?.label || r.role || '—' },
+                { key: 'detail', header: 'Detail', render: (r) => r.grade_level || r.department || '—' },
+                {
+                  key: 'valid',
+                  header: '',
+                  render: (r) => (r._valid
+                    ? null
+                    : <StatusChip tone="crit">{r._errors.join('; ')}</StatusChip>),
+                },
+              ]}
+              rows={preview.validated}
+              rowKey={(r) => r._line}
+              empty="This file had no rows."
+            />
+          </div>
+        </Group>
 
-        <Alert className="border-blue-200 bg-blue-50">
-          <Info className="w-4 h-4 text-blue-600" />
-          <AlertDescription className="text-xs text-blue-700">
-            Only valid rows will be imported. Users already in this school will be skipped. Imported users will have <strong>pending</strong> status until they accept an invitation.
-          </AlertDescription>
-        </Alert>
+        <p style={{ margin: 0, fontSize: '.82rem', color: 'var(--muted)' }}>
+          Only valid rows are imported. Anyone already in this school is skipped, and imported
+          members stay <strong>pending</strong> until they accept an invitation.
+        </p>
 
         <div className="flex gap-3">
           <Button variant="outline" className="flex-1" onClick={() => { setStep('upload'); setPreview(null); }}>
@@ -272,54 +246,49 @@ export default function BulkImportTab({ schoolId, schoolName }) {
   // Upload step
   return (
     <div className="space-y-5 max-w-2xl">
-      <div>
-        <h3 className="text-sm font-semibold scholr-ink mb-1">Bulk User Import</h3>
-        <p className="text-xs scholr-muted">Import users, enrollments, and class assignments via CSV. Strong validation and safe preview before applying changes.</p>
-      </div>
+      <p style={{ margin: 0, fontSize: '.88rem', color: 'var(--muted)' }}>
+        Upload a CSV of people and Scholr will check every row before anything is written.
+        Nothing is imported until you have seen the preview.
+      </p>
 
-      {/* Template download */}
-      <div className="app-group p-4 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg scholr-accent-sf flex items-center justify-center">
-            <FileText className="w-4 h-4 scholr-accent" />
-          </div>
-          <div>
-            <p className="text-sm font-medium scholr-ink">Download Template</p>
-            <p className="text-xs scholr-faint">CSV with required columns: email, name, role, grade_level, department</p>
-          </div>
-        </div>
-        <Button variant="outline" size="sm" className="gap-2 flex-shrink-0" onClick={downloadTemplate}>
-          <Download className="w-4 h-4" /> Template
-        </Button>
-      </div>
+      <Group title="Start from the template">
+        <Row
+          label="Download the CSV template"
+          detail="Columns: email, name, role, grade_level, department"
+        >
+          <Button variant="outline" size="sm" className="gap-2 flex-shrink-0" onClick={downloadTemplate}>
+            <Download className="w-4 h-4" /> Template
+          </Button>
+        </Row>
+      </Group>
 
       {/* File upload zone */}
-      <div
-        className="border-2 border-dashed scholr-rule rounded-xl p-10 text-center hover:scholr-accent-rule hover:scholr-accent-sf/30 transition-colors cursor-pointer"
+      {/* A div with onClick was not reachable by keyboard and announced
+          nothing to a screen reader. A button is both, for free. */}
+      <button
+        type="button"
+        className="border-2 border-dashed scholr-rule rounded-xl p-10 text-center w-full scholr-focus"
+        style={{ cursor: 'pointer', background: 'transparent' }}
         onClick={() => fileRef.current?.click()}
       >
-        <Upload className="w-10 h-10 scholr-faint mx-auto mb-3" />
-        <p className="text-sm font-medium scholr-body mb-1">Click to upload CSV file</p>
-        <p className="text-xs scholr-faint">Supports CSV files up to 1,000 rows</p>
+        <Upload className="w-8 h-8 scholr-faint mx-auto mb-3" />
+        <span className="block text-sm font-medium scholr-body mb-1">Choose a CSV file</span>
+        <span className="block text-xs scholr-faint">Up to 1,000 rows</span>
         <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
-      </div>
+      </button>
 
       {/* What gets validated */}
-      <div className="scholr-sunk border scholr-rule rounded-xl p-4 space-y-2">
-        <p className="text-xs font-semibold scholr-muted uppercase tracking-wide mb-2">Validation Rules</p>
+      <Group title="What gets checked">
         {[
-          'Valid email address format required',
-          `Role must be one of: ${VALID_ROLES.map(r => ROLE_CONFIG[r].label).join(', ')}`,
-          'Duplicate emails (already members) are safely skipped',
-          'Rows with errors are skipped — valid rows are always applied',
-          'Imported users start in "pending" status for security',
-        ].map((rule, i) => (
-          <div key={i} className="flex items-start gap-2">
-            <ChevronRight className="w-3.5 h-3.5 scholr-accent flex-shrink-0 mt-0.5" />
-            <span className="text-xs scholr-muted">{rule}</span>
-          </div>
+          ['Email', 'Must be a real address format.'],
+          ['Role', `One of: ${VALID_ROLES.map(r => ROLE_CONFIG[r].label).join(', ')}.`],
+          ['Already a member', 'Skipped, never duplicated.'],
+          ['A row with an error', 'Skipped on its own — the valid rows still go in.'],
+          ['After importing', 'Members stay pending until they accept an invitation.'],
+        ].map(([label, detail]) => (
+          <Row key={label} label={label} detail={detail} />
         ))}
-      </div>
+      </Group>
     </div>
   );
 }

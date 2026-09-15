@@ -1,3 +1,4 @@
+import StatusChip from '@/components/app/StatusChip';
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -7,32 +8,35 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Shield, Plus, Clock, CheckCircle2, AlertTriangle, XCircle, Loader2, Save, ChevronDown, ChevronUp, Info } from 'lucide-react';
+import { Shield, Plus, Clock, CheckCircle2, XCircle, Loader2, Save, ChevronDown, ChevronUp, Info } from 'lucide-react';
 import { format, addDays } from 'date-fns';
 import * as privacyRequestsData from '@/data/privacyRequests';
 
 const REQUEST_TYPES = {
-  data_export: { label: 'Data Export', color: 'bg-sky-100 text-sky-700' },
-  account_deletion: { label: 'Account Deletion', color: 'bg-red-100 text-red-700' },
-  anonymization: { label: 'Anonymization', color: 'scholr-accent-sf scholr-accent' },
-  data_correction: { label: 'Data Correction', color: 'bg-amber-100 text-amber-700' },
-  access_request: { label: 'Access Request', color: 'bg-emerald-100 text-emerald-700' },
+  data_export: { label: 'Data Export', tone: null, },
+  account_deletion: { label: 'Account deletion', tone: 'crit' },
+  anonymization: { label: 'Anonymization', tone: null, },
+  data_correction: { label: 'Data Correction', tone: null, },
+  access_request: { label: 'Access Request', tone: null, },
 };
 
 const STATUS_CONFIG = {
-  pending:     { label: 'Pending',     color: 'bg-amber-100 text-amber-700',    icon: Clock },
-  acknowledged:{ label: 'Acknowledged',color: 'bg-blue-100 text-blue-700',      icon: Info },
-  in_progress: { label: 'In Progress', color: 'scholr-accent-sf scholr-accent',  icon: Loader2 },
-  completed:   { label: 'Completed',   color: 'bg-emerald-100 text-emerald-700',icon: CheckCircle2 },
-  rejected:    { label: 'Rejected',    color: 'bg-red-100 text-red-700',        icon: XCircle },
-  withdrawn:   { label: 'Withdrawn',   color: 'scholr-sunk scholr-muted',    icon: XCircle },
+  pending:     { label: 'Pending',     tone: null, icon: Clock },
+  acknowledged:{ label: 'Acknowledged',tone: null, icon: Info },
+  in_progress: { label: 'In Progress', tone: null, icon: Loader2 },
+  completed:   { label: 'Completed',   tone: null, icon: CheckCircle2 },
+  rejected:    { label: 'Rejected',    tone: 'crit', icon: XCircle },
+  withdrawn:   { label: 'Withdrawn',   tone: null, icon: XCircle },
 };
 
 function StatusBadge({ status }) {
   const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.pending;
   const Icon = cfg.icon;
   return (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${cfg.color}`}>
+    <span
+      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium"
+      style={{ color: cfg.tone ? `var(--${cfg.tone})` : 'var(--muted)' }}
+    >
       <Icon className="w-3 h-3" />
       {cfg.label}
     </span>
@@ -44,7 +48,7 @@ function RequestCard({ req, onUpdate, schoolId, user }) {
   const [notes, setNotes] = useState(req.resolution_notes || '');
   const [updating, setUpdating] = useState(false);
   const isOverdue = req.due_date && new Date(req.due_date) < new Date() && !['completed', 'rejected', 'withdrawn'].includes(req.status);
-  const type = REQUEST_TYPES[req.request_type] || { label: req.request_type, color: 'scholr-sunk scholr-muted' };
+  const type = REQUEST_TYPES[req.request_type] || { label: req.request_type, tone: null, };
 
   const save = async (status) => {
     setUpdating(true);
@@ -60,17 +64,22 @@ function RequestCard({ req, onUpdate, schoolId, user }) {
   };
 
   return (
-    <div className={`bg-white rounded-xl border ${isOverdue ? 'border-red-300' : 'scholr-rule'} overflow-hidden`}>
+    <div className="app-group" style={{ overflow: 'hidden' }}>
       <div
         className="flex items-start gap-3 p-4 cursor-pointer hover:scholr-sunk"
         onClick={() => setExpanded(e => !e)}
       >
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap mb-1">
-            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${type.color}`}>{type.label}</span>
+            <span
+              className="text-xs px-2 py-0.5 rounded-full font-medium"
+              style={{ color: type.tone ? `var(--${type.tone})` : 'var(--muted)' }}
+            >
+              {type.label}
+            </span>
             <StatusBadge status={req.status} />
-            {isOverdue && <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-medium flex items-center gap-1"><AlertTriangle className="w-3 h-3" />Overdue</span>}
-            {req.priority === 'urgent' && <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-medium">Urgent</span>}
+            {isOverdue && <StatusChip tone="crit">Overdue</StatusChip>}
+            {req.priority === 'urgent' && <StatusChip tone="warn">Urgent</StatusChip>}
           </div>
           <p className="font-semibold scholr-ink text-sm">{req.requester_name || req.requester_email}</p>
           <p className="text-xs scholr-faint mt-0.5">
@@ -104,18 +113,18 @@ function RequestCard({ req, onUpdate, schoolId, user }) {
           </div>
           <div className="flex gap-2 flex-wrap">
             {req.status === 'pending' && (
-              <Button size="sm" variant="outline" onClick={() => save('acknowledged')} disabled={updating} className="text-blue-700 border-blue-200 hover:bg-blue-50">Acknowledge</Button>
+              <Button size="sm" variant="outline" onClick={() => save('acknowledged')} disabled={updating}>Acknowledge</Button>
             )}
             {['pending', 'acknowledged'].includes(req.status) && (
               <Button size="sm" variant="outline" onClick={() => save('in_progress')} disabled={updating} className="scholr-accent scholr-accent-rule hover:scholr-accent-sf">Mark In Progress</Button>
             )}
             {!['completed', 'rejected', 'withdrawn'].includes(req.status) && (
               <>
-                <Button size="sm" onClick={() => save('completed')} disabled={updating} className="bg-emerald-600 hover:bg-emerald-700 gap-1">
+                <Button size="sm" onClick={() => save('completed')} disabled={updating} className="pub-btn pub-btn-primary gap-1">
                   {updating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
                   Mark Completed
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => save('rejected')} disabled={updating} className="text-red-600 border-red-200 hover:bg-red-50">Reject</Button>
+                <Button size="sm" variant="outline" onClick={() => save('rejected')} disabled={updating} style={{ color: 'var(--crit)' }}>Reject</Button>
               </>
             )}
             {['completed', 'rejected'].includes(req.status) && notes !== req.resolution_notes && (
@@ -171,7 +180,7 @@ export default function PrivacyRequestsPanel({ policy, onChange, onSave, saving,
   return (
     <div className="space-y-5">
       {/* Config section */}
-      <div className="bg-white rounded-xl border scholr-rule p-5 space-y-4">
+      <div className="app-group space-y-4" style={{ padding: '1rem 1.1rem' }}>
         <div className="flex items-center justify-between">
           <div>
             <p className="font-semibold scholr-ink text-sm">Privacy Request Handling</p>
@@ -235,9 +244,9 @@ export default function PrivacyRequestsPanel({ policy, onChange, onSave, saving,
           <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
             {[
               { label: 'Total', value: requests.length, color: 'scholr-body' },
-              { label: 'Pending', value: pending, color: pending > 0 ? 'text-amber-600' : 'scholr-body' },
-              { label: 'Overdue', value: overdue, color: overdue > 0 ? 'text-red-600' : 'scholr-body' },
-              { label: 'Completed', value: requests.filter(r => r.status === 'completed').length, color: 'text-emerald-600' },
+              { label: 'Pending', value: pending, tone: pending > 0 ? 'warn' : null },
+              { label: 'Overdue', value: overdue, tone: overdue > 0 ? 'crit' : null },
+              { label: 'Completed', value: requests.filter(r => r.status === 'completed').length, tone: null },
               { label: 'Rejected', value: requests.filter(r => r.status === 'rejected').length, color: 'scholr-muted' },
             ].map(({ label, value, color }) => (
               <div key={label} className="app-group p-3 text-center">
@@ -267,9 +276,9 @@ export default function PrivacyRequestsPanel({ policy, onChange, onSave, saving,
           {isLoading ? (
             <div className="text-center py-12 scholr-faint text-sm">Loading requests…</div>
           ) : filtered.length === 0 ? (
-            <div className="bg-white rounded-xl border scholr-rule p-12 text-center">
+            <div className="app-group p-12 text-center">
               <Shield className="w-8 h-8 scholr-faint mx-auto mb-3" />
-              <p className="text-sm scholr-muted">No privacy requests {statusFilter !== 'all' ? `with status "${STATUS_CONFIG[statusFilter]?.label}"` : 'logged yet'}.</p>
+              <p className="text-sm scholr-muted">No privacy requests {statusFilter !== 'all' ? `with status"${STATUS_CONFIG[statusFilter]?.label}"` : 'logged yet'}.</p>
             </div>
           ) : (
             <div className="space-y-3">

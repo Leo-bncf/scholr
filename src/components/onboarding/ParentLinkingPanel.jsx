@@ -72,7 +72,7 @@ export default function ParentLinkingPanel({ schoolId }) {
       </div>
 
       {(parents.length === 0 || students.length === 0) && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-900">
+        <div className="rounded p-3 text-sm" style={{ borderLeft: '2px solid var(--warn)', background: 'var(--warn-sf)', color: 'var(--body)' }}>
           You need at least one parent and one student account before you can link them.
           {parents.length === 0 && <> No parents found.</>}
           {students.length === 0 && <> No students found.</>}
@@ -92,13 +92,13 @@ export default function ParentLinkingPanel({ schoolId }) {
       )}
 
       {links.length === 0 ? (
-        <div className="bg-white rounded-xl border scholr-rule p-10 text-center">
+        <div className="app-group p-10 text-center">
           <Users className="w-10 h-10 scholr-faint mx-auto mb-3" />
           <p className="scholr-muted font-medium mb-1">No parent-student links yet</p>
           <p className="text-xs scholr-muted mb-4">Link parent accounts to the students they're responsible for.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border scholr-rule divide-y scholr-divide">
+        <div className="app-group divide-y scholr-divide">
           {filteredLinks.map((link) => (
             <div key={link.id} className="p-4 flex items-center gap-3">
               <div className="w-8 h-8 scholr-accent-sf rounded-full flex items-center justify-center flex-shrink-0">
@@ -115,7 +115,7 @@ export default function ParentLinkingPanel({ schoolId }) {
                 size="sm"
                 onClick={() => deleteMutation.mutate(link.id)}
                 disabled={deleteMutation.isPending}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                className="" style={{ color: 'var(--crit)' }}
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </Button>
@@ -214,7 +214,7 @@ function LinkParentDialog({ open, onClose, schoolId, parents, students, existing
           </div>
 
           {alreadyLinked && (
-            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2">
+            <p className="text-xs rounded p-2" style={{ borderLeft: '2px solid var(--warn)', background: 'var(--warn-sf)', color: 'var(--body)' }}>
               This parent is already linked to this student.
             </p>
           )}

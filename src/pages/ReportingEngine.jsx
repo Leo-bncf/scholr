@@ -1,9 +1,7 @@
+import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
-import RoleGuard from '@/components/auth/RoleGuard';
-import AppSidebar from '@/components/app/AppSidebar';
-import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, FileDown, FileSpreadsheet } from 'lucide-react';
@@ -172,47 +170,43 @@ export default function ReportingEngine() {
   }
 
   return (
-    <RoleGuard allowedRoles={['school_admin', 'ib_coordinator', 'admin', 'super_admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar links={SCHOOL_ADMIN_SIDEBAR_LINKS} role="school_admin" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="app-offset p-6 max-w-7xl mx-auto space-y-6">
-          <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl font-bold scholr-ink">Report builder</h1>
-              <p className="text-sm scholr-muted mt-1">Fast operational reports for school leadership and admins.</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <Select value={reportType} onValueChange={setReportType}>
-                <SelectTrigger className="w-64"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {Object.entries(reportConfigs).map(([key, config]) => <SelectItem key={key} value={key}>{config.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
-              <Button variant="outline" onClick={() => downloadCSV(`${reportType}.csv`, reportConfigs[reportType].columns, computed.rows)}>
-                <FileSpreadsheet className="w-4 h-4 mr-2" /> CSV
-              </Button>
-              <Button onClick={handleExportPDF}>
-                <FileDown className="w-4 h-4 mr-2" /> PDF
-              </Button>
-            </div>
-          </div>
+    <SchoolAdminPage
+      title="Report builder"
+      eyebrow="Operational reports for school leadership"
+      actions={
+        <>
+          <Select value={reportType} onValueChange={setReportType}>
+            <SelectTrigger className="w-56"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {Object.entries(reportConfigs).map(([key, config]) => <SelectItem key={key} value={key}>{config.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Button variant="outline" onClick={() => downloadCSV(`${reportType}.csv`, reportConfigs[reportType].columns, computed.rows)}>
+            <FileSpreadsheet className="w-4 h-4 mr-2" /> CSV
+          </Button>
+          <Button onClick={handleExportPDF}>
+            <FileDown className="w-4 h-4 mr-2" /> PDF
+          </Button>
+        </>
+      }
+      /* This page builds a one-off view; Reports is where the recurring,
+         published ones live, and Analytics is the standing picture. */
+      related={[['SchoolAdminReports', 'Reports'], ['SchoolAnalytics', 'Analytics'], ['SchoolAdminAttendance', 'Attendance']]}
+    >
+      <ReportingFilters
+        filters={filters}
+        setFilters={setFilters}
+        subjects={data.subjects}
+        classes={data.classes}
+        teachers={data.memberships.filter((item) => item.role === 'teacher')}
+      />
 
-          <ReportingFilters
-            filters={filters}
-            setFilters={setFilters}
-            subjects={data.subjects}
-            classes={data.classes}
-            teachers={data.memberships.filter((item) => item.role === 'teacher')}
-          />
+      <ReportingSummaryCards cards={computed.cards} />
 
-          <ReportingSummaryCards cards={computed.cards} />
-
-          <div className="grid grid-cols-1 xl:grid-cols-[420px_minmax(0,1fr)] gap-6">
-            <ReportingChartPanel title={`${reportConfigs[reportType].label} Chart`} data={computed.chartData.slice(0, 12)} />
-            <ReportingTable columns={reportConfigs[reportType].columns} rows={computed.rows} />
-          </div>
-        </main>
+      <div className="grid grid-cols-1 xl:grid-cols-[420px_minmax(0,1fr)] gap-6">
+        <ReportingChartPanel title={`${reportConfigs[reportType].label} Chart`} data={computed.chartData.slice(0, 12)} />
+        <ReportingTable columns={reportConfigs[reportType].columns} rows={computed.rows} />
       </div>
-    </RoleGuard>
+    </SchoolAdminPage>
   );
 }

@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
-import RoleGuard from '@/components/auth/RoleGuard';
-import AppSidebar from '@/components/app/AppSidebar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle2, AlertCircle, Shield, ScrollText, Lock, Database, UserX } from 'lucide-react';
-import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
 import AuditLogViewer from '@/components/governance/AuditLogViewer';
 import ChangeReasonEnforcement from '@/components/governance/ChangeReasonEnforcement';
 import DataRetentionPanel from '@/components/governance/DataRetentionPanel';
@@ -51,7 +46,15 @@ const DEFAULT_POLICY = {
   },
 };
 
+const TABS = [
+  { value: 'audit', label: 'Audit log' },
+  { value: 'reasons', label: 'Change reasons' },
+  { value: 'retention', label: 'Retention' },
+  { value: 'privacy', label: 'Privacy requests' },
+];
+
 export default function SchoolAdminGovernance() {
+  const [tab, setTab] = useState('audit');
   const { user, school: contextSchool, schoolId } = useUser();
   const queryClient = useQueryClient();
   const [message, setMessage] = useState(null);
@@ -115,103 +118,58 @@ export default function SchoolAdminGovernance() {
   const handleSave = () => saveMutation.mutate(policyForm);
 
   return (
-    <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar
-          links={SCHOOL_ADMIN_SIDEBAR_LINKS}
-          role="school_admin"
-          schoolName={contextSchool?.name}
-          userName={user?.full_name}
-          userId={user?.id}
-          schoolId={schoolId}
-        />
-
-        <main className="app-offset">
-          <div className="bg-white border-b scholr-rule px-6 py-4 sticky top-0 z-10 shadow-sm">
-            <div className="flex items-center gap-2.5">
-              <div className="scholr-accent-sf rounded-lg p-1.5">
-                <Shield className="w-4 h-4 scholr-accent" />
-              </div>
-              <div>
-                <h1 className="text-base font-black scholr-ink tracking-tight">Governance</h1>
-                <p className="text-xs scholr-faint mt-0.5">School-scoped audit trail, change controls, retention policy, and privacy request management</p>
-              </div>
-            </div>
-          </div>
-
-          {message && (
-            <div className="mx-6 mt-4">
-              <Alert className={message.type === 'success' ? 'border-emerald-200 bg-emerald-50' : 'border-red-200 bg-red-50'}>
-                {message.type === 'success'
-                  ? <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  : <AlertCircle className="w-4 h-4 text-red-600" />}
-                <AlertDescription className={message.type === 'success' ? 'text-emerald-800' : 'text-red-800'}>
-                  {message.text}
-                </AlertDescription>
-              </Alert>
-            </div>
-          )}
-
-          <div className="p-6 max-w-6xl">
-            <Tabs defaultValue="audit">
-              <TabsList className="bg-white border scholr-rule h-auto mb-6 flex-wrap">
-                <TabsTrigger value="audit" className="text-xs gap-1.5 data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
-                  <ScrollText className="w-3.5 h-3.5" /> Audit Log
-                </TabsTrigger>
-                <TabsTrigger value="reasons" className="text-xs gap-1.5 data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
-                  <Lock className="w-3.5 h-3.5" /> Reason Enforcement
-                </TabsTrigger>
-                <TabsTrigger value="retention" className="text-xs gap-1.5 data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
-                  <Database className="w-3.5 h-3.5" /> Data Retention
-                </TabsTrigger>
-                <TabsTrigger value="privacy" className="text-xs gap-1.5 data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
-                  <UserX className="w-3.5 h-3.5" /> Privacy Requests
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="audit">
-                <AuditLogViewer schoolId={schoolId} />
-              </TabsContent>
-
-              <TabsContent value="reasons">
-                {!isLoading && (
-                  <ChangeReasonEnforcement
-                    policy={policyForm}
-                    onChange={handleChange}
-                    onSave={handleSave}
-                    saving={saveMutation.isPending}
-                  />
-                )}
-              </TabsContent>
-
-              <TabsContent value="retention">
-                {!isLoading && (
-                  <DataRetentionPanel
-                    policy={policyForm}
-                    onChange={handleChange}
-                    onSave={handleSave}
-                    saving={saveMutation.isPending}
-                    schoolId={schoolId}
-                  />
-                )}
-              </TabsContent>
-
-              <TabsContent value="privacy">
-                {!isLoading && (
-                  <PrivacyRequestsPanel
-                    policy={policyForm}
-                    onChange={handleChange}
-                    onSave={handleSave}
-                    saving={saveMutation.isPending}
-                    schoolId={schoolId}
-                    user={user}
-                  />
-                )}
-              </TabsContent>
-            </Tabs>
-          </div>
-        </main>
-      </div>
-    </RoleGuard>
+    <SchoolAdminPage
+      title="Governance"
+      eyebrow="Audit trail, compliance and retention"
+      tabs={TABS}
+      activeTab={tab}
+      onTabChange={setTab}
+      related={[["SchoolAdminSettings","Settings"],["SchoolAdminGradebookGovernance","Gradebook rules"],["SchoolAdminUsers","Users"]]}
+    >
+      {tab === 'audit' && (
+        <>
+          <AuditLogViewer schoolId={schoolId} />
+        </>
+      )}
+      {tab === 'reasons' && (
+        <>
+          {!isLoading && (
+                      <ChangeReasonEnforcement
+                        policy={policyForm}
+                        onChange={handleChange}
+                        onSave={handleSave}
+                        saving={saveMutation.isPending}
+                      />
+                    )}
+        </>
+      )}
+      {tab === 'retention' && (
+        <>
+          {!isLoading && (
+                      <DataRetentionPanel
+                        policy={policyForm}
+                        onChange={handleChange}
+                        onSave={handleSave}
+                        saving={saveMutation.isPending}
+                        schoolId={schoolId}
+                      />
+                    )}
+        </>
+      )}
+      {tab === 'privacy' && (
+        <>
+          {!isLoading && (
+                      <PrivacyRequestsPanel
+                        policy={policyForm}
+                        onChange={handleChange}
+                        onSave={handleSave}
+                        saving={saveMutation.isPending}
+                        schoolId={schoolId}
+                        user={user}
+                      />
+                    )}
+        </>
+      )}
+    </SchoolAdminPage>
   );
 }

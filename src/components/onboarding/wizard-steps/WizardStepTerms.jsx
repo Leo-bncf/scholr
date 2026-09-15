@@ -84,7 +84,7 @@ export default function WizardStepTerms({ schoolId, academicYearId, onDone }) {
           <p className="text-xs font-semibold scholr-muted uppercase tracking-wide">Existing Terms</p>
           {termsForYear.map(t => (
             <div key={t.id} className="flex items-center gap-3 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
               <div>
                 <p className="text-sm font-semibold scholr-ink">{t.name}</p>
                 <p className="text-xs scholr-muted">{t.start_date} → {t.end_date}</p>

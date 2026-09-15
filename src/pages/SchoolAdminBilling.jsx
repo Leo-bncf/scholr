@@ -1,3 +1,4 @@
+import StatusChip from '@/components/app/StatusChip';
 import React, { useState, useEffect } from 'react';
 import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import { humanise } from '@/lib/labels';
@@ -24,23 +25,22 @@ const TABS = [
   { value: 'students', label: 'Student slots' },
   { value: 'upgrade', label: 'Change seats' },
 ];
+/* A paid-up subscription is the ordinary case and needs no green pill. Only
+   the three states that cost the school something carry colour. */
 const BILLING_STATUS_CONFIG = {
-  trial:     { label: 'Free Trial',   color: 'bg-blue-100 text-blue-700 border-blue-200',    dot: 'bg-blue-500' },
-  active:    { label: 'Active',       color: 'bg-emerald-100 text-emerald-700 border-emerald-200', dot: 'bg-emerald-500' },
-  past_due:  { label: 'Past Due',     color: 'bg-amber-100 text-amber-700 border-amber-200', dot: 'bg-amber-500' },
-  canceled:  { label: 'Canceled',     color: 'scholr-sunk scholr-muted scholr-rule', dot: 'bg-slate-400' },
-  unpaid:    { label: 'Suspended',    color: 'bg-red-100 text-red-700 border-red-200',       dot: 'bg-red-500' },
-  incomplete:{ label: 'Incomplete',   color: 'bg-amber-100 text-amber-700 border-amber-200', dot: 'bg-amber-500' },
+  trial:      { label: 'Free trial', tone: null },
+  active:     { label: 'Active',     tone: null },
+  past_due:   { label: 'Past due',   tone: 'warn' },
+  canceled:   { label: 'Cancelled',  tone: 'mute' },
+  unpaid:     { label: 'Suspended',  tone: 'crit' },
+  incomplete: { label: 'Incomplete', tone: 'warn' },
 };
 
 function StatusPill({ status }) {
-  const cfg = BILLING_STATUS_CONFIG[status] || { label: status, color: 'scholr-sunk scholr-muted', dot: 'bg-slate-400' };
-  return (
-    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border ${cfg.color}`}>
-      <span className={`w-2 h-2 rounded-full ${cfg.dot}`} />
-      {cfg.label}
-    </span>
-  );
+  const cfg = BILLING_STATUS_CONFIG[status] || { label: status, tone: null };
+  return cfg.tone
+    ? <StatusChip tone={cfg.tone}>{cfg.label}</StatusChip>
+    : <span style={{ fontSize: '.86rem', color: 'var(--muted)' }}>{cfg.label}</span>;
 }
 
 export default function SchoolAdminBilling() {
@@ -124,7 +124,7 @@ export default function SchoolAdminBilling() {
                 message.type === 'error' ? 'border-red-200 bg-red-50' :
                 'border-blue-200 bg-blue-50'
               }>
-                {message.type === 'success' ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 scholr-muted" />}
+                {message.type === 'success' ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4 scholr-muted" />}
                 <AlertDescription className={message.type === 'success' ? 'text-emerald-800' : message.type === 'error' ? 'text-red-800' : 'text-blue-800'}>
                   {message.text}
                 </AlertDescription>
@@ -166,16 +166,16 @@ export default function SchoolAdminBilling() {
                     </div>
                     <div>
                       <p className="text-xs scholr-faint font-medium">Teachers / Staff</p>
-                      <p className="text-lg font-bold text-emerald-600">Unlimited</p>
+                      <p className="text-lg font-bold" style={{ color: 'var(--good)' }}>Unlimited</p>
                     </div>
                     <div>
                       <p className="text-xs scholr-faint font-medium">Classes</p>
-                      <p className="text-lg font-bold text-emerald-600">Unlimited</p>
+                      <p className="text-lg font-bold" style={{ color: 'var(--good)' }}>Unlimited</p>
                     </div>
                     {billingStatus === 'trial' && schoolData?.trial_end_date && (
                       <div>
                         <p className="text-xs scholr-faint font-medium">Trial Ends</p>
-                        <p className="text-base font-semibold text-blue-700">{format(new Date(schoolData.trial_end_date), 'dd MMM yyyy')}</p>
+                        <p className="text-base font-semibold" style={{ color: 'var(--ink)' }}>{format(new Date(schoolData.trial_end_date), 'dd MMM yyyy')}</p>
                       </div>
                     )}
                     {billingStatus === 'active' && schoolData?.subscription_current_period_end && (
@@ -220,7 +220,7 @@ export default function SchoolAdminBilling() {
                   <div className="space-y-1.5">
                     {(planLimits.modules || []).map(mod => (
                       <div key={mod} className="flex items-center gap-2 text-sm scholr-body">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                         <span>{humanise(mod)}</span>
                       </div>
                     ))}
@@ -250,9 +250,14 @@ export default function SchoolAdminBilling() {
                         <span className="font-semibold scholr-ink">{studentCount} / {purchasedStudents}</span>
                       </div>
                       <div className="w-full scholr-sunk rounded-full h-3">
+                        {/* Three fixed hues at 95 / 80 / below. The bar is the
+                            only signal here, and it now follows the theme. */}
                         <div
-                          className={`h-3 rounded-full transition-colors ${studentPct >= 95 ? 'bg-red-500' : studentPct >= 80 ? 'bg-amber-500' : 'bg-emerald-500'}`}
-                          style={{ width: `${Math.min(studentPct, 100)}%` }}
+                          className="h-3 rounded-full transition-colors"
+                          style={{
+                            width: `${Math.min(studentPct, 100)}%`,
+                            background: studentPct >= 95 ? 'var(--crit)' : studentPct >= 80 ? 'var(--warn)' : 'var(--brand)',
+                          }}
                         />
                       </div>
                       <div className="flex justify-between text-xs scholr-faint">
@@ -261,8 +266,8 @@ export default function SchoolAdminBilling() {
                       </div>
                       {studentPct >= 80 && (
                         <Alert className="border-amber-200 bg-amber-50">
-                          <AlertCircle className="w-4 h-4 text-amber-600" />
-                          <AlertDescription className="text-amber-800 text-xs">
+                          <AlertCircle className="w-4 h-4" />
+                          <AlertDescription className="text-xs">
                             <strong>Approaching student limit.</strong> Contact your account manager or upgrade your plan to add more slots.
                           </AlertDescription>
                         </Alert>
@@ -280,15 +285,15 @@ export default function SchoolAdminBilling() {
                   <p className="text-xs font-semibold scholr-faint uppercase tracking-wide">How student billing works</p>
                   <div className="space-y-3 text-sm scholr-muted">
                     <div className="flex gap-2.5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 shrink-0" />
+                      <div className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--ink)' }} />
                       <p>You purchase a set number of <strong>student slots</strong> per year — only student accounts count toward your quota.</p>
                     </div>
                     <div className="flex gap-2.5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 shrink-0" />
+                      <div className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--good)' }} />
                       <p><strong>Teachers, coordinators, and admins are unlimited</strong> at no extra cost on all plans.</p>
                     </div>
                     <div className="flex gap-2.5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 shrink-0" />
+                      <div className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--ink)' }} />
                       <p>You'll receive warnings at <strong>80%</strong> and <strong>95%</strong> of capacity so you can act before hitting the limit.</p>
                     </div>
                     <div className="flex gap-2.5">

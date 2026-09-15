@@ -43,7 +43,7 @@ export default function AnnouncementsGovernancePanel({ form, onChange }) {
   return (
     <div className="space-y-6">
       {/* Who can broadcast */}
-      <div className="bg-white rounded-xl border scholr-rule p-5 space-y-5">
+      <div className="app-group space-y-5" style={{ padding: '1rem 1.1rem' }}>
         <div className="flex items-center gap-2 mb-1">
           <Megaphone className="w-5 h-5 scholr-accent" />
           <div>
@@ -99,9 +99,9 @@ export default function AnnouncementsGovernancePanel({ form, onChange }) {
       </div>
 
       {/* Dashboard visibility */}
-      <div className="bg-white rounded-xl border scholr-rule p-5 space-y-4">
+      <div className="app-group space-y-4" style={{ padding: '1rem 1.1rem' }}>
         <div className="flex items-center gap-2 mb-1">
-          <Monitor className="w-5 h-5 text-emerald-600" />
+          <Monitor className="w-5 h-5" />
           <div>
             <h4 className="font-bold scholr-ink text-sm">Dashboard Announcement Visibility</h4>
             <p className="text-xs scholr-muted mt-0.5">Control which role dashboards surface announcements in their notification feeds.</p>
@@ -126,9 +126,9 @@ export default function AnnouncementsGovernancePanel({ form, onChange }) {
       </div>
 
       {/* Retention & pin duration */}
-      <div className="bg-white rounded-xl border scholr-rule p-5 space-y-4">
+      <div className="app-group space-y-4" style={{ padding: '1rem 1.1rem' }}>
         <div className="flex items-center gap-2 mb-1">
-          <Clock className="w-5 h-5 text-amber-600" />
+          <Clock className="w-5 h-5" />
           <div>
             <h4 className="font-bold scholr-ink text-sm">Retention & Display</h4>
           </div>

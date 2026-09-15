@@ -1,3 +1,7 @@
+import { Group, Row } from '@/components/app/AppShell';
+import { SearchField } from '@/components/app/Field';
+import DataTable from '@/components/app/DataTable';
+import StatusChip from '@/components/app/StatusChip';
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -7,8 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import {
-  Plus, Loader2, Search, BookOpen, Pencil,
-  ChevronRight, Hash, Lock
+  Plus, Loader2, Pencil,
+  ChevronRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { CLASS_STATUS_CONFIG } from './classConstants';
@@ -128,12 +132,17 @@ function ClassFormDialog({ open, onClose, initialData, schoolId, subjects, acade
             </div>
           </div>
 
-          <div className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-lg px-3 py-3">
-            <div>
-              <p className="text-xs font-semibold text-amber-800">Roster Lock</p>
-              <p className="text-[11px] text-amber-600 mt-0.5">Prevent manual edits when timetable sync is the source of truth</p>
-            </div>
-            <Switch checked={form.roster_locked} onCheckedChange={v => setForm({ ...form, roster_locked: v })} />
+          <div className="app-group">
+            <Row
+              label="Lock the roster"
+              detail="Stops anyone editing enrolment by hand, for when the timetable sync owns it."
+            >
+              <Switch
+                checked={form.roster_locked}
+                onCheckedChange={v => setForm({ ...form, roster_locked: v })}
+                aria-label="Lock the roster"
+              />
+            </Row>
           </div>
 
           <div className="flex gap-2 pt-2">
@@ -177,142 +186,130 @@ export default function ClassSectionTab({ schoolId, classes, subjects, academicY
 
   return (
     <div className="space-y-4">
-      {/* Summary pills */}
-      <div className="flex items-center gap-2 flex-wrap">
+      {/* The counts are the filter. Three pills in three tints said the same
+          thing as a status dropdown would have, twice. */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '.4rem', flexWrap: 'wrap' }}>
         {[
-          { key: 'active',   label: 'Active',   count: activeCount,   color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-          { key: 'archived', label: 'Archived', count: archivedCount, color: 'scholr-sunk scholr-muted scholr-rule' },
-          { key: 'all',      label: 'All',      count: classes.length, color: 'bg-white scholr-muted scholr-rule' },
-        ].map(({ key, label, count, color }) => (
-          <button
-            key={key}
-            onClick={() => setStatusFilter(key)}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${color} ${statusFilter === key ? 'ring-2 scholr-accent-rule ring-offset-1' : ''}`}
-          >
-            {label} <span className="font-bold">{count}</span>
-          </button>
-        ))}
+          { key: 'active', label: 'Active', count: activeCount },
+          { key: 'archived', label: 'Archived', count: archivedCount },
+          { key: 'all', label: 'All', count: classes.length },
+        ].map(({ key, label, count }) => {
+          const on = statusFilter === key;
+          return (
+            <button
+              key={key}
+              type="button"
+              aria-pressed={on}
+              onClick={() => setStatusFilter(key)}
+              className="scholr-focus"
+              style={{
+                display: 'inline-flex', alignItems: 'baseline', gap: '.4rem',
+                padding: '.3rem .6rem', borderRadius: '6px', fontSize: '.82rem', cursor: 'pointer',
+                border: `1px solid ${on ? 'var(--brand)' : 'var(--rule)'}`,
+                background: on ? 'var(--brand-sf)' : 'var(--surface)',
+                color: on ? 'var(--brand)' : 'var(--body)',
+              }}
+            >
+              {label}
+              <span className="scholr-num" style={{ fontFamily: 'var(--font-mono)', fontSize: '.8rem' }}>{count}</span>
+            </button>
+          );
+        })}
 
-        <div className="ml-auto">
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: '.5rem', alignItems: 'center' }}>
+          <SearchField label="Search classes" value={search} onChange={setSearch} placeholder="Name, section, room…" />
           <Button onClick={() => setCreateOpen(true)} className="pub-btn pub-btn-primary h-9 text-xs gap-1.5">
-            <Plus className="w-3.5 h-3.5" /> New Class Section
+            <Plus className="w-3.5 h-3.5" /> New section
           </Button>
         </div>
       </div>
 
-      {/* Search */}
-      <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 scholr-faint" />
-        <Input placeholder="Search by name, section, room…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white h-9" />
-      </div>
-
-      {/* Class grid */}
-      {filtered.length === 0 ? (
-        <div className="bg-white rounded-xl border scholr-rule p-16 text-center">
-          <BookOpen className="w-10 h-10 scholr-faint mx-auto mb-3" />
-          <p className="text-sm scholr-muted font-medium">No class sections found</p>
-          {statusFilter === 'active' && (
-            <Button onClick={() => setCreateOpen(true)} className="mt-4 pub-btn pub-btn-primary h-8 text-xs gap-1.5">
-              <Plus className="w-3.5 h-3.5" /> Create First Class
-            </Button>
-          )}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {filtered.map(c => {
-            const sc = CLASS_STATUS_CONFIG[c.status] || CLASS_STATUS_CONFIG.active;
-            const subjectName = c.subject_id ? getSubjectName(c.subject_id) : null;
-            const yearName    = c.academic_year_id ? getYearName(c.academic_year_id) : null;
-            const cohortName  = c.cohort_id ? getCohortName(c.cohort_id) : null;
-            const enrolled    = c.student_ids?.length || 0;
-            const capacity    = c.capacity;
-            const isFull      = capacity && enrolled >= capacity;
-
-            return (
-              <div key={c.id} className={`bg-white rounded-xl border shadow-sm overflow-hidden flex flex-col transition-shadow hover:shadow-md ${c.status === 'archived' ? 'opacity-60' : ''} scholr-rule`}>
-                <div className="px-5 pt-4 pb-3 flex-1">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <h3 className="font-semibold scholr-ink text-sm leading-snug flex-1">{c.name}</h3>
-                    <div className="flex items-center gap-1.5 flex-shrink-0">
-                      {c.roster_locked && <Lock className="w-3.5 h-3.5 text-amber-500" title="Roster locked" />}
-                      <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${sc.classes}`}>{sc.label}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    {subjectName && (
-                      <span className="text-[11px] scholr-accent-sf scholr-accent border border-indigo-100 px-2 py-0.5 rounded-full">{subjectName}</span>
-                    )}
-                    {c.section && (
-                      <span className="text-[11px] scholr-sunk scholr-muted border scholr-rule px-2 py-0.5 rounded-full flex items-center gap-1"><Hash className="w-2.5 h-2.5" />{c.section}</span>
-                    )}
-                    {yearName && (
-                      <span className="text-[11px] scholr-sunk scholr-muted border scholr-rule px-2 py-0.5 rounded-full">{yearName}</span>
-                    )}
-                    {cohortName && (
-                      <span className="text-[11px] scholr-accent-sf scholr-accent border border-violet-100 px-2 py-0.5 rounded-full">{cohortName}</span>
-                    )}
-                  </div>
-
-                  {/* One hairline row of figures, not three filled tiles.
-                      A box inside a box is the card-in-card tell, and these
-                      boxes carried no information the numbers did not already
-                      carry. Only a full class earns colour — that is a state
-                      someone has to act on. */}
-                  <div
-                    className="flex items-baseline gap-5 pt-2.5"
-                    style={{ borderTop: '1px solid var(--rule-soft)' }}
-                  >
-                    <span className="flex items-baseline gap-1.5">
-                      <span className="text-sm scholr-num" style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink)' }}>
-                        {c.teacher_ids?.length || 0}
-                      </span>
-                      <span className="scholr-label">staff</span>
-                    </span>
-                    <span className="flex items-baseline gap-1.5">
-                      <span
-                        className="text-sm scholr-num"
-                        style={{ fontFamily: 'var(--font-mono)', color: isFull ? 'var(--crit)' : 'var(--ink)' }}
-                      >
-                        {enrolled}{capacity ? `/${capacity}` : ''}
-                      </span>
-                      <span className="scholr-label">{isFull ? 'full' : 'students'}</span>
-                    </span>
-                    {c.subject_teacher_assignments?.length > 0 && (
-                      <span className="flex items-baseline gap-1.5">
-                        <span className="text-sm scholr-num" style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink)' }}>
-                          {c.subject_teacher_assignments.length}
-                        </span>
-                        <span className="scholr-label">subjects</span>
-                      </span>
-                    )}
-                  </div>
-
-                  {c.room && (
-                    <p className="text-[11px] scholr-faint mt-2">📍 {c.room}{c.schedule_info ? ` · ${c.schedule_info}` : ''}</p>
-                  )}
-                </div>
-
-                <div className="px-4 py-3 border-t scholr-rule-soft scholr-sunk flex items-center justify-between">
-                   <div className="flex items-center gap-1">
-                     <Button variant="ghost" size="sm" onClick={() => setEditingClass(c)} className="h-7 px-2 text-xs scholr-muted hover:scholr-ink gap-1">
-                       <Pencil className="w-3 h-3" /> Edit
-                     </Button>
-                   </div>
+      {/* A grid of cards became a table. Twelve classes as twelve cards is a
+          lot of scrolling to answer "which one is full" — a question that is
+          one glance down a column. */}
+      <Group title="Class sections" action={<span className="scholr-label">{filtered.length} shown</span>}>
+        <DataTable
+          columns={[
+            {
+              key: 'name',
+              header: 'Class',
+              render: (c) => (
+                <>
+                  <span style={{ display: 'block', color: 'var(--ink)' }}>{c.name}</span>
+                  <span style={{ display: 'block', fontSize: '.76rem', color: 'var(--muted)' }}>
+                    {[
+                      c.subject_id && getSubjectName(c.subject_id),
+                      c.section && `Section ${c.section}`,
+                      c.academic_year_id && getYearName(c.academic_year_id),
+                      c.cohort_id && getCohortName(c.cohort_id),
+                    ].filter(Boolean).join(' · ') || '—'}
+                  </span>
+                </>
+              ),
+            },
+            {
+              key: 'where',
+              header: 'Where',
+              render: (c) => [c.room, c.schedule_info].filter(Boolean).join(' · ') || '—',
+            },
+            { key: 'staff', header: 'Staff', num: true, render: (c) => c.teacher_ids?.length || 0 },
+            {
+              key: 'students',
+              header: 'Students',
+              num: true,
+              render: (c) => {
+                const enrolled = c.student_ids?.length || 0;
+                const full = c.capacity && enrolled >= c.capacity;
+                return (
+                  <span style={{ color: full ? 'var(--crit)' : undefined }}>
+                    {enrolled}{c.capacity ? ` / ${c.capacity}` : ''}
+                  </span>
+                );
+              },
+            },
+            {
+              key: 'status',
+              header: '',
+              render: (c) => {
+                const sc = CLASS_STATUS_CONFIG[c.status] || CLASS_STATUS_CONFIG.active;
+                return (
+                  <span style={{ display: 'inline-flex', gap: '.35rem', alignItems: 'center' }}>
+                    {c.roster_locked && <StatusChip tone="mute">Roster locked</StatusChip>}
+                    {sc.tone && <StatusChip tone={sc.tone}>{sc.label}</StatusChip>}
+                  </span>
+                );
+              },
+            },
+            {
+              key: 'actions',
+              header: '',
+              render: (c) => (
+                <span style={{ display: 'inline-flex', gap: '.5rem', alignItems: 'center' }}>
+                  <Button variant="ghost" size="sm" onClick={() => setEditingClass(c)} className="h-7 px-2 text-xs gap-1">
+                    <Pencil className="w-3 h-3" /> Edit
+                  </Button>
                   {c.status === 'active' && (
                     <Link
                       to={`/ClassWorkspace?class_id=${c.id}`}
-                      className="flex items-center gap-1 text-xs font-medium scholr-accent hover:scholr-accent"
+                      className="scholr-focus"
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: '.2rem', fontSize: '.82rem', color: 'var(--brand)', textDecoration: 'none' }}
                     >
                       Open <ChevronRight className="w-3.5 h-3.5" />
                     </Link>
                   )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+                </span>
+              ),
+            },
+          ]}
+          rows={filtered}
+          rowKey={(c) => c.id}
+          empty={
+            statusFilter === 'active' && classes.length === 0
+              ? 'No classes yet. Create the first one to start enrolling students.'
+              : 'No class sections match this filter.'
+          }
+        />
+      </Group>
 
       <ClassFormDialog
         open={createOpen}

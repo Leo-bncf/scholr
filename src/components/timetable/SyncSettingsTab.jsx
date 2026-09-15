@@ -1,3 +1,4 @@
+import { Group, Row } from '@/components/app/AppShell';
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -72,16 +73,16 @@ export default function SyncSettingsTab({ schoolId, settings }) {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['timetable-settings', schoolId] }),
   });
 
-  const policyConfig = OVERRIDE_POLICY_CONFIG[form.override_policy];
 
   const SectionCard = ({ title, description, children }) => (
-    <div className="app-group overflow-hidden">
-      <div className="px-5 py-4 border-b scholr-rule-soft">
-        <h3 className="text-sm font-semibold scholr-ink">{title}</h3>
-        {description && <p className="text-[11px] scholr-faint mt-0.5">{description}</p>}
-      </div>
-      <div className="px-5 py-4 space-y-4">{children}</div>
-    </div>
+    <Group title={title}>
+      {description && (
+        <p style={{ margin: 0, padding: '.6rem .9rem 0', fontSize: '.82rem', color: 'var(--muted)' }}>
+          {description}
+        </p>
+      )}
+      <div className="px-4 py-3 space-y-4">{children}</div>
+    </Group>
   );
 
   return (
@@ -89,12 +90,14 @@ export default function SyncSettingsTab({ schoolId, settings }) {
 
       {/* Connection */}
       <SectionCard title="External System Connection" description="Configure which external timetable generator this school connects to.">
-        <div className="flex items-center justify-between scholr-sunk rounded-lg p-3 border scholr-rule">
-          <div>
-            <p className="text-xs font-semibold scholr-body">Enable Sync Integration</p>
-            <p className="text-[11px] scholr-faint mt-0.5">Allow data to flow from external system into this platform</p>
-          </div>
-          <Switch checked={form.sync_enabled} onCheckedChange={v => setForm({ ...form, sync_enabled: v })} />
+        <div className="app-group">
+          <Row label="Sync is on" detail="Lets the external system push timetable data into Scholr.">
+            <Switch
+              checked={form.sync_enabled}
+              onCheckedChange={v => setForm({ ...form, sync_enabled: v })}
+              aria-label="Enable sync"
+            />
+          </Row>
         </div>
         <div>
           <Label className="text-xs font-semibold scholr-muted">System Name</Label>
@@ -126,31 +129,34 @@ export default function SyncSettingsTab({ schoolId, settings }) {
       {/* Override policy */}
       <SectionCard title="Manual Override Policy" description="Determines whether local staff can edit timetable data or if the external system is the sole source of truth.">
         <div className="space-y-2">
+          {/* Three radio buttons dressed as cards, with a padlock emoji each.
+              A radio group is the control this is, and it comes with keyboard
+              behaviour and grouping a screen reader can announce. */}
           {Object.entries(OVERRIDE_POLICY_CONFIG).map(([key, cfg]) => (
-            <button
+            <label
               key={key}
-              onClick={() => setForm({ ...form, override_policy: key })}
-              className={`w-full flex items-start gap-3 p-3 rounded-lg border-2 text-left transition-colors ${form.override_policy === key ? 'scholr-accent-rule scholr-accent-sf' : 'scholr-rule bg-white hover:scholr-rule'}`}
+              style={{
+                display: 'flex', alignItems: 'flex-start', gap: '.7rem',
+                padding: '.7rem .8rem', borderRadius: '8px', cursor: 'pointer',
+                border: `1px solid ${form.override_policy === key ? 'var(--brand)' : 'var(--rule)'}`,
+                background: form.override_policy === key ? 'var(--brand-sf)' : 'transparent',
+              }}
             >
-              <span className="text-lg mt-0.5">{cfg.icon}</span>
-              <div>
-                <p className={`text-sm font-semibold ${form.override_policy === key ? 'scholr-accent' : 'scholr-ink'}`}>{cfg.label}</p>
-                <p className="text-[11px] scholr-muted mt-0.5">
-                  {key === 'read_only' && 'All timetable fields are locked. Admins cannot edit any schedule data locally. Sync is the only way to update.'}
-                  {key === 'allow_local_edits' && 'Admins can edit certain fields locally. Synced fields are clearly marked. A subsequent sync may overwrite local changes.'}
-                  {key === 'local_override' && 'Local changes take precedence over incoming sync data. The external system is informational only.'}
-                </p>
-              </div>
-              {form.override_policy === key && (
-                <div className="ml-auto flex-shrink-0 w-4 h-4 scholr-accent-sf rounded-full flex items-center justify-center">
-                  <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                </div>
-              )}
-            </button>
+              <input
+                type="radio"
+                name="override-policy"
+                value={key}
+                checked={form.override_policy === key}
+                onChange={() => setForm({ ...form, override_policy: key })}
+                className="scholr-focus"
+                style={{ marginTop: '.2rem' }}
+              />
+              <span style={{ minWidth: 0 }}>
+                <span style={{ display: 'block', fontSize: '.9rem', color: 'var(--ink)' }}>{cfg.label}</span>
+                <span style={{ display: 'block', marginTop: '.1rem', fontSize: '.8rem', color: 'var(--muted)' }}>{cfg.detail}</span>
+              </span>
+            </label>
           ))}
-        </div>
-        <div className={`rounded-lg px-3 py-2.5 border text-xs ${policyConfig.color}`}>
-          <strong>Active policy:</strong> {policyConfig.label}
         </div>
       </SectionCard>
 

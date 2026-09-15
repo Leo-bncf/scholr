@@ -37,7 +37,7 @@ export default function ConfirmDialog({
             onClick={onConfirm}
             className={
               isDestructive
-                ? 'bg-red-600 hover:bg-red-700'
+                ? 'app-btn-crit'
                 : 'scholr-accent-sf hover:scholr-accent-sf'
             }
           >

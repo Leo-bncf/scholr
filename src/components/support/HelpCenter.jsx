@@ -6,7 +6,6 @@ const ARTICLES = [
   {
     category: 'Getting Started',
     icon: BookOpen,
-    color: 'indigo',
     articles: [
       {
         title: 'Setting up your school for the first time',
@@ -28,7 +27,6 @@ const ARTICLES = [
   {
     category: 'IB Workflows',
     icon: GraduationCap,
-    color: 'violet',
     articles: [
       {
         title: 'How predicted grades work',
@@ -42,7 +40,7 @@ const ARTICLES = [
       },
       {
         title: 'Setting up reporting windows and grade locks',
-        content: 'Go to Gradebook Governance → Grade Locks. Create a reporting window with an opens_at and locks_at date. When a window locks, teachers cannot edit grades in that period. Admins can override locks with a justification if "Admin can override lock" is enabled. Locked periods appear in coordinator reports.',
+        content: 'Go to Gradebook Governance → Grade Locks. Create a reporting window with an opens_at and locks_at date. When a window locks, teachers cannot edit grades in that period. Admins can override locks with a justification if"Admin can override lock" is enabled. Locked periods appear in coordinator reports.',
         tags: ['grade locks', 'reporting', 'windows'],
       },
       {
@@ -55,7 +53,6 @@ const ARTICLES = [
   {
     category: 'Managing Users & Classes',
     icon: Users,
-    color: 'blue',
     articles: [
       {
         title: 'Enrolling students in classes',
@@ -77,7 +74,6 @@ const ARTICLES = [
   {
     category: 'Reports & Data Exports',
     icon: BarChart2,
-    color: 'emerald',
     articles: [
       {
         title: 'Generating student progress reports',
@@ -94,7 +90,6 @@ const ARTICLES = [
   {
     category: 'Governance & Compliance',
     icon: Shield,
-    color: 'rose',
     articles: [
       {
         title: 'Audit log and change tracking',
@@ -115,13 +110,6 @@ const ARTICLES = [
   },
 ];
 
-const COLOR_MAP = {
-  indigo: 'scholr-accent-sf scholr-accent',
-  violet: 'scholr-accent-sf scholr-accent',
-  blue: 'bg-blue-100 text-blue-600',
-  emerald: 'bg-emerald-100 text-emerald-600',
-  rose: 'bg-rose-100 text-rose-600',
-};
 
 function ArticleItem({ article }) {
   const [open, setOpen] = useState(false);
@@ -193,7 +181,7 @@ export default function HelpCenter() {
             const Icon = link.icon;
             return (
               <a key={link.label} href={link.href} className="flex items-center gap-3 p-3 app-group hover:scholr-accent-rule hover:shadow-sm transition-colors group">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${COLOR_MAP[link.color]}`}>
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center scholr-sunk scholr-muted`}>
                   <Icon className="w-4 h-4" />
                 </div>
                 <span className="text-sm font-semibold scholr-body group-hover:scholr-accent">{link.label}</span>
@@ -216,12 +204,12 @@ export default function HelpCenter() {
           const Icon = cat.icon;
           const isOpen = query ? true : openCats.has(cat.category);
           return (
-            <div key={cat.category} className="bg-white rounded-xl border scholr-rule overflow-hidden">
+            <div key={cat.category} className="app-group overflow-hidden">
               <button
                 className="w-full flex items-center gap-3 px-5 py-4 hover:scholr-sunk transition-colors"
                 onClick={() => !query && toggleCat(cat.category)}
               >
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${COLOR_MAP[cat.color]}`}>
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 scholr-sunk scholr-muted`}>
                   <Icon className="w-4 h-4" />
                 </div>
                 <span className="text-sm font-bold scholr-ink flex-1 text-left">{cat.category}</span>

@@ -1,3 +1,4 @@
+import StatusChip from '@/components/app/StatusChip';
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -28,7 +29,7 @@ const LEVELS = ['general','HL','SL','MYP','core'];
 
 function CriterionRow({ criterion, onChange, onRemove }) {
   return (
-    <div className="flex items-start gap-2 p-3 bg-white rounded-lg border scholr-rule">
+    <div className="flex items-start gap-2 p-3 app-group">
       <div className="flex-1 space-y-2">
         <div className="flex gap-2">
           <Input value={criterion.name} onChange={e => onChange({ name: e.target.value })} placeholder="Criterion name" className="h-7 text-sm flex-1" />
@@ -39,7 +40,7 @@ function CriterionRow({ criterion, onChange, onRemove }) {
         </div>
         <Textarea value={criterion.description || ''} onChange={e => onChange({ description: e.target.value })} placeholder="Criterion description (optional)" rows={1} className="text-xs resize-none" />
       </div>
-      <button type="button" onClick={onRemove} className="scholr-faint hover:text-red-500 mt-1">
+      <button type="button" onClick={onRemove} className="scholr-faint mt-1">
         <Trash2 className="w-3.5 h-3.5" />
       </button>
     </div>
@@ -124,7 +125,7 @@ function TemplateDialog({ schoolId, template, onClose }) {
           <div className="border-t scholr-rule-soft pt-4 space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold scholr-ink flex items-center gap-1.5"><Lock className="w-3.5 h-3.5 text-red-500" /> Protected template</p>
+                <p className="text-sm font-semibold scholr-ink flex items-center gap-1.5"><Lock className="w-3.5 h-3.5" /> Protected template</p>
                 <p className="text-xs scholr-muted">Teachers cannot edit this template — only admins/coordinators</p>
               </div>
               <Switch checked={form.is_protected} onCheckedChange={v => setForm({ ...form, is_protected: v })} />
@@ -205,7 +206,7 @@ export default function RubricTemplateLibrary({ schoolId }) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-sm font-semibold scholr-ink">{t.name}</span>
-                      {t.is_protected && <Badge className="bg-red-100 text-red-700 border-0 text-xs gap-0.5"><Lock className="w-2.5 h-2.5" /> Protected</Badge>}
+                      {t.is_protected && <StatusChip tone="mute">Protected</StatusChip>}
                       {t.status === 'archived' && <Badge className="scholr-sunk scholr-muted border-0 text-xs">Archived</Badge>}
                       <Badge className="scholr-accent-sf scholr-accent border-0 text-xs">{t.level}</Badge>
                     </div>
@@ -225,7 +226,7 @@ export default function RubricTemplateLibrary({ schoolId }) {
                 {isOpen && t.criteria?.length > 0 && (
                   <div className="border-t scholr-rule-soft scholr-sunk p-3 space-y-1.5">
                     {t.criteria.map(c => (
-                      <div key={c.id} className="flex items-center justify-between text-xs bg-white rounded-lg px-3 py-2 border scholr-rule-soft">
+                      <div key={c.id} className="flex items-center justify-between text-xs px-3 py-2" style={{ borderTop: '1px solid var(--rule-soft)' }}>
                         <span className="font-medium scholr-ink">{c.name}</span>
                         <div className="flex items-center gap-2">
                           {c.description && <span className="scholr-faint max-w-xs truncate">{c.description}</span>}

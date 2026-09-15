@@ -165,7 +165,7 @@ export default function BulkInviteDialog({ open, onClose, schoolId, schoolName }
               <div className="border scholr-rule rounded-lg">
                 <div className="px-3 py-2 scholr-sunk border-b scholr-rule flex items-center justify-between text-xs">
                   <span className="font-semibold scholr-body">
-                    {validCount} valid · {invalidCount > 0 && <span className="text-red-600">{invalidCount} invalid</span>}
+                    {validCount} valid · {invalidCount > 0 && <span className="" style={{ color: 'var(--crit)' }}>{invalidCount} invalid</span>}
                   </span>
                   <span className="scholr-muted">Role: <span className="font-medium capitalize">{role.replace('_', ' ')}</span></span>
                 </div>
@@ -173,11 +173,11 @@ export default function BulkInviteDialog({ open, onClose, schoolId, schoolName }
                   {parsed.map((row) => (
                     <div key={row.rowNum} className="px-3 py-2 flex items-center gap-2 text-sm">
                       {row.valid
-                        ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
-                        : <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />
+                        ? <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" />
+                        : <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
                       }
                       <span className="scholr-body flex-1 truncate">
-                        {row.first_name} {row.last_name} <span className="scholr-faint">·</span> {row.email || <em className="text-red-500">missing email</em>}
+                        {row.first_name} {row.last_name} <span className="scholr-faint">·</span> {row.email || <em className="" style={{ color: 'var(--crit)' }}>missing email</em>}
                         {row.extra && <span className="scholr-faint text-xs ml-2">{row.extra}</span>}
                       </span>
                     </div>
@@ -211,11 +211,11 @@ export default function BulkInviteDialog({ open, onClose, schoolId, schoolName }
               {results.map((r, i) => (
                 <div key={i} className="px-3 py-2 flex items-center gap-2 text-sm">
                   {r.ok
-                    ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
-                    : <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />
+                    ? <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" />
+                    : <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
                   }
                   <span className="flex-1 truncate scholr-body">{r.email}</span>
-                  {!r.ok && <span className="text-xs text-red-600">{r.error}</span>}
+                  {!r.ok && <span className="text-xs" style={{ color: 'var(--crit)' }}>{r.error}</span>}
                 </div>
               ))}
             </div>

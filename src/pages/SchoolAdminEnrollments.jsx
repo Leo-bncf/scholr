@@ -1,8 +1,6 @@
+import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import React, { useMemo, useState } from 'react';
-import RoleGuard from '@/components/auth/RoleGuard';
-import AppSidebar from '@/components/app/AppSidebar';
 import { useUser } from '@/components/auth/UserContext';
-import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, Search, Plus, BookOpen } from 'lucide-react';
@@ -168,130 +166,103 @@ export default function SchoolAdminEnrollments() {
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar
-          links={SCHOOL_ADMIN_SIDEBAR_LINKS}
-          role="school_admin"
-          schoolName={school?.name}
-          userName={user?.full_name}
-          userId={user?.id}
-          schoolId={schoolId}
-        />
+    <SchoolAdminPage
+      title="Enrolments"
+      eyebrow="Create classes, assign teachers, enrol students"
+      actions={
+        <Button onClick={() => setCreateOpen(true)} className="gap-2 scholr-accent-sf hover:scholr-accent-sf">
+          <Plus className="w-4 h-4" />
+          New class
+        </Button>
+      }
+      /* Enrolling is the middle of a chain: people come from Users, and the
+         class only has somewhere to meet once the timetable knows about it. */
+      related={[['SchoolAdminUsers', 'Users'], ['SchoolAdminClasses', 'Classes'], ['SchoolAdminTimetable', 'Timetable']]}
+    >
+          <StatsBar
+            classes={classes}
+            teachers={teachers}
+            students={students}
+          />
 
-        <main className="app-offset min-h-screen flex flex-col">
-          <header className="bg-white border-b scholr-rule px-6 py-4 sticky top-0 z-10 shadow-sm">
-            <div className="flex items-center justify-between gap-4 flex-wrap">
-              <div>
-                <h1 className="text-base font-black scholr-ink tracking-tight">
-                  Enrolments
-                </h1>
-                <p className="text-xs scholr-faint mt-0.5">
-                  Create classes, assign teachers, and enrol students
-                </p>
-              </div>
-              <Button
-                onClick={() => setCreateOpen(true)}
-                className="gap-2 scholr-accent-sf hover:scholr-accent-sf"
-              >
-                <Plus className="w-4 h-4" />
-                New Class
-              </Button>
-            </div>
-          </header>
-
-          <div className="flex-1 p-6 space-y-4">
-            <StatsBar
-              classes={classes}
-              teachers={teachers}
-              students={students}
+          <div className="relative max-w-xs">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 scholr-faint" />
+            <Input
+              placeholder="Search classes…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9 bg-white"
             />
-
-            <div className="relative max-w-xs">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 scholr-faint" />
-              <Input
-                placeholder="Search classes…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 bg-white"
-              />
-            </div>
-
-            {isLoading ? (
-              <div className="flex justify-center py-20">
-                <Loader2 className="w-6 h-6 animate-spin scholr-faint" />
-              </div>
-            ) : filteredClasses.length === 0 ? (
-              <EmptyState
-                hasSearch={!!search}
-                hasAnyClasses={classes.length > 0}
-                onCreate={() => setCreateOpen(true)}
-              />
-            ) : (
-              <div className="space-y-3">
-                {filteredClasses.map((classItem) => (
-                  <ClassCard
-                    key={classItem.id}
-                    classItem={classItem}
-                    expanded={expandedClassId === classItem.id}
-                    onToggleExpand={(open) => setExpandedClassId(open ? classItem.id : null)}
-                    subjectsById={subjectsById}
-                    teachersByUserId={teachersByUserId}
-                    studentsByUserId={studentsByUserId}
-                    onAssignSubject={(c) => setTeachersDialog({ classItem: c, mode: 'subject' })}
-                    onAssignClassTeachers={(c) => setTeachersDialog({ classItem: c, mode: 'general' })}
-                    onEnrolStudents={(c) => setStudentsDialog({ classItem: c })}
-                    onRemoveSubjectAssignment={handleRemoveSubjectAssignment}
-                    onRemoveStudent={handleRemoveStudent}
-                    onDeleteClass={handleDeleteClass}
-                  />
-                ))}
-              </div>
-            )}
           </div>
-        </main>
 
-        {/* Dialogs */}
-        <CreateClassDialog
-          open={createOpen}
-          onOpenChange={setCreateOpen}
-          subjects={subjects}
-          academicYears={academicYears}
-          onCreate={handleCreateClass}
-          isCreating={createClassMutation.isPending}
-        />
+          {isLoading ? (
+            <div className="flex justify-center py-20">
+              <Loader2 className="w-6 h-6 animate-spin scholr-faint" />
+            </div>
+          ) : filteredClasses.length === 0 ? (
+            <EmptyState
+              hasSearch={!!search}
+              hasAnyClasses={classes.length > 0}
+              onCreate={() => setCreateOpen(true)}
+            />
+          ) : (
+            <div className="space-y-3">
+              {filteredClasses.map((classItem) => (
+                <ClassCard
+                  key={classItem.id}
+                  classItem={classItem}
+                  expanded={expandedClassId === classItem.id}
+                  onToggleExpand={(open) => setExpandedClassId(open ? classItem.id : null)}
+                  subjectsById={subjectsById}
+                  teachersByUserId={teachersByUserId}
+                  studentsByUserId={studentsByUserId}
+                  onAssignSubject={(c) => setTeachersDialog({ classItem: c, mode: 'subject' })}
+                  onAssignClassTeachers={(c) => setTeachersDialog({ classItem: c, mode: 'general' })}
+                  onEnrolStudents={(c) => setStudentsDialog({ classItem: c })}
+                  onRemoveSubjectAssignment={handleRemoveSubjectAssignment}
+                  onRemoveStudent={handleRemoveStudent}
+                  onDeleteClass={handleDeleteClass}
+                />
+              ))}
+            </div>
+          )}
 
-        <AssignTeachersDialog
-          open={!!teachersDialog}
-          onOpenChange={(v) => !v && setTeachersDialog(null)}
-          mode={teachersDialog?.mode || 'subject'}
-          classItem={teachersDialog?.classItem}
-          teachers={teachers}
-          subjects={subjects}
-          onSave={
-            teachersDialog?.mode === 'general'
-              ? handleAssignClassTeachers
-              : handleAddSubjectAssignment
-          }
-          isSaving={updateClassMutation.isPending}
-        />
+      {/* Dialogs */}
+      <CreateClassDialog
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        subjects={subjects}
+        academicYears={academicYears}
+        onCreate={handleCreateClass}
+        isCreating={createClassMutation.isPending}
+      />
 
-        <EnrollStudentsDialog
-          open={!!studentsDialog}
-          onOpenChange={(v) => !v && setStudentsDialog(null)}
-          classItem={studentsDialog?.classItem}
-          students={students}
-          onSave={handleEnrolStudents}
-          isSaving={updateClassMutation.isPending}
-        />
-      </div>
-    </RoleGuard>
+      <AssignTeachersDialog
+        open={!!teachersDialog}
+        onOpenChange={(v) => !v && setTeachersDialog(null)}
+        mode={teachersDialog?.mode || 'subject'}
+        classItem={teachersDialog?.classItem}
+        teachers={teachers}
+        subjects={subjects}
+        onSave={
+          teachersDialog?.mode === 'general'
+            ? handleAssignClassTeachers
+            : handleAddSubjectAssignment
+        }
+        isSaving={updateClassMutation.isPending}
+      />
+
+      <EnrollStudentsDialog
+        open={!!studentsDialog}
+        onOpenChange={(v) => !v && setStudentsDialog(null)}
+        classItem={studentsDialog?.classItem}
+        students={students}
+        onSave={handleEnrolStudents}
+        isSaving={updateClassMutation.isPending}
+      />
+    </SchoolAdminPage>
   );
 }
-
-// ────────────────────────────────────────────────────────────────────────────
-// Small inline sub-components
-// ────────────────────────────────────────────────────────────────────────────
 
 function StatsBar({ classes, teachers, students }) {
   const items = [

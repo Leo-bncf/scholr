@@ -1,10 +1,12 @@
+import { humanise } from '@/lib/labels';
+import StatusChip from '@/components/app/StatusChip';
 import React, { useState } from 'react';
+import Notice from '@/components/app/Notice';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import * as timetableSettingsData from '@/data/timetableSettings';
@@ -182,19 +184,16 @@ export default function ConflictResolutionTab({ schoolId, syncHistory, settings,
     <div className="space-y-4">
       {/* Unresolved conflicts banner */}
       {unresolvedConflicts.length > 0 && (
-        <Alert className="border-amber-200 bg-amber-50">
-          <AlertTriangle className="w-4 h-4 text-amber-600" />
-          <AlertDescription className="text-xs text-amber-800">
-            <strong>{unresolvedConflicts.length} unresolved conflict{unresolvedConflicts.length !== 1 ? 's' : ''}</strong> detected from recent syncs. 
-            Fix mapping mismatches below or add explicit ID mappings, then retry the sync.
-          </AlertDescription>
-        </Alert>
+        <Notice tone="warn">
+          <strong>{unresolvedConflicts.length} unresolved conflict{unresolvedConflicts.length !== 1 ? 's' : ''}</strong> detected from recent syncs. 
+          Fix mapping mismatches below or add explicit ID mappings, then retry the sync.
+        </Notice>
       )}
 
       {/* Unresolved conflicts list */}
       {unresolvedConflicts.length > 0 && (
         <div className="bg-white border border-amber-200 rounded-xl shadow-sm overflow-hidden">
-          <div className="px-5 py-3 border-b border-amber-100 bg-amber-50 flex items-center gap-2">
+          <div className="px-5 py-3 border-b scholr-rule-soft flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-amber-600" />
             <h3 className="text-sm font-semibold text-amber-900">Unresolved Sync Conflicts</h3>
           </div>
@@ -209,19 +208,19 @@ export default function ConflictResolutionTab({ schoolId, syncHistory, settings,
               return (
                 <div key={`${conflict.sync_id}-${idx}`} className="px-5 py-4">
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 rounded-lg scholr-sunk flex items-center justify-center flex-shrink-0">
                       <Icon className="w-4 h-4 text-amber-600" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <Badge className="text-[10px] bg-amber-50 text-amber-700 border-amber-200 border capitalize">{conflict.entity_type}</Badge>
+                        <StatusChip tone="warn">{humanise(conflict.entity_type)}</StatusChip>
                         <span className="text-sm font-mono font-semibold scholr-ink">{conflict.external_id}</span>
                       </div>
                       <p className="text-xs scholr-muted mb-3">{conflict.issue}</p>
                       <div className="flex gap-2">
                         <Button
                           size="sm"
-                          className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700 text-white gap-1"
+                          className="h-7 text-xs pub-btn pub-btn-primary gap-1"
                           disabled={resolveMutation.isPending}
                           onClick={() => {
                             if (sync && conflictIdxInSync !== -1) {
@@ -305,8 +304,11 @@ export default function ConflictResolutionTab({ schoolId, syncHistory, settings,
                       <div className="flex items-center gap-1.5 mt-0.5">
                         <Badge className="text-[10px] scholr-sunk scholr-muted border-0 capitalize">{m.entity_type}</Badge>
                         {m.validated
-                          ? <Badge className="text-[10px] bg-emerald-50 text-emerald-700 border-emerald-200 border flex items-center gap-1"><ShieldCheck className="w-2.5 h-2.5" />Validated</Badge>
-                          : <Badge className="text-[10px] bg-amber-50 text-amber-600 border-amber-200 border">Unvalidated</Badge>
+                          /* "Validated" is the expected state and takes no
+                             colour; the one that is not checked is the one
+                             somebody has to look at. */
+                          ? <span style={{ fontSize: '.78rem', color: 'var(--muted)' }}>Checked</span>
+                          : <StatusChip tone="warn">Not checked</StatusChip>
                         }
                       </div>
                     </div>
@@ -315,7 +317,7 @@ export default function ConflictResolutionTab({ schoolId, syncHistory, settings,
                     {!m.validated && (
                       <Button
                         variant="ghost" size="sm"
-                        className="h-7 text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 gap-1"
+                        className="h-7 text-xs gap-1" style={{ color: 'var(--good)' }}
                         disabled={validateMutation.isPending}
                         onClick={() => validateMutation.mutate(m.id)}
                       >

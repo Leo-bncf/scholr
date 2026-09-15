@@ -63,7 +63,7 @@ export default function WizardStepClasses({ schoolId, onDone }) {
           <div className="space-y-2 mb-3">
             {existingClasses.slice(0, 5).map(c => (
               <div key={c.id} className="flex items-center gap-3 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
                 <p className="text-sm font-semibold scholr-ink">{c.name}{c.section ? ` (${c.section})` : ''}</p>
               </div>
             ))}

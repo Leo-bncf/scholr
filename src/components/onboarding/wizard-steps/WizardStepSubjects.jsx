@@ -86,7 +86,7 @@ export default function WizardStepSubjects({ schoolId, curriculum = 'ib_dp', onD
           <div className="flex flex-wrap gap-2 mb-3">
             {existingSubjects.map(s => (
               <Badge key={s.id} variant="outline" className="gap-1.5">
-                <CheckCircle2 className="w-3 h-3 text-emerald-500" /> {s.name}
+                <CheckCircle2 className="w-3 h-3" /> {s.name}
               </Badge>
             ))}
           </div>

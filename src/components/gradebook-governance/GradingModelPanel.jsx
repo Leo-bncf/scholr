@@ -68,10 +68,10 @@ export default function GradingModelPanel({ form, onChange }) {
             <div>
               <h4 className="text-sm font-bold scholr-ink">Grade Categories</h4>
               {totalWeight !== 100 && form.categories?.length > 0 && (
-                <p className="text-xs text-amber-600 mt-0.5">⚠ Weights total {totalWeight}% — should equal 100%</p>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--warn)' }}>⚠ Weights total {totalWeight}% — should equal 100%</p>
               )}
               {totalWeight === 100 && form.categories?.length > 0 && (
-                <p className="text-xs text-emerald-600 mt-0.5">✓ Weights total 100%</p>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--good)' }}>✓ Weights total 100%</p>
               )}
             </div>
             <Button size="sm" variant="outline" onClick={() => setShowNewCat(true)} className="text-xs gap-1">
@@ -110,7 +110,7 @@ export default function GradingModelPanel({ form, onChange }) {
                   />
                   <span>lowest</span>
                 </div>
-                <button type="button" onClick={() => removeCategory(cat.id)} className="scholr-faint hover:text-red-500 flex-shrink-0">
+                <button type="button" onClick={() => removeCategory(cat.id)} className="scholr-faint flex-shrink-0">
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>

@@ -33,22 +33,25 @@ export default function TrialBanner() {
   };
 
   return (
+    /* A trial with weeks left is not a warning. It was drawn in the same
+       weight of tint as one about to expire, so the one that mattered never
+       stood out. */
     <Alert
-      className={`relative border-l-4 ${
-        isExpiringSoon
-          ? 'bg-amber-50 border-amber-400'
-          : 'bg-blue-50 border-blue-400'
-      }`}
+      className="relative"
+      style={{
+        borderLeft: `2px solid var(--${isExpiringSoon ? 'warn' : 'rule'})`,
+        background: isExpiringSoon ? 'var(--warn-sf)' : 'transparent',
+      }}
     >
       <div className="flex items-start gap-3">
         {isExpiringSoon ? (
-          <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
         ) : (
-          <Clock className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+          <Clock className="w-5 h-5 shrink-0 mt-0.5" />
         )}
         <div className="flex-1">
           <AlertDescription
-            className={isExpiringSoon ? 'text-amber-900' : 'text-blue-900'}
+            style={{ color: 'var(--body)' }}
           >
             <strong>
               {isExpiringSoon

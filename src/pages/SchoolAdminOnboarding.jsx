@@ -2,25 +2,39 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
-import RoleGuard from '@/components/auth/RoleGuard';
-import AppSidebar from '@/components/app/AppSidebar';
-import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
+import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import SetupWizard from '@/components/onboarding/SetupWizard';
 import OnboardingChecklist from '@/components/onboarding/OnboardingChecklist';
 import DemoDataControls from '@/components/onboarding/DemoDataControls';
 import InvitationsManager from '@/components/onboarding/InvitationsManager';
 import ParentLinkingPanel from '@/components/onboarding/ParentLinkingPanel';
 import SchoolReadiness from '@/components/onboarding/SchoolReadiness';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  LayoutDashboard, Sparkles, CheckSquare, FlaskConical,
-  ArrowLeft, Clock, Link2, Mail
-} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+const TABS = [
+  { value: 'wizard', label: 'Setup wizard' },
+  { value: 'invites', label: 'Invite staff' },
+  { value: 'parents', label: 'Parent access' },
+  { value: 'checklist', label: 'Checklist' },
+  { value: 'demo', label: 'Demo data' },
+];
+
+/**
+ * The first page a new school sees.
+ *
+ * Readiness sits above the tabs rather than inside one, because it is the
+ * answer to the question the page exists for — how much is left — and it is
+ * true whichever tab you are on.
+ *
+ * What went: an indigo gradient banner (the accent here is green), three
+ * reassurance chips, and a full-page "Setup Complete!" takeover that hid every
+ * tab the moment the wizard finished — including Invite staff, which is what
+ * you actually do next. Finishing now shows a line, and the tabs stay.
+ */
 export default function SchoolAdminOnboarding() {
+  const [tab, setTab] = useState('wizard');
   const navigate = useNavigate();
-  const { user, school, schoolId } = useUser();
+  const { school, schoolId } = useUser();
   const queryClient = useQueryClient();
   const [wizardComplete, setWizardComplete] = useState(false);
 
@@ -28,134 +42,55 @@ export default function SchoolAdminOnboarding() {
     setWizardComplete(true);
     queryClient.invalidateQueries({ queryKey: ['onboarding-status', schoolId] });
     queryClient.invalidateQueries({ queryKey: ['school-operations', schoolId] });
+    setTab('invites');
   };
 
   return (
-    <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar
-          links={SCHOOL_ADMIN_SIDEBAR_LINKS}
-          role="school_admin"
-          schoolName={school?.name}
-          userName={user?.full_name}
-          userId={user?.id}
-          schoolId={schoolId}
-        />
-
-        <main className="app-offset">
-          <div className="bg-white border-b scholr-rule px-6 py-4 sticky top-0 z-10 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => navigate('/SchoolAdminDashboard')}
-                  className="gap-1.5 scholr-muted"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5" /> Dashboard
-                </Button>
-                <div className="w-px h-5 scholr-sunk" />
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 scholr-accent-sf rounded-lg flex items-center justify-center">
-                    <Sparkles className="w-3.5 h-3.5 scholr-accent" />
-                  </div>
-                  <div>
-                    <h1 className="text-sm font-black scholr-ink">Onboarding</h1>
-                    <p className="text-xs scholr-faint">Get your school operational in minutes</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-6 max-w-6xl">
-            {!wizardComplete ? (
-              <div className="space-y-6">
-                <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-2xl p-6 text-white">
-                  <h2 className="text-xl font-black mb-1">Welcome to {school?.name || 'your school'}!</h2>
-                  <p className="text-indigo-100 text-sm max-w-xl">
-                    Let's get your school configured and your team activated. Follow the wizard, then invite users and link parents to their children.
-                  </p>
-                  <div className="flex gap-4 mt-4 text-xs text-indigo-200">
-                    <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Takes ~5 minutes to configure</span>
-                    <span className="flex items-center gap-1.5"><CheckSquare className="w-3.5 h-3.5" /> Save progress at any step</span>
-                    <span className="flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5" /> IB-ready presets included</span>
-                  </div>
-                </div>
-
-                <SchoolReadiness schoolId={schoolId} />
-
-                <Tabs defaultValue="wizard">
-                  <TabsList className="bg-white border scholr-rule flex-wrap h-auto">
-                    <TabsTrigger value="wizard" className="gap-1.5 text-xs data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
-                      <Sparkles className="w-3.5 h-3.5" /> Setup Wizard
-                    </TabsTrigger>
-                    <TabsTrigger value="invites" className="gap-1.5 text-xs data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
-                      <Mail className="w-3.5 h-3.5" /> Users & Invites
-                    </TabsTrigger>
-                    <TabsTrigger value="parents" className="gap-1.5 text-xs data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
-                      <Link2 className="w-3.5 h-3.5" /> Parent Links
-                    </TabsTrigger>
-                    <TabsTrigger value="checklist" className="gap-1.5 text-xs data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
-                      <CheckSquare className="w-3.5 h-3.5" /> Checklist
-                    </TabsTrigger>
-                    <TabsTrigger value="demo" className="gap-1.5 text-xs data-[state=active]:scholr-accent-sf data-[state=active]:scholr-accent">
-                      <FlaskConical className="w-3.5 h-3.5" /> Demo Data
-                    </TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="wizard" className="mt-5">
-                    <SetupWizard onComplete={handleWizardComplete} />
-                  </TabsContent>
-
-                  <TabsContent value="invites" className="mt-5">
-                    <InvitationsManager schoolId={schoolId} schoolName={school?.name} />
-                  </TabsContent>
-
-                  <TabsContent value="parents" className="mt-5">
-                    <ParentLinkingPanel schoolId={schoolId} />
-                  </TabsContent>
-
-                  <TabsContent value="checklist" className="mt-5">
-                    <OnboardingChecklist
-                      schoolId={schoolId}
-                      showWizard={null}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="demo" className="mt-5">
-                    <DemoDataControls
-                      schoolId={schoolId}
-                      onRefresh={() => {
-                        queryClient.invalidateQueries({ queryKey: ['onboarding-status', schoolId] });
-                        queryClient.invalidateQueries({ queryKey: ['school-operations', schoolId] });
-                      }}
-                    />
-                  </TabsContent>
-                </Tabs>
-              </div>
-            ) : (
-              <div className="text-center py-16">
-                <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
-                  <Sparkles className="w-10 h-10 text-emerald-600" />
-                </div>
-                <h2 className="text-2xl font-black scholr-ink mb-2">Setup Complete!</h2>
-                <p className="scholr-muted mb-6 max-w-sm mx-auto">
-                  Your school is now configured. You can refine settings at any time from the admin panels.
-                </p>
-                <div className="flex gap-3 justify-center">
-                  <Button onClick={() => navigate('/SchoolAdminDashboard')} className="scholr-accent-sf hover:scholr-accent-sf gap-1.5">
-                    <LayoutDashboard className="w-4 h-4" /> Go to Dashboard
-                  </Button>
-                  <Button variant="outline" onClick={() => setWizardComplete(false)} className="gap-1.5">
-                    <Sparkles className="w-4 h-4" /> Re-run Wizard
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        </main>
+    <SchoolAdminPage
+      title="Onboarding"
+      eyebrow={school?.name ? `Setting up ${school.name}` : 'Set the school up, step by step'}
+      tabs={TABS}
+      activeTab={tab}
+      onTabChange={setTab}
+      actions={
+        <Button variant="outline" onClick={() => navigate('/SchoolAdminDashboard')}>
+          Go to dashboard
+        </Button>
+      }
+      related={[
+        ['SchoolAdminAcademicSetup', 'Academic setup'],
+        ['SchoolAdminUsers', 'Users'],
+        ['SchoolAdminSettings', 'Settings'],
+      ]}
+    >
+      <div style={{ marginBottom: 'var(--space-md)' }}>
+        <SchoolReadiness schoolId={schoolId} />
       </div>
-    </RoleGuard>
+
+      {wizardComplete && tab !== 'wizard' && (
+        <p
+          style={{
+            margin: '0 0 var(--space-md)', fontSize: '.86rem', color: 'var(--muted)',
+            borderLeft: '2px solid var(--brand)', paddingLeft: '.7rem',
+          }}
+        >
+          Setup saved. Invite your staff next — you can re-run the wizard from its tab at any time.
+        </p>
+      )}
+
+      {tab === 'wizard' && <SetupWizard onComplete={handleWizardComplete} />}
+      {tab === 'invites' && <InvitationsManager schoolId={schoolId} schoolName={school?.name} />}
+      {tab === 'parents' && <ParentLinkingPanel schoolId={schoolId} />}
+      {tab === 'checklist' && <OnboardingChecklist schoolId={schoolId} showWizard={null} />}
+      {tab === 'demo' && (
+        <DemoDataControls
+          schoolId={schoolId}
+          onRefresh={() => {
+            queryClient.invalidateQueries({ queryKey: ['onboarding-status', schoolId] });
+            queryClient.invalidateQueries({ queryKey: ['school-operations', schoolId] });
+          }}
+        />
+      )}
+    </SchoolAdminPage>
   );
 }

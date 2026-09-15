@@ -1,3 +1,7 @@
+import { Group, Row } from '@/components/app/AppShell';
+import { Field, SelectField, FilterBar } from '@/components/app/Field';
+import StatusChip from '@/components/app/StatusChip';
+import Notice from '@/components/app/Notice';
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -126,100 +130,89 @@ export default function BehaviorExport({ schoolId, schoolName }) {
   const filteredCount = getFiltered().length;
 
   const EXPORTS = [
-    { title: 'Full Behavior Log', desc: 'Complete record-by-record export respecting visibility settings. Suitable for internal review or incident logs.', icon: FileText, color: 'indigo', action: exportFullLog },
-    { title: 'Student Summary Report', desc: 'Per-student aggregated counts of incident types, severity flags, and follow-up status. Ideal for parent meetings.', icon: BarChart2, color: 'emerald', action: exportStudentSummary },
-    { title: 'Follow-up Tracker', desc: 'All records requiring follow-up with completion status and pastoral review tracking. For welfare team coordination.', icon: AlertTriangle, color: 'amber', action: exportFollowUpReport },
-    { title: 'Pastoral & Safeguarding Log', desc: 'Includes high/critical, staff-only, and pastoral-reviewed records. Restricted export — logged as sensitive.', icon: Shield, color: 'rose', action: exportPastoralLog, sensitive: true },
+    { title: 'Full Behavior Log', desc: 'Complete record-by-record export respecting visibility settings. Suitable for internal review or incident logs.', icon: FileText, action: exportFullLog },
+    { title: 'Student Summary Report', desc: 'Per-student aggregated counts of incident types, severity flags, and follow-up status. Ideal for parent meetings.', icon: BarChart2, action: exportStudentSummary },
+    { title: 'Follow-up Tracker', desc: 'All records requiring follow-up with completion status and pastoral review tracking. For welfare team coordination.', icon: AlertTriangle, action: exportFollowUpReport },
+    { title: 'Pastoral & Safeguarding Log', desc: 'Includes high/critical, staff-only, and pastoral-reviewed records. Restricted export — logged as sensitive.', icon: Shield, action: exportPastoralLog, sensitive: true },
   ];
 
-  const colorMap = {
-    indigo: 'scholr-accent-rule scholr-accent hover:scholr-accent-sf',
-    emerald: 'border-emerald-200 text-emerald-700 hover:bg-emerald-50',
-    amber: 'border-amber-200 text-amber-700 hover:bg-amber-50',
-    rose: 'border-rose-200 text-rose-700 hover:bg-rose-50',
-  };
-  const iconBg = {
-    indigo: 'scholr-accent-sf scholr-accent',
-    emerald: 'bg-emerald-100 text-emerald-600',
-    amber: 'bg-amber-100 text-amber-600',
-    rose: 'bg-rose-100 text-rose-600',
-  };
-
   return (
-    <div className="space-y-6">
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
-        <Shield className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-        <div>
-          <p className="text-sm font-bold text-blue-900">Privacy-Safe Exports</p>
-          <p className="text-xs text-blue-700 mt-0.5">All exports are school-scoped and audit-logged. Staff-only records are excluded from standard exports unless explicitly enabled. Pastoral exports are flagged as sensitive in the audit trail.</p>
-        </div>
-      </div>
+    <div className="space-y-4">
+      <Notice title="What leaves the building, and what does not">
+        Every export is limited to your school and written to the audit trail. Staff-only records are
+        held back unless you ask for them below, and any export that includes them is marked sensitive.
+      </Notice>
 
-      {/* Filters */}
-      <div className="bg-white rounded-xl border scholr-rule p-4 flex flex-wrap gap-4 items-end">
-        <div>
-          <label className="text-xs font-semibold scholr-muted block mb-1">From</label>
-          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm" />
-        </div>
-        <div>
-          <label className="text-xs font-semibold scholr-muted block mb-1">To</label>
-          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm" />
-        </div>
-        <div>
-          <label className="text-xs font-semibold scholr-muted block mb-1">Record Type</label>
-          <select value={filterType} onChange={e => setFilterType(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm bg-white">
-            <option value="all">All Types</option>
-            <option value="positive">Positive</option>
-            <option value="concern">Concern</option>
-            <option value="incident">Incident</option>
-            <option value="note">Note</option>
-          </select>
-        </div>
-        <div className="flex items-end gap-2">
-          <label className="flex items-center gap-2 text-sm cursor-pointer pb-1.5">
-            <input type="checkbox" checked={includeStaffOnly} onChange={e => setIncludeStaffOnly(e.target.checked)} className="w-4 h-4" />
-            <span className="font-medium scholr-body">Include staff-only records</span>
-          </label>
-        </div>
-        <div className="text-sm scholr-muted pb-1.5">
-          <span className="font-bold scholr-ink">{isLoading ? '…' : filteredCount}</span> records in scope
-        </div>
-      </div>
+      <FilterBar>
+        <Field label="From" htmlFor="bex-from">
+          <input id="bex-from" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="app-input scholr-focus" />
+        </Field>
+        <Field label="To" htmlFor="bex-to">
+          <input id="bex-to" type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="app-input scholr-focus" />
+        </Field>
+        <Field label="Type" htmlFor="bex-type">
+          <SelectField
+            id="bex-type" label="Record type" value={filterType} onChange={setFilterType}
+            options={[
+              { value: 'all', label: 'All types' },
+              { value: 'positive', label: 'Positive' },
+              { value: 'concern', label: 'Concern' },
+              { value: 'incident', label: 'Incident' },
+              { value: 'note', label: 'Note' },
+            ]}
+          />
+        </Field>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '.45rem', fontSize: '.85rem', color: 'var(--body)', cursor: 'pointer', paddingBottom: '.4rem' }}>
+          <input
+            type="checkbox"
+            checked={includeStaffOnly}
+            onChange={e => setIncludeStaffOnly(e.target.checked)}
+            className="w-4 h-4 scholr-focus"
+          />
+          Include staff-only records
+        </label>
+      </FilterBar>
 
       {includeStaffOnly && (
-        <div className="bg-rose-50 border border-rose-200 rounded-xl p-3 flex items-center gap-2">
-          <Shield className="w-4 h-4 text-rose-600" />
-          <p className="text-xs text-rose-800 font-medium">Staff-only records included. This export will be flagged as sensitive in the audit trail.</p>
-        </div>
+        <Notice tone="crit" title="This export will be marked sensitive">
+          Staff-only records are included. The audit trail will record who took this export and when.
+        </Notice>
       )}
 
-      {/* Export Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {EXPORTS.map(exp => {
-          const Icon = exp.icon;
-          return (
-            <div key={exp.title} className="bg-white rounded-xl border scholr-rule p-6 flex flex-col gap-4">
-              <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${iconBg[exp.color]}`}>
-                  <Icon className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-bold scholr-ink">{exp.title}</h4>
-                    {exp.sensitive && <span className="text-xs px-1.5 py-0.5 bg-rose-50 text-rose-700 border border-rose-200 rounded font-medium">Sensitive</span>}
-                  </div>
-                  <p className="text-xs scholr-muted mt-1">{exp.desc}</p>
-                </div>
-              </div>
-              <Button variant="outline" onClick={exp.action} disabled={isExporting || isLoading || filteredCount === 0}
-                className={`w-full border ${colorMap[exp.color]} font-medium`}>
-                {isExporting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Download className="w-4 h-4 mr-2" />}
-                Export as CSV
-              </Button>
-            </div>
-          );
-        })}
-      </div>
+      <Group
+        title="What you can export"
+        action={
+          <span className="scholr-label">
+            {isLoading ? '…' : `${filteredCount} record${filteredCount === 1 ? '' : 's'} in scope`}
+          </span>
+        }
+      >
+        {EXPORTS.map(exp => (
+          <Row
+            key={exp.title}
+            label={exp.title}
+            detail={exp.desc}
+          >
+            {exp.sensitive && <StatusChip tone="crit">Sensitive</StatusChip>}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={exp.action}
+              disabled={isExporting || isLoading || filteredCount === 0}
+              className="gap-2 flex-shrink-0"
+            >
+              {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+              CSV
+            </Button>
+          </Row>
+        ))}
+      </Group>
+
+      {!isLoading && filteredCount === 0 && (
+        <p style={{ margin: 0, fontSize: '.85rem', color: 'var(--muted)' }}>
+          Nothing matches these filters, so there is nothing to export.
+        </p>
+      )}
     </div>
   );
 }

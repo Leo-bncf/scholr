@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useRef } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowRight } from 'lucide-react';
 import RoleGuard from '@/components/auth/RoleGuard';
@@ -35,33 +35,65 @@ export default function SchoolAdminPage({
   onTabChange,
   related,
   allowedRoles = ['school_admin', 'admin', 'super_admin'],
+  /* A few pages in this section are shared with other roles — Messages is the
+     same screen for a parent as for a head of school. They pass the sidebar
+     their own role should see; everything else about the frame is identical,
+     which is the point. */
+  sidebarLinks,
+  sidebarRole,
   children,
 }) {
-  const { user, school, schoolId } = useUser();
+  const { user, school, schoolId, role } = useUser();
+  const [params, setParams] = useSearchParams();
+
+  /* Tabs live in the URL.
+   *
+   * Every page here keeps its tab in useState, which meant a tab was not a
+   * place: you could not link to "Users, bulk import", only to "Users", and a
+   * refresh always dropped you back on the first tab. The frame syncs the two
+   * so pages need no change — arriving with ?tab=import selects it, and
+   * switching tabs rewrites the parameter. */
+  const wanted = params.get('tab');
+  const applied = useRef(null);
+  useEffect(() => {
+    if (!tabs?.length || !wanted || wanted === activeTab) return;
+    if (applied.current === wanted) return;          // don't fight the page
+    if (!tabs.some(t => t.value === wanted)) return; // ignore a stale link
+    applied.current = wanted;
+    onTabChange?.(wanted);
+  }, [wanted, activeTab, tabs, onTabChange]);
+
+  const selectTab = (value) => {
+    onTabChange?.(value);
+    const next = new URLSearchParams(params);
+    next.set('tab', value);
+    setParams(next, { replace: true });
+  };
 
   return (
     <RoleGuard allowedRoles={allowedRoles}>
       <AppSidebar
-        links={SCHOOL_ADMIN_SIDEBAR_LINKS}
-        role="school_admin"
+        links={sidebarLinks || SCHOOL_ADMIN_SIDEBAR_LINKS}
+        role={sidebarRole || role || 'school_admin'}
         schoolName={school?.name}
         userName={user?.full_name}
         userId={user?.id}
         schoolId={schoolId}
       />
       <div className="app-offset">
-        <AppShell title={title} eyebrow={eyebrow} actions={actions}>
-          {tabs?.length > 0 && (
-            <div style={{ marginBottom: 'var(--space-xs)' }}>
-              <Segmented
-                label={`${title} sections`}
-                value={activeTab}
-                onChange={onTabChange}
-                options={tabs}
-              />
-            </div>
-          )}
-
+        <AppShell
+          title={title}
+          eyebrow={eyebrow}
+          actions={actions}
+          tabs={tabs?.length > 0 ? (
+            <Segmented
+              label={`${title} sections`}
+              value={activeTab}
+              onChange={selectTab}
+              options={tabs}
+            />
+          ) : null}
+        >
           {children}
 
           {related?.length > 0 && (

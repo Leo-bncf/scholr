@@ -205,7 +205,12 @@ export default function SuperAdminAnalytics() {
       forecastSeries,
       reportRows,
     };
-  }, [schools, memberships, auditLogs, classes, subjects, messages, attendanceRecords, behaviorRecords, casExperiences, rangeDays]);
+  /* Six names in here — classes, subjects, messages, attendanceRecords,
+     behaviorRecords, casExperiences — outlived the raw-table fetch they came
+     from; adoption is computed in Postgres now. A dependency array is
+     evaluated on every render, so the page threw a ReferenceError before it
+     drew anything. */
+  }, [schools, memberships, auditLogs, featureAdoption, rangeDays]);
 
   if (isChecking || isLoading) {
     return <SuperAdminLoadingState />;

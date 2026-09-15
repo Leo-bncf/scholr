@@ -12,8 +12,8 @@ import BehaviorExport from '@/components/behavior-admin/BehaviorExport';
 
 const TABS = [
   { value: 'dashboard', label: 'Dashboard' },
-  { value: 'pastoral', label: 'Pastoral Oversight' },
-  { value: 'policy', label: 'Policy Config' },
+  { value: 'pastoral', label: 'Pastoral' },
+  { value: 'policy', label: 'Policy' },
   { value: 'exports', label: 'Exports' },
 ];
 

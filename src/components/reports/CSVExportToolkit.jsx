@@ -10,7 +10,7 @@ import { logAudit, AuditActions } from '@/components/utils/auditLogger';
 
 function ExportCard({ title, description, recordCount, badge, onExport, loading }) {
   return (
-    <div className="bg-white rounded-xl border scholr-rule p-5">
+    <div className="app-group" style={{ padding: '1rem 1.1rem' }}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
@@ -137,7 +137,7 @@ export default function CSVExportToolkit({
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <div className="bg-white rounded-xl border scholr-rule p-5">
+      <div className="app-group" style={{ padding: '1rem 1.1rem' }}>
         <div className="flex items-center gap-2 mb-4">
           <h3 className="font-semibold scholr-ink">Export Filters</h3>
           <span className="text-xs scholr-faint flex items-center gap-1"><Info className="w-3 h-3" /> Filters apply to all exports below</span>

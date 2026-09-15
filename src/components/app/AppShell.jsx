@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom';
  * tabular figures, and motion limited to transform and opacity with a
  * reduced-motion fallback.
  */
-export default function AppShell({ title, eyebrow, actions, children }) {
+export default function AppShell({ title, eyebrow, actions, tabs, children }) {
   const sentinel = useRef(null);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -45,7 +45,24 @@ export default function AppShell({ title, eyebrow, actions, children }) {
           style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}
         >
           <span className="app-toolbar-title" style={{ minWidth: 0 }}>{title}</span>
-          {actions && <span style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--space-2xs)' }}>{actions}</span>}
+          {/* The actions used to live only up here. Before the page scrolls
+              the toolbar title is still faded out, so a page whose only action
+              was a button showed that button floating alone against the top of
+              the window, attached to nothing. They belong beside the heading,
+              and reappear here once the heading has scrolled away. */}
+          {actions && (
+            <span
+              aria-hidden={!collapsed}
+              style={{
+                marginLeft: 'auto', display: 'flex', gap: 'var(--space-2xs)',
+                opacity: collapsed ? 1 : 0,
+                pointerEvents: collapsed ? 'auto' : 'none',
+                transition: 'opacity var(--dur-short) var(--ease-out)',
+              }}
+            >
+              {actions}
+            </span>
+          )}
         </span>
       </div>
 
@@ -53,9 +70,21 @@ export default function AppShell({ title, eyebrow, actions, children }) {
           sprawl, a row's label and its value end up a hand-span apart, and the
           page reads as unfinished rather than spacious. */}
       <div className="app-measure" style={{ paddingBottom: 'var(--space-3xl)' }}>
-        <header style={{ padding: 'var(--space-lg) 0 var(--space-xl)' }}>
+        {/* The tab bar belongs to the header. Rendered as the first child of
+            the content column instead, it collected that column's --space-xl
+            gap on top of the header's own padding, and every tabbed page had a
+            hand-span of nothing between its title and its first row. */}
+        <header style={{ padding: `var(--space-lg) 0 ${tabs ? 'var(--space-md)' : 'var(--space-xl)'}` }}>
           {eyebrow && <p className="scholr-label" style={{ margin: '0 0 .4rem' }}>{eyebrow}</p>}
-          <h1 className="app-title">{title}</h1>
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 'var(--space-md)', flexWrap: 'wrap' }}>
+            <h1 className="app-title" style={{ margin: 0 }}>{title}</h1>
+            {actions && (
+              <span style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--space-2xs)', alignItems: 'center' }}>
+                {actions}
+              </span>
+            )}
+          </div>
+          {tabs && <div style={{ marginTop: 'var(--space-md)' }}>{tabs}</div>}
         </header>
         {/* Zero-height marker: when it leaves the viewport the toolbar takes
             over the title. Watching the heading itself would flip the state

@@ -62,7 +62,7 @@ function StorageMonitor({ schoolId, plan }) {
           <p className="text-lg font-bold scholr-ink">{submissions.length}</p>
           <p className="text-[11px] scholr-faint mt-0.5">Submissions</p>
         </div>
-        <div className={`rounded-lg p-3 text-center ${isCritical ? 'bg-red-50' : isHigh ? 'bg-amber-50' : 'scholr-sunk'}`}>
+        <div className="rounded-lg p-3 text-center scholr-sunk">
           <p className={`text-lg font-bold ${isCritical ? 'text-red-700' : isHigh ? 'text-amber-700' : 'scholr-ink'}`}>
             {formatSize(submissionMB)}
           </p>
@@ -74,15 +74,21 @@ function StorageMonitor({ schoolId, plan }) {
         <div className="flex items-center justify-between mb-1.5">
           <span className="text-xs scholr-muted">{formatSize(submissionMB)} of {formatSize(limitMB)} used ({usedPct.toFixed(1)}%)</span>
           {isCritical && (
-            <span className="text-xs text-red-600 font-medium flex items-center gap-1">
+            <span className="text-xs font-medium flex items-center gap-1" style={{ color: 'var(--crit)' }}>
               <AlertTriangle className="w-3 h-3" /> Critical
             </span>
           )}
         </div>
         <div className="h-2 scholr-sunk rounded-full overflow-hidden">
           <div
-            className={`h-full rounded-full transition-colors ${isCritical ? 'bg-red-500' : isHigh ? 'bg-amber-500' : 'bg-indigo-500'}`}
-            style={{ width: `${usedPct}%` }}
+            className="h-full rounded-full transition-colors"
+            /* The tile behind this used to be tinted too, so a school near its
+               storage limit got the same signal three times over. The bar
+               alone carries it. */
+            style={{
+              width: `${usedPct}%`,
+              background: isCritical ? 'var(--crit)' : isHigh ? 'var(--warn)' : 'var(--brand)',
+            }}
           />
         </div>
         <p className="text-[11px] scholr-faint mt-1">
@@ -145,7 +151,7 @@ export default function FileSecurityPanel({ form, onChange, schoolId, plan }) {
             {(form.allowed_file_extensions || []).map(ext => (
               <Badge key={ext} variant="outline" className="text-xs font-mono flex items-center gap-1 pr-1">
                 {ext}
-                <button onClick={() => removeExtension(ext)} className="ml-1 hover:text-red-600 transition-colors">
+                <button onClick={() => removeExtension(ext)} className="ml-1 transition-colors">
                   <X className="w-3 h-3" />
                 </button>
               </Badge>

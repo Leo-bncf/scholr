@@ -1,13 +1,9 @@
+import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
-import RoleGuard from '@/components/auth/RoleGuard';
-import AppSidebar from '@/components/app/AppSidebar';
-import { Button } from '@/components/ui/button';
-import {
-  MessageSquare, Lock, Moon, Shield, Loader2, Save, CheckCircle2,
+import { Loader2,
 } from 'lucide-react';
-import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
 import { DEFAULT_MESSAGING_POLICY } from '@/hooks/useMessagingPolicy';
 import PermissionRulesPanel from '@/components/messaging-policy/PermissionRulesPanel';
 import AnnouncementsGovernancePanel from '@/components/messaging-policy/AnnouncementsGovernancePanel';
@@ -19,10 +15,10 @@ import * as messagingPoliciesData from '@/data/messagingPolicies';
 
 
 const TABS = [
-  { id: 'permissions',    label: 'Permission Rules',          icon: Lock,           desc: 'Control who can message whom' },
-  { id: 'announcements',  label: 'Announcements Governance',  icon: MessageSquare,  desc: 'Broadcast rights & dashboard visibility' },
-  { id: 'quiet',          label: 'Quiet Hours & Notifications', icon: Moon,         desc: 'Communication windows & notification defaults' },
-  { id: 'compliance',     label: 'Compliance',                icon: Shield,         desc: 'Metadata retention & safeguarding controls' },
+  { value: 'permissions', label: 'Permissions' },
+  { value: 'announcements', label: 'Announcements' },
+  { value: 'quiet', label: 'Quiet hours' },
+  { value: 'compliance', label: 'Compliance' },
 ];
 
 function mergeDeep(defaults, saved) {
@@ -83,70 +79,25 @@ export default function SchoolAdminMessagingPolicy() {
   const handleChange = (partial) => setForm(prev => ({ ...prev, ...partial }));
 
   return (
-    <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar
-          links={SCHOOL_ADMIN_SIDEBAR_LINKS}
-          role="school_admin"
-          schoolName={school?.name}
-          userName={user?.full_name}
-          userId={user?.id}
-          schoolId={schoolId}
-        />
-
-        <main className="app-offset min-h-screen">
-          {/* Header */}
-          <div className="bg-white border-b scholr-rule px-6 py-5 sticky top-0 z-10">
-            <div className="max-w-5xl mx-auto flex items-center justify-between">
-              <div>
-                <h1 className="text-xl font-black scholr-ink tracking-tight flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5 scholr-accent" />
-                  Messaging rules
-                </h1>
-                <p className="text-xs scholr-muted mt-0.5">{school?.name} · Govern communication across the platform</p>
-              </div>
-              <div className="flex items-center gap-3">
-                {saved && (
-                  <span className="flex items-center gap-1.5 text-sm text-emerald-700 font-semibold">
-                    <CheckCircle2 className="w-4 h-4" /> Saved
-                  </span>
-                )}
-                <Button
-                  onClick={() => form && saveMutation.mutate(form)}
-                  disabled={saveMutation.isPending || !form}
-                  className="scholr-accent-sf hover:scholr-accent-sf"
-                >
-                  {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-                  Save Policy
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Tab bar */}
-          <div className="bg-white border-b scholr-rule px-6">
-            <div className="max-w-5xl mx-auto flex gap-1 -mb-px overflow-x-auto">
-              {TABS.map(t => {
-                const Icon = t.icon;
-                const active = tab === t.id;
-                return (
-                  <button
-                    key={t.id}
-                    onClick={() => setTab(t.id)}
-                    className={`flex items-center gap-2 px-4 py-3.5 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap ${
-                      active ? 'scholr-accent-rule scholr-accent' : 'border-transparent scholr-muted hover:scholr-body'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    {t.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="max-w-5xl mx-auto p-6">
+    <SchoolAdminPage
+      title="Messaging rules"
+      eyebrow="Who may message whom, and when"
+      tabs={TABS}
+      activeTab={tab}
+      onTabChange={setTab}
+      actions={
+        <button
+          type="button"
+          onClick={() => saveMutation.mutate(form)}
+          disabled={saveMutation.isPending || !form}
+          className="pub-btn pub-btn-primary scholr-focus"
+        >
+          {saveMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+          Save rules
+        </button>
+      }
+      related={[['Messages', 'Messages'], ['SchoolAdminUsers', 'Users'], ['SchoolAdminSettings', 'Settings']]}
+    >
             {isLoading || !form ? (
               <div className="flex justify-center py-20">
                 <Loader2 className="w-6 h-6 animate-spin scholr-accent" />
@@ -157,22 +108,8 @@ export default function SchoolAdminMessagingPolicy() {
                 {tab === 'announcements' && <AnnouncementsGovernancePanel form={form} onChange={handleChange} />}
                 {tab === 'quiet'         && <QuietHoursPanel form={form} onChange={handleChange} />}
                 {tab === 'compliance'    && <CompliancePanel form={form} onChange={handleChange} />}
-
-                <div className="flex justify-end mt-8">
-                  <Button
-                    onClick={() => saveMutation.mutate(form)}
-                    disabled={saveMutation.isPending}
-                    className="scholr-accent-sf hover:scholr-accent-sf"
-                  >
-                    {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-                    Save Policy
-                  </Button>
-                </div>
               </>
             )}
-          </div>
-        </main>
-      </div>
-    </RoleGuard>
+    </SchoolAdminPage>
   );
 }

@@ -1,12 +1,15 @@
+import { Group, GroupEmpty } from '@/components/app/AppShell';
+import DataTable from '@/components/app/DataTable';
+import StatCard from '@/components/app/StatCard';
+import Notice from '@/components/app/Notice';
 import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import {
-  Printer, Download, Users, BarChart3, GraduationCap, Loader2
+  Printer, Download, GraduationCap, Loader2
 } from 'lucide-react';
 import { generatePrintableHTML, printHTML, buildCSV, downloadCSV, COLUMNS } from './reportUtils';
 import { format } from 'date-fns';
@@ -44,54 +47,62 @@ function StudentProgressTable({ students, grades, attendance }) {
     return { ...s, gStats, aStats };
   }), [students, grades, attendance]);
 
+  /* Colour marks what needs attention, not what is fine.
+   *
+   * Every numeric cell used to be coloured by its own threshold — green above
+   * 70, amber above 50, red below; green above 90 for attendance — so a class
+   * doing well rendered as a full grid of green, and a class in trouble as a
+   * full grid of red. Either way the eye had nowhere to land. Now only the
+   * bottom band of each scale is tinted. */
+  const scoreTone = (v) => (v === null ? null : v < 50 ? 'crit' : v < 70 ? 'warn' : null);
+  const rateTone = (v) => (v === null ? null : v < 75 ? 'crit' : v < 90 ? 'warn' : null);
+  const tinted = (value, tone) => (
+    <span style={tone ? { color: `var(--${tone})` } : undefined}>{value}</span>
+  );
+
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="scholr-sunk border-b scholr-rule">
-            <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">Student</th>
-            <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase hidden md:table-cell">Grade Level</th>
-            <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">Grades</th>
-            <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">Avg Score</th>
-            <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">Attendance</th>
-            <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">Rate</th>
-            <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase hidden lg:table-cell">Absent</th>
-            <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase hidden lg:table-cell">Late</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y scholr-divide">
-          {rows.map(row => {
-            const rate = row.aStats.rate ? parseFloat(row.aStats.rate) : null;
-            const rateColor = rate === null ? 'scholr-faint' : rate >= 90 ? 'text-emerald-700 font-semibold' : rate >= 75 ? 'text-amber-700 font-semibold' : 'text-red-700 font-semibold';
-            return (
-              <tr key={row.user_id} className="hover:scholr-sunk transition-colors">
-                <td className="px-4 py-3">
-                  <p className="font-medium scholr-ink">{row.user_name || row.user_email}</p>
-                  <p className="text-xs scholr-faint">{row.user_email}</p>
-                </td>
-                <td className="px-4 py-3 scholr-muted text-xs hidden md:table-cell">{row.grade_level || '—'}</td>
-                <td className="px-4 py-3 text-center scholr-body">{row.gStats.count || '—'}</td>
-                <td className="px-4 py-3 text-center">
-                  {row.gStats.avg ? (
-                    <span className={`font-semibold ${parseFloat(row.gStats.avg) >= 70 ? 'text-emerald-700' : parseFloat(row.gStats.avg) >= 50 ? 'text-amber-700' : 'text-red-700'}`}>
-                      {row.gStats.avg}%
-                    </span>
-                  ) : <span className="scholr-faint">—</span>}
-                </td>
-                <td className="px-4 py-3 text-center scholr-body">{row.aStats.total || '—'}</td>
-                <td className={`px-4 py-3 text-center ${rateColor}`}>{row.aStats.rate ? `${row.aStats.rate}%` : '—'}</td>
-                <td className="px-4 py-3 text-center hidden lg:table-cell">
-                  {row.aStats.absent > 0 ? <span className="text-red-600 font-medium">{row.aStats.absent}</span> : <span className="scholr-faint">0</span>}
-                </td>
-                <td className="px-4 py-3 text-center hidden lg:table-cell">
-                  {row.aStats.late > 0 ? <span className="text-amber-600 font-medium">{row.aStats.late}</span> : <span className="scholr-faint">0</span>}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+    <DataTable
+      columns={[
+        {
+          key: 'student',
+          header: 'Student',
+          render: (row) => (
+            <>
+              <span style={{ display: 'block', color: 'var(--ink)' }}>{row.user_name || row.user_email}</span>
+              <span style={{ display: 'block', fontSize: '.76rem', color: 'var(--muted)' }}>{row.user_email}</span>
+            </>
+          ),
+        },
+        { key: 'grade_level', header: 'Year', render: (row) => row.grade_level || '—' },
+        { key: 'grades', header: 'Grades', num: true, render: (row) => row.gStats.count || '—' },
+        {
+          key: 'avg',
+          header: 'Average',
+          num: true,
+          render: (row) => {
+            if (!row.gStats.avg) return '—';
+            const v = parseFloat(row.gStats.avg);
+            return tinted(`${row.gStats.avg}%`, scoreTone(v));
+          },
+        },
+        { key: 'sessions', header: 'Sessions', num: true, render: (row) => row.aStats.total || '—' },
+        {
+          key: 'rate',
+          header: 'Attendance',
+          num: true,
+          render: (row) => {
+            if (!row.aStats.rate) return '—';
+            const v = parseFloat(row.aStats.rate);
+            return tinted(`${row.aStats.rate}%`, rateTone(v));
+          },
+        },
+        { key: 'absent', header: 'Absent', num: true, render: (row) => tinted(row.aStats.absent || 0, row.aStats.absent > 0 ? 'crit' : null) },
+        { key: 'late', header: 'Late', num: true, render: (row) => tinted(row.aStats.late || 0, row.aStats.late > 0 ? 'warn' : null) },
+      ]}
+      rows={rows}
+      rowKey={(row) => row.user_id}
+      empty="Nobody is enrolled in this class yet."
+    />
   );
 }
 
@@ -312,7 +323,7 @@ export default function ClassProgressReport({
   return (
     <div className="space-y-6">
       {/* Config Panel */}
-      <div className="bg-white rounded-xl border scholr-rule p-5">
+      <div className="app-group" style={{ padding: '1rem 1.1rem' }}>
         <h3 className="font-semibold scholr-ink mb-4 flex items-center gap-2">
           <GraduationCap className="w-4 h-4 scholr-accent" /> Class Progress Report Settings
         </h3>
@@ -376,62 +387,56 @@ export default function ClassProgressReport({
         </div>
       </div>
 
-      {/* Class Stats Summary */}
       {cls && classStats && (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          {[
-            { label: 'Students', value: classStats.enrolled, color: 'scholr-accent-sf scholr-accent scholr-accent-rule' },
-            { label: 'Published Grades', value: classStats.gradeCount, color: 'scholr-accent-sf scholr-accent scholr-accent-rule' },
-            { label: 'Avg Score', value: classStats.avgScore ? `${classStats.avgScore}%` : '—', color: 'bg-sky-50 text-sky-700 border-sky-200' },
-            { label: 'Attendance Rate', value: classStats.rate ? `${classStats.rate}%` : '—', color: classStats.rate && parseFloat(classStats.rate) >= 90 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200' },
-            { label: 'Total Absences', value: classStats.absent, color: classStats.absent > 0 ? 'bg-red-50 text-red-700 border-red-200' : 'scholr-sunk scholr-muted scholr-rule' },
-          ].map(({ label, value, color }) => (
-            <div key={label} className={`rounded-xl border p-4 ${color}`}>
-              <p className="text-xl font-black">{value}</p>
-              <p className="text-xs font-medium mt-1 opacity-80">{label}</p>
-            </div>
-          ))}
-        </div>
+        <Group>
+          <div className="scholr-grid app-cols-5">
+            <StatCard label="Students" value={classStats.enrolled} hint="enrolled" />
+            <StatCard label="Grades" value={classStats.gradeCount} hint="published" />
+            <StatCard label="Average" value={classStats.avgScore ? `${classStats.avgScore}%` : '—'} hint="across the class" />
+            <StatCard
+              label="Attendance"
+              value={classStats.rate ? `${classStats.rate}%` : '—'}
+              tone={classStats.rate && parseFloat(classStats.rate) < 90 ? 'warn' : undefined}
+              hint="of sessions"
+            />
+            <StatCard
+              label="Absences"
+              value={classStats.absent}
+              tone={classStats.absent > 0 ? 'crit' : undefined}
+              hint="recorded"
+            />
+          </div>
+        </Group>
       )}
 
       {/* Student Progress Table */}
-      {cls && filteredStudents.length > 0 ? (
-        <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
-          <div className="px-5 py-4 border-b scholr-rule flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 scholr-muted" />
-              <h3 className="font-semibold scholr-ink">Student Progress Summary</h3>
-              <Badge variant="outline" className="text-xs">{filteredStudents.length} students</Badge>
-            </div>
-            {termId !== 'all' && (
-              <Badge className="scholr-accent-sf scholr-accent border-0 text-xs">
-                {terms.find(t => t.id === termId)?.name}
-              </Badge>
-            )}
-          </div>
+      <Group
+        title="Each student"
+        action={
+          <span className="scholr-label">
+            {cls
+              ? `${filteredStudents.length} student${filteredStudents.length === 1 ? '' : 's'}${termId !== 'all' ? ` · ${terms.find(t => t.id === termId)?.name}` : ''}`
+              : 'no class chosen'}
+          </span>
+        }
+      >
+        {!cls ? (
+          <GroupEmpty>Pick a class above to see grades and attendance per student.</GroupEmpty>
+        ) : filteredStudents.length === 0 ? (
+          <GroupEmpty>{search ? 'No students match that search.' : 'Nobody is enrolled in this class yet.'}</GroupEmpty>
+        ) : (
           <StudentProgressTable
             students={filteredStudents}
             grades={classGrades}
             attendance={classAttendance}
           />
-        </div>
-      ) : cls ? (
-        <div className="bg-white rounded-xl border scholr-rule p-10 text-center">
-          <Users className="w-8 h-8 scholr-faint mx-auto mb-2" />
-          <p className="scholr-faint">{search ? 'No students match your search.' : 'No students enrolled in this class.'}</p>
-        </div>
-      ) : (
-        <div className="bg-white rounded-xl border scholr-rule p-10 text-center">
-          <BarChart3 className="w-8 h-8 scholr-faint mx-auto mb-2" />
-          <p className="scholr-muted font-medium">Select a class to view progress</p>
-          <p className="scholr-faint text-sm mt-1">Choose a class above to see per-student grades and attendance summary.</p>
-        </div>
-      )}
+        )}
+      </Group>
 
-      <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-800 flex items-start gap-2">
-        <Printer className="w-4 h-4 shrink-0 mt-0.5" />
-        <p>The PDF report opens in a new tab — use Ctrl+P / ⌘P to save as PDF. Only <strong>published</strong> grades are included. Staff-only behavior notes are excluded.</p>
-      </div>
+      <Notice>
+        The printable report opens in a new tab — use ⌘P or Ctrl+P to save it as a PDF. It includes
+        published grades only, and never staff-only behaviour notes.
+      </Notice>
     </div>
   );
 }

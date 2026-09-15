@@ -37,7 +37,7 @@ export default function QuietHoursPanel({ form, onChange }) {
   return (
     <div className="space-y-6">
       {/* Quiet Hours */}
-      <div className="bg-white rounded-xl border scholr-rule p-5 space-y-5">
+      <div className="app-group space-y-5" style={{ padding: '1rem 1.1rem' }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Moon className="w-5 h-5 scholr-accent" />
@@ -126,9 +126,9 @@ export default function QuietHoursPanel({ form, onChange }) {
       </div>
 
       {/* Notification Defaults */}
-      <div className="bg-white rounded-xl border scholr-rule p-5 space-y-5">
+      <div className="app-group space-y-5" style={{ padding: '1rem 1.1rem' }}>
         <div className="flex items-center gap-2">
-          <Bell className="w-5 h-5 text-amber-500" />
+          <Bell className="w-5 h-5" />
           <div>
             <h4 className="font-bold scholr-ink text-sm">Default Notification Preferences</h4>
             <p className="text-xs scholr-muted mt-0.5">School-wide defaults for how users are notified. Users can override these if permitted.</p>

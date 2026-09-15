@@ -1,3 +1,6 @@
+import { Group, Row } from '@/components/app/AppShell';
+import { Field, SelectField, FilterBar } from '@/components/app/Field';
+import Notice from '@/components/app/Notice';
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -161,113 +164,87 @@ export default function AttendanceExport({ schoolId, schoolName }) {
       title: 'Raw Attendance Log',
       description: 'Full record-by-record export including status, notes, reason categories, recorded-by, and correction metadata. Suitable for regulatory submission.',
       icon: FileText,
-      color: 'indigo',
       action: exportRawLog,
     },
     {
       title: 'Student Summary Report',
       description: 'Aggregated totals per student: present, absent, late, excused counts and attendance rate. Ideal for parent meetings or internal reporting.',
       icon: BarChart2,
-      color: 'emerald',
       action: exportSummaryReport,
     },
     {
       title: 'Daily Breakdown',
       description: 'School-wide daily attendance rates across the selected period. Useful for leadership trend review.',
       icon: Calendar,
-      color: 'amber',
       action: exportDailyBreakdown,
     },
     {
       title: 'Audit Trail (Corrections)',
       description: 'All attendance corrections with before/after status, who corrected, when, and the reason provided. Full traceability for governance.',
       icon: Shield,
-      color: 'rose',
       action: exportAuditTrail,
     },
   ];
 
-  const colorMap = {
-    indigo: 'scholr-accent-sf scholr-accent-rule scholr-accent hover:scholr-accent-sf',
-    emerald: 'bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100',
-    amber: 'bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100',
-    rose: 'bg-rose-50 border-rose-200 text-rose-700 hover:bg-rose-100',
-  };
-  const iconBg = {
-    indigo: 'scholr-accent-sf scholr-accent',
-    emerald: 'bg-emerald-100 text-emerald-600',
-    amber: 'bg-amber-100 text-amber-600',
-    rose: 'bg-rose-100 text-rose-600',
-  };
-
   return (
-    <div className="space-y-6">
-      {/* Scope notice */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
-        <Shield className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-        <div>
-          <p className="text-sm font-semibold text-blue-900">School-scoped exports only</p>
-          <p className="text-xs text-blue-700 mt-0.5">All exports are strictly limited to your school's data. Exports are logged in the audit trail.</p>
-        </div>
-      </div>
+    <div className="space-y-4">
+      {/* Four exports in four hues, each with a filled icon chip, made the page
+          look like a decision about colour rather than about data. They are
+          four rows of the same kind of thing. */}
+      <Notice title="These exports cover your school only">
+        Every export is limited to your school&apos;s records, and each one is written to the audit trail.
+      </Notice>
 
-      {/* Filters */}
-      <div className="bg-white rounded-xl border scholr-rule p-4 flex flex-wrap gap-4 items-end">
-        <div>
-          <label className="text-xs font-semibold scholr-muted block mb-1">From</label>
-          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm" />
-        </div>
-        <div>
-          <label className="text-xs font-semibold scholr-muted block mb-1">To</label>
-          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm" />
-        </div>
-        <div>
-          <label className="text-xs font-semibold scholr-muted block mb-1">Cohort</label>
-          <select value={filterCohort} onChange={e => setFilterCohort(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm bg-white">
-            <option value="all">All Cohorts</option>
-            {cohorts.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className="text-xs font-semibold scholr-muted block mb-1">Class</label>
-          <select value={filterClass} onChange={e => setFilterClass(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm bg-white">
-            <option value="all">All Classes</option>
-            {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
-        </div>
-        <div className="text-sm scholr-muted">
-          <span className="font-bold scholr-ink">{isLoading ? '…' : filteredCount}</span> records in scope
-        </div>
-      </div>
+      <FilterBar>
+        <Field label="From" htmlFor="exp-from">
+          <input id="exp-from" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="app-input scholr-focus" />
+        </Field>
+        <Field label="To" htmlFor="exp-to">
+          <input id="exp-to" type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="app-input scholr-focus" />
+        </Field>
+        <Field label="Cohort" htmlFor="exp-cohort">
+          <SelectField
+            id="exp-cohort" label="Cohort" value={filterCohort} onChange={setFilterCohort}
+            options={[{ value: 'all', label: 'All cohorts' }, ...cohorts.map(c => ({ value: c.id, label: c.name }))]}
+          />
+        </Field>
+        <Field label="Class" htmlFor="exp-class">
+          <SelectField
+            id="exp-class" label="Class" value={filterClass} onChange={setFilterClass}
+            options={[{ value: 'all', label: 'All classes' }, ...classes.map(c => ({ value: c.id, label: c.name }))]}
+          />
+        </Field>
+      </FilterBar>
 
-      {/* Export Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {EXPORTS.map(exp => {
-          const Icon = exp.icon;
-          return (
-            <div key={exp.title} className="bg-white rounded-xl border scholr-rule p-6 flex flex-col gap-4">
-              <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${iconBg[exp.color]}`}>
-                  <Icon className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="font-bold scholr-ink">{exp.title}</h4>
-                  <p className="text-xs scholr-muted mt-1">{exp.description}</p>
-                </div>
-              </div>
-              <Button
-                variant="outline"
-                onClick={exp.action}
-                disabled={isExporting || isLoading || filteredCount === 0}
-                className={`w-full border ${colorMap[exp.color]} font-medium`}
-              >
-                {isExporting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Download className="w-4 h-4 mr-2" />}
-                Export as CSV
-              </Button>
-            </div>
-          );
-        })}
-      </div>
+      <Group
+        title="What you can export"
+        action={
+          <span className="scholr-label">
+            {isLoading ? '…' : `${filteredCount} record${filteredCount === 1 ? '' : 's'} in scope`}
+          </span>
+        }
+      >
+        {EXPORTS.map(exp => (
+          <Row key={exp.title} label={exp.title} detail={exp.description}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={exp.action}
+              disabled={isExporting || isLoading || filteredCount === 0}
+              className="gap-2 flex-shrink-0"
+            >
+              {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+              CSV
+            </Button>
+          </Row>
+        ))}
+      </Group>
+
+      {!isLoading && filteredCount === 0 && (
+        <p style={{ margin: 0, fontSize: '.85rem', color: 'var(--muted)' }}>
+          Nothing matches these filters, so there is nothing to export. Widen the dates or clear the class filter.
+        </p>
+      )}
     </div>
   );
 }

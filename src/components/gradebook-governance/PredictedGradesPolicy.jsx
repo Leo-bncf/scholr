@@ -1,6 +1,7 @@
+import Notice from '@/components/app/Notice';
 import React from 'react';
 import { Switch } from '@/components/ui/switch';
-import { TrendingUp, Lock, Unlock, Eye, AlertTriangle } from 'lucide-react';
+import { TrendingUp, Lock, Unlock, Eye } from 'lucide-react';
 
 const ROLE_OPTIONS = [
   { value: 'teacher', label: 'Teachers', desc: 'Class teachers can enter predicted grades' },
@@ -73,15 +74,21 @@ export default function PredictedGradesPolicy({ form, onChange }) {
           <div className="border-t scholr-rule-soft pt-5 space-y-4">
             <h4 className="text-xs font-bold scholr-body uppercase tracking-wide">Current Collection Status</h4>
 
-            <div className={`flex items-center justify-between p-4 rounded-xl border-2 ${form.predicted_grades_locked ? 'border-red-300 bg-red-50' : 'border-emerald-300 bg-emerald-50'}`}>
+            {/* Locked and unlocked were a red slab and a green slab. Neither
+                is a problem — a school locks predicted grades on purpose — so
+                the state is a word, not a wall. */}
+            <div
+              className="flex items-center justify-between p-4 rounded-xl"
+              style={{ border: '1px solid var(--rule)' }}
+            >
               <div className="flex items-center gap-3">
                 {form.predicted_grades_locked ? (
-                  <Lock className="w-5 h-5 text-red-600" />
+                  <Lock className="w-5 h-5" />
                 ) : (
-                  <Unlock className="w-5 h-5 text-emerald-600" />
+                  <Unlock className="w-5 h-5" />
                 )}
                 <div>
-                  <p className={`text-sm font-bold ${form.predicted_grades_locked ? 'text-red-900' : 'text-emerald-900'}`}>
+                  <p className={`text-sm font-bold `}>
                     {form.predicted_grades_locked ? 'Collection Locked' : 'Collection Open'}
                   </p>
                   <p className="text-xs scholr-muted">
@@ -95,10 +102,9 @@ export default function PredictedGradesPolicy({ form, onChange }) {
             </div>
 
             {form.predicted_grades_locked && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-start gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                <p className="text-xs text-amber-800">Collection is currently locked. Only school admins can make changes until it is unlocked.</p>
-              </div>
+              <Notice tone="warn">
+            Collection is currently locked. Only school admins can make changes until it is unlocked.
+          </Notice>
             )}
           </div>
 

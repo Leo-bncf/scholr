@@ -58,7 +58,8 @@ export default function NotificationBell({ userId, schoolId }) {
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="w-5 h-5 scholr-muted" />
           {unreadCount > 0 && (
-            <Badge className="absolute -top-1 -right-1 bg-red-600 text-white border-0 px-1.5 py-0 text-xs min-w-[18px] h-[18px] flex items-center justify-center">
+            <Badge className="absolute -top-1 -right-1 border-0 px-1.5 py-0 text-xs min-w-[18px] h-[18px] flex items-center justify-center"
+              style={{ background: 'var(--crit)', color: 'var(--surface)' }}>
               {unreadCount > 9 ? '9+' : unreadCount}
             </Badge>
           )}

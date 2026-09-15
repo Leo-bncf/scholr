@@ -119,7 +119,7 @@ export default function EnrollStudentsDialog({
                         onChange={() => toggle(s.user_id)}
                         className="rounded scholr-rule"
                       />
-                      <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">
+                      <div className="w-7 h-7 rounded-full scholr-sunk scholr-muted flex items-center justify-center text-xs font-bold">
                         {s.user_name?.[0]?.toUpperCase() || '?'}
                       </div>
                       <div className="flex-1 min-w-0">

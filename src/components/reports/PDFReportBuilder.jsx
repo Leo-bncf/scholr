@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 
 function ReportTypeCard({ icon: Icon, title, description, badge, children, onGenerate, generating }) {
   return (
-    <div className="bg-white rounded-xl border scholr-rule p-5">
+    <div className="app-group" style={{ padding: '1rem 1.1rem' }}>
       <div className="flex items-start gap-3 mb-4">
         <div className="scholr-accent-sf rounded-lg p-2">
           <Icon className="w-5 h-5 scholr-accent" />
@@ -289,7 +289,7 @@ export default function PDFReportBuilder({
 
   return (
     <div className="space-y-6">
-      <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-800 flex items-start gap-2">
+      <div className="rounded-lg px-4 py-3 text-sm flex items-start gap-2" style={{ borderLeft: '2px solid var(--rule)', color: 'var(--muted)' }}>
         <Printer className="w-4 h-4 shrink-0 mt-0.5" />
         <p>PDF reports open a print-ready document in a new tab. Use your browser's Print dialog (Ctrl+P / ⌘P) to save as PDF. Reports respect role-based visibility rules — only published grades are included.</p>
       </div>

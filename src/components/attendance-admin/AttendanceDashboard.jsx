@@ -1,7 +1,12 @@
+import { Group, Row, GroupEmpty } from '@/components/app/AppShell';
+import { Field, SelectField, FilterBar } from '@/components/app/Field';
+import DataTable from '@/components/app/DataTable';
+import StatCard from '@/components/app/StatCard';
+import StatusChip from '@/components/app/StatusChip';
+import Meter from '@/components/app/Meter';
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Badge } from '@/components/ui/badge';
-import { Loader2, TrendingDown, Clock, Users, CheckCircle2, XCircle, ChevronRight, ArrowLeft } from 'lucide-react';
+import { Loader2, ChevronRight, ArrowLeft } from 'lucide-react';
 import { format, subDays, eachDayOfInterval, parseISO, differenceInDays } from 'date-fns';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, Legend } from 'recharts';
 import * as attendanceData from '@/data/attendance';
@@ -9,41 +14,27 @@ import * as classesData from '@/data/classes';
 import * as academics from '@/data/academics';
 import * as attendancePoliciesData from '@/data/attendancePolicies';
 
-function StatCard({ label, value, sub, accent = 'slate', icon: Icon, onClick }) {
-  const accents = {
-    emerald: 'bg-emerald-50 border-emerald-200 text-emerald-900',
-    red:     'bg-red-50 border-red-200 text-red-900',
-    amber:   'bg-amber-50 border-amber-200 text-amber-900',
-    blue:    'bg-blue-50 border-blue-200 text-blue-900',
-    slate:   'scholr-sunk scholr-rule scholr-ink',
-  };
-  return (
-    <div
-      className={`rounded-xl border p-5 ${accents[accent]} ${onClick ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
-      onClick={onClick}
-    >
-      <div className="flex items-center justify-between mb-2">
-        <p className="text-sm font-medium opacity-80">{label}</p>
-        {Icon && <Icon className="w-4 h-4 opacity-60" />}
-      </div>
-      <p className="text-3xl font-black">{value}</p>
-      {sub && <p className="text-xs mt-1 opacity-70">{sub}</p>}
-    </div>
-  );
-}
+/* Attendance thresholds, in one place.
+ *
+ * 90 and 75 were written inline in five spots — the KPI tint, the daily bars,
+ * the class bars, the class percentage and the drilldown — so a school that
+ * wanted a different bar would have had to find all five. */
+const rateTone = (rate) => (rate >= 90 ? 'good' : rate >= 75 ? 'warn' : 'crit');
+
+/* Recharts resolves CSS custom properties in fill, so the series follow the
+   theme with no JS. The four hex codes here were fixed light-mode values. */
+const SERIES = {
+  present: 'var(--good)',
+  absent: 'var(--crit)',
+  late: 'var(--warn)',
+  excused: 'var(--faint)',
+};
 
 function StudentDrilldown({ student, records, onBack }) {
   const studentRecords = records.filter(r => r.student_id === student.id).sort((a, b) => a.date.localeCompare(b.date));
   const total = studentRecords.length;
   const counts = studentRecords.reduce((acc, r) => { acc[r.status] = (acc[r.status] || 0) + 1; return acc; }, {});
-  const rate = total > 0 ? ((counts.present || 0) / total * 100).toFixed(1) : '—';
-
-  const STATUS_META = {
-    present: { label: 'Present', color: '#10b981' },
-    absent:  { label: 'Absent',  color: '#ef4444' },
-    late:    { label: 'Late',    color: '#f59e0b' },
-    excused: { label: 'Excused', color: '#3b82f6' },
-  };
+  const rate = total > 0 ? Math.round((counts.present || 0) / total * 100) : '—';
 
   const weeklyData = useMemo(() => {
     const weeks = {};
@@ -57,68 +48,63 @@ function StudentDrilldown({ student, records, onBack }) {
 
   return (
     <div className="space-y-5">
-      <button onClick={onBack} className="flex items-center gap-1.5 text-sm scholr-accent hover:scholr-accent font-medium">
-        <ArrowLeft className="w-4 h-4" /> Back to dashboard
+      <button
+        type="button"
+        onClick={onBack}
+        className="scholr-focus"
+        style={{ display: 'inline-flex', alignItems: 'center', gap: '.35rem', fontSize: '.86rem', color: 'var(--brand)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+      >
+        <ArrowLeft className="w-4 h-4" /> Back to attendance
       </button>
 
-      <div className="bg-white rounded-xl border scholr-rule p-5">
-        <h2 className="text-lg font-bold scholr-ink mb-1">{student.name}</h2>
-        <p className="text-sm scholr-muted mb-5">{total} records in selected period</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <StatCard label="Attendance Rate" value={`${rate}%`} accent={parseFloat(rate) >= 90 ? 'emerald' : parseFloat(rate) >= 75 ? 'amber' : 'red'} icon={CheckCircle2} />
-          <StatCard label="Present" value={counts.present || 0} accent="emerald" icon={CheckCircle2} />
-          <StatCard label="Absent" value={counts.absent || 0} accent="red" icon={XCircle} />
-          <StatCard label="Late" value={counts.late || 0} accent="amber" icon={Clock} />
+      <Group title={student.name} action={<span className="scholr-label">{total} records</span>}>
+        <div className="scholr-grid app-cols-4">
+          <StatCard label="Attendance" value={`${rate}%`} tone={rate === '—' ? undefined : rateTone(rate)} hint="in this period" />
+          <StatCard label="Present" value={counts.present || 0} />
+          <StatCard label="Absent" value={counts.absent || 0} tone={counts.absent ? 'crit' : undefined} />
+          <StatCard label="Late" value={counts.late || 0} tone={counts.late ? 'warn' : undefined} />
         </div>
-      </div>
+      </Group>
 
       {weeklyData.length > 0 && (
-        <div className="bg-white rounded-xl border scholr-rule p-6">
-          <h3 className="font-bold scholr-ink mb-4">Weekly Breakdown</h3>
-          <ResponsiveContainer width="100%" height={180}>
-            <BarChart data={weeklyData} barSize={14}>
-              <XAxis dataKey="week" tick={{ fontSize: 10 }} />
-              <YAxis tick={{ fontSize: 11 }} />
-              <Tooltip />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Bar dataKey="present" name="Present" fill="#10b981" stackId="a" />
-              <Bar dataKey="absent" name="Absent" fill="#ef4444" stackId="a" />
-              <Bar dataKey="late" name="Late" fill="#f59e0b" stackId="a" />
-              <Bar dataKey="excused" name="Excused" fill="#3b82f6" radius={[3, 3, 0, 0]} stackId="a" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        <Group title="Week by week">
+          <div style={{ padding: '.9rem' }}>
+            <ResponsiveContainer width="100%" height={180}>
+              <BarChart data={weeklyData} barSize={14}>
+                <XAxis dataKey="week" tick={{ fontSize: 10, fill: 'var(--chart-axis)' }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: 'var(--chart-axis)' }} tickLine={false} axisLine={false} />
+                <Tooltip cursor={{ fill: 'var(--chart-grid)' }} />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+                <Bar dataKey="present" name="Present" fill={SERIES.present} stackId="a" />
+                <Bar dataKey="absent" name="Absent" fill={SERIES.absent} stackId="a" />
+                <Bar dataKey="late" name="Late" fill={SERIES.late} stackId="a" />
+                <Bar dataKey="excused" name="Excused" fill={SERIES.excused} radius={[3, 3, 0, 0]} stackId="a" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Group>
       )}
 
-      <div className="bg-white rounded-xl border scholr-rule overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="scholr-sunk border-b scholr-rule">
-              <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">Date</th>
-              <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">Status</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">Note</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y scholr-divide">
-            {studentRecords.slice().reverse().map(r => (
-              <tr key={r.id} className="hover:scholr-sunk">
-                <td className="px-4 py-2.5 scholr-body">{r.date}</td>
-                <td className="px-4 py-2.5 text-center">
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${
-                    r.status === 'present' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                    r.status === 'absent'  ? 'bg-red-50 text-red-700 border-red-200' :
-                    r.status === 'late'    ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                    'bg-blue-50 text-blue-700 border-blue-200'
-                  }`}>
-                    {r.status}
-                  </span>
-                </td>
-                <td className="px-4 py-2.5 scholr-muted text-xs italic">{r.note || '—'}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Group title="Every record">
+        <DataTable
+          columns={[
+            { key: 'date', header: 'Date' },
+            {
+              key: 'status',
+              header: 'Status',
+              /* Present is the expected outcome and takes no colour; a register
+                 where every line glows green hides the two that do not. */
+              render: (r) => (r.status === 'present'
+                ? 'Present'
+                : <StatusChip tone={r.status === 'absent' ? 'crit' : r.status === 'late' ? 'warn' : 'mute'}>{r.status}</StatusChip>),
+            },
+            { key: 'note', header: 'Note', render: (r) => r.note || '—' },
+          ]}
+          rows={studentRecords.slice().reverse()}
+          rowKey={(r) => r.id}
+          empty="No attendance recorded for this student in this period."
+        />
+      </Group>
     </div>
   );
 }
@@ -171,7 +157,7 @@ export default function AttendanceDashboard({ schoolId }) {
 
   const counts = filtered.reduce((acc, r) => { acc[r.status] = (acc[r.status] || 0) + 1; return acc; }, {});
   const total = filtered.length;
-  const attendanceRate = total > 0 ? ((counts.present || 0) / total * 100).toFixed(1) : '—';
+  const attendanceRate = total > 0 ? Math.round((counts.present || 0) / total * 100) : '—';
 
   // Daily chart data
   const days = eachDayOfInterval({ start: parseISO(startDate), end: parseISO(endDate) });
@@ -222,147 +208,122 @@ export default function AttendanceDashboard({ schoolId }) {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Filters */}
-      <div className="bg-white rounded-xl border scholr-rule p-4 flex flex-wrap gap-4 items-end">
-        <div>
-          <label className="text-xs font-semibold scholr-muted block mb-1">From</label>
-          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm" />
-        </div>
-        <div>
-          <label className="text-xs font-semibold scholr-muted block mb-1">To</label>
-          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm" />
-        </div>
-        <div>
-          <label className="text-xs font-semibold scholr-muted block mb-1">Cohort</label>
-          <select value={filterCohort} onChange={e => setFilterCohort(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm bg-white">
-            <option value="all">All Cohorts</option>
-            {cohorts.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className="text-xs font-semibold scholr-muted block mb-1">Class</label>
-          <select value={filterClass} onChange={e => setFilterClass(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm bg-white">
-            <option value="all">All Classes</option>
-            {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
-        </div>
-      </div>
+    <div className="space-y-4">
+      <FilterBar>
+        <Field label="From" htmlFor="att-from">
+          <input id="att-from" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="app-input scholr-focus" />
+        </Field>
+        <Field label="To" htmlFor="att-to">
+          <input id="att-to" type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="app-input scholr-focus" />
+        </Field>
+        <Field label="Cohort" htmlFor="att-cohort">
+          <SelectField
+            id="att-cohort" label="Cohort" value={filterCohort} onChange={setFilterCohort}
+            options={[{ value: 'all', label: 'All cohorts' }, ...cohorts.map(c => ({ value: c.id, label: c.name }))]}
+          />
+        </Field>
+        <Field label="Class" htmlFor="att-class">
+          <SelectField
+            id="att-class" label="Class" value={filterClass} onChange={setFilterClass}
+            options={[{ value: 'all', label: 'All classes' }, ...classes.map(c => ({ value: c.id, label: c.name }))]}
+          />
+        </Field>
+      </FilterBar>
 
       {isLoading ? (
         <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>
       ) : (
         <>
-          {/* KPI Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard label="Attendance Rate" value={`${attendanceRate}%`} sub={`${differenceInDays(parseISO(endDate), parseISO(startDate)) + 1}-day window`} accent="emerald" icon={CheckCircle2} />
-            <StatCard label="Absent Records" value={counts.absent || 0} sub="in selected range" accent="red" icon={XCircle} />
-            <StatCard label="Late Records" value={counts.late || 0} sub="in selected range" accent="amber" icon={Clock} />
-            <StatCard label="Chronic Absence Alerts" value={chronicAbsent.length} sub={`click to view ≥${chronicThreshold}% absent`} accent={chronicAbsent.length > 0 ? 'red' : 'slate'} icon={TrendingDown} />
-          </div>
-
-          {/* Daily Trend Chart */}
-          {dailyData.length > 0 && (
-            <div className="bg-white rounded-xl border scholr-rule p-6">
-              <h3 className="font-bold scholr-ink mb-4">Daily Attendance Rate (%)</h3>
-              <ResponsiveContainer width="100%" height={180}>
-                <BarChart data={dailyData} barSize={14}>
-                  <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-                  <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} unit="%" />
-                  <Tooltip formatter={v => [`${v}%`, 'Rate']} />
-                  <Bar dataKey="rate" radius={[4, 4, 0, 0]}>
-                    {dailyData.map((d, i) => (
-                      <Cell key={i} fill={d.rate >= 90 ? '#10b981' : d.rate >= 75 ? '#f59e0b' : '#ef4444'} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+          <Group>
+            <div className="scholr-grid app-cols-4">
+              <StatCard
+                label="Attendance"
+                value={`${attendanceRate}%`}
+                tone={attendanceRate === '—' ? undefined : rateTone(attendanceRate)}
+                hint={`over ${differenceInDays(parseISO(endDate), parseISO(startDate)) + 1} days`}
+              />
+              <StatCard label="Absences" value={counts.absent || 0} tone={counts.absent ? 'crit' : undefined} hint="records in range" />
+              <StatCard label="Lates" value={counts.late || 0} tone={counts.late ? 'warn' : undefined} hint="records in range" />
+              <StatCard
+                label="Chronic absence"
+                value={chronicAbsent.length}
+                tone={chronicAbsent.length > 0 ? 'crit' : undefined}
+                hint={`students at or over ${chronicThreshold}% absent`}
+              />
             </div>
+          </Group>
+
+          {dailyData.length > 0 && (
+            <Group title="Attendance rate, day by day">
+              <div style={{ padding: '.9rem' }}>
+                <ResponsiveContainer width="100%" height={180}>
+                  <BarChart data={dailyData} barSize={14}>
+                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'var(--chart-axis)' }} tickLine={false} axisLine={false} />
+                    <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: 'var(--chart-axis)' }} unit="%" tickLine={false} axisLine={false} />
+                    <Tooltip formatter={v => [`${v}%`, 'Rate']} cursor={{ fill: 'var(--chart-grid)' }} />
+                    <Bar dataKey="rate" radius={[4, 4, 0, 0]}>
+                      {dailyData.map((d, i) => (
+                        <Cell key={i} fill={`var(--${rateTone(d.rate) === 'good' ? 'good' : rateTone(d.rate) === 'warn' ? 'warn' : 'crit'})`} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </Group>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Chronic Absence */}
-            <div className="bg-white rounded-xl border scholr-rule p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <TrendingDown className="w-5 h-5 text-red-600" />
-                <h3 className="font-bold scholr-ink">Chronic Absence</h3>
-                <Badge className="bg-red-50 text-red-700 border border-red-200">{chronicAbsent.length}</Badge>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Group title="Chronic absence" action={<span className="scholr-label">{chronicAbsent.length}</span>}>
               {chronicAbsent.length === 0 ? (
-                <p className="text-sm scholr-faint text-center py-6">No students flagged in this period.</p>
+                <GroupEmpty>No student is at or over {chronicThreshold}% absent in this period.</GroupEmpty>
               ) : (
-                <div className="space-y-2">
-                  {chronicAbsent.map((s, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setDrilldownStudent(s)}
-                      className="w-full flex items-center justify-between p-2.5 bg-red-50 rounded-lg border border-red-100 hover:bg-red-100 transition-colors text-left"
-                    >
-                      <span className="text-sm font-medium scholr-ink">{s.name}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-red-700">{Math.round(s.absent / s.total * 100)}% absent</span>
-                        <ChevronRight className="w-3.5 h-3.5 text-red-400" />
-                      </div>
-                    </button>
-                  ))}
-                </div>
+                chronicAbsent.map((s, i) => (
+                  <Row key={i} label={s.name} onClick={() => setDrilldownStudent(s)}>
+                    <StatusChip tone="crit">{Math.round(s.absent / s.total * 100)}% absent</StatusChip>
+                    <ChevronRight className="w-3.5 h-3.5" style={{ color: 'var(--faint)' }} />
+                  </Row>
+                ))
               )}
-            </div>
+            </Group>
 
-            {/* Frequent Lateness */}
-            <div className="bg-white rounded-xl border scholr-rule p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Clock className="w-5 h-5 text-amber-600" />
-                <h3 className="font-bold scholr-ink">Frequent Lateness</h3>
-                <Badge className="bg-amber-50 text-amber-700 border border-amber-200">{frequentLate.length}</Badge>
-              </div>
+            <Group title="Frequent lateness" action={<span className="scholr-label">{frequentLate.length}</span>}>
               {frequentLate.length === 0 ? (
-                <p className="text-sm scholr-faint text-center py-6">No students flagged in this period.</p>
+                <GroupEmpty>Nobody has been late often enough to flag in this period.</GroupEmpty>
               ) : (
-                <div className="space-y-2">
-                  {frequentLate.map((s, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setDrilldownStudent(s)}
-                      className="w-full flex items-center justify-between p-2.5 bg-amber-50 rounded-lg border border-amber-100 hover:bg-amber-100 transition-colors text-left"
-                    >
-                      <span className="text-sm font-medium scholr-ink">{s.name}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-amber-700">{s.late} late</span>
-                        <ChevronRight className="w-3.5 h-3.5 text-amber-400" />
-                      </div>
-                    </button>
-                  ))}
-                </div>
+                frequentLate.map((s, i) => (
+                  <Row key={i} label={s.name} onClick={() => setDrilldownStudent(s)}>
+                    <StatusChip tone="warn">{s.late} late</StatusChip>
+                    <ChevronRight className="w-3.5 h-3.5" style={{ color: 'var(--faint)' }} />
+                  </Row>
+                ))
               )}
-            </div>
-
-            {/* Attendance by Class */}
-            <div className="bg-white rounded-xl border scholr-rule p-6 md:col-span-2">
-              <div className="flex items-center gap-2 mb-4">
-                <Users className="w-5 h-5 scholr-accent" />
-                <h3 className="font-bold scholr-ink">Attendance by Class</h3>
-              </div>
-              {classBreakdown.length === 0 ? (
-                <p className="text-sm scholr-faint text-center py-6">No class data in this period.</p>
-              ) : (
-                <div className="space-y-2">
-                  {classBreakdown.map((c, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <span className="text-sm scholr-body w-48 truncate">{c.name}</span>
-                      <div className="flex-1 scholr-sunk rounded-full h-2.5 overflow-hidden">
-                        <div
-                          className={`h-full rounded-full ${c.rate >= 90 ? 'bg-emerald-500' : c.rate >= 75 ? 'bg-amber-500' : 'bg-red-500'}`}
-                          style={{ width: `${c.rate}%` }}
-                        />
-                      </div>
-                      <span className={`text-xs font-bold w-10 text-right ${c.rate >= 90 ? 'text-emerald-700' : c.rate >= 75 ? 'text-amber-700' : 'text-red-700'}`}>{c.rate}%</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            </Group>
           </div>
+
+          <Group title="By class">
+            {classBreakdown.length === 0 ? (
+              <GroupEmpty>No attendance has been recorded against a class in this period.</GroupEmpty>
+            ) : (
+              <div style={{ padding: '.8rem .9rem', display: 'flex', flexDirection: 'column', gap: '.7rem' }}>
+                {classBreakdown.map((c, i) => (
+                  <div key={i}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '.6rem' }}>
+                      <span style={{ fontSize: '.88rem', color: 'var(--ink)' }}>{c.name}</span>
+                      <span
+                        className="scholr-num"
+                        style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: '.82rem', color: `var(--${rateTone(c.rate)})` }}
+                      >
+                        {c.rate}%
+                      </span>
+                    </div>
+                    <div style={{ marginTop: '.25rem' }}>
+                      <Meter value={c.rate} tone={rateTone(c.rate)} height={4} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Group>
         </>
       )}
     </div>
