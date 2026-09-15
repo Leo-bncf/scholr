@@ -1,37 +1,64 @@
+import { Group, GroupEmpty } from '@/components/app/AppShell';
+import { Field, SelectField, FilterBar } from '@/components/app/Field';
+import StatCard from '@/components/app/StatCard';
+import Meter from '@/components/app/Meter';
+import Notice from '@/components/app/Notice';
 import React, { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Printer, TrendingUp, GraduationCap, AlertTriangle, BarChart3 } from 'lucide-react';
+import { Printer } from 'lucide-react';
 import { generatePrintableHTML, printHTML, COLUMNS } from './reportUtils';
 
+/**
+ * IB grades 1–7, as a histogram.
+ *
+ * Seven bars in seven hues — two reds, two ambers, two greens and an indigo —
+ * turned an ordinal scale into a categorical one, and made the shape of the
+ * distribution the last thing you noticed. A histogram is one series: the
+ * height IS the encoding, and the axis is already labelled 1 to 7.
+ */
 function GradeDistributionBar({ grades }) {
-  const counts = [1,2,3,4,5,6,7].map(g => ({ grade: g, count: grades.filter(p => p.predicted_ib_grade === g).length }));
+  const counts = [1, 2, 3, 4, 5, 6, 7].map(g => ({ grade: g, count: grades.filter(p => p.predicted_ib_grade === g).length }));
   const max = Math.max(...counts.map(c => c.count), 1);
-  const colors = { 1: 'bg-red-400', 2: 'bg-red-300', 3: 'bg-amber-400', 4: 'bg-amber-300', 5: 'bg-emerald-400', 6: 'bg-emerald-500', 7: 'bg-indigo-500' };
   return (
-    <div className="flex items-end gap-1.5 h-16">
+    <div className="flex items-end gap-1.5" style={{ height: '4rem' }}>
       {counts.map(({ grade, count }) => (
         <div key={grade} className="flex flex-col items-center gap-0.5 flex-1">
-          <span className="text-xs scholr-muted">{count > 0 ? count : ''}</span>
-          <div className={`w-full rounded-sm ${colors[grade]} transition-colors`} style={{ height: `${Math.max((count / max) * 48, count > 0 ? 4 : 0)}px` }} />
-          <span className="text-xs font-semibold scholr-muted">{grade}</span>
+          <span className="scholr-num" style={{ fontFamily: 'var(--font-mono)', fontSize: '.72rem', color: 'var(--muted)' }}>
+            {count > 0 ? count : ''}
+          </span>
+          <div
+            style={{
+              width: '100%',
+              borderRadius: '3px 3px 0 0',
+              background: 'var(--brand)',
+              height: `${Math.max((count / max) * 48, count > 0 ? 4 : 0)}px`,
+            }}
+          />
+          <span className="scholr-label" style={{ margin: 0 }}>{grade}</span>
         </div>
       ))}
     </div>
   );
 }
 
-function CohortProgressBar({ label, value, total, color = 'bg-indigo-500' }) {
+/** A proportion with its label and its figure. */
+function CohortProgressBar({ label, value, total }) {
   const pct = total > 0 ? Math.round((value / total) * 100) : 0;
   return (
-    <div className="flex items-center gap-3">
-      <span className="text-sm scholr-muted w-36 shrink-0">{label}</span>
-      <div className="flex-1 scholr-sunk rounded-full h-2">
-        <div className={`${color} h-2 rounded-full transition-colors`} style={{ width: `${pct}%` }} />
+    <div>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: '.6rem' }}>
+        <span style={{ fontSize: '.88rem', color: 'var(--ink)' }}>{label}</span>
+        <span
+          className="scholr-num"
+          style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: '.82rem', color: 'var(--body)' }}
+        >
+          {value} of {total}
+        </span>
+        <span className="scholr-label" style={{ minWidth: '2.6rem', textAlign: 'right' }}>{pct}%</span>
       </div>
-      <span className="text-sm font-semibold scholr-body w-16 text-right">{value}/{total} ({pct}%)</span>
+      <div style={{ marginTop: '.25rem' }}>
+        <Meter value={pct} height={4} />
+      </div>
     </div>
   );
 }
@@ -173,194 +200,150 @@ export default function CoordinatorReports({ memberships, classes, grades, predi
   };
 
   return (
-    <div className="space-y-8">
-      {/* Predicted Grades Status */}
-      <div className="bg-white rounded-xl border scholr-rule p-6">
-        <div className="flex items-start justify-between gap-4 mb-5">
-          <div className="flex items-center gap-3">
-            <div className="scholr-accent-sf rounded-lg p-2">
-              <TrendingUp className="w-5 h-5 scholr-accent" />
-            </div>
-            <div>
-              <h3 className="font-semibold scholr-ink">Predicted Grade Status Tracker</h3>
-              <p className="text-sm scholr-muted">Monitor PG entry completion and distribution across the cohort</p>
-            </div>
-          </div>
-          <Button size="sm" onClick={printPGReport} disabled={printing === 'pg'} className="scholr-accent-sf hover:scholr-accent-sf shrink-0">
-            <Printer className="w-4 h-4 mr-1" /> Print Report
+    <div className="space-y-4">
+      <Group
+        title="Predicted grades"
+        action={
+          <Button size="sm" variant="outline" onClick={printPGReport} disabled={printing === 'pg'} className="shrink-0 gap-1.5">
+            <Printer className="w-3.5 h-3.5" /> Print
           </Button>
-        </div>
+        }
+      >
+        <p style={{ margin: 0, padding: '.6rem .9rem 0', fontSize: '.82rem', color: 'var(--muted)' }}>
+          How much of the cohort has a predicted grade entered, and how those grades fall.
+        </p>
 
-        {/* Filters */}
-        <div className="flex gap-3 mb-5">
-          <div className="flex-1">
-            <Label className="text-xs scholr-faint mb-1 block">Cohort</Label>
-            <Select value={pgFilters.cohortId} onValueChange={v => setPGFilter('cohortId', v)}>
-              <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="All cohorts" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Students</SelectItem>
-                {cohorts.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
+        <div className="px-4 py-3">
+          <FilterBar>
+            <Field label="Cohort" htmlFor="pg-cohort">
+              <SelectField
+                id="pg-cohort" label="Cohort" value={pgFilters.cohortId} onChange={v => setPGFilter('cohortId', v)}
+                options={[{ value: 'all', label: 'All students' }, ...cohorts.map(c => ({ value: c.id, label: c.name }))]}
+              />
+            </Field>
+            <Field label="Term" htmlFor="pg-term">
+              <SelectField
+                id="pg-term" label="Term" value={pgFilters.termId} onChange={v => setPGFilter('termId', v)}
+                options={[{ value: 'all', label: 'All terms' }, ...terms.map(t => ({ value: t.id, label: t.name }))]}
+              />
+            </Field>
+          </FilterBar>
+
+          <div className="scholr-grid app-cols-4">
+            <StatCard label="Entered" value={filteredPG.length} hint="predicted grades" />
+            <StatCard label="Covered" value={`${studentsWithPG.size}/${cohortStudents.length}`} hint="students" />
+            <StatCard
+              label="Complete"
+              value={`${pgCompletionPct}%`}
+              tone={pgCompletionPct >= 80 ? undefined : 'warn'}
+              hint="of the cohort"
+            />
+            <StatCard label="Average" value={avgPG || '—'} hint="predicted grade" />
           </div>
-          <div className="flex-1">
-            <Label className="text-xs scholr-faint mb-1 block">Term</Label>
-            <Select value={pgFilters.termId} onValueChange={v => setPGFilter('termId', v)}>
-              <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="All terms" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Terms</SelectItem>
-                {terms.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
+
+          <div style={{ marginTop: 'var(--space-md)' }}>
+            <p className="scholr-label" style={{ margin: '0 0 .5rem' }}>Distribution, 1 to 7</p>
+            <GradeDistributionBar grades={filteredPG} />
           </div>
-        </div>
 
-        {/* KPIs */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-          {[
-            { label: 'PGs Entered', value: filteredPG.length, color: 'scholr-accent scholr-accent-sf' },
-            { label: 'Students Covered', value: `${studentsWithPG.size}/${cohortStudents.length}`, color: 'text-emerald-700 bg-emerald-50' },
-            { label: 'Completion', value: `${pgCompletionPct}%`, color: pgCompletionPct >= 80 ? 'text-emerald-700 bg-emerald-50' : 'text-amber-700 bg-amber-50' },
-            { label: 'Average Grade', value: avgPG || '—', color: 'scholr-accent scholr-accent-sf' },
-          ].map(({ label, value, color }) => (
-            <div key={label} className={`rounded-lg p-3 text-center ${color}`}>
-              <p className="text-xl font-bold">{value}</p>
-              <p className="text-xs mt-0.5">{label}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Grade distribution */}
-        <div className="mb-5">
-          <p className="text-xs font-semibold scholr-faint uppercase tracking-wide mb-3">Grade Distribution (1–7)</p>
-          <GradeDistributionBar grades={filteredPG} />
-        </div>
-
-        {/* Confidence */}
-        <div className="mb-5">
-          <p className="text-xs font-semibold scholr-faint uppercase tracking-wide mb-3">Teacher Confidence</p>
-          <div className="flex gap-3">
-            {[['high', 'High', 'bg-emerald-500'], ['medium', 'Medium', 'bg-amber-400'], ['low', 'Low', 'bg-red-400']].map(([key, label, color]) => (
-              <div key={key} className="flex-1 scholr-sunk rounded-lg p-3 text-center">
-                <p className="text-lg font-bold scholr-ink">{byConfidence[key]}</p>
-                <div className="flex items-center justify-center gap-1 mt-1">
-                  <div className={`w-2 h-2 rounded-full ${color}`} />
-                  <p className="text-xs scholr-muted">{label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Missing PG */}
-        {missingPG.length > 0 && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <AlertTriangle className="w-4 h-4 text-amber-600" />
-              <p className="text-sm font-semibold text-amber-800">{missingPG.length} student{missingPG.length !== 1 ? 's' : ''} missing predicted grade entry</p>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {missingPG.slice(0, 20).map(s => (
-                <Badge key={s.user_id} variant="outline" className="text-xs border-amber-300 text-amber-800 bg-white">
-                  {s.user_name || s.user_email}
-                </Badge>
+          <div style={{ marginTop: 'var(--space-md)' }}>
+            <p className="scholr-label" style={{ margin: '0 0 .5rem' }}>Teacher confidence</p>
+            <div style={{ display: 'flex', gap: '1.6rem' }}>
+              {[['high', 'High'], ['medium', 'Medium'], ['low', 'Low']].map(([key, label]) => (
+                <span key={key} style={{ display: 'flex', alignItems: 'baseline', gap: '.4rem' }}>
+                  <span className="scholr-num" style={{ fontFamily: 'var(--font-mono)', fontSize: '1.05rem', color: 'var(--ink)' }}>
+                    {byConfidence[key]}
+                  </span>
+                  <span className="scholr-label" style={{ margin: 0 }}>{label}</span>
+                </span>
               ))}
-              {missingPG.length > 20 && <Badge variant="outline" className="text-xs">+{missingPG.length - 20} more</Badge>}
             </div>
+          </div>
+        </div>
+
+        {missingPG.length > 0 && (
+          <div className="px-4 pb-3">
+            <Notice tone="warn" title={`${missingPG.length} student${missingPG.length !== 1 ? 's have' : ' has'} no predicted grade yet`}>
+              {missingPG.slice(0, 20).map(s => s.user_name || s.user_email).join(', ')}
+              {missingPG.length > 20 && `, and ${missingPG.length - 20} more`}.
+            </Notice>
           </div>
         )}
-      </div>
+      </Group>
 
-      {/* CAS Completion */}
-      <div className="bg-white rounded-xl border scholr-rule p-6">
-        <div className="flex items-start justify-between gap-4 mb-5">
-          <div className="flex items-center gap-3">
-            <div className="bg-emerald-50 rounded-lg p-2">
-              <GraduationCap className="w-5 h-5 text-emerald-600" />
-            </div>
-            <div>
-              <h3 className="font-semibold scholr-ink">IB CAS Completion Indicators</h3>
-              <p className="text-sm scholr-muted">Track CAS strand coverage and approval status across all students</p>
-            </div>
-          </div>
-          <Button size="sm" onClick={printCASReport} disabled={printing === 'cas'} className="scholr-accent-sf hover:scholr-accent-sf shrink-0">
-            <Printer className="w-4 h-4 mr-1" /> Print Report
+      <Group
+        title="CAS"
+        action={
+          <Button size="sm" variant="outline" onClick={printCASReport} disabled={printing === 'cas'} className="shrink-0 gap-1.5">
+            <Printer className="w-3.5 h-3.5" /> Print
           </Button>
-        </div>
+        }
+      >
+        <p style={{ margin: 0, padding: '.6rem .9rem 0', fontSize: '.82rem', color: 'var(--muted)' }}>
+          Creativity, activity and service — who is taking part, and what has been approved.
+        </p>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-5">
-          {[
-            { label: 'Total Experiences', value: casExperiences.length, color: 'scholr-accent scholr-accent-sf' },
-            { label: 'Students Active', value: casStudents.size, color: 'text-emerald-700 bg-emerald-50' },
-            { label: 'All 3 Strands', value: casWithAllStrands, color: 'scholr-accent scholr-accent-sf' },
-            { label: 'Approved', value: casExperiences.filter(c => c.status === 'approved').length, color: 'text-emerald-700 bg-emerald-50' },
-            { label: 'Pending Review', value: casExperiences.filter(c => c.status === 'ongoing').length, color: 'text-amber-700 bg-amber-50' },
-            { label: 'Planned', value: casExperiences.filter(c => c.status === 'planned').length, color: 'scholr-muted scholr-sunk' },
-          ].map(({ label, value, color }) => (
-            <div key={label} className={`rounded-lg p-3 text-center ${color}`}>
-              <p className="text-xl font-bold">{value}</p>
-              <p className="text-xs mt-0.5">{label}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="space-y-3">
-          <p className="text-xs font-semibold scholr-faint uppercase tracking-wide">Strand Coverage (students participating)</p>
-          {['creativity', 'activity', 'service'].map(strand => {
-            const count = new Set(casExperiences.filter(c => c.cas_strands?.includes(strand)).map(c => c.student_id)).size;
-            return (
-              <CohortProgressBar
-                key={strand}
-                label={strand.charAt(0).toUpperCase() + strand.slice(1)}
-                value={count}
-                total={students.length}
-                color={strand === 'creativity' ? 'bg-violet-500' : strand === 'activity' ? 'bg-emerald-500' : 'bg-sky-500'}
-              />
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Cohort Academic Progress */}
-      <div className="bg-white rounded-xl border scholr-rule p-6">
-        <div className="flex items-center gap-3 mb-5">
-          <div className="bg-sky-50 rounded-lg p-2">
-            <BarChart3 className="w-5 h-5 text-sky-600" />
+        <div className="px-4 py-3">
+          <div className="scholr-grid app-cols-3">
+            <StatCard label="Experiences" value={casExperiences.length} hint="logged in total" />
+            <StatCard label="Taking part" value={casStudents.size} hint="students" />
+            <StatCard label="All three strands" value={casWithAllStrands} hint="students" />
+            <StatCard label="Approved" value={casExperiences.filter(c => c.status === 'approved').length} hint="signed off" />
+            <StatCard
+              label="Waiting"
+              value={casExperiences.filter(c => c.status === 'ongoing').length}
+              tone={casExperiences.filter(c => c.status === 'ongoing').length > 0 ? 'warn' : undefined}
+              hint="need review"
+            />
+            <StatCard label="Planned" value={casExperiences.filter(c => c.status === 'planned').length} hint="not started" />
           </div>
-          <div>
-            <h3 className="font-semibold scholr-ink">Cohort Progress Summary</h3>
-            <p className="text-sm scholr-muted">High-level completion and engagement indicators per cohort</p>
-          </div>
-        </div>
 
-        {cohorts.length === 0 ? (
-          <p className="text-sm scholr-faint text-center py-8">No cohorts configured. Set up cohorts in Academic Setup to see cohort-level breakdowns.</p>
-        ) : (
-          <div className="space-y-4">
-            {cohorts.filter(c => c.status === 'active').map(cohort => {
-              const cohortStudentIds = new Set(cohort.student_ids || []);
-              const csCount = [...cohortStudentIds].length;
-              const pgCount = new Set(predictedGrades.filter(p => cohortStudentIds.has(p.student_id)).map(p => p.student_id)).size;
-              const casCount = new Set(casExperiences.filter(c => cohortStudentIds.has(c.student_id)).map(c => c.student_id)).size;
+          <div style={{ marginTop: 'var(--space-md)', display: 'flex', flexDirection: 'column', gap: '.7rem' }}>
+            <p className="scholr-label" style={{ margin: 0 }}>Students taking part, by strand</p>
+            {['creativity', 'activity', 'service'].map(strand => {
+              const count = new Set(casExperiences.filter(c => c.cas_strands?.includes(strand)).map(c => c.student_id)).size;
               return (
-                <div key={cohort.id} className="border scholr-rule-soft rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-indigo-500" style={cohort.color ? { backgroundColor: cohort.color } : {}} />
-                      <h4 className="font-semibold scholr-ink">{cohort.name}</h4>
-                      <Badge variant="outline" className="text-xs">{csCount} students</Badge>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <CohortProgressBar label="Predicted Grades" value={pgCount} total={csCount} color="bg-violet-500" />
-                    <CohortProgressBar label="CAS Active" value={casCount} total={csCount} color="bg-emerald-500" />
-                  </div>
-                </div>
+                <CohortProgressBar
+                  key={strand}
+                  label={strand.charAt(0).toUpperCase() + strand.slice(1)}
+                  value={count}
+                  total={students.length}
+                />
               );
             })}
           </div>
+        </div>
+      </Group>
+
+      <Group title="By cohort">
+        <p style={{ margin: 0, padding: '.6rem .9rem 0', fontSize: '.82rem', color: 'var(--muted)' }}>
+          Completion against each cohort&apos;s own size.
+        </p>
+        {cohorts.length === 0 ? (
+          <GroupEmpty>
+            No cohorts set up yet. Add them under Academic setup to see this broken down.
+          </GroupEmpty>
+        ) : (
+          cohorts.filter(c => c.status === 'active').map(cohort => {
+            const cohortStudentIds = new Set(cohort.student_ids || []);
+            const csCount = [...cohortStudentIds].length;
+            const pgCount = new Set(predictedGrades.filter(p => cohortStudentIds.has(p.student_id)).map(p => p.student_id)).size;
+            const casCount = new Set(casExperiences.filter(c => cohortStudentIds.has(c.student_id)).map(c => c.student_id)).size;
+            return (
+              <div key={cohort.id} style={{ padding: '.8rem .9rem', borderTop: '1px solid var(--rule-soft)' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '.5rem', marginBottom: '.6rem' }}>
+                  <span style={{ fontSize: '.92rem', color: 'var(--ink)' }}>{cohort.name}</span>
+                  <span className="scholr-label" style={{ margin: 0 }}>{csCount} students</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '.6rem' }}>
+                  <CohortProgressBar label="Predicted grades in" value={pgCount} total={csCount} />
+                  <CohortProgressBar label="Active in CAS" value={casCount} total={csCount} />
+                </div>
+              </div>
+            );
+          })
         )}
-      </div>
+      </Group>
     </div>
   );
 }

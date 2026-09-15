@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 
 function ReportTypeCard({ icon: Icon, title, description, badge, children, onGenerate, generating }) {
   return (
-    <div className="bg-white rounded-xl border scholr-rule p-5">
+    <div className="app-group" style={{ padding: '1rem 1.1rem' }}>
       <div className="flex items-start gap-3 mb-4">
         <div className="scholr-accent-sf rounded-lg p-2">
           <Icon className="w-5 h-5 scholr-accent" />
