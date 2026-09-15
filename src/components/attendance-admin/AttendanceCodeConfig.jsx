@@ -1,21 +1,33 @@
+import { Group, Row } from '@/components/app/AppShell';
+import { Field } from '@/components/app/Field';
+import StatusChip from '@/components/app/StatusChip';
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
-import { Loader2, Plus, Trash2, Save, Tag, BookOpen } from 'lucide-react';
+import { Loader2, Plus, Trash2, Save } from 'lucide-react';
 import * as attendancePoliciesData from '@/data/attendancePolicies';
 
+/* A school picks how each of its codes looks, so this is user data, not
+   decoration — but the six choices were fixed tailwind hues that ignored the
+   theme and gave a school six ways to say "this is bad". They map onto the
+   reserved palette now, named by what the colour means rather than by the
+   pigment, and they follow light and dark like everything else.
+   `value` keeps the old keys so existing saved policies still resolve. */
 const COLOR_OPTIONS = [
-  { value: 'emerald', label: 'Green', bg: 'bg-emerald-100', text: 'text-emerald-800', border: 'border-emerald-300' },
-  { value: 'red',     label: 'Red',   bg: 'bg-red-100',     text: 'text-red-800',     border: 'border-red-300' },
-  { value: 'amber',   label: 'Amber', bg: 'bg-amber-100',   text: 'text-amber-800',   border: 'border-amber-300' },
-  { value: 'blue',    label: 'Blue',  bg: 'bg-blue-100',    text: 'text-blue-800',    border: 'border-blue-300' },
-  { value: 'violet',  label: 'Violet',bg: 'scholr-accent-sf',  text: 'scholr-accent',  border: 'scholr-accent-rule' },
-  { value: 'slate',   label: 'Grey',  bg: 'scholr-sunk',   text: 'scholr-ink',   border: 'scholr-rule' },
+  { value: 'emerald', label: 'Fine',    tone: 'good' },
+  { value: 'red',     label: 'Problem', tone: 'crit' },
+  { value: 'amber',   label: 'Watch',   tone: 'warn' },
+  { value: 'slate',   label: 'Neutral', tone: 'mute' },
 ];
+/* Six choices became four. Two of the six — blue and violet — meant the same
+   thing as each other and the same thing as grey once they were drawn from a
+   palette rather than from pigment, so a school was picking between three
+   identical swatches. Saved policies still name them, and they resolve here. */
+const LEGACY = { blue: 'slate', violet: 'slate' };
+const toneOf = (color) => (COLOR_OPTIONS.find(c => c.value === (LEGACY[color] || color)) || COLOR_OPTIONS[3]).tone;
+const SWATCH = { good: 'var(--good)', crit: 'var(--crit)', warn: 'var(--warn)', mute: 'var(--muted)' };
 
 const DEFAULT_CODES = [
   { id: 'c1', key: 'present', label: 'Present', color: 'emerald', counts_as_absent: false, requires_note: false, is_default: true, active: true },
@@ -128,166 +140,185 @@ export default function AttendanceCodeConfig({ schoolId }) {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Attendance Codes */}
-      <div className="bg-white rounded-xl border scholr-rule p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <Tag className="w-5 h-5 scholr-accent" />
-            <div>
-              <h3 className="font-bold scholr-ink">Attendance Codes</h3>
-              <p className="text-xs scholr-muted mt-0.5">Define the statuses teachers can assign. All staff will see only these codes.</p>
-            </div>
-          </div>
+    <div className="space-y-4">
+      <Group
+        title="Attendance codes"
+        action={
           <Button variant="outline" size="sm" onClick={addCode}>
-            <Plus className="w-4 h-4 mr-1" /> Add Code
+            <Plus className="w-4 h-4 mr-1" /> Add code
           </Button>
-        </div>
-
-        <div className="space-y-3">
-          {codes.map(code => {
-            const colorMeta = COLOR_OPTIONS.find(c => c.value === code.color) || COLOR_OPTIONS[5];
-            return (
-              <div key={code.id} className="grid grid-cols-12 gap-3 items-center p-3 rounded-lg scholr-sunk border scholr-rule-soft">
-                <div className="col-span-2">
-                  <Label className="text-xs scholr-muted mb-1 block">Key</Label>
-                  <Input value={code.key} onChange={e => updateCode(code.id, 'key', e.target.value)} placeholder="e.g. present" className="text-sm h-8" />
-                </div>
-                <div className="col-span-3">
-                  <Label className="text-xs scholr-muted mb-1 block">Display Label</Label>
-                  <Input value={code.label} onChange={e => updateCode(code.id, 'label', e.target.value)} placeholder="e.g. Present" className="text-sm h-8" />
-                </div>
-                <div className="col-span-2">
-                  <Label className="text-xs scholr-muted mb-1 block">Colour</Label>
-                  <div className="flex gap-1 flex-wrap">
-                    {COLOR_OPTIONS.map(c => (
-                      <button
-                        key={c.value}
-                        onClick={() => updateCode(code.id, 'color', c.value)}
-                        className={`w-5 h-5 rounded-full border-2 ${c.bg} ${code.color === c.value ? 'border-slate-700 scale-110' : 'border-transparent'} transition-colors`}
-                        title={c.label}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div className="col-span-2 flex flex-col gap-1">
-                  <div className="flex items-center gap-1.5">
-                    <Switch checked={code.counts_as_absent} onCheckedChange={v => updateCode(code.id, 'counts_as_absent', v)} className="scale-75" />
-                    <span className="text-xs scholr-muted">Counts absent</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Switch checked={code.requires_note} onCheckedChange={v => updateCode(code.id, 'requires_note', v)} className="scale-75" />
-                    <span className="text-xs scholr-muted">Requires note</span>
-                  </div>
-                </div>
-                <div className="col-span-2 flex items-center gap-2">
-                  <Badge className={`${colorMeta.bg} ${colorMeta.text} border ${colorMeta.border} text-xs`}>{code.label || 'Preview'}</Badge>
-                  <Switch checked={code.active} onCheckedChange={v => updateCode(code.id, 'active', v)} className="scale-75" />
-                </div>
-                <div className="col-span-1 flex justify-end">
-                  <button onClick={() => removeCode(code.id)} className="scholr-faint hover:text-red-500 transition-colors">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Reason Categories */}
-      <div className="bg-white rounded-xl border scholr-rule p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5 scholr-accent" />
-            <div>
-              <h3 className="font-bold scholr-ink">Reason Categories</h3>
-              <p className="text-xs scholr-muted mt-0.5">Standardised reasons staff must select when recording non-present attendance.</p>
+        }
+      >
+        <p style={{ margin: 0, padding: '.6rem .9rem 0', fontSize: '.82rem', color: 'var(--muted)' }}>
+          The only statuses a teacher can pick when taking a register.
+        </p>
+        {codes.map(code => (
+          <div key={code.id} style={{ padding: '.8rem .9rem', borderTop: '1px solid var(--rule-soft)', display: 'grid', gap: '.7rem', gridTemplateColumns: 'repeat(12, minmax(0, 1fr))', alignItems: 'end' }}>
+            <div style={{ gridColumn: 'span 2' }}>
+              <Field label="Key" htmlFor={`code-key-${code.id}`}>
+                <Input id={`code-key-${code.id}`} value={code.key} onChange={e => updateCode(code.id, 'key', e.target.value)} placeholder="present" className="text-sm h-8" />
+              </Field>
             </div>
-          </div>
-          <Button variant="outline" size="sm" onClick={addReason}>
-            <Plus className="w-4 h-4 mr-1" /> Add Reason
-          </Button>
-        </div>
-
-        <div className="space-y-2">
-          {reasons.map(reason => (
-            <div key={reason.id} className="grid grid-cols-12 gap-3 items-center p-3 rounded-lg scholr-sunk border scholr-rule-soft">
-              <div className="col-span-4">
-                <Input value={reason.label} onChange={e => updateReason(reason.id, 'label', e.target.value)} placeholder="Reason label" className="text-sm h-8" />
-              </div>
-              <div className="col-span-6 flex flex-wrap gap-1.5 items-center">
-                <span className="text-xs scholr-muted mr-1">Applies to:</span>
-                {codes.filter(c => c.active && c.key !== 'present').map(code => {
-                  const active = (reason.applies_to || []).includes(code.key);
-                  const colorMeta = COLOR_OPTIONS.find(c => c.value === code.color) || COLOR_OPTIONS[5];
-                  return (
+            <div style={{ gridColumn: 'span 3' }}>
+              <Field label="Shown to staff as" htmlFor={`code-label-${code.id}`}>
+                <Input id={`code-label-${code.id}`} value={code.label} onChange={e => updateCode(code.id, 'label', e.target.value)} placeholder="Present" className="text-sm h-8" />
+              </Field>
+            </div>
+            <div style={{ gridColumn: 'span 3' }}>
+              <Field label="Reads as">
+                <div style={{ display: 'flex', gap: '.3rem', flexWrap: 'wrap' }}>
+                  {COLOR_OPTIONS.map(c => (
                     <button
-                      key={code.key}
-                      onClick={() => toggleReasonCode(reason.id, code.key)}
-                      className={`text-xs px-2 py-0.5 rounded-full border transition-colors ${active ? `${colorMeta.bg} ${colorMeta.text} ${colorMeta.border}` : 'bg-white scholr-faint scholr-rule'}`}
-                    >
-                      {code.label}
-                    </button>
-                  );
-                })}
-              </div>
-              <div className="col-span-1 flex items-center justify-center">
-                <Switch checked={reason.active} onCheckedChange={v => updateReason(reason.id, 'active', v)} className="scale-75" />
-              </div>
-              <div className="col-span-1 flex justify-end">
-                <button onClick={() => removeReason(reason.id)} className="scholr-faint hover:text-red-500 transition-colors">
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
+                      key={c.value}
+                      type="button"
+                      onClick={() => updateCode(code.id, 'color', c.value)}
+                      className="scholr-focus"
+                      aria-label={c.label}
+                      aria-pressed={(LEGACY[code.color] || code.color) === c.value}
+                      title={c.label}
+                      style={{
+                        width: '1.15rem', height: '1.15rem', borderRadius: '999px', cursor: 'pointer',
+                        background: SWATCH[c.tone],
+                        border: `2px solid ${(LEGACY[code.color] || code.color) === c.value ? 'var(--ink)' : 'transparent'}`,
+                      }}
+                    />
+                  ))}
+                </div>
+              </Field>
             </div>
-          ))}
-        </div>
-      </div>
+            <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '.3rem' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '.4rem', fontSize: '.78rem', color: 'var(--muted)' }}>
+                <Switch checked={code.counts_as_absent} onCheckedChange={v => updateCode(code.id, 'counts_as_absent', v)} className="scale-75" />
+                Counts as absent
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '.4rem', fontSize: '.78rem', color: 'var(--muted)' }}>
+                <Switch checked={code.requires_note} onCheckedChange={v => updateCode(code.id, 'requires_note', v)} className="scale-75" />
+                Needs a note
+              </label>
+            </div>
+            <div style={{ gridColumn: 'span 2', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '.5rem' }}>
+              <StatusChip tone={toneOf(code.color)}>{code.label || 'Preview'}</StatusChip>
+              <Switch checked={code.active} onCheckedChange={v => updateCode(code.id, 'active', v)} className="scale-75" aria-label={`${code.label} in use`} />
+              <button
+                type="button"
+                onClick={() => removeCode(code.id)}
+                className="scholr-focus"
+                aria-label={`Remove ${code.label || 'code'}`}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--faint)', padding: 0 }}
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </Group>
 
-      {/* Policy Settings */}
-      <div className="bg-white rounded-xl border scholr-rule p-6">
-        <h3 className="font-bold scholr-ink mb-4">Policy Settings</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="flex items-start gap-3">
-            <Switch checked={requireReason} onCheckedChange={setRequireReason} />
-            <div>
-              <p className="text-sm font-medium scholr-ink">Require reason for non-present</p>
-              <p className="text-xs scholr-muted mt-0.5">Teachers must select a reason category when marking absent, late, or excused.</p>
+      <Group
+        title="Reasons"
+        action={
+          <Button variant="outline" size="sm" onClick={addReason}>
+            <Plus className="w-4 h-4 mr-1" /> Add reason
+          </Button>
+        }
+      >
+        <p style={{ margin: 0, padding: '.6rem .9rem 0', fontSize: '.82rem', color: 'var(--muted)' }}>
+          The standard explanations staff choose from when someone is not present.
+        </p>
+        {reasons.map(reason => (
+          <div key={reason.id} style={{ padding: '.7rem .9rem', borderTop: '1px solid var(--rule-soft)', display: 'flex', gap: '.7rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <Input
+              value={reason.label}
+              onChange={e => updateReason(reason.id, 'label', e.target.value)}
+              placeholder="Reason"
+              aria-label="Reason"
+              className="text-sm h-8"
+              style={{ width: '14rem' }}
+            />
+            <span className="scholr-label" style={{ margin: 0 }}>Applies to</span>
+            <div style={{ display: 'flex', gap: '.3rem', flexWrap: 'wrap', flex: 1 }}>
+              {codes.filter(c => c.active && c.key !== 'present').map(code => {
+                const on = (reason.applies_to || []).includes(code.key);
+                return (
+                  <button
+                    key={code.key}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => toggleReasonCode(reason.id, code.key)}
+                    className="scholr-focus"
+                    style={{
+                      fontSize: '.78rem', padding: '.15rem .5rem', borderRadius: '999px', cursor: 'pointer',
+                      border: `1px solid ${on ? 'var(--brand)' : 'var(--rule)'}`,
+                      background: on ? 'var(--brand-sf)' : 'transparent',
+                      color: on ? 'var(--brand)' : 'var(--faint)',
+                    }}
+                  >
+                    {code.label}
+                  </button>
+                );
+              })}
             </div>
+            <Switch checked={reason.active} onCheckedChange={v => updateReason(reason.id, 'active', v)} className="scale-75" aria-label={`${reason.label} in use`} />
+            <button
+              type="button"
+              onClick={() => removeReason(reason.id)}
+              className="scholr-focus"
+              aria-label={`Remove ${reason.label || 'reason'}`}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--faint)', padding: 0 }}
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
           </div>
-          <div className="flex items-start gap-3">
-            <Switch checked={requireCorrection} onCheckedChange={setRequireCorrection} />
-            <div>
-              <p className="text-sm font-medium scholr-ink">Require reason for corrections</p>
-              <p className="text-xs scholr-muted mt-0.5">Admins must provide a justification when correcting an existing attendance record.</p>
-            </div>
-          </div>
-          <div>
-            <Label className="text-sm font-medium">Chronic Absence Threshold (%)</Label>
-            <p className="text-xs scholr-muted mb-2">Flag a student when their absences exceed this percentage of total days.</p>
-            <Input type="number" min={1} max={100} value={chronicThreshold} onChange={e => setChronicThreshold(Number(e.target.value))} className="w-28" />
-          </div>
-          <div>
-            <Label className="text-sm font-medium">Frequent Lateness Threshold (days)</Label>
-            <p className="text-xs scholr-muted mb-2">Flag a student when late records in the period exceed this count.</p>
-            <Input type="number" min={1} value={latenessThreshold} onChange={e => setLatenessThreshold(Number(e.target.value))} className="w-28" />
-          </div>
-        </div>
-      </div>
+        ))}
+      </Group>
 
-      <div className="flex justify-end">
-        <Button onClick={handleSave} disabled={saveMutation.isPending} className="scholr-accent-sf hover:scholr-accent-sf">
+      <Group title="Rules">
+        <Row
+          label="Ask for a reason when someone is not present"
+          detail="Teachers pick from the list above when marking absent, late or excused."
+        >
+          <Switch checked={requireReason} onCheckedChange={setRequireReason} aria-label="Require a reason for non-present" />
+        </Row>
+        <Row
+          label="Ask for a reason when a record is corrected"
+          detail="Admins must say why before changing a register after the fact."
+        >
+          <Switch checked={requireCorrection} onCheckedChange={setRequireCorrection} aria-label="Require a reason for corrections" />
+        </Row>
+        <Row
+          label="Flag chronic absence at"
+          detail="A student is flagged once this share of their days is an absence."
+        >
+          <Input
+            type="number" min={1} max={100} value={chronicThreshold}
+            onChange={e => setChronicThreshold(Number(e.target.value))}
+            aria-label="Chronic absence threshold, percent"
+            className="w-20 h-8 text-sm"
+          />
+          <span style={{ fontSize: '.82rem', color: 'var(--muted)' }}>%</span>
+        </Row>
+        <Row
+          label="Flag frequent lateness at"
+          detail="A student is flagged once they pass this many late marks in the period."
+        >
+          <Input
+            type="number" min={1} value={latenessThreshold}
+            onChange={e => setLatenessThreshold(Number(e.target.value))}
+            aria-label="Frequent lateness threshold, days"
+            className="w-20 h-8 text-sm"
+          />
+          <span style={{ fontSize: '.82rem', color: 'var(--muted)' }}>times</span>
+        </Row>
+      </Group>
+
+      <div className="flex justify-end items-center gap-3">
+        {saveMutation.isSuccess && (
+          <span style={{ fontSize: '.85rem', color: 'var(--good)' }}>Saved.</span>
+        )}
+        <Button onClick={handleSave} disabled={saveMutation.isPending} className="pub-btn pub-btn-primary">
           {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-          Save Configuration
+          Save
         </Button>
       </div>
-
-      {saveMutation.isSuccess && (
-        <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-center text-sm text-emerald-800 font-medium">
-          Attendance configuration saved successfully.
-        </div>
-      )}
     </div>
   );
 }

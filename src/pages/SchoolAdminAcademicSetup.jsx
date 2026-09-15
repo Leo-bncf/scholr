@@ -8,10 +8,10 @@ import CohortsTab from '@/components/academic-setup/CohortsTab';
 import SubjectCatalogTab from '@/components/academic-setup/SubjectCatalogTab';
 
 const TABS = [
-  { value: 'years', label: 'Academic Years' },
-  { value: 'terms', label: 'Terms & Reporting' },
-  { value: 'cohorts', label: 'Cohorts & Groups' },
-  { value: 'subjects', label: 'Subject Catalogue' },
+  { value: 'years', label: 'Academic years' },
+  { value: 'terms', label: 'Terms and reporting' },
+  { value: 'cohorts', label: 'Cohorts and groups' },
+  { value: 'subjects', label: 'Subjects' },
 ];
 
 export default function SchoolAdminAcademicSetup() {

@@ -10,7 +10,7 @@ import AttendanceExport from '@/components/attendance-admin/AttendanceExport';
 
 const TABS = [
   { value: 'dashboard', label: 'Dashboard' },
-  { value: 'codes', label: 'Code Config' },
+  { value: 'codes', label: 'Codes' },
   { value: 'corrections', label: 'Corrections' },
   { value: 'exports', label: 'Exports' },
 ];

@@ -21,9 +21,9 @@ export default function SchoolAdminClasses() {
   const unstaffed     = classes.filter(c => c.status === 'active' && (!c.teacher_ids || c.teacher_ids.length === 0)).length;
 
   const TABS = [
-    { value: 'sections', label: 'Class Sections' },
-    { value: 'teachers', label: 'Staff Assignment' },
-    { value: 'students', label: 'Student Enrolment' },
+    { value: 'sections', label: 'Class sections' },
+    { value: 'teachers', label: 'Staff' },
+    { value: 'students', label: 'Students' },
     { value: 'lifecycle', label: 'Lifecycle' },
   ];
 

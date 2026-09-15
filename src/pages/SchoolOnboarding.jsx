@@ -33,7 +33,7 @@ export default function SchoolOnboarding() {
     },
     {
       id: 'academic_year',
-      label: 'Academic Years',
+      label: 'Academic years',
       component: AcademicYearStep
     },
     {

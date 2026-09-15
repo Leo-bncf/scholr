@@ -1,11 +1,15 @@
+import { Group, Row } from '@/components/app/AppShell';
+import { Field, SelectField, SearchField, FilterBar } from '@/components/app/Field';
+import DataTable from '@/components/app/DataTable';
+import StatusChip from '@/components/app/StatusChip';
+import Notice from '@/components/app/Notice';
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Loader2, Search, PenLine, History, CheckCircle2, XCircle, Clock, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { Loader2, PenLine, ChevronDown, ChevronUp } from 'lucide-react';
 import { format, subDays } from 'date-fns';
 import { logAudit, AuditActions, AuditLevels } from '@/components/utils/auditLogger';
 import { useUser } from '@/components/auth/UserContext';
@@ -13,21 +17,20 @@ import * as attendancePoliciesData from '@/data/attendancePolicies';
 import * as attendanceData from '@/data/attendance';
 import * as classesData from '@/data/classes';
 
+/* Present is the expected outcome; giving it a green badge means a register of
+   ordinary days reads as a wall of colour and the one absence does not stand
+   out. Excused is settled, so it is neutral too. */
 const STATUS_META = {
-  present: { label: 'Present', icon: CheckCircle2, bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
-  absent:  { label: 'Absent',  icon: XCircle,      bg: 'bg-red-50',     text: 'text-red-700',     border: 'border-red-200' },
-  late:    { label: 'Late',    icon: Clock,         bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200' },
-  excused: { label: 'Excused', icon: AlertCircle,   bg: 'bg-blue-50',    text: 'text-blue-700',    border: 'border-blue-200' },
+  present: { label: 'Present', tone: null },
+  absent:  { label: 'Absent',  tone: 'crit' },
+  late:    { label: 'Late',    tone: 'warn' },
+  excused: { label: 'Excused', tone: 'mute' },
 };
 
 function StatusBadge({ status }) {
   const meta = STATUS_META[status] || STATUS_META.absent;
-  const Icon = meta.icon;
-  return (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${meta.bg} ${meta.text} ${meta.border}`}>
-      <Icon className="w-3 h-3" /> {meta.label}
-    </span>
-  );
+  if (!meta.tone) return <span style={{ fontSize: '.86rem', color: 'var(--body)' }}>{meta.label}</span>;
+  return <StatusChip tone={meta.tone}>{meta.label}</StatusChip>;
 }
 
 export default function AttendanceCorrectionWorkflow({ schoolId }) {
@@ -117,131 +120,118 @@ export default function AttendanceCorrectionWorkflow({ schoolId }) {
   };
 
   return (
-    <div className="space-y-5">
-      {/* Filters */}
-      <div className="bg-white rounded-xl border scholr-rule p-4 flex flex-wrap gap-4 items-end">
-        <div className="flex-1 min-w-48">
-          <label className="text-xs font-semibold scholr-muted block mb-1">Search Student</label>
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-2.5 scholr-faint" />
-            <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Student name…" className="pl-9 h-9 text-sm" />
-          </div>
-        </div>
-        <div>
-          <label className="text-xs font-semibold scholr-muted block mb-1">From</label>
-          <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm" />
-        </div>
-        <div>
-          <label className="text-xs font-semibold scholr-muted block mb-1">To</label>
-          <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm" />
-        </div>
-        <div>
-          <label className="text-xs font-semibold scholr-muted block mb-1">Class</label>
-          <select value={filterClass} onChange={e => setFilterClass(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm bg-white">
-            <option value="all">All Classes</option>
-            {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className="text-xs font-semibold scholr-muted block mb-1">Status</label>
-          <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="px-3 py-1.5 border scholr-rule rounded-lg text-sm bg-white">
-            <option value="all">All Statuses</option>
-            <option value="present">Present</option>
-            <option value="absent">Absent</option>
-            <option value="late">Late</option>
-            <option value="excused">Excused</option>
-          </select>
-        </div>
-        {filtered.length > 0 && (
-          <span className="text-xs scholr-muted self-end pb-2">{filtered.length} record{filtered.length !== 1 ? 's' : ''}</span>
-        )}
-      </div>
+    <div className="space-y-4">
+      <FilterBar>
+        <Field label="Student" htmlFor="cor-q">
+          <SearchField id="cor-q" label="Search students" value={search} onChange={setSearch} placeholder="Student name…" />
+        </Field>
+        <Field label="From" htmlFor="cor-from">
+          <input id="cor-from" type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="app-input scholr-focus" />
+        </Field>
+        <Field label="To" htmlFor="cor-to">
+          <input id="cor-to" type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="app-input scholr-focus" />
+        </Field>
+        <Field label="Class" htmlFor="cor-class">
+          <SelectField
+            id="cor-class" label="Class" value={filterClass} onChange={setFilterClass}
+            options={[{ value: 'all', label: 'All classes' }, ...classes.map(c => ({ value: c.id, label: c.name }))]}
+          />
+        </Field>
+        <Field label="Status" htmlFor="cor-status">
+          <SelectField
+            id="cor-status" label="Status" value={filterStatus} onChange={setFilterStatus}
+            options={[
+              { value: 'all', label: 'All statuses' },
+              { value: 'present', label: 'Present' },
+              { value: 'absent', label: 'Absent' },
+              { value: 'late', label: 'Late' },
+              { value: 'excused', label: 'Excused' },
+            ]}
+          />
+        </Field>
+      </FilterBar>
 
-      {/* Records Table */}
-      <div className="app-group overflow-hidden">
+      <Group
+        title="Records"
+        action={<span className="scholr-label">{filtered.length} in range</span>}
+      >
         {isLoading ? (
           <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>
-        ) : filtered.length === 0 ? (
-          <div className="text-center py-12 scholr-faint">
-            <PenLine className="w-10 h-10 mx-auto mb-2 scholr-faint" />
-            <p className="text-sm">No records found for the selected filters.</p>
-          </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="scholr-sunk border-b scholr-rule">
-                <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">Student</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase">Date</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase hidden md:table-cell">Class</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">Status</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold scholr-muted uppercase hidden lg:table-cell">Note</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold scholr-muted uppercase">History</th>
-                <th className="px-4 py-3 text-right text-xs font-semibold scholr-muted uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y scholr-divide">
-              {filtered.map(record => {
-                const hasHistory = (record.correction_history || []).length > 0;
-                const expanded = expandedHistory[record.id];
-                return (
-                  <React.Fragment key={record.id}>
-                    <tr className={`hover:scholr-sunk ${hasHistory ? 'bg-amber-50/40' : ''}`}>
-                      <td className="px-4 py-3 font-medium scholr-ink">{record.student_name}</td>
-                      <td className="px-4 py-3 scholr-muted whitespace-nowrap">{record.date}</td>
-                      <td className="px-4 py-3 scholr-muted text-xs hidden md:table-cell">{classMap[record.class_id] || '—'}</td>
-                      <td className="px-4 py-3 text-center"><StatusBadge status={record.status} /></td>
-                      <td className="px-4 py-3 scholr-muted max-w-xs truncate hidden lg:table-cell">{record.note || '—'}</td>
-                      <td className="px-4 py-3 text-center">
-                        {hasHistory ? (
-                          <button
-                            onClick={() => setExpandedHistory(prev => ({ ...prev, [record.id]: !prev[record.id] }))}
-                            className="inline-flex items-center gap-1 text-xs text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full hover:bg-amber-100"
-                          >
-                            <History className="w-3 h-3" />
-                            {record.correction_history.length}
-                            {expanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                          </button>
-                        ) : (
-                          <span className="scholr-faint text-xs">—</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => { setCorrecting(record); setNewStatus(record.status); setReason(''); }}
-                          className="text-xs h-7"
-                        >
-                          <PenLine className="w-3 h-3 mr-1" /> Correct
-                        </Button>
-                      </td>
-                    </tr>
-                    {expanded && hasHistory && (
-                      <tr>
-                        <td colSpan={7} className="px-6 py-3 bg-amber-50 border-b border-amber-100">
-                          <p className="text-xs font-bold text-amber-800 mb-2 flex items-center gap-1"><History className="w-3 h-3" /> Correction History</p>
-                          <div className="space-y-1.5">
-                            {record.correction_history.map((h, i) => (
-                              <div key={i} className="text-xs scholr-body bg-white border border-amber-100 rounded px-3 py-1.5 flex flex-wrap gap-2 items-center">
-                                <span className="font-semibold">{h.corrected_by_name}</span>
-                                <span className="scholr-faint">{h.corrected_at ? format(new Date(h.corrected_at), 'dd MMM yyyy HH:mm') : ''}</span>
-                                <StatusBadge status={h.previous_status} />
-                                <span className="scholr-faint">→</span>
-                                <StatusBadge status={h.new_status} />
-                                {h.reason && <span className="scholr-muted italic">"{h.reason}"</span>}
-                              </div>
-                            ))}
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                );
-              })}
-            </tbody>
-          </table>
+          <DataTable
+            columns={[
+              { key: 'student_name', header: 'Student' },
+              { key: 'date', header: 'Date' },
+              { key: 'class', header: 'Class', render: (r) => classMap[r.class_id] || '—' },
+              { key: 'status', header: 'Status', render: (r) => <StatusBadge status={r.status} /> },
+              { key: 'note', header: 'Note', render: (r) => r.note || '—' },
+              {
+                key: 'history',
+                header: 'Corrected',
+                /* The row used to be tinted amber when it had been corrected,
+                   which put the emphasis on the correction rather than on the
+                   record. It is a fact about the row, so it is a cell. */
+                render: (r) => {
+                  const history = r.correction_history || [];
+                  if (history.length === 0) return '—';
+                  return (
+                    <button
+                      type="button"
+                      onClick={() => setExpandedHistory(prev => ({ ...prev, [r.id]: !prev[r.id] }))}
+                      className="scholr-focus"
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '.25rem',
+                        background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                        font: 'inherit', fontSize: '.82rem', color: 'var(--brand)',
+                      }}
+                      aria-expanded={!!expandedHistory[r.id]}
+                    >
+                      {history.length} time{history.length === 1 ? '' : 's'}
+                      {expandedHistory[r.id] ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                    </button>
+                  );
+                },
+              },
+              {
+                key: 'actions',
+                header: '',
+                render: (r) => (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => { setCorrecting(r); setNewStatus(r.status); setReason(''); }}
+                    className="text-xs h-7"
+                  >
+                    <PenLine className="w-3 h-3 mr-1" /> Correct
+                  </Button>
+                ),
+              },
+            ]}
+            rows={filtered}
+            rowKey={(r) => r.id}
+            empty="No attendance records match these filters."
+          />
         )}
-      </div>
+      </Group>
+
+      {/* The expanded history sits below the table rather than inside it: a row
+          spanning every column inside a <tbody> broke the column widths, and a
+          screen reader read it as a data row. */}
+      {filtered.filter(r => expandedHistory[r.id] && (r.correction_history || []).length > 0).map(r => (
+        <Group key={r.id} title={`${r.student_name} — ${r.date}`} action={<span className="scholr-label">correction history</span>}>
+          {r.correction_history.map((h, i) => (
+            <Row
+              key={i}
+              label={<>{h.previous_status} → {h.new_status}</>}
+              detail={[
+                h.corrected_by_name,
+                h.corrected_at ? format(new Date(h.corrected_at), 'd MMM yyyy HH:mm') : null,
+                h.reason ? `“${h.reason}”` : null,
+              ].filter(Boolean).join(' · ')}
+            />
+          ))}
+        </Group>
+      ))}
 
       {/* Correction Dialog */}
       <Dialog open={!!correcting} onOpenChange={() => setCorrecting(null)}>
@@ -280,14 +270,13 @@ export default function AttendanceCorrectionWorkflow({ schoolId }) {
                   rows={3}
                 />
                 {requireReason && !reason.trim() && reason.length > 0 && (
-                  <p className="text-xs text-red-600 mt-1">A reason is required to save the correction.</p>
+                  <p className="text-xs mt-1" style={{ color: 'var(--crit)' }}>A reason is required to save the correction.</p>
                 )}
               </div>
               {requireReason && (
-                <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg p-3">
-                  <History className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-xs text-amber-800">This correction will be permanently recorded in the audit trail and cannot be undone.</p>
-                </div>
+                <Notice tone="warn">
+                  This correction is written to the audit trail permanently and cannot be undone.
+                </Notice>
               )}
             </div>
           )}
