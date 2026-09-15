@@ -42,9 +42,9 @@ export default function TrialBanner() {
     >
       <div className="flex items-start gap-3">
         {isExpiringSoon ? (
-          <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
         ) : (
-          <Clock className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+          <Clock className="w-5 h-5 shrink-0 mt-0.5" />
         )}
         <div className="flex-1">
           <AlertDescription

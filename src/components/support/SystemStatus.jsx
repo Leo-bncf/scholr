@@ -45,10 +45,10 @@ function OverallStatusBanner({ statuses }) {
   if (hasOutage) {
     return (
       <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
-        <XCircle className="w-5 h-5 text-red-600 shrink-0" />
+        <XCircle className="w-5 h-5 shrink-0" />
         <div>
-          <p className="text-sm font-bold text-red-900">Service outage detected</p>
-          <p className="text-xs text-red-700 mt-0.5">One or more services are unavailable. Our team is investigating.</p>
+          <p className="text-sm font-bold" style={{ color: 'var(--crit)' }}>Service outage detected</p>
+          <p className="text-xs mt-0.5" style={{ color: 'var(--crit)' }}>One or more services are unavailable. Our team is investigating.</p>
         </div>
       </div>
     );
@@ -56,10 +56,10 @@ function OverallStatusBanner({ statuses }) {
   if (hasDegraded) {
     return (
       <div className="flex items-center gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-        <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
+        <AlertTriangle className="w-5 h-5 shrink-0" />
         <div>
-          <p className="text-sm font-bold text-amber-900">Degraded performance</p>
-          <p className="text-xs text-amber-700 mt-0.5">Some services are running slower than usual. We are monitoring the situation.</p>
+          <p className="text-sm font-bold" style={{ color: 'var(--warn)' }}>Degraded performance</p>
+          <p className="text-xs mt-0.5" style={{ color: 'var(--warn)' }}>Some services are running slower than usual. We are monitoring the situation.</p>
         </div>
       </div>
     );
@@ -67,20 +67,20 @@ function OverallStatusBanner({ statuses }) {
   if (hasMaintenance) {
     return (
       <div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-        <Clock className="w-5 h-5 text-blue-600 shrink-0" />
+        <Clock className="w-5 h-5 shrink-0" />
         <div>
-          <p className="text-sm font-bold text-blue-900">Scheduled maintenance in progress</p>
-          <p className="text-xs text-blue-700 mt-0.5">Some services may be temporarily unavailable. Check the notice below for details.</p>
+          <p className="text-sm font-bold" style={{ color: 'var(--ink)' }}>Scheduled maintenance in progress</p>
+          <p className="text-xs mt-0.5" style={{ color: 'var(--ink)' }}>Some services may be temporarily unavailable. Check the notice below for details.</p>
         </div>
       </div>
     );
   }
   return (
     <div className="flex items-center gap-3 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
-      <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+      <CheckCircle2 className="w-5 h-5 shrink-0" />
       <div>
-        <p className="text-sm font-bold text-emerald-900">All systems operational</p>
-        <p className="text-xs text-emerald-700 mt-0.5">No known incidents. Platform is running normally.</p>
+        <p className="text-sm font-bold" style={{ color: 'var(--good)' }}>All systems operational</p>
+        <p className="text-xs mt-0.5" style={{ color: 'var(--good)' }}>No known incidents. Platform is running normally.</p>
       </div>
     </div>
   );
@@ -198,10 +198,10 @@ export default function SystemStatus({ schoolId, school }) {
       {['past_due', 'unpaid', 'canceled'].includes(billingStatus) && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+            <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
             <div>
-              <p className="text-sm font-bold text-amber-900">Billing issue affecting your school</p>
-              <p className="text-xs text-amber-700 mt-1">
+              <p className="text-sm font-bold" style={{ color: 'var(--warn)' }}>Billing issue affecting your school</p>
+              <p className="text-xs mt-1" style={{ color: 'var(--warn)' }}>
                 Your school's subscription is <strong>{billingStatus?.replace('_', ' ')}</strong>. Some features may be restricted.
                 {' '}Resolve this from <a href="/SchoolAdminBilling" className="underline font-semibold">Billing & Subscription</a>.
               </p>

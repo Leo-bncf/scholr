@@ -121,7 +121,7 @@ export default function SchoolReadiness({ schoolId }) {
             <div key={gate.id} className="px-5 py-3 flex items-center gap-3">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${gate.value ? 'bg-emerald-100' : 'scholr-sunk'}`}>
                 {gate.value
-                  ? <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  ? <CheckCircle2 className="w-4 h-4" />
                   : <AlertCircle className="w-4 h-4 scholr-faint" />
                 }
               </div>
@@ -133,7 +133,7 @@ export default function SchoolReadiness({ schoolId }) {
                   <Icon className="w-3 h-3" /> {gate.detail}
                 </p>
               </div>
-              {gate.value && <Badge className="bg-emerald-50 text-emerald-700 border-0 text-[10px]">Ready</Badge>}
+              {gate.value && <Badge className="bg-emerald-50 border-0 text-[10px]">Ready</Badge>}
             </div>
           );
         })}

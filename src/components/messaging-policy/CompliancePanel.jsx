@@ -36,7 +36,7 @@ export default function CompliancePanel({ form, onChange }) {
       </div>
 
       {/* Metadata Retention */}
-      <div className="bg-white rounded-xl border scholr-rule p-5 space-y-4">
+      <div className="app-group space-y-4" style={{ padding: '1rem 1.1rem' }}>
         <div className="flex items-center gap-2 mb-1">
           <Clock className="w-5 h-5 scholr-muted" />
           <h4 className="font-bold scholr-ink text-sm">Metadata Retention</h4>
@@ -59,9 +59,9 @@ export default function CompliancePanel({ form, onChange }) {
       </div>
 
       {/* Audit event logging */}
-      <div className="bg-white rounded-xl border scholr-rule p-5 space-y-4">
+      <div className="app-group space-y-4" style={{ padding: '1rem 1.1rem' }}>
         <div className="flex items-center gap-2 mb-1">
-          <Info className="w-5 h-5 text-blue-500" />
+          <Info className="w-5 h-5" />
           <h4 className="font-bold scholr-ink text-sm">Audit Event Logging</h4>
         </div>
 
@@ -93,10 +93,10 @@ export default function CompliancePanel({ form, onChange }) {
       </div>
 
       {/* Safeguarding keywords */}
-      <div className="bg-white rounded-xl border scholr-rule p-5 space-y-4">
+      <div className="app-group space-y-4" style={{ padding: '1rem 1.1rem' }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-amber-500" />
+            <AlertTriangle className="w-5 h-5" />
             <div>
               <h4 className="font-bold scholr-ink text-sm">Safeguarding Keyword Flags</h4>
               <p className="text-xs scholr-muted mt-0.5">
@@ -127,9 +127,9 @@ export default function CompliancePanel({ form, onChange }) {
             </div>
             <div className="flex flex-wrap gap-2">
               {(comp.safeguarding_keywords || []).map(kw => (
-                <Badge key={kw} variant="outline" className="bg-amber-50 border-amber-200 text-amber-800 pr-1 flex items-center gap-1">
+                <Badge key={kw} variant="outline" className="bg-amber-50 border-amber-200 pr-1 flex items-center gap-1" style={{ color: 'var(--warn)' }}>
                   {kw}
-                  <button onClick={() => removeKeyword(kw)} className="ml-1 hover:text-red-600">
+                  <button onClick={() => removeKeyword(kw)} className="ml-1">
                     <X className="w-3 h-3" />
                   </button>
                 </Badge>
@@ -144,7 +144,7 @@ export default function CompliancePanel({ form, onChange }) {
       </div>
 
       {/* Compliance contact */}
-      <div className="bg-white rounded-xl border scholr-rule p-5">
+      <div className="app-group" style={{ padding: '1rem 1.1rem' }}>
         <label className="text-xs font-semibold scholr-muted block mb-1.5">Compliance / Safeguarding contact email</label>
         <Input
           type="email"

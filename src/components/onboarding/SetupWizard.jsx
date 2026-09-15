@@ -154,7 +154,7 @@ export default function SetupWizard({ onComplete }) {
       {/* Wizard header */}
       <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-5 text-white">
         <div className="flex items-center gap-3 mb-4">
-          <Sparkles className="w-5 h-5 text-indigo-200" />
+          <Sparkles className="w-5 h-5" />
           <div>
             <h2 className="text-base font-bold">School Setup Wizard</h2>
             <p className="text-indigo-200 text-xs">Step {currentIndex + 1} of {STEPS.length} — {currentStep.description}</p>

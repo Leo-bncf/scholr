@@ -149,7 +149,7 @@ export default function InvitationsManager({ schoolId, schoolName }) {
                     </div>
 
                     {invitation.status === 'accepted' && invitation.accepted_at && (
-                      <p className="text-xs text-emerald-600">
+                      <p className="text-xs" style={{ color: 'var(--good)' }}>
                         Accepted on {format(new Date(invitation.accepted_at), 'MMM d, yyyy h:mm a')}
                       </p>
                     )}
@@ -179,7 +179,7 @@ export default function InvitationsManager({ schoolId, schoolName }) {
                         variant="outline"
                         onClick={() => cancelMutation.mutate(invitation.id)}
                         disabled={cancelMutation.isPending}
-                        className="text-red-600 hover:text-red-700"
+                        className="" style={{ color: 'var(--crit)' }}
                       >
                         Cancel
                       </Button>

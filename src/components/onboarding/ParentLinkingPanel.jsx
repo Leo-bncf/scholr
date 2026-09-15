@@ -72,7 +72,7 @@ export default function ParentLinkingPanel({ schoolId }) {
       </div>
 
       {(parents.length === 0 || students.length === 0) && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-900">
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm" style={{ color: 'var(--warn)' }}>
           You need at least one parent and one student account before you can link them.
           {parents.length === 0 && <> No parents found.</>}
           {students.length === 0 && <> No students found.</>}
@@ -214,7 +214,7 @@ function LinkParentDialog({ open, onClose, schoolId, parents, students, existing
           </div>
 
           {alreadyLinked && (
-            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2">
+            <p className="text-xs bg-amber-50 border border-amber-200 rounded p-2" style={{ color: 'var(--warn)' }}>
               This parent is already linked to this student.
             </p>
           )}

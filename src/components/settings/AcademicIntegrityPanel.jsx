@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { ShieldCheck, Eye, RotateCcw, AlertTriangle } from 'lucide-react';
+import { Eye } from 'lucide-react';
 
 export default function AcademicIntegrityPanel({ form, onChange }) {
   return (
@@ -17,9 +17,6 @@ export default function AcademicIntegrityPanel({ form, onChange }) {
       {/* Plagiarism flags */}
       <div className="app-group p-4 space-y-3">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <AlertTriangle className="w-4 h-4 text-red-600" />
-          </div>
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <div>
@@ -32,9 +29,9 @@ export default function AcademicIntegrityPanel({ form, onChange }) {
               />
             </div>
             {form.plagiarism_flag_enabled && (
-              <div className="mt-3 p-2.5 bg-red-50 rounded-lg border border-red-100 text-xs text-red-700">
-                ✓ Teachers can flag submissions. Admins see a consolidated view of all flagged submissions.
-              </div>
+              <p style={{ margin: '.6rem 0 0', fontSize: '.78rem', color: 'var(--muted)' }}>
+                Teachers can flag submissions. Admins see a consolidated view of all flagged submissions.
+              </p>
             )}
           </div>
         </div>
@@ -43,9 +40,6 @@ export default function AcademicIntegrityPanel({ form, onChange }) {
       {/* Resubmission limit */}
       <div className="app-group p-4">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <RotateCcw className="w-4 h-4 text-amber-600" />
-          </div>
           <div className="flex-1 space-y-3">
             <div>
               <p className="text-sm font-semibold scholr-ink">Resubmission Limit</p>
@@ -108,9 +102,6 @@ export default function AcademicIntegrityPanel({ form, onChange }) {
       {/* Acknowledgement */}
       <div className="app-group p-4">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-          </div>
           <div className="flex-1 space-y-3">
             <div className="flex items-center justify-between">
               <div>
@@ -132,11 +123,11 @@ export default function AcademicIntegrityPanel({ form, onChange }) {
                   rows={3}
                   className="text-sm"
                 />
-                <div className="p-2.5 bg-emerald-50 rounded-lg border border-emerald-100">
-                  <p className="text-xs font-semibold text-emerald-800 mb-1">Preview (student will see):</p>
+                <div style={{ padding: '.6rem .7rem', borderLeft: '2px solid var(--rule)' }}>
+                  <p className="text-xs font-semibold mb-1" style={{ color: 'var(--good)' }}>Preview (student will see):</p>
                   <div className="flex items-start gap-2">
                     <input type="checkbox" className="mt-0.5" defaultChecked readOnly />
-                    <p className="text-xs text-emerald-700 italic">
+                    <p className="text-xs italic" style={{ color: 'var(--good)' }}>
                       {form.acknowledgement_text || 'I confirm this is my own original work and I have not plagiarised any content.'}
                     </p>
                   </div>
@@ -151,11 +142,11 @@ export default function AcademicIntegrityPanel({ form, onChange }) {
       <div className="scholr-sunk rounded-xl border scholr-rule p-3">
         <p className="text-xs font-semibold scholr-muted mb-2">Active integrity controls:</p>
         <div className="flex flex-wrap gap-1.5">
-          {form.plagiarism_flag_enabled && <Badge className="text-[10px] bg-red-50 text-red-700 border-red-200 border">Plagiarism flags</Badge>}
-          {form.resubmission_limit > 0 && <Badge className="text-[10px] bg-amber-50 text-amber-700 border-amber-200 border">Resubmission limit ({form.resubmission_limit})</Badge>}
+          {form.plagiarism_flag_enabled && <Badge className="text-[10px] bg-red-50 border-red-200 border">Plagiarism flags</Badge>}
+          {form.resubmission_limit > 0 && <Badge className="text-[10px] bg-amber-50 border-amber-200 border">Resubmission limit ({form.resubmission_limit})</Badge>}
           {form.show_submission_history_to_teacher !== false && <Badge className="text-[10px] scholr-accent-sf scholr-accent scholr-accent-rule border">Teacher history view</Badge>}
           {form.show_submission_history_to_student !== false && <Badge className="text-[10px] scholr-sunk scholr-muted scholr-rule border">Student history view</Badge>}
-          {form.require_submission_acknowledgement && <Badge className="text-[10px] bg-emerald-50 text-emerald-700 border-emerald-200 border">Integrity acknowledgement</Badge>}
+          {form.require_submission_acknowledgement && <Badge className="text-[10px] bg-emerald-50 border-emerald-200 border">Integrity acknowledgement</Badge>}
           {!form.plagiarism_flag_enabled && !form.require_submission_acknowledgement && form.resubmission_limit === 0 && (
             <span className="text-xs scholr-faint italic">No active integrity controls</span>
           )}

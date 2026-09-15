@@ -1,3 +1,4 @@
+import Notice from '@/components/app/Notice';
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -131,9 +132,9 @@ export default function GradeStudentDialog({ gradeItem, student, existingGrade, 
         )}
 
         {policy.feedback_only_mode && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-            <p className="text-xs text-amber-800">⚠ Feedback-only mode is active. Scores will be saved but hidden from students and parents.</p>
-          </div>
+          <Notice tone="warn">
+            Feedback-only mode is active. Scores will be saved but hidden from students and parents.
+          </Notice>
         )}
 
         <div className="space-y-5">

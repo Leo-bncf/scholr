@@ -74,7 +74,7 @@ function StorageMonitor({ schoolId, plan }) {
         <div className="flex items-center justify-between mb-1.5">
           <span className="text-xs scholr-muted">{formatSize(submissionMB)} of {formatSize(limitMB)} used ({usedPct.toFixed(1)}%)</span>
           {isCritical && (
-            <span className="text-xs text-red-600 font-medium flex items-center gap-1">
+            <span className="text-xs font-medium flex items-center gap-1" style={{ color: 'var(--crit)' }}>
               <AlertTriangle className="w-3 h-3" /> Critical
             </span>
           )}
@@ -145,7 +145,7 @@ export default function FileSecurityPanel({ form, onChange, schoolId, plan }) {
             {(form.allowed_file_extensions || []).map(ext => (
               <Badge key={ext} variant="outline" className="text-xs font-mono flex items-center gap-1 pr-1">
                 {ext}
-                <button onClick={() => removeExtension(ext)} className="ml-1 hover:text-red-600 transition-colors">
+                <button onClick={() => removeExtension(ext)} className="ml-1 transition-colors">
                   <X className="w-3 h-3" />
                 </button>
               </Badge>

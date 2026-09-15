@@ -1,3 +1,4 @@
+import Notice from '@/components/app/Notice';
 import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -83,16 +84,16 @@ export default function VisibilityRulesPanel({ form, onChange }) {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-semibold scholr-ink flex items-center gap-1.5">
-              <EyeOff className="w-4 h-4 text-amber-500" /> Feedback-Only Mode
+              <EyeOff className="w-4 h-4" /> Feedback-Only Mode
             </p>
             <p className="text-xs scholr-muted">Students and parents see written feedback but scores are hidden</p>
           </div>
           <Switch checked={form.feedback_only_mode} onCheckedChange={v => onChange({ feedback_only_mode: v })} />
         </div>
         {form.feedback_only_mode && (
-          <div className="mt-2 bg-amber-50 border border-amber-200 rounded-lg p-3">
-            <p className="text-xs text-amber-800">⚠ In feedback-only mode, numeric scores and IB grades will be hidden from students and parents even if individual grade items are marked visible.</p>
-          </div>
+          <Notice tone="warn">
+            In feedback-only mode, numeric scores and IB grades will be hidden from students and parents even if individual grade items are marked visible.
+          </Notice>
         )}
       </div>
     </div>

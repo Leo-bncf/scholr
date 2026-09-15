@@ -27,7 +27,7 @@ export default function BillingStatusBanner() {
   const configs = {
     past_due: {
       bg: 'bg-amber-50 border-amber-400',
-      icon: <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />,
+      icon: <AlertTriangle className="w-5 h-5 shrink-0" />,
       title: 'Payment past due',
       message: 'Your last payment failed. Please update your payment method to avoid service interruption.',
       textColor: 'text-amber-900',
@@ -35,7 +35,7 @@ export default function BillingStatusBanner() {
     },
     unpaid: {
       bg: 'bg-red-50 border-red-400',
-      icon: <XCircle className="w-5 h-5 text-red-600 shrink-0" />,
+      icon: <XCircle className="w-5 h-5 shrink-0" />,
       title: 'Account suspended — payment outstanding',
       message: 'Access to premium features has been suspended. Update your billing to restore full access.',
       textColor: 'text-red-900',
@@ -51,7 +51,7 @@ export default function BillingStatusBanner() {
     },
     incomplete: {
       bg: 'bg-amber-50 border-amber-400',
-      icon: <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />,
+      icon: <AlertTriangle className="w-5 h-5 shrink-0" />,
       title: 'Subscription setup incomplete',
       message: 'Your subscription setup was not completed. Please complete payment to activate your plan.',
       textColor: 'text-amber-900',
@@ -59,7 +59,7 @@ export default function BillingStatusBanner() {
     },
     active_cancel_scheduled: {
       bg: 'bg-orange-50 border-orange-400',
-      icon: <AlertTriangle className="w-5 h-5 text-orange-600 shrink-0" />,
+      icon: <AlertTriangle className="w-5 h-5 shrink-0" />,
       title: 'Subscription scheduled to cancel',
       message: plan.school?.subscription_current_period_end
         ? `Your subscription will not renew after ${new Date(plan.school.subscription_current_period_end).toLocaleDateString()}. Reactivate to keep access.`

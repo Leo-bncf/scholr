@@ -70,7 +70,7 @@ function DemoActionCard({
           </Button>
         ) : (
           <div className="rounded-2xl border border-red-200 bg-red-50 p-4 space-y-4">
-            <p className="text-sm font-semibold text-red-700">This will remove demo-tagged records only. Continue?</p>
+            <p className="text-sm font-semibold" style={{ color: 'var(--crit)' }}>This will remove demo-tagged records only. Continue?</p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button variant="outline" className="flex-1" onClick={onCancel} disabled={loading}>Cancel</Button>
               <Button className="flex-1 bg-red-600 hover:bg-red-700" onClick={onConfirm} disabled={loading}>
@@ -128,7 +128,7 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
       <div className="rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-slate-50 p-6">
         <div className="flex items-start gap-4">
           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-100">
-            <ShieldCheck className="h-7 w-7 text-emerald-700" />
+            <ShieldCheck className="h-7 w-7" />
           </div>
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
@@ -165,7 +165,7 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
           items={removalItems}
           action={() => setConfirmClear(true)}
           actionVariant="outline"
-          actionClassName="w-full h-12 border-red-200 text-red-700 hover:bg-red-50"
+          actionClassName="w-full h-12 border-red-200 text-red-700"
           confirm={confirmClear}
           onConfirm={handleClear}
           onCancel={() => setConfirmClear(false)}
@@ -177,9 +177,9 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
       {result && (
         <Alert className={result.type === 'success' ? 'border-emerald-200 bg-emerald-50' : 'border-red-200 bg-red-50'}>
           {result.type === 'success' ? (
-            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+            <CheckCircle2 className="h-4 w-4" />
           ) : (
-            <AlertTriangle className="h-4 w-4 text-red-600" />
+            <AlertTriangle className="h-4 w-4" />
           )}
           <AlertDescription className={result.type === 'success' ? 'text-emerald-800' : 'text-red-800'}>
             {result.message}

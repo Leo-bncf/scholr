@@ -42,7 +42,7 @@ const ARTICLES = [
       },
       {
         title: 'Setting up reporting windows and grade locks',
-        content: 'Go to Gradebook Governance → Grade Locks. Create a reporting window with an opens_at and locks_at date. When a window locks, teachers cannot edit grades in that period. Admins can override locks with a justification if "Admin can override lock" is enabled. Locked periods appear in coordinator reports.',
+        content: 'Go to Gradebook Governance → Grade Locks. Create a reporting window with an opens_at and locks_at date. When a window locks, teachers cannot edit grades in that period. Admins can override locks with a justification if"Admin can override lock" is enabled. Locked periods appear in coordinator reports.',
         tags: ['grade locks', 'reporting', 'windows'],
       },
       {

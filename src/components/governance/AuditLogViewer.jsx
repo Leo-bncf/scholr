@@ -1,3 +1,5 @@
+import { Group } from '@/components/app/AppShell';
+import StatCard from '@/components/app/StatCard';
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
@@ -28,16 +30,19 @@ const CATEGORY_MAP = {
 const CATEGORIES = ['All', 'Users', 'Grades', 'Attendance', 'Behaviour', 'Classes', 'Data & Exports', 'Settings', 'Security'];
 
 const LEVEL_CONFIG = {
-  info:     { label: 'Info',     color: 'scholr-sunk scholr-muted',   icon: Info },
-  warning:  { label: 'Warning',  color: 'scholr-sunk scholr-muted',   icon: AlertTriangle },
-  critical: { label: 'Critical', color: 'bg-red-100 text-red-700',       icon: ShieldAlert },
+  info:     { label: 'Info',     tone: null,   icon: Info },
+  warning:  { label: 'Warning',  tone: 'warn', icon: AlertTriangle },
+  critical: { label: 'Critical', tone: 'crit', icon: ShieldAlert },
 };
 
 function LevelBadge({ level }) {
   const cfg = LEVEL_CONFIG[level] || LEVEL_CONFIG.info;
   const Icon = cfg.icon;
   return (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${cfg.color}`}>
+    <span
+      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium"
+      style={{ color: cfg.tone ? `var(--${cfg.tone})` : 'var(--muted)' }}
+    >
       <Icon className="w-3 h-3" />
       {cfg.label}
     </span>
@@ -80,7 +85,7 @@ function LogRow({ log }) {
             <div><span className="scholr-faint font-medium">Entity Type:</span> <span className="scholr-body">{log.entity_type || '—'}</span></div>
             <div><span className="scholr-faint font-medium">Entity ID:</span> <span className="scholr-body font-mono truncate">{log.entity_id || '—'}</span></div>
             <div className="col-span-2"><span className="scholr-faint font-medium">Details:</span> <span className="scholr-body">{log.details || '—'}</span></div>
-            <div className="col-span-2"><span className="scholr-faint font-medium">Timestamp:</span> <span className="scholr-body">{log.created_at ? format(new Date(log.created_at), "dd MMM yyyy 'at' HH:mm:ss") : '—'}</span></div>
+            <div className="col-span-2"><span className="scholr-faint font-medium">Timestamp:</span> <span className="scholr-body">{log.created_at ? format(new Date(log.created_at),"dd MMM yyyy 'at' HH:mm:ss") : '—'}</span></div>
           </div>
         </div>
       )}
@@ -190,20 +195,18 @@ export default function AuditLogViewer({ schoolId }) {
         </div>
       </div>
 
-      {/* Stats strip */}
-      <div className="grid grid-cols-4 gap-3">
+      <Group>
+        <div className="scholr-grid app-cols-4">
         {[
-          { label: 'Total (filtered)', value: filtered.length },
-          { label: 'Critical', value: filtered.filter(l => l.level === 'critical').length, red: true },
-          { label: 'Warnings', value: filtered.filter(l => l.level === 'warning').length, amber: true },
-          { label: 'Users Active', value: new Set(filtered.map(l => l.user_email).filter(Boolean)).size },
-        ].map(({ label, value, red, amber }) => (
-          <div key={label} className="app-group p-3 text-center">
-            <p className={`text-xl font-bold ${red ? 'text-red-600' : amber ? 'text-amber-600' : 'scholr-ink'}`}>{value}</p>
-            <p className="text-xs scholr-muted mt-0.5">{label}</p>
-          </div>
+          { label: 'Entries', value: filtered.length, hint: 'matching the filters' },
+          { label: 'Critical', value: filtered.filter(l => l.level === 'critical').length, tone: 'crit', hint: 'need a look' },
+          { label: 'Warnings', value: filtered.filter(l => l.level === 'warning').length, tone: 'warn', hint: 'worth a look' },
+          { label: 'People', value: new Set(filtered.map(l => l.user_email).filter(Boolean)).size, hint: 'appear in these entries' },
+        ].map(({ label, value, tone, hint }) => (
+          <StatCard key={label} label={label} value={value} tone={value > 0 ? tone : undefined} hint={hint} />
         ))}
-      </div>
+        </div>
+      </Group>
 
       {/* Log table */}
       <div className="app-group overflow-hidden">

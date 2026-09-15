@@ -104,7 +104,7 @@ export default function IssueReporter({ schoolId, user, school }) {
     return (
       <div className="bg-white rounded-xl border border-emerald-200 p-10 text-center">
         <div className="w-14 h-14 scholr-sunk rounded-full flex items-center justify-center mx-auto mb-4">
-          <CheckCircle2 className="w-7 h-7 text-emerald-600" />
+          <CheckCircle2 className="w-7 h-7" />
         </div>
         <h3 className="text-lg font-bold scholr-ink mb-2">Request submitted</h3>
         <p className="text-sm scholr-muted mb-5 max-w-sm mx-auto">
@@ -187,7 +187,7 @@ export default function IssueReporter({ schoolId, user, school }) {
               />
             </label>
             {screenshotFile && (
-              <button type="button" onClick={() => setScreenshotFile(null)} className="text-xs text-red-500 hover:underline">Remove</button>
+              <button type="button" onClick={() => setScreenshotFile(null)} className="text-xs hover:underline" style={{ color: 'var(--crit)' }}>Remove</button>
             )}
           </div>
         </div>

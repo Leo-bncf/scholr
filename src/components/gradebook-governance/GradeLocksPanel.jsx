@@ -51,7 +51,7 @@ export default function GradeLocksPanel({ form, onChange, terms = [] }) {
                         className="h-7 text-sm font-semibold border-0 bg-transparent p-0 focus-visible:ring-0"
                       />
                       {effectiveLocked ? (
-                        <Badge className="bg-red-100 text-red-700 border-0 text-xs gap-1 flex-shrink-0">
+                        <Badge className="bg-red-100 border-0 text-xs gap-1 flex-shrink-0">
                           <Lock className="w-3 h-3" /> Locked
                         </Badge>
                       ) : (
@@ -79,7 +79,7 @@ export default function GradeLocksPanel({ form, onChange, terms = [] }) {
                       {win.locked ? <Unlock className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
                       {win.locked ? 'Unlock' : 'Lock Now'}
                     </Button>
-                    <button type="button" onClick={() => removeWindow(win.id)} className="scholr-faint hover:text-red-500">
+                    <button type="button" onClick={() => removeWindow(win.id)} className="scholr-faint">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -123,7 +123,7 @@ export default function GradeLocksPanel({ form, onChange, terms = [] }) {
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold scholr-ink flex items-center gap-1.5"><Lock className="w-4 h-4 text-red-500" /> Auto-lock after deadline</p>
+            <p className="text-sm font-semibold scholr-ink flex items-center gap-1.5"><Lock className="w-4 h-4" /> Auto-lock after deadline</p>
             <p className="text-xs scholr-muted">Grade edits are blocked once a reporting window's deadline passes</p>
           </div>
           <Switch checked={form.lock_grades_after_deadline} onCheckedChange={v => onChange({ lock_grades_after_deadline: v })} />
@@ -131,7 +131,7 @@ export default function GradeLocksPanel({ form, onChange, terms = [] }) {
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold scholr-ink flex items-center gap-1.5"><AlertTriangle className="w-4 h-4 text-amber-500" /> Require justification for post-lock edits</p>
+            <p className="text-sm font-semibold scholr-ink flex items-center gap-1.5"><AlertTriangle className="w-4 h-4" /> Require justification for post-lock edits</p>
             <p className="text-xs scholr-muted">Admin overrides must include a written justification</p>
           </div>
           <Switch checked={form.require_justification_for_locked_edit} onCheckedChange={v => onChange({ require_justification_for_locked_edit: v })} />

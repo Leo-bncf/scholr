@@ -34,7 +34,7 @@ const REASON_RULES = [
   {
     key: 'role_change',
     label: 'User role change',
-    description: "Require a documented reason when a user's school role is changed.",
+    description:"Require a documented reason when a user's school role is changed.",
     level: 'warning',
   },
   {
@@ -52,7 +52,7 @@ const REASON_RULES = [
   {
     key: 'grade_visibility_override',
     label: 'Grade visibility override',
-    description: "Require reason when a grade's visibility is changed from the school default.",
+    description:"Require reason when a grade's visibility is changed from the school default.",
     level: 'info',
   },
 ];
@@ -79,7 +79,7 @@ export default function ChangeReasonEnforcement({ policy, onChange, onSave, savi
 
   return (
     <div className="space-y-5">
-      <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 flex gap-2 text-sm text-blue-800">
+      <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 flex gap-2 text-sm" style={{ color: 'var(--ink)' }}>
         <Info className="w-4 h-4 shrink-0 mt-0.5" />
         <p>When enabled, the platform will intercept the relevant edit actions and require the acting user to provide a written reason before proceeding. Reasons are stored in the audit log and visible to administrators.</p>
       </div>
@@ -147,7 +147,7 @@ export function ChangeReasonModal({ open, onClose, onConfirm, title, description
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1">
             <div className="bg-amber-100 rounded-full p-1.5">
-              <AlertTriangle className="w-4 h-4 text-amber-600" />
+              <AlertTriangle className="w-4 h-4" />
             </div>
             <DialogTitle className="text-base">{title || 'Reason Required'}</DialogTitle>
           </div>
@@ -163,7 +163,7 @@ export function ChangeReasonModal({ open, onClose, onConfirm, title, description
               onChange={e => { setReason(e.target.value); setError(''); }}
               className="text-sm"
             />
-            {error && <p className="text-xs text-red-600 mt-1">{error}</p>}
+            {error && <p className="text-xs mt-1" style={{ color: 'var(--crit)' }}>{error}</p>}
           </div>
           <p className="text-xs scholr-faint">This reason will be stored in the school audit log and is visible to school administrators.</p>
           <div className="flex gap-2 justify-end pt-1">
