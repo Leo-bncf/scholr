@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
-import RoleGuard from '@/components/auth/RoleGuard';
-import AppSidebar from '@/components/app/AppSidebar';
-import {
-  LayoutDashboard, FileSpreadsheet, Printer, Star, Users,
-} from 'lucide-react';
-import AdminTabNavigation from '@/components/admin/AdminTabNavigation';
-import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
+import SchoolAdminPage from '@/components/app/SchoolAdminPage';
+
 import ReportsCenterOverview from '@/components/reports/ReportsCenterOverview';
 import CSVExportToolkit from '@/components/reports/CSVExportToolkit';
 import PDFReportBuilder from '@/components/reports/PDFReportBuilder';
@@ -87,36 +82,34 @@ export default function SchoolAdminReports() {
   const [tab, setTab] = useState('overview');
 
   const TABS = [
-    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-    { id: 'exports', label: 'CSV Exports', icon: FileSpreadsheet },
-    { id: 'class-reports', label: 'Class Reports', icon: Users },
-    { id: 'pdf', label: 'PDF Reports', icon: Printer },
-    ...(isCoordinator ? [{ id: 'coordinator', label: 'IB Coordinator', icon: Star }] : []),
+    { value: 'overview', label: 'Overview' },
+    { value: 'exports', label: 'CSV' },
+    { value: 'class-reports', label: 'Class reports' },
+    { value: 'pdf', label: 'PDF' },
+    ...(isCoordinator ? [{ value: 'coordinator', label: 'IB Core' }] : []),
   ];
 
   return (
-    <RoleGuard allowedRoles={['school_admin', 'ib_coordinator', 'super_admin', 'admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar links={SCHOOL_ADMIN_SIDEBAR_LINKS} role="school_admin" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-
-        <main className="app-offset min-h-screen flex flex-col">
-          <AdminTabNavigation
-            tabs={TABS}
-            activeTab={tab}
-            onTabChange={setTab}
-            title="Reports"
-            subtitle="Export and print"
-          />
-
-          <div className="flex-1 p-6 max-w-7xl mx-auto w-full">
-            {tab === 'overview' && <ReportsCenterOverview {...sharedProps} />}
-            {tab === 'exports' && <CSVExportToolkit {...sharedProps} />}
-            {tab === 'class-reports' && <ClassProgressReport {...sharedProps} />}
-            {tab === 'pdf' && <PDFReportBuilder {...sharedProps} />}
-            {tab === 'coordinator' && isCoordinator && <CoordinatorReports {...sharedProps} />}
-          </div>
-        </main>
-      </div>
-    </RoleGuard>
+    <SchoolAdminPage
+      title="Reports"
+      eyebrow="Export and print"
+      tabs={TABS}
+      activeTab={tab}
+      onTabChange={setTab}
+      allowedRoles={['school_admin', 'ib_coordinator', 'super_admin', 'admin']}
+      /* A report is almost always the end of a chain that started somewhere
+         else — the marks, the register, or the question behind them. */
+      related={[
+        ['SchoolAnalytics', 'Analytics'],
+        ['ReportingEngine', 'Report builder'],
+        ['SchoolAdminAttendance', 'Attendance'],
+      ]}
+    >
+      {tab === 'overview' && <ReportsCenterOverview {...sharedProps} />}
+      {tab === 'exports' && <CSVExportToolkit {...sharedProps} />}
+      {tab === 'class-reports' && <ClassProgressReport {...sharedProps} />}
+      {tab === 'pdf' && <PDFReportBuilder {...sharedProps} />}
+      {tab === 'coordinator' && isCoordinator && <CoordinatorReports {...sharedProps} />}
+    </SchoolAdminPage>
   );
 }

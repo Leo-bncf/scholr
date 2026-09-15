@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import { humanise } from '@/lib/labels';
 import { useQuery } from '@tanstack/react-query';
-import RoleGuard from '@/components/auth/RoleGuard';
-import AppSidebar from '@/components/app/AppSidebar';
 import { useUser } from '@/components/auth/UserContext';
 import { usePlan } from '@/components/plan/PlanProvider';
 import { CreditCard, CheckCircle2, AlertCircle, Loader2,
-  ExternalLink, ArrowUpCircle, RefreshCw, GraduationCap,
+  ExternalLink, ArrowUpCircle, GraduationCap,
 } from 'lucide-react';
-import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import AdminTabNavigation from '@/components/admin/AdminTabNavigation';
 import TrialBanner from '@/components/plan/TrialBanner';
 import BillingStatusBanner from '@/components/plan/BillingStatusBanner';
 import StudentPricingUpgrade from '@/components/plan/StudentPricingUpgrade';
@@ -22,6 +19,11 @@ import * as schoolsData from '@/data/schools';
 import * as membershipsData from '@/data/memberships';
 import * as fns from '@/data/functions';
 
+const TABS = [
+  { value: 'status', label: 'Subscription' },
+  { value: 'students', label: 'Student slots' },
+  { value: 'upgrade', label: 'Change seats' },
+];
 const BILLING_STATUS_CONFIG = {
   trial:     { label: 'Free Trial',   color: 'bg-blue-100 text-blue-700 border-blue-200',    dot: 'bg-blue-500' },
   active:    { label: 'Active',       color: 'bg-emerald-100 text-emerald-700 border-emerald-200', dot: 'bg-emerald-500' },
@@ -105,29 +107,14 @@ export default function SchoolAdminBilling() {
   const hasStudentWarning = purchasedStudents > 0 && studentPct >= 80;
 
   return (
-    <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar links={SCHOOL_ADMIN_SIDEBAR_LINKS} role="school_admin" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-
-        <main className="app-offset min-h-screen flex flex-col">
-          <AdminTabNavigation
-            tabs={[
-              { id: 'status', label: 'Subscription', icon: CreditCard },
-              { id: 'students', label: 'Student Slots', icon: GraduationCap, badge: hasStudentWarning ? '!' : null },
-              ...(upgradePlans.length > 0 ? [{ id: 'upgrade', label: 'Change seats', icon: ArrowUpCircle }] : []),
-            ]}
-            activeTab={billingTab}
-            onTabChange={setBillingTab}
-            title="Billing"
-            subtitle="Your seats and what they cost"
-            rightContent={
-              <Button size="sm" variant="ghost" onClick={() => refetch()} className="gap-1.5 scholr-muted">
-                <RefreshCw className="w-3.5 h-3.5" /> Refresh
-              </Button>
-            }
-          />
-
-          <div className="flex-1 p-6 max-w-6xl space-y-5">
+    <SchoolAdminPage
+      title="Billing"
+      eyebrow="Your seats and what they cost"
+      tabs={TABS}
+      activeTab={billingTab}
+      onTabChange={setBillingTab}
+      related={[["SchoolAdminUsers","Users"],["SchoolAdminSettings","Settings"],["SchoolAdminSupport","Support"]]}
+    >          <div className="flex-1 p-6 max-w-6xl space-y-5">
             <TrialBanner />
             <BillingStatusBanner />
 
@@ -320,8 +307,6 @@ export default function SchoolAdminBilling() {
               </div>
             )}
           </div>
-        </main>
-      </div>
-    </RoleGuard>
+    </SchoolAdminPage>
   );
 }

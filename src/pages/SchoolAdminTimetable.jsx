@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
-import RoleGuard from '@/components/auth/RoleGuard';
-import AppSidebar from '@/components/app/AppSidebar';
+import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import { useUser } from '@/components/auth/UserContext';
-import {
-  Activity, MapPin, Link2, Settings,
-} from 'lucide-react';
-import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
-import AdminTabNavigation from '@/components/admin/AdminTabNavigation';
+
 
 import { useTimetableData, OVERRIDE_POLICY_CONFIG } from '@/components/timetable/useTimetableData';
 import TimetableStructureTab from '@/components/timetable/TimetableStructureTab';
@@ -14,6 +9,12 @@ import SyncSettingsTab       from '@/components/timetable/SyncSettingsTab';
 import SyncMonitorTab        from '@/components/timetable/SyncMonitorTab';
 import ConflictResolutionTab from '@/components/timetable/ConflictResolutionTab';
 
+const TABS = [
+  { value: 'structure', label: 'Structure' },
+  { value: 'sync-settings', label: 'Sync' },
+  { value: 'monitor', label: 'Monitor' },
+  { value: 'conflicts', label: 'Conflicts' },
+];
 
 
 export default function SchoolAdminTimetable() {
@@ -36,32 +37,15 @@ export default function SchoolAdminTimetable() {
   const lastSyncFailed = lastSync?.status === 'failed';
 
   return (
-    <RoleGuard allowedRoles={['school_admin', 'ib_coordinator', 'super_admin', 'admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar
-          links={SCHOOL_ADMIN_SIDEBAR_LINKS}
-          role="school_admin"
-          schoolName={school?.name}
-          userName={user?.full_name}
-          userId={user?.id}
-          schoolId={schoolId}
-        />
-
-        <main className="app-offset min-h-screen flex flex-col">
-          <AdminTabNavigation
-            tabs={[
-              { id: 'structure', label: 'Structure', icon: MapPin },
-              { id: 'sync-settings', label: 'Sync Settings', icon: Settings },
-              { id: 'monitor', label: 'Monitor & Logs', icon: Activity, badge: (openConflicts > 0 || lastSyncFailed) ? '!' : null },
-              { id: 'conflicts', label: 'Conflict Resolution', icon: Link2, badge: openConflicts > 0 ? openConflicts : null },
-            ]}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            title="Timetable"
-            subtitle={`${scheduleEntries.filter(e => e.status === 'active').length} schedule entries · ${periods.length} periods · ${rooms.length} rooms`}
-          />
-
-          <div className="flex-1 p-6">
+    <SchoolAdminPage
+      title="Timetable"
+      eyebrow="As taught, and how it syncs"
+      tabs={TABS}
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+      allowedRoles={['school_admin', 'ib_coordinator', 'super_admin', 'admin']}
+      related={[["SchoolAdminClasses","Classes"],["UnifiedCalendar","Calendar"],["SchoolAdminAcademicSetup","Academic setup"]]}
+    >          <div className="flex-1 p-6">
             {activeTab === 'structure' && (
               <TimetableStructureTab
                 schoolId={schoolId}
@@ -99,8 +83,6 @@ export default function SchoolAdminTimetable() {
               />
             )}
           </div>
-        </main>
-      </div>
-    </RoleGuard>
+    </SchoolAdminPage>
   );
 }

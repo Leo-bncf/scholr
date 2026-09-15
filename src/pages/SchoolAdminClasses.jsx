@@ -1,12 +1,7 @@
 import React from 'react';
-import RoleGuard from '@/components/auth/RoleGuard';
-import AppSidebar from '@/components/app/AppSidebar';
+import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import { useUser } from '@/components/auth/UserContext';
-import AdminTabNavigation from '@/components/admin/AdminTabNavigation';
-import {
-  Layers, UserCheck, Users2, Archive
-} from 'lucide-react';
-import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
+
 
 import { useClassData } from '@/components/classes/useClassData';
 import ClassSectionTab      from '@/components/classes/ClassSectionTab';
@@ -26,34 +21,21 @@ export default function SchoolAdminClasses() {
   const unstaffed     = classes.filter(c => c.status === 'active' && (!c.teacher_ids || c.teacher_ids.length === 0)).length;
 
   const TABS = [
-    { id: 'sections', label: 'Class Sections', icon: Layers },
-    { id: 'teachers', label: 'Staff Assignment', icon: UserCheck, badge: unstaffed > 0 ? unstaffed : null },
-    { id: 'students', label: 'Student Enrolment', icon: Users2 },
-    { id: 'lifecycle', label: 'Lifecycle', icon: Archive },
+    { value: 'sections', label: 'Class Sections' },
+    { value: 'teachers', label: 'Staff Assignment' },
+    { value: 'students', label: 'Student Enrolment' },
+    { value: 'lifecycle', label: 'Lifecycle' },
   ];
 
   return (
-    <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar
-          links={SCHOOL_ADMIN_SIDEBAR_LINKS}
-          role="school_admin"
-          schoolName={school?.name}
-          userName={user?.full_name}
-          userId={user?.id}
-          schoolId={schoolId}
-        />
-
-        <main className="app-offset min-h-screen flex flex-col">
-          <AdminTabNavigation
-            tabs={TABS}
-            activeTab={tab}
-            onTabChange={setTab}
-            title="Classes"
-            subtitle={`${activeCount} active · ${archivedCount} archived${unstaffed > 0 ? ` · ${unstaffed} unstaffed` : ''}`}
-          />
-
-          {/* Tab Content */}
+    <SchoolAdminPage
+      title="Classes"
+      eyebrow="Sections, staff and rosters"
+      tabs={TABS}
+      activeTab={tab}
+      onTabChange={setTab}
+      related={[["SchoolAdminEnrollments","Enrolments"],["SchoolAdminSubjects","Subjects"],["SchoolAdminTimetable","Timetable"]]}
+    >          {/* Tab Content */}
           <div className="flex-1 p-6">
             {tab === 'sections' && (
               <ClassSectionTab
@@ -87,8 +69,6 @@ export default function SchoolAdminClasses() {
               />
             )}
           </div>
-        </main>
-      </div>
-    </RoleGuard>
+    </SchoolAdminPage>
   );
 }

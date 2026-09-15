@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
-import RoleGuard from '@/components/auth/RoleGuard';
-import AppSidebar from '@/components/app/AppSidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import AdminTabNavigation from '@/components/admin/AdminTabNavigation';
 import {
-  Loader2, CheckCircle2, AlertCircle, Building2, Globe, Bell, Shield, HardDrive,
-  FileText, BookOpen
+  Loader2, CheckCircle2, AlertCircle, Building2, Globe, Bell, BookOpen
 } from 'lucide-react';
-import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
 import { DEFAULT_POLICY } from '@/hooks/useSubmissionPolicy';
 import { CURRICULUM_OPTIONS } from '@/lib/curriculumConfig';
 import SubmissionRulesPanel from '@/components/settings/SubmissionRulesPanel';
@@ -23,6 +19,13 @@ import AcademicIntegrityPanel from '@/components/settings/AcademicIntegrityPanel
 import * as schoolsData from '@/data/schools';
 import * as submissionPoliciesData from '@/data/submissionPolicies';
 
+const TABS = [
+  { value: 'school', label: 'School profile' },
+  { value: 'submissions', label: 'Submissions' },
+  { value: 'files', label: 'Files' },
+  { value: 'integrity', label: 'Integrity' },
+  { value: 'curriculum', label: 'Curriculum' },
+];
 
 
 const TIMEZONES = [
@@ -120,33 +123,14 @@ export default function SchoolAdminSettings() {
   const policyOnChange = (partial) => setPolicyForm(prev => ({ ...prev, ...partial }));
 
   return (
-    <RoleGuard allowedRoles={['school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar
-          links={SCHOOL_ADMIN_SIDEBAR_LINKS}
-          role="school_admin"
-          schoolName={contextSchool?.name}
-          userName={user?.full_name}
-          userId={user?.id}
-          schoolId={schoolId}
-        />
-
-        <main className="app-offset min-h-screen flex flex-col">
-          <AdminTabNavigation
-            tabs={[
-              { id: 'school', label: 'School Profile', icon: Building2 },
-              { id: 'submissions', label: 'Submission Rules', icon: FileText },
-              { id: 'files', label: 'File & Storage', icon: HardDrive },
-              { id: 'integrity', label: 'Academic Integrity', icon: Shield },
-              { id: 'curriculum', label: 'Curriculum', icon: BookOpen },
-            ]}
-            activeTab={settingsTab}
-            onTabChange={setSettingsTab}
-            title="Settings"
-            subtitle="Profile, preferences and policy"
-          />
-
-          {message && (
+    <SchoolAdminPage
+      title="Settings"
+      eyebrow="Profile, preferences and policy"
+      tabs={TABS}
+      activeTab={settingsTab}
+      onTabChange={setSettingsTab}
+      related={[["SchoolAdminGovernance","Governance"],["SchoolAdminGradebookGovernance","Gradebook rules"],["SchoolAdminBilling","Billing"]]}
+    >          {message && (
             <div className="mx-6 mt-4">
               <Alert className={message.type === 'success' ? 'border-emerald-200 bg-emerald-50' : 'border-red-200 bg-red-50'}>
                 {message.type === 'success'
@@ -377,8 +361,6 @@ export default function SchoolAdminSettings() {
                 </div>
               )}
           </div>
-        </main>
-      </div>
-    </RoleGuard>
+    </SchoolAdminPage>
   );
 }
