@@ -1,10 +1,11 @@
+import { Row } from '@/components/app/AppShell';
+import StatusChip from '@/components/app/StatusChip';
 import React, { useState } from 'react';
 import { humanise } from '@/lib/labels';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Loader2, Pencil, Trash2, Library, Search } from 'lucide-react';
@@ -26,20 +27,6 @@ const IB_GROUPS = [
 
 const IB_GROUP_MAP = Object.fromEntries(IB_GROUPS.map(g => [g.value, g]));
 
-const LEVEL_STYLES = {
-  HL:   'bg-rose-50 text-rose-700 border-rose-200',
-  SL:   'bg-blue-50 text-blue-700 border-blue-200',
-  AS:   'bg-sky-50 text-sky-700 border-sky-200',
-  A2:   'scholr-accent-sf scholr-accent scholr-accent-rule',
-  'A Level': 'scholr-accent-sf scholr-accent scholr-accent-rule',
-  Core: 'scholr-sunk scholr-muted scholr-rule',
-  Extended: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  Standard: 'bg-blue-50 text-blue-700 border-blue-200',
-  Honors: 'bg-amber-50 text-amber-700 border-amber-200',
-  AP:   'bg-rose-50 text-rose-700 border-rose-200',
-  core: 'bg-amber-50 text-amber-700 border-amber-200',
-  na:   'scholr-sunk scholr-muted scholr-rule',
-};
 
 const GRADING_TYPES = [
   { value: 'ib_1_7',   label: 'IB 1–7 Scale' },
@@ -227,28 +214,20 @@ export default function SubjectCatalogTab({ schoolId, curriculum = 'ib_dp' }) {
                 <span className="text-xs font-bold scholr-faint scholr-sunk px-2 py-0.5 rounded font-mono">{group.short}</span>
                 <h3 className="text-xs font-bold uppercase tracking-wider scholr-muted">{group.label}</h3>
               </div>
-              <div className="app-group overflow-hidden shadow-sm">
-                <table className="w-full">
-                  <tbody className="divide-y scholr-divide">
-                    {group.items.map(s => (
-                      <SubjectRow key={s.id} subject={s} classCount={getClassCount(s.id)} onEdit={openEdit} onDelete={handleDelete} />
-                    ))}
-                  </tbody>
-                </table>
+              <div className="app-group">
+                {group.items.map(s => (
+                  <SubjectRow key={s.id} subject={s} classCount={getClassCount(s.id)} onEdit={openEdit} onDelete={handleDelete} />
+                ))}
               </div>
             </div>
           ))}
           {noGroup.length > 0 && (
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider scholr-faint mb-2">Uncategorised</h3>
-              <div className="app-group overflow-hidden shadow-sm">
-                <table className="w-full">
-                  <tbody className="divide-y scholr-divide">
-                    {noGroup.map(s => (
-                      <SubjectRow key={s.id} subject={s} classCount={getClassCount(s.id)} onEdit={openEdit} onDelete={handleDelete} />
-                    ))}
-                  </tbody>
-                </table>
+              <div className="app-group">
+                {noGroup.map(s => (
+                  <SubjectRow key={s.id} subject={s} classCount={getClassCount(s.id)} onEdit={openEdit} onDelete={handleDelete} />
+                ))}
               </div>
             </div>
           )}
@@ -335,7 +314,7 @@ export default function SubjectCatalogTab({ schoolId, curriculum = 'ib_dp' }) {
                     <p className="text-sm font-medium scholr-ink">{q.name}</p>
                     <div className="flex items-center gap-1.5 mt-0.5">
                       <span className="text-xs font-mono scholr-faint">{q.code}</span>
-                      <Badge className={`text-[10px] border ${LEVEL_STYLES[q.level]}`}>{q.level}</Badge>
+                      <StatusChip tone="mute">{q.level}</StatusChip>
                       {q.ib_group && <span className="text-[10px] scholr-faint">{IB_GROUP_MAP[q.ib_group]?.short}</span>}
                     </div>
                   </div>
@@ -361,35 +340,51 @@ export default function SubjectCatalogTab({ schoolId, curriculum = 'ib_dp' }) {
   );
 }
 
+/**
+ * One subject in the catalogue.
+ *
+ * Was a <tr> inside a headerless <table> — table semantics with no column
+ * headers to reconcile them against, which is worse for a screen reader than
+ * a plain list. It is a Row now, like every other list in the product.
+ */
 function SubjectRow({ subject, classCount, onEdit, onDelete }) {
+  const detail = [
+    subject.department,
+    subject.default_grading_type && `graded ${humanise(subject.default_grading_type).toLowerCase()}`,
+    classCount > 0 ? `${classCount} class${classCount > 1 ? 'es' : ''}` : null,
+  ].filter(Boolean).join(' · ');
+
   return (
-    <tr className="hover:scholr-sunk transition-colors">
-      <td className="px-4 py-3">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-medium scholr-ink">{subject.name}</span>
-          {subject.code && <span className="text-xs font-mono scholr-sunk px-1.5 py-0.5 rounded scholr-muted">{subject.code}</span>}
-          {subject.department && <span className="text-xs scholr-faint italic">{subject.department}</span>}
-        </div>
-        {subject.default_grading_type && (
-          <span className="text-[10px] scholr-faint mt-0.5 block">Grading: {humanise(subject.default_grading_type)}</span>
-        )}
-      </td>
-      <td className="px-4 py-3 w-16">
-        <Badge className={`text-[11px] border ${LEVEL_STYLES[subject.level] || LEVEL_STYLES.na}`}>{subject.level?.toUpperCase() || '—'}</Badge>
-      </td>
-      <td className="px-4 py-3 hidden md:table-cell w-20 text-xs scholr-faint">
-        {classCount > 0 ? `${classCount} class${classCount > 1 ? 'es' : ''}` : '—'}
-      </td>
-      <td className="px-4 py-3 w-20 text-right">
-        <div className="flex items-center justify-end gap-0.5">
-          <Button variant="ghost" size="sm" onClick={() => onEdit(subject)} className="h-7 w-7 p-0 scholr-faint hover:scholr-accent">
-            <Pencil className="w-3.5 h-3.5" />
-          </Button>
-          <Button variant="ghost" size="sm" onClick={() => onDelete(subject)} className="h-7 w-7 p-0 scholr-faint hover:text-red-600">
-            <Trash2 className="w-3.5 h-3.5" />
-          </Button>
-        </div>
-      </td>
-    </tr>
+    <Row
+      label={
+        <>
+          {subject.name}
+          {subject.code && (
+            <span
+              className="scholr-num"
+              style={{ marginLeft: '.5rem', fontFamily: 'var(--font-mono)', fontSize: '.78rem', color: 'var(--muted)' }}
+            >
+              {subject.code}
+            </span>
+          )}
+        </>
+      }
+      detail={detail || undefined}
+    >
+      {subject.level && <StatusChip tone="mute">{subject.level.toUpperCase()}</StatusChip>}
+      <Button variant="ghost" size="sm" onClick={() => onEdit(subject)} className="h-7 w-7 p-0" aria-label={`Edit ${subject.name}`}>
+        <Pencil className="w-3.5 h-3.5" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => onDelete(subject)}
+        className="h-7 w-7 p-0"
+        style={{ color: 'var(--faint)' }}
+        aria-label={`Delete ${subject.name}`}
+      >
+        <Trash2 className="w-3.5 h-3.5" />
+      </Button>
+    </Row>
   );
 }

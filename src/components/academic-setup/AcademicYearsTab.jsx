@@ -11,9 +11,11 @@ const EMPTY = { name: '', start_date: '', end_date: '', is_current: false, statu
 
 function YearCard({ year, onEdit, onDelete, onSetCurrent, isSettingCurrent }) {
   const statusColors = {
-    active:   'bg-emerald-50 border-emerald-200 text-emerald-700',
+    /* Active is the ordinary case, so it takes no colour; a list where
+       every year glows green says nothing about which one is running. */
+    active:   'scholr-sunk scholr-ink',
     archived: 'scholr-sunk scholr-rule scholr-muted',
-    planning: 'bg-blue-50 border-blue-200 text-blue-700',
+    planning: 'scholr-sunk scholr-muted',
   };
   const fmt = (d) => d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
 

@@ -127,7 +127,7 @@ export default function CompliancePanel({ form, onChange }) {
             </div>
             <div className="flex flex-wrap gap-2">
               {(comp.safeguarding_keywords || []).map(kw => (
-                <Badge key={kw} variant="outline" className="bg-amber-50 border-amber-200 pr-1 flex items-center gap-1" style={{ color: 'var(--warn)' }}>
+                <Badge key={kw} variant="outline" className="pr-1 flex items-center gap-1">
                   {kw}
                   <button onClick={() => removeKeyword(kw)} className="ml-1">
                     <X className="w-3 h-3" />

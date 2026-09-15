@@ -51,7 +51,7 @@ export default function GradeLocksPanel({ form, onChange, terms = [] }) {
                         className="h-7 text-sm font-semibold border-0 bg-transparent p-0 focus-visible:ring-0"
                       />
                       {effectiveLocked ? (
-                        <Badge className="bg-red-100 border-0 text-xs gap-1 flex-shrink-0">
+                        <Badge className="border-0 text-xs gap-1 flex-shrink-0" style={{ color: 'var(--crit)', background: 'transparent' }}>
                           <Lock className="w-3 h-3" /> Locked
                         </Badge>
                       ) : (

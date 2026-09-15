@@ -142,7 +142,7 @@ export default function AuditLogViewer({ schoolId }) {
   return (
     <div className="space-y-5">
       {/* Filters */}
-      <div className="bg-white rounded-xl border scholr-rule p-4">
+      <div className="app-group" style={{ padding: '.9rem 1rem' }}>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           <div className="lg:col-span-2">
             <Label className="text-xs scholr-faint mb-1 block">Search</Label>

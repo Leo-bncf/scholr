@@ -1,6 +1,6 @@
+import StatusChip from '@/components/app/StatusChip';
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
 import { CalendarDays, Clock, MapPin, BookOpen, ClipboardList } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -26,7 +26,7 @@ export default function CalendarEventDialog({ event, open, onOpenChange }) {
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 text-sm scholr-body">
-          <Badge className="capitalize bg-emerald-50 text-emerald-700 border-0">{event.type}</Badge>
+          <StatusChip tone="mute">{event.type}</StatusChip>
           <div className="flex items-start gap-2">
             <Clock className="w-4 h-4 mt-0.5 scholr-faint" />
             <div>

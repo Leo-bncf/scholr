@@ -58,12 +58,12 @@ const REASON_RULES = [
 ];
 
 const LEVEL_COLORS = {
-  critical: 'border-red-200 bg-red-50',
-  warning: 'border-amber-200 bg-amber-50',
+  critical: 'app-tone-crit',
+  warning: 'app-tone-warn',
   info: 'scholr-rule scholr-sunk',
 };
 const LEVEL_BADGE = {
-  critical: 'bg-red-100 text-red-700',
+  critical: 'app-tone-crit',
   warning: 'scholr-sunk scholr-muted',
   info: 'scholr-sunk scholr-muted',
 };
@@ -79,7 +79,7 @@ export default function ChangeReasonEnforcement({ policy, onChange, onSave, savi
 
   return (
     <div className="space-y-5">
-      <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 flex gap-2 text-sm" style={{ color: 'var(--ink)' }}>
+      <div className="rounded-lg px-4 py-3 flex gap-2 text-sm" style={{ borderLeft: '2px solid var(--rule)', color: 'var(--muted)' }}>
         <Info className="w-4 h-4 shrink-0 mt-0.5" />
         <p>When enabled, the platform will intercept the relevant edit actions and require the acting user to provide a written reason before proceeding. Reasons are stored in the audit log and visible to administrators.</p>
       </div>
@@ -146,7 +146,7 @@ export function ChangeReasonModal({ open, onClose, onConfirm, title, description
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1">
-            <div className="bg-amber-100 rounded-full p-1.5">
+            <div className="scholr-sunk rounded-full p-1.5">
               <AlertTriangle className="w-4 h-4" />
             </div>
             <DialogTitle className="text-base">{title || 'Reason Required'}</DialogTitle>

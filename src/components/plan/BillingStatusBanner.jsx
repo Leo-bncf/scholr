@@ -26,7 +26,7 @@ export default function BillingStatusBanner() {
 
   const configs = {
     past_due: {
-      bg: 'bg-amber-50 border-amber-400',
+      tone: 'warn',
       icon: <AlertTriangle className="w-5 h-5 shrink-0" />,
       title: 'Payment past due',
       message: 'Your last payment failed. Please update your payment method to avoid service interruption.',
@@ -34,7 +34,7 @@ export default function BillingStatusBanner() {
       showPortal: true,
     },
     unpaid: {
-      bg: 'bg-red-50 border-red-400',
+      tone: 'crit',
       icon: <XCircle className="w-5 h-5 shrink-0" />,
       title: 'Account suspended — payment outstanding',
       message: 'Access to premium features has been suspended. Update your billing to restore full access.',
@@ -42,7 +42,7 @@ export default function BillingStatusBanner() {
       showPortal: true,
     },
     canceled: {
-      bg: 'scholr-sunk scholr-rule',
+      tone: null,
       icon: <XCircle className="w-5 h-5 scholr-muted shrink-0" />,
       title: 'Subscription canceled',
       message: 'Your subscription has ended. Re-subscribe to restore access to premium modules and features.',
@@ -50,7 +50,7 @@ export default function BillingStatusBanner() {
       showPortal: false,
     },
     incomplete: {
-      bg: 'bg-amber-50 border-amber-400',
+      tone: 'warn',
       icon: <AlertTriangle className="w-5 h-5 shrink-0" />,
       title: 'Subscription setup incomplete',
       message: 'Your subscription setup was not completed. Please complete payment to activate your plan.',
@@ -58,7 +58,7 @@ export default function BillingStatusBanner() {
       showPortal: true,
     },
     active_cancel_scheduled: {
-      bg: 'bg-orange-50 border-orange-400',
+      tone: 'warn',
       icon: <AlertTriangle className="w-5 h-5 shrink-0" />,
       title: 'Subscription scheduled to cancel',
       message: plan.school?.subscription_current_period_end
@@ -77,7 +77,13 @@ export default function BillingStatusBanner() {
   if (!config) return null;
 
   return (
-    <div className={`border-l-4 rounded-lg p-4 mb-5 ${config.bg}`}>
+    <div
+      className="rounded-lg p-4 mb-5"
+      style={{
+        borderLeft: `2px solid var(--${config.tone || 'rule'})`,
+        background: config.tone ? `var(--${config.tone}-sf)` : 'transparent',
+      }}
+    >
       <div className="flex items-start gap-3">
         {config.icon}
         <div className="flex-1">

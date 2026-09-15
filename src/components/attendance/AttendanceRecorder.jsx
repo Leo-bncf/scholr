@@ -8,10 +8,10 @@ import * as attendancePoliciesData from '@/data/attendancePolicies';
 import * as membershipsData from '@/data/memberships';
 
 const DEFAULT_STATUSES = [
-  { key: 'present', label: 'Present', icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-300', activeBg: 'bg-emerald-500 text-white' },
-  { key: 'absent',  label: 'Absent',  icon: XCircle,      color: 'text-red-600',     bg: 'bg-red-50 border-red-300',     activeBg: 'bg-red-500 text-white' },
-  { key: 'late',    label: 'Late',    icon: Clock,         color: 'text-amber-600',   bg: 'bg-amber-50 border-amber-300', activeBg: 'bg-amber-500 text-white' },
-  { key: 'excused', label: 'Excused', icon: AlertCircle,   color: 'text-blue-600',    bg: 'bg-blue-50 border-blue-300',   activeBg: 'bg-blue-500 text-white' },
+  { key: 'present', label: 'Present', icon: CheckCircle2, color: 'scholr-body', bg: 'scholr-sunk', activeBg: 'app-chip-on' },
+  { key: 'absent',  label: 'Absent',  icon: XCircle,      color: 'scholr-body',     bg: 'scholr-sunk',     activeBg: 'app-chip-on' },
+  { key: 'late',    label: 'Late',    icon: Clock,         color: 'scholr-body',   bg: 'scholr-sunk', activeBg: 'app-chip-on' },
+  { key: 'excused', label: 'Excused', icon: AlertCircle,   color: 'scholr-body',    bg: 'scholr-sunk',   activeBg: 'app-chip-on' },
 ];
 
 function StatusButton({ status, selected, onClick }) {
@@ -205,9 +205,9 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
           </span>
         ))}
         {!allMarked && markedCount > 0 && (
-          <span className="text-xs text-amber-600 font-medium">{students.length - markedCount} not yet marked</span>
+          <span className="text-xs font-medium" style={{ color: 'var(--warn)' }}>{students.length - markedCount} not yet marked</span>
         )}
-        {allMarked && <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1"><CheckCircle2 className="w-3.5 h-3.5" /> All students marked</span>}
+        {allMarked && <span className="text-xs font-semibold flex items-center gap-1" style={{ color: 'var(--good)' }}><CheckCircle2 className="w-3.5 h-3.5" /> All students marked</span>}
       </div>
 
       {/* Student Table */}
@@ -276,7 +276,7 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
 
       {saveMutation.isSuccess && (
         <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-center">
-          <p className="text-sm font-medium text-emerald-800 flex items-center justify-center gap-2">
+          <p className="text-sm font-medium flex items-center justify-center gap-2" style={{ color: 'var(--good)' }}>
             <CheckCircle2 className="w-4 h-4" /> Attendance saved successfully
           </p>
         </div>

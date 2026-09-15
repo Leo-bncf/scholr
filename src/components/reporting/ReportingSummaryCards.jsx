@@ -1,15 +1,22 @@
 import React from 'react';
+import { Group } from '@/components/app/AppShell';
+import StatCard from '@/components/app/StatCard';
 
+/**
+ * The four headline figures above a built report.
+ *
+ * Four separate bordered cards on a page already made of groups — the same
+ * information presented in two containment styles a scroll apart.
+ */
 export default function ReportingSummaryCards({ cards = [] }) {
+  if (cards.length === 0) return null;
   return (
-    <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-      {cards.map((card) => (
-        <div key={card.label} className="bg-white rounded-xl border scholr-rule p-5">
-          <p className="text-sm scholr-muted">{card.label}</p>
-          <p className="text-2xl font-bold scholr-ink mt-1">{card.value}</p>
-          <p className="text-xs scholr-faint mt-1">{card.helper}</p>
-        </div>
-      ))}
-    </div>
+    <Group>
+      <div className="scholr-grid app-cols-4">
+        {cards.map((card) => (
+          <StatCard key={card.label} label={card.label} value={card.value} hint={card.helper} />
+        ))}
+      </div>
+    </Group>
   );
 }

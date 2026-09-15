@@ -120,7 +120,7 @@ function RequestCard({ req, onUpdate, schoolId, user }) {
             )}
             {!['completed', 'rejected', 'withdrawn'].includes(req.status) && (
               <>
-                <Button size="sm" onClick={() => save('completed')} disabled={updating} className="bg-emerald-600 hover:bg-emerald-700 gap-1">
+                <Button size="sm" onClick={() => save('completed')} disabled={updating} className="pub-btn pub-btn-primary gap-1">
                   {updating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
                   Mark Completed
                 </Button>
@@ -276,7 +276,7 @@ export default function PrivacyRequestsPanel({ policy, onChange, onSave, saving,
           {isLoading ? (
             <div className="text-center py-12 scholr-faint text-sm">Loading requests…</div>
           ) : filtered.length === 0 ? (
-            <div className="bg-white rounded-xl border scholr-rule p-12 text-center">
+            <div className="app-group p-12 text-center">
               <Shield className="w-8 h-8 scholr-faint mx-auto mb-3" />
               <p className="text-sm scholr-muted">No privacy requests {statusFilter !== 'all' ? `with status"${STATUS_CONFIG[statusFilter]?.label}"` : 'logged yet'}.</p>
             </div>

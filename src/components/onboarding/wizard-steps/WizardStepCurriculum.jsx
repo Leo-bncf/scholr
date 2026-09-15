@@ -82,7 +82,7 @@ export default function WizardStepCurriculum({ schoolId, currentCurriculum, onDo
         {template.length > 0 && (
           <div>
             <div className="flex items-center gap-1.5 mb-2">
-              <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
+              <BookOpen className="w-3.5 h-3.5" />
               <p className="text-xs font-medium scholr-muted">{template.length} subjects in template — preview:</p>
             </div>
             <div className="flex flex-wrap gap-1.5">

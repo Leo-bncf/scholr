@@ -65,7 +65,7 @@ export default function StudentPricingUpgrade({ schoolId, currentStudents }) {
   };
 
   return (
-    <div className="bg-white rounded-xl border scholr-rule p-6">
+    <div className="app-group" style={{ padding: '1.1rem 1.2rem' }}>
       <p className="text-xs scholr-faint uppercase tracking-wide font-semibold mb-4">
         Change your seat count
       </p>
@@ -110,7 +110,7 @@ export default function StudentPricingUpgrade({ schoolId, currentStudents }) {
       ) : (
         count > 0 && (
           <>
-            <table className="w-full mt-5 text-sm">
+            <table className="app-table mt-5">
               <tbody>
                 {lines.map((l) => (
                   <tr key={l.from}>

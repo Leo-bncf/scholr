@@ -167,7 +167,7 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
           items={removalItems}
           action={() => setConfirmClear(true)}
           actionVariant="outline"
-          actionClassName="w-full h-12 border-red-200 text-red-700"
+          actionClassName="w-full h-12"
           confirm={confirmClear}
           onConfirm={handleClear}
           onCancel={() => setConfirmClear(false)}
@@ -177,7 +177,7 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
       </div>
 
       {result && (
-        <Alert className={result.type === 'success' ? 'border-emerald-200 bg-emerald-50' : 'border-red-200 bg-red-50'}>
+        <Alert style={{ borderLeft: `2px solid var(--${result.type === 'success' ? 'good' : 'crit'})` }}>
           {result.type === 'success' ? (
             <CheckCircle2 className="h-4 w-4" />
           ) : (

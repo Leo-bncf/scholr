@@ -76,11 +76,11 @@ export default function WizardStepInviteUsers({ schoolId, onDone }) {
       {(teachers.length > 0 || students.length > 0) && (
         <div className="flex gap-3">
           <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <CheckCircle2 className="w-4 h-4" />
             <span className="text-sm font-semibold scholr-body">{teachers.length} staff</span>
           </div>
           <div className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
-            <Users className="w-4 h-4 text-blue-500" />
+            <Users className="w-4 h-4" />
             <span className="text-sm font-semibold scholr-body">{students.length} students</span>
           </div>
         </div>
@@ -89,7 +89,7 @@ export default function WizardStepInviteUsers({ schoolId, onDone }) {
       {results.length > 0 && (
         <div className="space-y-1.5">
           {results.map((r, i) => (
-            <div key={i} className={`flex items-center gap-2 p-2 rounded-lg text-sm ${r.status === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}`}>
+            <div key={i} className={`flex items-center gap-2 p-2 rounded-lg text-sm ${r.status === 'success' ? 'scholr-sunk scholr-body' : 'scholr-sunk scholr-body'}`}>
               {r.status === 'success' ? <CheckCircle2 className="w-4 h-4 shrink-0" /> : <Mail className="w-4 h-4 shrink-0" />}
               <span>{r.email} — {r.status === 'success' ? 'Invited!' : 'Failed'}</span>
             </div>

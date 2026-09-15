@@ -289,7 +289,7 @@ export default function PDFReportBuilder({
 
   return (
     <div className="space-y-6">
-      <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-800 flex items-start gap-2">
+      <div className="rounded-lg px-4 py-3 text-sm flex items-start gap-2" style={{ borderLeft: '2px solid var(--rule)', color: 'var(--muted)' }}>
         <Printer className="w-4 h-4 shrink-0 mt-0.5" />
         <p>PDF reports open a print-ready document in a new tab. Use your browser's Print dialog (Ctrl+P / ⌘P) to save as PDF. Reports respect role-based visibility rules — only published grades are included.</p>
       </div>

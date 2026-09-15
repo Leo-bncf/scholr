@@ -62,7 +62,7 @@ function StorageMonitor({ schoolId, plan }) {
           <p className="text-lg font-bold scholr-ink">{submissions.length}</p>
           <p className="text-[11px] scholr-faint mt-0.5">Submissions</p>
         </div>
-        <div className={`rounded-lg p-3 text-center ${isCritical ? 'bg-red-50' : isHigh ? 'bg-amber-50' : 'scholr-sunk'}`}>
+        <div className="rounded-lg p-3 text-center scholr-sunk">
           <p className={`text-lg font-bold ${isCritical ? 'text-red-700' : isHigh ? 'text-amber-700' : 'scholr-ink'}`}>
             {formatSize(submissionMB)}
           </p>
@@ -81,7 +81,11 @@ function StorageMonitor({ schoolId, plan }) {
         </div>
         <div className="h-2 scholr-sunk rounded-full overflow-hidden">
           <div
-            className={`h-full rounded-full transition-colors ${isCritical ? 'bg-red-500' : isHigh ? 'bg-amber-500' : 'bg-indigo-500'}`}
+            className="h-full rounded-full transition-colors"
+            /* The tile behind this used to be tinted too, so a school near its
+               storage limit got the same signal three times over. The bar
+               alone carries it. */
+            style={{ background: isCritical ? 'var(--crit)' : isHigh ? 'var(--warn)' : 'var(--brand)' }}
             style={{ width: `${usedPct}%` }}
           />
         </div>

@@ -74,7 +74,13 @@ export default function PredictedGradesPolicy({ form, onChange }) {
           <div className="border-t scholr-rule-soft pt-5 space-y-4">
             <h4 className="text-xs font-bold scholr-body uppercase tracking-wide">Current Collection Status</h4>
 
-            <div className={`flex items-center justify-between p-4 rounded-xl border-2 ${form.predicted_grades_locked ? 'border-red-300 bg-red-50' : 'border-emerald-300 bg-emerald-50'}`}>
+            {/* Locked and unlocked were a red slab and a green slab. Neither
+                is a problem — a school locks predicted grades on purpose — so
+                the state is a word, not a wall. */}
+            <div
+              className="flex items-center justify-between p-4 rounded-xl"
+              style={{ border: '1px solid var(--rule)' }}
+            >
               <div className="flex items-center gap-3">
                 {form.predicted_grades_locked ? (
                   <Lock className="w-5 h-5" />
@@ -82,7 +88,7 @@ export default function PredictedGradesPolicy({ form, onChange }) {
                   <Unlock className="w-5 h-5" />
                 )}
                 <div>
-                  <p className={`text-sm font-bold ${form.predicted_grades_locked ? 'text-red-900' : 'text-emerald-900'}`}>
+                  <p className={`text-sm font-bold `}>
                     {form.predicted_grades_locked ? 'Collection Locked' : 'Collection Open'}
                   </p>
                   <p className="text-xs scholr-muted">

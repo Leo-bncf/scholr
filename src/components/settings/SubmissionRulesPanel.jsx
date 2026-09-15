@@ -8,9 +8,11 @@ import { FileText, Presentation, Table, Upload, Link } from 'lucide-react';
 const FORMAT_META = {
   file_upload:   { label: 'File Upload',     icon: Upload,       color: 'scholr-sunk scholr-body scholr-rule' },
   link:          { label: 'Link Submission',  icon: Link,         color: 'scholr-accent-sf scholr-accent scholr-accent-rule' },
-  google_doc:    { label: 'Google Doc',       icon: FileText,     color: 'bg-blue-50 text-blue-700 border-blue-200' },
-  google_slides: { label: 'Google Slides',    icon: Presentation, color: 'bg-amber-50 text-amber-700 border-amber-200' },
-  google_sheet:  { label: 'Google Sheet',     icon: Table,        color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  /* A Doc, a Slides and a Sheet are three file types, not three states, so
+     blue, amber and green were saying nothing. The icon distinguishes them. */
+  google_doc:    { label: 'Google Doc',    icon: FileText,     color: 'scholr-sunk scholr-body' },
+  google_slides: { label: 'Google Slides', icon: Presentation, color: 'scholr-sunk scholr-body' },
+  google_sheet:  { label: 'Google Sheet',  icon: Table,        color: 'scholr-sunk scholr-body' },
 };
 
 export default function SubmissionRulesPanel({ form, onChange }) {

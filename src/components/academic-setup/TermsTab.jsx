@@ -54,7 +54,7 @@ function TermCard({ term, onEdit, onDelete }) {
       {expanded && hasReporting && (
         <div className="px-4 pb-4 pt-1 border-t scholr-rule-soft grid grid-cols-1 sm:grid-cols-3 gap-3">
           {term.grade_lock_date && (
-            <div className="bg-red-50 border border-red-200 rounded-md p-2.5">
+            <div className="rounded-md p-2.5" style={{ borderLeft: '2px solid var(--crit)', background: 'var(--crit-sf)' }}>
               <div className="flex items-center gap-1.5 mb-1">
                 <Lock className="w-3 h-3 text-red-500" />
                 <p className="text-[10px] font-bold uppercase tracking-wide text-red-600">Grade Lock</p>
@@ -63,7 +63,7 @@ function TermCard({ term, onEdit, onDelete }) {
             </div>
           )}
           {term.teacher_comment_open && (
-            <div className="bg-blue-50 border border-blue-200 rounded-md p-2.5">
+            <div className="rounded-md p-2.5" style={{ borderLeft: '2px solid var(--rule)', background: 'transparent' }}>
               <div className="flex items-center gap-1.5 mb-1">
                 <CalendarCheck className="w-3 h-3 text-blue-500" />
                 <p className="text-[10px] font-bold uppercase tracking-wide text-blue-600">Comments Open</p>
@@ -72,7 +72,7 @@ function TermCard({ term, onEdit, onDelete }) {
             </div>
           )}
           {term.teacher_comment_close && (
-            <div className="bg-amber-50 border border-amber-200 rounded-md p-2.5">
+            <div className="rounded-md p-2.5" style={{ borderLeft: '2px solid var(--warn)', background: 'var(--warn-sf)' }}>
               <div className="flex items-center gap-1.5 mb-1">
                 <CalendarCheck className="w-3 h-3 text-amber-500" />
                 <p className="text-[10px] font-bold uppercase tracking-wide text-amber-600">Comments Close</p>

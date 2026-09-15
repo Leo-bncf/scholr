@@ -1,3 +1,4 @@
+import StatusChip from '@/components/app/StatusChip';
 import React from 'react';
 import Notice from '@/components/app/Notice';
 import { Switch } from '@/components/ui/switch';
@@ -142,11 +143,11 @@ export default function AcademicIntegrityPanel({ form, onChange }) {
       <div className="scholr-sunk rounded-xl border scholr-rule p-3">
         <p className="text-xs font-semibold scholr-muted mb-2">Active integrity controls:</p>
         <div className="flex flex-wrap gap-1.5">
-          {form.plagiarism_flag_enabled && <Badge className="text-[10px] bg-red-50 border-red-200 border">Plagiarism flags</Badge>}
-          {form.resubmission_limit > 0 && <Badge className="text-[10px] bg-amber-50 border-amber-200 border">Resubmission limit ({form.resubmission_limit})</Badge>}
+          {form.plagiarism_flag_enabled && <StatusChip tone="mute">Plagiarism flags</StatusChip>}
+          {form.resubmission_limit > 0 && <StatusChip tone="mute">Resubmissions capped at {form.resubmission_limit}</StatusChip>}
           {form.show_submission_history_to_teacher !== false && <Badge className="text-[10px] scholr-accent-sf scholr-accent scholr-accent-rule border">Teacher history view</Badge>}
           {form.show_submission_history_to_student !== false && <Badge className="text-[10px] scholr-sunk scholr-muted scholr-rule border">Student history view</Badge>}
-          {form.require_submission_acknowledgement && <Badge className="text-[10px] bg-emerald-50 border-emerald-200 border">Integrity acknowledgement</Badge>}
+          {form.require_submission_acknowledgement && <StatusChip tone="mute">Integrity statement</StatusChip>}
           {!form.plagiarism_flag_enabled && !form.require_submission_acknowledgement && form.resubmission_limit === 0 && (
             <span className="text-xs scholr-faint italic">No active integrity controls</span>
           )}

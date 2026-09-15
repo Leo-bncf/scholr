@@ -323,7 +323,7 @@ export default function ClassProgressReport({
   return (
     <div className="space-y-6">
       {/* Config Panel */}
-      <div className="bg-white rounded-xl border scholr-rule p-5">
+      <div className="app-group" style={{ padding: '1rem 1.1rem' }}>
         <h3 className="font-semibold scholr-ink mb-4 flex items-center gap-2">
           <GraduationCap className="w-4 h-4 scholr-accent" /> Class Progress Report Settings
         </h3>
