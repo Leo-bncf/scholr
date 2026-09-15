@@ -6,18 +6,22 @@ import { ArrowRight } from 'lucide-react';
 /**
  * The six things a school admin does most.
  *
- * Previously six tiles in six different hues, each with a filled icon chip —
- * which made the row the loudest thing on a page whose actual job is to
- * surface problems. Cobalt has one accent, so these are hairline cells and the
- * colour is spent on the alerts instead.
+ * These are tasks, not pages. Two of them used to be the same destination
+ * under two names — "Add user" and "Import CSV" both landed on Users, on the
+ * directory tab, leaving you to find the right tab yourself. Now that the
+ * frame keeps the tab in the URL, each one opens on the panel that does the
+ * job.
+ *
+ * Six tiles in six hues came before this; Scholr has one accent and it is
+ * spent on the alerts above, so these are hairline cells.
  */
 const QUICK_ACTIONS = [
-  { label: 'Add user',        sub: 'Invite staff or students', link: 'SchoolAdminUsers' },
-  { label: 'Create class',    sub: 'New course or section',    link: 'SchoolAdminClasses' },
-  { label: 'Assign teachers', sub: 'Staff into classes',       link: 'SchoolAdminEnrollments' },
-  { label: 'Import CSV',      sub: 'Bulk upload users',        link: 'SchoolAdminUsers' },
-  { label: 'Sync timetable',  sub: 'Run a schedule sync',      link: 'SchoolAdminTimetable' },
-  { label: 'Export reports',  sub: 'Download school data',     link: 'SchoolAdminReports' },
+  { label: 'Invite staff',      sub: 'Send an account invitation', page: 'SchoolAdminUsers', tab: 'invitations' },
+  { label: 'Import a roster',   sub: 'Bulk upload from CSV',       page: 'SchoolAdminUsers', tab: 'import' },
+  { label: 'Create a class',    sub: 'New course or section',      page: 'SchoolAdminEnrollments' },
+  { label: 'Take attendance',   sub: "Mark today's registers",     page: 'SchoolAdminAttendance' },
+  { label: 'Check the timetable', sub: 'Clashes and free rooms',   page: 'SchoolAdminTimetable' },
+  { label: 'Build a report',    sub: 'Export what leadership asks for', page: 'ReportingEngine' },
 ];
 
 export default function QuickActionsHub() {
@@ -28,10 +32,10 @@ export default function QuickActionsHub() {
       // as a grey slab.
       className="scholr-grid app-cols-6"
     >
-      {QUICK_ACTIONS.map(({ label, sub, link }) => (
+      {QUICK_ACTIONS.map(({ label, sub, page, tab }) => (
         <Link
           key={label}
-          to={createPageUrl(link)}
+          to={createPageUrl(page) + (tab ? `?tab=${tab}` : '')}
           className="group scholr-focus px-4 py-3.5 flex items-center gap-2"
           style={{ textDecoration: 'none' }}
         >

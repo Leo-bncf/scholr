@@ -1,20 +1,16 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@/components/auth/UserContext';
 import { useSchoolOperationsData } from '@/components/hooks/useSchoolOperationsData';
-import { createPageUrl } from '@/utils';
-import AppSidebar from '@/components/app/AppSidebar';
-import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
+import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import { useCurriculum } from '@/hooks/useCurriculum';
 import LoadingStateBase from '@/components/common/LoadingStateBase';
-import AppShell from '@/components/app/AppShell';
 import SchoolHealthOverview from '@/components/dashboard/SchoolHealthOverview';
 import OperationalAlerts from '@/components/dashboard/OperationalAlerts';
 import QuickActionsHub from '@/components/dashboard/QuickActionsHub';
 import OnboardingChecklist from '@/components/onboarding/OnboardingChecklist';
 import StatusChip from '@/components/app/StatusChip';
 import { format } from 'date-fns';
-import { redirectToLogin } from '@/data/session';
 
 // A school's lifecycle state. Only `suspended` is actually wrong, so it is the
 // only one that draws from the reserved status palette.
@@ -32,59 +28,55 @@ function Section({ title, note, children }) {
   );
 }
 
+/**
+ * The school-admin dashboard.
+ *
+ * On the shared frame like every other page in the section, which is not only
+ * tidiness: loading and errors used to return before the sidebar rendered, so
+ * a slow query or a dropped connection replaced the whole application with a
+ * bare spinner and no way out but the back button. Both states now sit inside
+ * the frame, and the navigation stays put.
+ *
+ * The signed-out redirect is gone too — RoleGuard already does it, and doing
+ * it twice raced.
+ */
 export default function SchoolAdminDashboard() {
   const navigate = useNavigate();
-  const { user, schoolId, loading: userLoading } = useUser();
+  const { user, schoolId } = useUser();
   const { shortLabel } = useCurriculum();
   const { data, isLoading, isError } = useSchoolOperationsData(schoolId);
-
-  useEffect(() => {
-    if (!userLoading && !user) {
-      redirectToLogin(createPageUrl('AppHome'));
-    }
-  }, [user, userLoading]);
-
-  if (userLoading || !user) {
-    return <LoadingStateBase />;
-  }
-
-  if (isLoading) {
-    return <LoadingStateBase />;
-  }
-
-  if (isError || !data) {
-    return (
-      <div className="scholr-page min-h-screen flex items-center justify-center p-6">
-        <div>
-          <p className="m-0 font-medium" style={{ color: 'var(--ink)' }}>Couldn't load the dashboard.</p>
-          <p className="m-0 mt-1 text-sm" style={{ color: 'var(--muted)' }}>
-            Check your connection and refresh the page.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   const school = data?.school;
   const today = format(new Date(), 'EEEE d MMMM yyyy');
   const statusKey = school?.status || 'onboarding';
+  const eyebrow = school?.name
+    ? `${school.name} · ${shortLabel} · ${today}`
+    : today;
 
   return (
-    <>
-      <AppSidebar
-        links={SCHOOL_ADMIN_SIDEBAR_LINKS}
-        role="school_admin"
-        schoolName={school?.name}
-        userName={user?.full_name}
-        userId={user?.id}
-        schoolId={schoolId}
-      />
-      <div className="app-offset">
-        <AppShell
-          eyebrow={`${school?.name} · ${shortLabel} · ${today}`}
-          title="Operations"
-          actions={<StatusChip tone={STATUS_TONE[statusKey] || 'mute'}>{statusKey}</StatusChip>}
-        >
+    <SchoolAdminPage
+      title="Operations"
+      eyebrow={eyebrow}
+      actions={school ? <StatusChip tone={STATUS_TONE[statusKey] || 'mute'}>{statusKey}</StatusChip> : null}
+      /* The dashboard is a starting point, so it points at the three places a
+         morning check most often ends up. */
+      related={[
+        ['SchoolAdminAttendance', 'Attendance'],
+        ['SchoolAdminUsers', 'Users'],
+        ['SchoolAnalytics', 'Analytics'],
+      ]}
+    >
+      {isLoading || !user ? (
+        <LoadingStateBase />
+      ) : isError || !data ? (
+        <div style={{ padding: 'var(--space-lg) 0' }}>
+          <p className="m-0 font-medium" style={{ color: 'var(--ink)' }}>Couldn&apos;t load the dashboard.</p>
+          <p className="m-0 mt-1 text-sm" style={{ color: 'var(--muted)' }}>
+            Check your connection and refresh the page. Everything in the sidebar still works.
+          </p>
+        </div>
+      ) : (
+        <>
           {/* Only while setup is unfinished — the component hides itself once
               every step is done, so this is belt and braces. */}
           {data.setupDone < data.setupTotal && (
@@ -104,8 +96,8 @@ export default function SchoolAdminDashboard() {
           <Section title="School health" note="scoped to your school">
             <SchoolHealthOverview data={data} />
           </Section>
-        </AppShell>
-      </div>
-    </>
+        </>
+      )}
+    </SchoolAdminPage>
   );
 }

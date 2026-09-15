@@ -55,6 +55,12 @@ export default [
         { ignore: ["cmdk-input-wrapper", "toast-close"] },
       ],
       "react-hooks/rules-of-hooks": "error",
+      /* Twice now a refactor has left a page referencing a component that no
+         longer existed in the file, and both times lint and `vite build`
+         passed — the failure only appeared as a blank screen in the browser.
+         These two catch it at the point the mistake is made. */
+      "no-undef": "error",
+      "react/jsx-no-undef": "error",
     },
   },
 ];

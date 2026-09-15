@@ -1,8 +1,7 @@
+import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
-import RoleGuard from '@/components/auth/RoleGuard';
-import AppSidebar from '@/components/app/AppSidebar';
 import { getAppSidebarLinks } from '@/components/app/sidebarLinks';
 import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
 import { Loader2 } from 'lucide-react';
@@ -122,29 +121,25 @@ export default function CurriculumMapping() {
   }
 
   return (
-    <RoleGuard allowedRoles={['teacher', 'school_admin', 'ib_coordinator', 'admin', 'super_admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar links={sidebarLinks} role={sidebarRole} schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="app-offset p-4 md:p-6">
-          <div className="max-w-[1500px] mx-auto space-y-6">
-            <div>
-              <h1 className="text-2xl font-bold scholr-ink">Curriculum</h1>
-              <p className="text-sm scholr-muted mt-1">
-                {isAdminView ? 'School-wide curriculum coverage and topic performance insights.' : 'Track topic coverage and class mastery across your subjects.'}
-              </p>
-            </div>
-            <CoverageSummaryCards stats={computed.stats} />
-            <div className="grid grid-cols-1 xl:grid-cols-[340px_minmax(0,1fr)] gap-6 items-start">
-              <SubjectCoverageList
-                subjects={computed.subjects}
-                selectedSubjectId={selectedSubjectId || computed.subjects[0]?.id}
-                onSelectSubject={setSelectedSubjectId}
-              />
-              <TopicCoverageTable rows={computed.selectedRows} />
-            </div>
-          </div>
-        </main>
+    <SchoolAdminPage
+      title="Curriculum"
+      eyebrow={isAdminView ? 'School-wide coverage and topic performance' : 'Topic coverage and mastery across your subjects'}
+      allowedRoles={['teacher', 'school_admin', 'ib_coordinator', 'admin', 'super_admin']}
+      sidebarLinks={sidebarLinks}
+      sidebarRole={sidebarRole}
+      related={isAdminView
+        ? [['SchoolAdminSubjects', 'Subjects'], ['SchoolAnalytics', 'Analytics'], ['SchoolAdminAcademicSetup', 'Academic setup']]
+        : []}
+    >
+      <CoverageSummaryCards stats={computed.stats} />
+      <div className="grid grid-cols-1 xl:grid-cols-[340px_minmax(0,1fr)] gap-6 items-start">
+        <SubjectCoverageList
+          subjects={computed.subjects}
+          selectedSubjectId={selectedSubjectId || computed.subjects[0]?.id}
+          onSelectSubject={setSelectedSubjectId}
+        />
+        <TopicCoverageTable rows={computed.selectedRows} />
       </div>
-    </RoleGuard>
+    </SchoolAdminPage>
   );
 }

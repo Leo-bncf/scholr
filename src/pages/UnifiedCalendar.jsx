@@ -1,8 +1,7 @@
+import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
-import RoleGuard from '@/components/auth/RoleGuard';
-import AppSidebar from '@/components/app/AppSidebar';
 import { getAppSidebarLinks } from '@/components/app/sidebarLinks';
 import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
 import { Button } from '@/components/ui/button';
@@ -189,74 +188,68 @@ export default function UnifiedCalendar() {
   }, [data, selectedType, selectedSubject]);
 
   return (
-    <RoleGuard allowedRoles={['student', 'teacher', 'parent', 'school_admin', 'ib_coordinator', 'super_admin', 'admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar links={sidebarLinks} role={role} schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="app-offset p-4 md:p-8">
-          <div className="max-w-7xl mx-auto space-y-6">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold scholr-ink">Calendar</h1>
-                <p className="text-sm scholr-muted mt-1">Classes, deadlines, exams, and school events in one place.</p>
-              </div>
-              {canCreate && (
-                <Button onClick={() => setCreateOpen(true)}>
-                  <Plus className="w-4 h-4" /> Create event
-                </Button>
-              )}
-            </div>
-
-            <div className="bg-white rounded-2xl border scholr-rule shadow-sm p-4 md:p-5 space-y-4">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="icon" onClick={() => setCurrentDate(view === 'month' ? subMonths(currentDate, 1) : addDays(currentDate, -7))}><ChevronLeft className="w-4 h-4" /></Button>
-                  <div className="min-w-[180px] text-center font-semibold scholr-ink">{view === 'month' ? format(currentDate, 'MMMM yyyy') : `Week of ${format(startOfWeek(currentDate, { weekStartsOn: 1 }), 'MMM d')}`}</div>
-                  <Button variant="outline" size="icon" onClick={() => setCurrentDate(view === 'month' ? addMonths(currentDate, 1) : addDays(currentDate, 7))}><ChevronRight className="w-4 h-4" /></Button>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  <Select value={view} onValueChange={setView}>
-                    <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="month">Month</SelectItem>
-                      <SelectItem value="week">Week</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select value={selectedType} onValueChange={setSelectedType}>
-                    <SelectTrigger className="w-40"><SelectValue placeholder="Event type" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All types</SelectItem>
-                      <SelectItem value="class">Class</SelectItem>
-                      <SelectItem value="assignment">Assignment</SelectItem>
-                      <SelectItem value="exam">Exam</SelectItem>
-                      <SelectItem value="event">Event</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-                    <SelectTrigger className="w-44"><SelectValue placeholder="Subject" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All subjects</SelectItem>
-                      {(data?.subjects || []).map((subject) => (
-                        <SelectItem key={subject.id} value={subject.id}>{subject.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {isLoading ? (
-                <div className="py-20 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-700" /></div>
-              ) : view === 'month' ? (
-                <MonthView currentDate={currentDate} events={filteredEvents} onSelectEvent={setSelectedEvent} />
-              ) : (
-                <WeekView currentDate={currentDate} events={filteredEvents} onSelectEvent={setSelectedEvent} />
-              )}
-            </div>
+    <SchoolAdminPage
+      title="Calendar"
+      eyebrow="Classes, deadlines, exams and school events"
+      allowedRoles={['student', 'teacher', 'parent', 'school_admin', 'ib_coordinator', 'super_admin', 'admin']}
+      sidebarLinks={sidebarLinks}
+      sidebarRole={role}
+      actions={canCreate ? (
+        <Button onClick={() => setCreateOpen(true)}>
+          <Plus className="w-4 h-4" /> Create event
+        </Button>
+      ) : null}
+      related={canCreate ? [['SchoolAdminTimetable', 'Timetable'], ['SchoolAdminAcademicSetup', 'Academic setup'], ['Messages', 'Messages']] : []}
+    >
+      <div className="bg-white rounded-2xl border scholr-rule shadow-sm p-4 md:p-5 space-y-4">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="icon" onClick={() => setCurrentDate(view === 'month' ? subMonths(currentDate, 1) : addDays(currentDate, -7))}><ChevronLeft className="w-4 h-4" /></Button>
+            <div className="min-w-[180px] text-center font-semibold scholr-ink">{view === 'month' ? format(currentDate, 'MMMM yyyy') : `Week of ${format(startOfWeek(currentDate, { weekStartsOn: 1 }), 'MMM d')}`}</div>
+            <Button variant="outline" size="icon" onClick={() => setCurrentDate(view === 'month' ? addMonths(currentDate, 1) : addDays(currentDate, 7))}><ChevronRight className="w-4 h-4" /></Button>
           </div>
-        </main>
+          <div className="flex flex-wrap gap-3">
+            <Select value={view} onValueChange={setView}>
+              <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="month">Month</SelectItem>
+                <SelectItem value="week">Week</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={selectedType} onValueChange={setSelectedType}>
+              <SelectTrigger className="w-40"><SelectValue placeholder="Event type" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All types</SelectItem>
+                <SelectItem value="class">Class</SelectItem>
+                <SelectItem value="assignment">Assignment</SelectItem>
+                <SelectItem value="exam">Exam</SelectItem>
+                <SelectItem value="event">Event</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+              <SelectTrigger className="w-44"><SelectValue placeholder="Subject" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All subjects</SelectItem>
+                {(data?.subjects || []).map((subject) => (
+                  <SelectItem key={subject.id} value={subject.id}>{subject.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
-        <CalendarEventDialog event={selectedEvent} open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)} />
-        <CreateCalendarEventDialog open={createOpen} onOpenChange={setCreateOpen} schoolId={schoolId} user={user} />
+        {isLoading ? (
+          <div className="py-20 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-700" /></div>
+        ) : view === 'month' ? (
+          <MonthView currentDate={currentDate} events={filteredEvents} onSelectEvent={setSelectedEvent} />
+        ) : (
+          <WeekView currentDate={currentDate} events={filteredEvents} onSelectEvent={setSelectedEvent} />
+        )}
       </div>
-    </RoleGuard>
+
+
+      <CalendarEventDialog event={selectedEvent} open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)} />
+      <CreateCalendarEventDialog open={createOpen} onOpenChange={setCreateOpen} schoolId={schoolId} user={user} />
+    </SchoolAdminPage>
   );
 }
