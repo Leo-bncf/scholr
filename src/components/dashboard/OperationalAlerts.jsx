@@ -16,7 +16,7 @@ function buildAlerts(data) {
       desc: 'Attendance, grading and assignments are blocked for the students in them.',
       detail: classesWithoutTeachers.slice(0, 8).map(c => c.name).join(', ') + (classesWithoutTeachers.length > 8 ? ` +${classesWithoutTeachers.length - 8} more` : ''),
       action: 'Assign teachers',
-      link: 'SchoolAdminEnrollments',
+      link: 'SchoolAdminClasses',
     });
   }
 
@@ -28,7 +28,7 @@ function buildAlerts(data) {
       desc: 'They cannot see assignments, attendance or grades until they are in at least one class.',
       detail: studentsWithoutClasses.slice(0, 8).map(s => s.user_name || s.user_email).join(', ') + (studentsWithoutClasses.length > 8 ? ` +${studentsWithoutClasses.length - 8} more` : ''),
       action: 'Manage enrolments',
-      link: 'SchoolAdminEnrollments',
+      link: 'SchoolAdminClasses',
     });
   }
 

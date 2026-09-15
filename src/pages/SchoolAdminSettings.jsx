@@ -129,7 +129,7 @@ export default function SchoolAdminSettings() {
       tabs={TABS}
       activeTab={settingsTab}
       onTabChange={setSettingsTab}
-      related={[["SchoolAdminGovernance","Governance"],["SchoolAdminGradebookGovernance","Gradebook rules"],["SchoolAdminBilling","Billing"]]}
+      related={[["SchoolAdminRules","Rules"],["SchoolAdminBilling","Billing"],["SchoolAdminSupport","Support"]]}
     >          {message && (
             <div className="mx-6 mt-4">
               <Alert className={message.type === 'success' ? 'border-emerald-200 bg-emerald-50' : 'border-red-200 bg-red-50'}>

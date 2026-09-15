@@ -18,10 +18,10 @@ import { ArrowRight } from 'lucide-react';
 const QUICK_ACTIONS = [
   { label: 'Invite staff',      sub: 'Send an account invitation', page: 'SchoolAdminUsers', tab: 'invitations' },
   { label: 'Import a roster',   sub: 'Bulk upload from CSV',       page: 'SchoolAdminUsers', tab: 'import' },
-  { label: 'Create a class',    sub: 'New course or section',      page: 'SchoolAdminEnrollments' },
+  { label: 'Create a class',    sub: 'New course or section',      page: 'SchoolAdminClasses' },
   { label: 'Take attendance',   sub: "Mark today's registers",     page: 'SchoolAdminAttendance' },
   { label: 'Check the timetable', sub: 'Clashes and free rooms',   page: 'SchoolAdminTimetable' },
-  { label: 'Build a report',    sub: 'Export what leadership asks for', page: 'ReportingEngine' },
+  { label: 'Build a report',    sub: 'Export what leadership asks for', page: 'SchoolAdminReports', tab: 'build' },
 ];
 
 export default function QuickActionsHub() {

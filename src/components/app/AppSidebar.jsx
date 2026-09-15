@@ -5,6 +5,7 @@ import { LogOut, Search } from 'lucide-react';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import BellBoundary from '@/components/notifications/BellBoundary';
 import { signOut } from '@/data/session';
+import { preloadPage, preloadPages } from '@/lib/lazyPage';
 
 const ROLE_LABELS = {
   super_admin: 'Platform admin',
@@ -47,6 +48,13 @@ export default function AppSidebar({ links, role, schoolName, userName, userId, 
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
+
+  /* And warm the whole menu once the browser is idle, so navigation is
+     instant even when someone clicks without hovering first — from the
+     command palette, a Next link, or the browser's back button. */
+  useEffect(() => {
+    preloadPages(links.map(l => l.page));
+  }, [links]);
 
   const current = pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
   const activePage = useMemo(() => {
@@ -144,6 +152,15 @@ export default function AppSidebar({ links, role, schoolName, userName, userId, 
                     to={createPageUrl(link.page)}
                     className="app-nav-item scholr-focus"
                     aria-current={link.page === activePage ? 'page' : undefined}
+                    /* Start fetching the route's chunk the moment the pointer
+                       touches the link. A deliberate click is ~200ms behind the
+                       hover, which is longer than any of these chunks take, so
+                       the page is already in memory when the click lands and
+                       Suspense never renders. Touch devices get onTouchStart,
+                       and keyboard users get onFocus. */
+                    onMouseEnter={() => preloadPage(link.page)}
+                    onTouchStart={() => preloadPage(link.page)}
+                    onFocus={() => preloadPage(link.page)}
                   >
                     <link.icon className="w-4 h-4 shrink-0" style={{ color: 'var(--muted)' }} />
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{link.label}</span>

@@ -17,7 +17,7 @@ export function getCoordinatorSidebarLinks(curriculum, config) {
 
   const links = [
     { label: 'Dashboard', page: 'CoordinatorDashboard', icon: LayoutDashboard },
-    { label: 'Subjects',  page: 'SchoolAdminSubjects',  icon: BookOpen },
+    { label: 'Subjects',  page: 'SchoolAdminAcademicSetup',  icon: BookOpen },
   ];
 
   if (features.predictedGrades) {

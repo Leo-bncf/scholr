@@ -1,9 +1,8 @@
-import SchoolAdminPage from '@/components/app/SchoolAdminPage';
+import { Field, SelectField } from '@/components/app/Field';
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, FileDown, FileSpreadsheet } from 'lucide-react';
 import ReportingFilters from '@/components/reporting/ReportingFilters';
 import ReportingSummaryCards from '@/components/reporting/ReportingSummaryCards';
@@ -58,7 +57,7 @@ const reportConfigs = {
   },
 };
 
-export default function ReportingEngine() {
+export default function BuilderSection() {
   const { user, school, schoolId } = useUser();
   const [reportType, setReportType] = useState('student_performance');
   const [filters, setFilters] = useState({ startDate: '', endDate: '', subjectId: 'all', classId: 'all', teacherId: 'all' });
@@ -170,29 +169,23 @@ export default function ReportingEngine() {
   }
 
   return (
-    <SchoolAdminPage
-      title="Report builder"
-      eyebrow="Operational reports for school leadership"
-      actions={
-        <>
-          <Select value={reportType} onValueChange={setReportType}>
-            <SelectTrigger className="w-56"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {Object.entries(reportConfigs).map(([key, config]) => <SelectItem key={key} value={key}>{config.label}</SelectItem>)}
-            </SelectContent>
-          </Select>
+    <div className="space-y-4">
+      <div style={{ display: 'flex', gap: '.5rem', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+        <Field label="Report" htmlFor="rb-type">
+          <SelectField
+            id="rb-type" label="Report" value={reportType} onChange={setReportType}
+            options={Object.entries(reportConfigs).map(([key, config]) => ({ value: key, label: config.label }))}
+          />
+        </Field>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: '.5rem' }}>
           <Button variant="outline" onClick={() => downloadCSV(`${reportType}.csv`, reportConfigs[reportType].columns, computed.rows)}>
             <FileSpreadsheet className="w-4 h-4 mr-2" /> CSV
           </Button>
           <Button onClick={handleExportPDF}>
             <FileDown className="w-4 h-4 mr-2" /> PDF
           </Button>
-        </>
-      }
-      /* This page builds a one-off view; Reports is where the recurring,
-         published ones live, and Analytics is the standing picture. */
-      related={[['SchoolAdminReports', 'Reports'], ['SchoolAnalytics', 'Analytics'], ['SchoolAdminAttendance', 'Attendance']]}
-    >
+        </div>
+      </div>
       <ReportingFilters
         filters={filters}
         setFilters={setFilters}
@@ -207,6 +200,6 @@ export default function ReportingEngine() {
         <ReportingChartPanel title={`${reportConfigs[reportType].label} Chart`} data={computed.chartData.slice(0, 12)} />
         <ReportingTable columns={reportConfigs[reportType].columns} rows={computed.rows} />
       </div>
-    </SchoolAdminPage>
+    </div>
   );
 }

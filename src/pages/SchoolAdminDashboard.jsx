@@ -63,7 +63,7 @@ export default function SchoolAdminDashboard() {
       related={[
         ['SchoolAdminAttendance', 'Attendance'],
         ['SchoolAdminUsers', 'Users'],
-        ['SchoolAnalytics', 'Analytics'],
+        ['SchoolAdminReports', 'Reports'],
       ]}
     >
       {isLoading || !user ? (

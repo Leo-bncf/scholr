@@ -97,7 +97,7 @@ export default function Messages() {
 
   /* A parent has no business being sent to Users or Messaging rules. */
   const related = isAdminOrCoord || role === 'super_admin' || role === 'admin'
-    ? [['SchoolAdminMessagingPolicy', 'Messaging rules'], ['SchoolAdminUsers', 'Users']]
+    ? [['SchoolAdminRules', 'Messaging rules'], ['SchoolAdminUsers', 'Users']]
     : [];
 
   return (

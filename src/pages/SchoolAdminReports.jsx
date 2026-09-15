@@ -8,6 +8,8 @@ import CSVExportToolkit from '@/components/reports/CSVExportToolkit';
 import PDFReportBuilder from '@/components/reports/PDFReportBuilder';
 import CoordinatorReports from '@/components/reports/CoordinatorReports';
 import ClassProgressReport from '@/components/reports/ClassProgressReport';
+import AnalyticsSection from '@/components/reports-sections/AnalyticsSection';
+import BuilderSection from '@/components/reports-sections/BuilderSection';
 import * as membershipsData from '@/data/memberships';
 import * as classesData from '@/data/classes';
 import * as gradebookData from '@/data/gradebook';
@@ -81,12 +83,18 @@ export default function SchoolAdminReports() {
 
   const [tab, setTab] = useState('overview');
 
+  /* Analytics and Report builder used to be two more entries in the menu,
+     which meant a school admin had to guess which of three pages answered
+     "let me look at the data". They are tabs here: read it (Overview,
+     Analytics), build a one-off (Build), take it away (Export), or run the
+     standing ones (Class reports, IB Core). */
   const TABS = [
     { value: 'overview', label: 'Overview' },
-    { value: 'exports', label: 'CSV' },
+    { value: 'analytics', label: 'Analytics' },
     { value: 'class-reports', label: 'Class reports' },
-    { value: 'pdf', label: 'PDF' },
     ...(isCoordinator ? [{ value: 'coordinator', label: 'IB Core' }] : []),
+    { value: 'build', label: 'Build' },
+    { value: 'export', label: 'Export' },
   ];
 
   return (
@@ -100,16 +108,23 @@ export default function SchoolAdminReports() {
       /* A report is almost always the end of a chain that started somewhere
          else — the marks, the register, or the question behind them. */
       related={[
-        ['SchoolAnalytics', 'Analytics'],
-        ['ReportingEngine', 'Report builder'],
         ['SchoolAdminAttendance', 'Attendance'],
+        ['SchoolAdminBehavior', 'Behaviour'],
+        ['SchoolAdminClasses', 'Classes'],
       ]}
     >
       {tab === 'overview' && <ReportsCenterOverview {...sharedProps} />}
-      {tab === 'exports' && <CSVExportToolkit {...sharedProps} />}
+      {tab === 'analytics' && <AnalyticsSection />}
       {tab === 'class-reports' && <ClassProgressReport {...sharedProps} />}
-      {tab === 'pdf' && <PDFReportBuilder {...sharedProps} />}
       {tab === 'coordinator' && isCoordinator && <CoordinatorReports {...sharedProps} />}
+      {tab === 'build' && <BuilderSection />}
+      {/* CSV and PDF were two tabs for one errand: getting the data out. */}
+      {tab === 'export' && (
+        <div className="space-y-4">
+          <CSVExportToolkit {...sharedProps} />
+          <PDFReportBuilder {...sharedProps} />
+        </div>
+      )}
     </SchoolAdminPage>
   );
 }

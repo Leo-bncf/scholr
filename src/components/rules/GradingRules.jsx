@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
 import { Button } from '@/components/ui/button';
@@ -17,16 +16,7 @@ import * as academics from '@/data/academics';
 
 
 
-const TABS = [
-  { value: 'grading', label: 'Grading model' },
-  { value: 'visibility', label: 'Visibility' },
-  { value: 'locks', label: 'Locks' },
-  { value: 'rubrics', label: 'Rubrics' },
-  { value: 'predicted', label: 'Predicted' },
-];
-
-export default function SchoolAdminGradebookGovernance() {
-  const [tab, setTab] = useState('grading');
+export default function GradingRules() {
   const { user, school: contextSchool, schoolId, membership } = useUser();
   const queryClient = useQueryClient();
   const [message, setMessage] = useState(null);
@@ -91,55 +81,27 @@ export default function SchoolAdminGradebookGovernance() {
     ) : null
   );
 
+  /* Five sub-tabs became five stacked groups. Nesting tabs inside tabs made
+     you click twice to reach a setting and gave no sense of how much policy
+     there is; a settings page is read top to bottom. */
   return (
-    <SchoolAdminPage
-      title="Gradebook rules"
-      eyebrow="How marks behave and who may see them"
-      tabs={TABS}
-      activeTab={tab}
-      onTabChange={setTab}
-      allowedRoles={['school_admin', 'super_admin', 'admin', 'ib_coordinator']}
-      related={[["SchoolAdminClasses","Classes"],["SchoolAdminReports","Reports"],["SchoolAdminGovernance","Governance"]]}
-    >
-      {tab === 'grading' && (
-        <>
-          <div className="app-group p-6 max-w-2xl">
-                        <GradingModelPanel form={form} onChange={onChange} />
-                      </div>
-                      <SaveButton tab="grading" />
-        </>
-      )}
-      {tab === 'visibility' && (
-        <>
-          <div className="app-group p-6 max-w-2xl">
-                        <VisibilityRulesPanel form={form} onChange={onChange} />
-                      </div>
-                      <SaveButton tab="visibility" />
-        </>
-      )}
-      {tab === 'locks' && (
-        <>
-          <div className="app-group p-6 max-w-2xl">
-                        <GradeLocksPanel form={form} onChange={onChange} terms={terms} />
-                      </div>
-                      <SaveButton tab="locks" />
-        </>
-      )}
-      {tab === 'rubrics' && (
-        <>
-          <div className="app-group p-6">
-                        <RubricTemplateLibrary schoolId={schoolId} />
-                      </div>
-        </>
-      )}
-      {tab === 'predicted' && (
-        <>
-          <div className="app-group p-6 max-w-2xl">
-                        <PredictedGradesPolicy form={form} onChange={onChange} />
-                      </div>
-                      <SaveButton tab="predicted" />
-        </>
-      )}
-    </SchoolAdminPage>
+    <div className="space-y-4">
+      <div className="app-group p-6 max-w-2xl">
+        <GradingModelPanel form={form} onChange={onChange} />
+      </div>
+      <div className="app-group p-6 max-w-2xl">
+        <VisibilityRulesPanel form={form} onChange={onChange} />
+      </div>
+      <div className="app-group p-6 max-w-2xl">
+        <GradeLocksPanel form={form} onChange={onChange} terms={terms} />
+      </div>
+      <div className="app-group p-6 max-w-2xl">
+        <PredictedGradesPolicy form={form} onChange={onChange} />
+      </div>
+      <div className="app-group p-6">
+        <RubricTemplateLibrary schoolId={schoolId} />
+      </div>
+      <SaveButton tab="grading" />
+    </div>
   );
 }

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
 import AuditLogViewer from '@/components/governance/AuditLogViewer';
@@ -46,15 +45,7 @@ const DEFAULT_POLICY = {
   },
 };
 
-const TABS = [
-  { value: 'audit', label: 'Audit log' },
-  { value: 'reasons', label: 'Change reasons' },
-  { value: 'retention', label: 'Retention' },
-  { value: 'privacy', label: 'Privacy requests' },
-];
-
-export default function SchoolAdminGovernance() {
-  const [tab, setTab] = useState('audit');
+export default function RecordsRules() {
   const { user, school: contextSchool, schoolId } = useUser();
   const queryClient = useQueryClient();
   const [message, setMessage] = useState(null);
@@ -118,58 +109,35 @@ export default function SchoolAdminGovernance() {
   const handleSave = () => saveMutation.mutate(policyForm);
 
   return (
-    <SchoolAdminPage
-      title="Governance"
-      eyebrow="Audit trail, compliance and retention"
-      tabs={TABS}
-      activeTab={tab}
-      onTabChange={setTab}
-      related={[["SchoolAdminSettings","Settings"],["SchoolAdminGradebookGovernance","Gradebook rules"],["SchoolAdminUsers","Users"]]}
-    >
-      {tab === 'audit' && (
+    <div className="space-y-4">
+      {!isLoading && (
         <>
-          <AuditLogViewer schoolId={schoolId} />
+          <ChangeReasonEnforcement
+            policy={policyForm}
+            onChange={handleChange}
+            onSave={handleSave}
+            saving={saveMutation.isPending}
+          />
+          <DataRetentionPanel
+            policy={policyForm}
+            onChange={handleChange}
+            onSave={handleSave}
+            saving={saveMutation.isPending}
+            schoolId={schoolId}
+          />
+          <PrivacyRequestsPanel
+            policy={policyForm}
+            onChange={handleChange}
+            onSave={handleSave}
+            saving={saveMutation.isPending}
+            schoolId={schoolId}
+            user={user}
+          />
         </>
       )}
-      {tab === 'reasons' && (
-        <>
-          {!isLoading && (
-                      <ChangeReasonEnforcement
-                        policy={policyForm}
-                        onChange={handleChange}
-                        onSave={handleSave}
-                        saving={saveMutation.isPending}
-                      />
-                    )}
-        </>
-      )}
-      {tab === 'retention' && (
-        <>
-          {!isLoading && (
-                      <DataRetentionPanel
-                        policy={policyForm}
-                        onChange={handleChange}
-                        onSave={handleSave}
-                        saving={saveMutation.isPending}
-                        schoolId={schoolId}
-                      />
-                    )}
-        </>
-      )}
-      {tab === 'privacy' && (
-        <>
-          {!isLoading && (
-                      <PrivacyRequestsPanel
-                        policy={policyForm}
-                        onChange={handleChange}
-                        onSave={handleSave}
-                        saving={saveMutation.isPending}
-                        schoolId={schoolId}
-                        user={user}
-                      />
-                    )}
-        </>
-      )}
-    </SchoolAdminPage>
+      {/* The audit log is long and is a record rather than a setting, so it
+          sits last — you scroll to it deliberately. */}
+      <AuditLogViewer schoolId={schoolId} />
+    </div>
   );
 }

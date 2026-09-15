@@ -26,7 +26,7 @@ export default function SchoolAdminSupport() {
       related={[
         ['SchoolAdminOnboarding', 'Onboarding'],
         ['SchoolAdminSettings', 'Settings'],
-        ['SchoolAdminGovernance', 'Governance'],
+        ['SchoolAdminRules', 'Rules'],
       ]}
     >
       {tab === 'help' && <HelpCenter />}
