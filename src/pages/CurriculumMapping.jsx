@@ -131,7 +131,7 @@ export default function CurriculumMapping() {
       sidebarLinks={sidebarLinks}
       sidebarRole={sidebarRole}
       related={isAdminView
-        ? [['SchoolAdminSubjects', 'Subjects'], ['SchoolAnalytics', 'Analytics'], ['SchoolAdminAcademicSetup', 'Academic setup']]
+        ? [['SchoolAdminAcademicSetup', 'Subjects'], ['SchoolAdminReports', 'Reports'], ['SchoolAdminClasses', 'Classes']]
         : []}
     >
       <CoverageSummaryCards stats={computed.stats} />

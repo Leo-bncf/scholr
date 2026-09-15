@@ -24,8 +24,7 @@ import StatCard from '@/components/app/StatCard';
 import StatRow from '@/components/app/StatRow';
 import StatusChip from '@/components/app/StatusChip';
 import Meter from '@/components/app/Meter';
-import { Panel, PanelRow } from '@/components/app/Panel';
-import { Group, Row, Segmented } from '@/components/app/AppShell';
+import { Group, Row } from '@/components/app/AppShell';
 import TodaySchedule from '@/components/timetable/TodaySchedule';
 
 const SCHOOL = 'sch', USER = 'usr';

@@ -51,6 +51,7 @@
 
 import __Layout from './Layout.jsx';
 import { lazyPage, registerPages } from '@/lib/lazyPage';
+import SchoolAdminRedirect from './pages/SchoolAdminRedirect';
 
 /* Every page is loaded on demand.
  *
@@ -93,10 +94,9 @@ const SchoolAdminAttendance = lazyPage(() => import('./pages/SchoolAdminAttendan
 const SchoolAdminBilling = lazyPage(() => import('./pages/SchoolAdminBilling'));
 const SchoolAdminClasses = lazyPage(() => import('./pages/SchoolAdminClasses'));
 const SchoolAdminDashboard = lazyPage(() => import('./pages/SchoolAdminDashboard'));
-const SchoolAdminEnrollments = lazyPage(() => import('./pages/SchoolAdminEnrollments'));
 const SchoolAdminReports = lazyPage(() => import('./pages/SchoolAdminReports'));
+const SchoolAdminRules = lazyPage(() => import('./pages/SchoolAdminRules'));
 const SchoolAdminSettings = lazyPage(() => import('./pages/SchoolAdminSettings'));
-const SchoolAdminSubjects = lazyPage(() => import('./pages/SchoolAdminSubjects'));
 const SchoolAdminTimetable = lazyPage(() => import('./pages/SchoolAdminTimetable'));
 const SchoolAdminUsers = lazyPage(() => import('./pages/SchoolAdminUsers'));
 const SchoolOnboarding = lazyPage(() => import('./pages/SchoolOnboarding'));
@@ -154,10 +154,11 @@ export const PAGES = {
     "SchoolAdminBilling": SchoolAdminBilling,
     "SchoolAdminClasses": SchoolAdminClasses,
     "SchoolAdminDashboard": SchoolAdminDashboard,
-    "SchoolAdminEnrollments": SchoolAdminEnrollments,
+    "SchoolAdminEnrollments": SchoolAdminRedirect,
     "SchoolAdminReports": SchoolAdminReports,
+    "SchoolAdminRules": SchoolAdminRules,
     "SchoolAdminSettings": SchoolAdminSettings,
-    "SchoolAdminSubjects": SchoolAdminSubjects,
+    "SchoolAdminSubjects": SchoolAdminRedirect,
     "SchoolAdminTimetable": SchoolAdminTimetable,
     "SchoolAdminUsers": SchoolAdminUsers,
     "SchoolOnboarding": SchoolOnboarding,

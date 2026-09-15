@@ -175,8 +175,8 @@ export default function HelpCenter() {
         <div className="grid sm:grid-cols-3 gap-3">
           {[
             { label: 'Run Setup Wizard', href: '/SchoolAdminOnboarding', icon: CheckCircle2, color: 'indigo' },
-            { label: 'Gradebook Governance', href: '/SchoolAdminGradebookGovernance', icon: BarChart2, color: 'violet' },
-            { label: 'Audit & Compliance', href: '/SchoolAdminGovernance', icon: Shield, color: 'rose' },
+            { label: 'Grading rules', href: '/SchoolAdminRules?tab=grading', icon: BarChart2 },
+            { label: 'Records and privacy', href: '/SchoolAdminRules?tab=records', icon: Shield },
           ].map(link => {
             const Icon = link.icon;
             return (

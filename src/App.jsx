@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/toaster"
 import { lazyPage } from '@/lib/lazyPage';
+import SchoolAdminRedirect from './pages/SchoolAdminRedirect';
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
@@ -10,6 +11,7 @@ import { Suspense } from 'react';
  * SuperAdminAnalytics imports recharts, so a static import put the whole
  * 421 kB charting library in the entry graph. Every visitor to the
  * marketing site downloaded it. */
+const SchoolAdminRules = lazyPage(() => import('./pages/SchoolAdminRules'));
 const SuperAdminAnalytics = lazyPage(() => import('./pages/SuperAdminAnalytics'));
 const SuperAdminSupport = lazyPage(() => import('./pages/SuperAdminSupport'));
 const SuperAdminTimetables = lazyPage(() => import('./pages/SuperAdminTimetables'));
@@ -23,8 +25,6 @@ const PersonalSettings = lazyPage(() => import('./pages/PersonalSettings'));
 const TeacherWorkspace = lazyPage(() => import('./pages/TeacherWorkspace'));
 const ParentInsightsDashboard = lazyPage(() => import('./pages/ParentInsightsDashboard'));
 const UnifiedCalendar = lazyPage(() => import('./pages/UnifiedCalendar'));
-const SchoolAnalytics = lazyPage(() => import('./pages/SchoolAnalytics'));
-const ReportingEngine = lazyPage(() => import('./pages/ReportingEngine'));
 const CurriculumMapping = lazyPage(() => import('./pages/CurriculumMapping'));
 const StudentAcademicDashboard = lazyPage(() => import('./pages/StudentAcademicDashboard'));
 const StudentTimetable = lazyPage(() => import('./pages/StudentTimetable'));
@@ -42,15 +42,12 @@ const DemoParent = lazyPage(() => import('./pages/demo/DemoParent'));
 const DemoParentAssignment = lazyPage(() => import('./pages/demo/DemoParentAssignment'));
 const DemoLeader = lazyPage(() => import('./pages/demo/DemoLeader'));
 const SchoolAdminSupport = lazyPage(() => import('./pages/SchoolAdminSupport'));
-const SchoolAdminGradebookGovernance = lazyPage(() => import('./pages/SchoolAdminGradebookGovernance'));
 const SchoolAdminBehavior = lazyPage(() => import('./pages/SchoolAdminBehavior'));
-const SchoolAdminMessagingPolicy = lazyPage(() => import('./pages/SchoolAdminMessagingPolicy'));
-const SchoolAdminGovernance = lazyPage(() => import('./pages/SchoolAdminGovernance'));
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-import { ImpersonationProvider, useImpersonation } from '@/components/auth/ImpersonationContext';
+import { ImpersonationProvider } from '@/components/auth/ImpersonationContext';
 import { UserProvider } from '@/components/auth/UserContext';
 import ImpersonationBanner from '@/components/auth/ImpersonationBanner';
 
@@ -175,10 +172,18 @@ const AuthenticatedApp = () => {
         }
       />
       <Route
+        path="/SchoolAdminRules"
+        element={
+          <LayoutWrapper currentPageName="SchoolAdminRules">
+            <SchoolAdminRules />
+          </LayoutWrapper>
+        }
+      />
+      <Route
         path="/SchoolAdminGradebookGovernance"
         element={
           <LayoutWrapper currentPageName="SchoolAdminGradebookGovernance">
-            <SchoolAdminGradebookGovernance />
+            <SchoolAdminRedirect />
           </LayoutWrapper>
         }
       />
@@ -186,7 +191,7 @@ const AuthenticatedApp = () => {
         path="/SchoolAdminMessagingPolicy"
         element={
           <LayoutWrapper currentPageName="SchoolAdminMessagingPolicy">
-            <SchoolAdminMessagingPolicy />
+            <SchoolAdminRedirect />
           </LayoutWrapper>
         }
       />
@@ -202,7 +207,7 @@ const AuthenticatedApp = () => {
         path="/SchoolAdminGovernance"
         element={
           <LayoutWrapper currentPageName="SchoolAdminGovernance">
-            <SchoolAdminGovernance />
+            <SchoolAdminRedirect />
           </LayoutWrapper>
         }
       />
@@ -266,7 +271,7 @@ const AuthenticatedApp = () => {
         path="/SchoolAnalytics"
         element={
           <LayoutWrapper currentPageName="SchoolAnalytics">
-            <SchoolAnalytics />
+            <SchoolAdminRedirect />
           </LayoutWrapper>
         }
       />
@@ -274,7 +279,7 @@ const AuthenticatedApp = () => {
         path="/ReportingEngine"
         element={
           <LayoutWrapper currentPageName="ReportingEngine">
-            <ReportingEngine />
+            <SchoolAdminRedirect />
           </LayoutWrapper>
         }
       />

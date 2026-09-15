@@ -1,4 +1,3 @@
-import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
@@ -14,13 +13,6 @@ import * as messagingPoliciesData from '@/data/messagingPolicies';
 
 
 
-const TABS = [
-  { value: 'permissions', label: 'Permissions' },
-  { value: 'announcements', label: 'Announcements' },
-  { value: 'quiet', label: 'Quiet hours' },
-  { value: 'compliance', label: 'Compliance' },
-];
-
 function mergeDeep(defaults, saved) {
   const result = { ...defaults };
   if (!saved) return result;
@@ -34,10 +26,9 @@ function mergeDeep(defaults, saved) {
   return result;
 }
 
-export default function SchoolAdminMessagingPolicy() {
+export default function MessagingRules() {
   const { user, school, schoolId } = useUser();
   const queryClient = useQueryClient();
-  const [tab, setTab] = useState('permissions');
   const [form, setForm] = useState(null);
   const [saved, setSaved] = useState(false);
 
@@ -79,37 +70,30 @@ export default function SchoolAdminMessagingPolicy() {
   const handleChange = (partial) => setForm(prev => ({ ...prev, ...partial }));
 
   return (
-    <SchoolAdminPage
-      title="Messaging rules"
-      eyebrow="Who may message whom, and when"
-      tabs={TABS}
-      activeTab={tab}
-      onTabChange={setTab}
-      actions={
-        <button
-          type="button"
-          onClick={() => saveMutation.mutate(form)}
-          disabled={saveMutation.isPending || !form}
-          className="pub-btn pub-btn-primary scholr-focus"
-        >
-          {saveMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-          Save rules
-        </button>
-      }
-      related={[['Messages', 'Messages'], ['SchoolAdminUsers', 'Users'], ['SchoolAdminSettings', 'Settings']]}
-    >
-            {isLoading || !form ? (
-              <div className="flex justify-center py-20">
-                <Loader2 className="w-6 h-6 animate-spin scholr-accent" />
-              </div>
-            ) : (
-              <>
-                {tab === 'permissions'   && <PermissionRulesPanel form={form} onChange={handleChange} />}
-                {tab === 'announcements' && <AnnouncementsGovernancePanel form={form} onChange={handleChange} />}
-                {tab === 'quiet'         && <QuietHoursPanel form={form} onChange={handleChange} />}
-                {tab === 'compliance'    && <CompliancePanel form={form} onChange={handleChange} />}
-              </>
-            )}
-    </SchoolAdminPage>
+    <div className="space-y-4">
+      {isLoading || !form ? (
+        <div className="flex justify-center py-20">
+          <Loader2 className="w-6 h-6 animate-spin scholr-accent" />
+        </div>
+      ) : (
+        <>
+          <PermissionRulesPanel form={form} onChange={handleChange} />
+          <AnnouncementsGovernancePanel form={form} onChange={handleChange} />
+          <QuietHoursPanel form={form} onChange={handleChange} />
+          <CompliancePanel form={form} onChange={handleChange} />
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={() => saveMutation.mutate(form)}
+              disabled={saveMutation.isPending}
+              className="pub-btn pub-btn-primary scholr-focus"
+            >
+              {saveMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+              Save messaging rules
+            </button>
+          </div>
+        </>
+      )}
+    </div>
   );
 }

@@ -67,7 +67,7 @@ export default function SchoolAdminUsers() {
       /* Adding a person rarely ends on this page: they need a class, and the
          class needs the timetable to know where it meets. */
       related={[
-        ['SchoolAdminEnrollments', 'Enrol students'],
+        ['SchoolAdminClasses', 'Enrol students'],
         ['SchoolAdminClasses', 'Classes'],
         ['SchoolAdminOnboarding', 'Onboarding'],
       ]}

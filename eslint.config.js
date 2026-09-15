@@ -6,12 +6,17 @@ import pluginUnusedImports from "eslint-plugin-unused-imports";
 
 export default [
   {
-    files: [
-      "src/components/**/*.{js,mjs,cjs,jsx}",
-      "src/pages/**/*.{js,mjs,cjs,jsx}",
-      "src/Layout.jsx",
-    ],
-    ignores: ["src/lib/**/*", "src/components/ui/**/*"],
+    /* All of src, not three folders of it.
+     *
+     * This used to list components, pages and Layout.jsx — which left App.jsx
+     * unlinted, and App.jsx is the routing table: the one file where a missing
+     * import takes down every route at once rather than one page. A refactor
+     * that added a route and forgot its import passed lint and passed
+     * `vite build`, and the whole application rendered a blank page.
+     *
+     * src/components/ui stays out: it is generated shadcn code we do not edit. */
+    files: ["src/**/*.{js,mjs,cjs,jsx}"],
+    ignores: ["src/components/ui/**/*"],
     ...pluginJs.configs.recommended,
     ...pluginReact.configs.flat.recommended,
     languageOptions: {

@@ -34,7 +34,7 @@ export default function SchoolAdminClasses() {
       tabs={TABS}
       activeTab={tab}
       onTabChange={setTab}
-      related={[["SchoolAdminEnrollments","Enrolments"],["SchoolAdminSubjects","Subjects"],["SchoolAdminTimetable","Timetable"]]}
+      related={[["SchoolAdminUsers","Users"],["SchoolAdminAcademicSetup","Subjects"],["SchoolAdminTimetable","Timetable"]]}
     >          {/* Tab Content */}
           <div className="flex-1 p-6">
             {tab === 'sections' && (

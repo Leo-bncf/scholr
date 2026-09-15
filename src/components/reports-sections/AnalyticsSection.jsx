@@ -1,4 +1,4 @@
-import SchoolAdminPage from '@/components/app/SchoolAdminPage';
+import { Field, SelectField, FilterBar } from '@/components/app/Field';
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
@@ -6,7 +6,6 @@ import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import {
   TrendingUp, Users, AlertTriangle,
@@ -303,7 +302,7 @@ function AtRiskStudents({ memberships, attendance, grades, classes }) {
 
 // ── Main Page ────────────────────────────────────────────────────────────────
 
-export default function SchoolAnalytics() {
+export default function AnalyticsSection() {
   const { user, school, schoolId } = useUser();
   const [cohortFilter, setCohortFilter] = useState('all');
   const [classFilter, setClassFilter] = useState('all');
@@ -383,32 +382,23 @@ export default function SchoolAnalytics() {
   const incidentCount = filteredBehavior.filter(b => b.type === 'incident').length;
 
   return (
-    <SchoolAdminPage
-      title="Analytics"
-      eyebrow="Performance, attendance and pastoral trends"
-      allowedRoles={['school_admin', 'ib_coordinator', 'super_admin', 'admin']}
-      actions={
-        <>
-          <Select value={cohortFilter} onValueChange={setCohortFilter}>
-            <SelectTrigger className="h-9 w-40 text-sm"><SelectValue placeholder="All cohorts" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All cohorts</SelectItem>
-              {cohorts.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-            </SelectContent>
-          </Select>
-          <Select value={classFilter} onValueChange={setClassFilter}>
-            <SelectTrigger className="h-9 w-40 text-sm"><SelectValue placeholder="All classes" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All classes</SelectItem>
-              {classes.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        </>
-      }
-      /* Analytics answers "how are we doing"; the next question is always
-         "who", and that lives on the record pages. */
-      related={[['SchoolAdminAttendance', 'Attendance'], ['SchoolAdminBehavior', 'Behaviour'], ['ReportingEngine', 'Report builder']]}
-    >
+    <div className="space-y-4">
+      {/* These two were page actions on the old standalone page. As a tab they
+          belong with the content they filter. */}
+      <FilterBar>
+        <Field label="Cohort" htmlFor="an-cohort">
+          <SelectField
+            id="an-cohort" label="Cohort" value={cohortFilter} onChange={setCohortFilter}
+            options={[{ value: 'all', label: 'All cohorts' }, ...cohorts.map(c => ({ value: c.id, label: c.name }))]}
+          />
+        </Field>
+        <Field label="Class" htmlFor="an-class">
+          <SelectField
+            id="an-class" label="Class" value={classFilter} onChange={setClassFilter}
+            options={[{ value: 'all', label: 'All classes' }, ...classes.map(c => ({ value: c.id, label: c.name }))]}
+          />
+        </Field>
+      </FilterBar>
       {isLoading ? (
         <div className="flex items-center justify-center py-32">
           <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
@@ -471,6 +461,6 @@ export default function SchoolAnalytics() {
           <AtRiskStudents memberships={memberships.filter(m => filteredStudentIds.has(m.user_id))} attendance={filteredAttendance} grades={filteredGrades} classes={filteredClasses} />
         </div>
       )}
-    </SchoolAdminPage>
+    </div>
   );
 }
