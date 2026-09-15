@@ -34,13 +34,24 @@
   },
   {
     "date": "2026-09-15",
-    "macrostructure": "Long Document",
+    "macrostructure": "Long Document (reverted)",
     "theme": "custom",
     "theme_axes": "light / grotesk-sans / chromatic-green",
     "vibe": "a memo from a small Dublin company; prose at reading measure, no marketing scaffolding",
     "nav": "masthead \u2014 full-bleed hairline, replacing the N5/N10 floating pill site-wide",
     "footer": "Ft1 mast-headed (unchanged)",
     "enrichment": "two inline product captures at text measure, never full-bleed",
-    "brief": "Scholr \u00b7 Landing. Leo: the site still reads AI-made. Cause was the log itself \u2014 three prior entries, all Workbench. Gate 8 fails against a project's own history."
+    "brief": "Scholr \u00b7 Landing. Leo: the site still reads AI-made. Cause was the log itself \u2014 three prior entries, all Workbench. Gate 8 fails against a project's own history. \u2014 REVERTED: Leo, correctly, \"that is not a landing page, you made a blog post\". Long Document sells philosophically; a school evaluating software needs to see the thing."
+  },
+  {
+    "date": "2026-09-15",
+    "macrostructure": "19 Map / Diagram",
+    "theme": "custom",
+    "theme_axes": "light / grotesk-sans / chromatic-green",
+    "vibe": "green and white only; the four programmes are four tints of one green, never four hues",
+    "nav": "masthead \u2014 full-bleed hairline (replaced the N5/N10 floating pill site-wide)",
+    "footer": "Ft1 mast-headed",
+    "enrichment": "the map is the composition; four product captures below it as evidence, not as content",
+    "brief": "Scholr \u00b7 Landing. A school week as the page's one spatial composition \u2014 four programmes in the same building, selectable period by period. Educational by construction, and the one shape no generic SaaS page can borrow."
   }
 ]
