@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import StatusChip from '@/components/app/StatusChip';
 import * as parentStudentLinksData from '@/data/parentStudentLinks';
+import * as membershipsData from '@/data/memberships';
 
 /**
  * Which child the portal is showing.
@@ -23,6 +24,30 @@ export default function ChildSelector({ parentId, schoolId, selectedChildId, onS
     },
     enabled: !!parentId && !!schoolId,
   });
+
+  /* parent_student_links carries a denormalised student_name, and nothing
+     guarantees it was filled — the seeded link has it blank. The old code
+     printed it anyway and then appended link.relationship, so a parent with
+     one child saw a button labelled "guardian": the relationship type, not a
+     person. Resolve the real name from the membership and treat the
+     denormalised copy as a hint. */
+  const { data: studentMemberships = [] } = useQuery({
+    queryKey: ['parent-children-names', schoolId],
+    queryFn: () => membershipsData.where({ school_id: schoolId, role: 'student' }),
+    enabled: !!schoolId,
+  });
+
+  const nameFor = (link) => {
+    const m = studentMemberships.find((x) => x.user_id === link.student_id);
+    return link.student_name?.trim() || m?.user_name?.trim() || m?.user_email || 'Unnamed student';
+  };
+
+  /* One child is the common case, and making that parent click a single
+     button before the portal shows anything is a dead first screen. */
+  const onlyChildId = linkedChildren.length === 1 ? linkedChildren[0].student_id : null;
+  useEffect(() => {
+    if (onlyChildId && !selectedChildId) onSelectChild(onlyChildId);
+  }, [onlyChildId, selectedChildId, onSelectChild]);
 
   if (isLoading) {
     return (
@@ -65,8 +90,10 @@ export default function ChildSelector({ parentId, schoolId, selectedChildId, onS
               cursor: 'pointer',
             }}
           >
-            {link.student_name}
-            <span className="ml-1.5 text-xs" style={{ opacity: 0.75 }}>{link.relationship}</span>
+            {nameFor(link)}
+            {link.relationship && linkedChildren.length > 1 && (
+              <span className="ml-1.5 text-xs" style={{ opacity: 0.75 }}>{link.relationship}</span>
+            )}
           </button>
         );
       })}

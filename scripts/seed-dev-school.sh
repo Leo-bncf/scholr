@@ -163,8 +163,15 @@ select '$SCHOOL_ID','d3305c00-0000-4000-8000-000000000030','$STUDENT','Sam Stude
 from generate_series(0, 9) as offs
 on conflict (class_id, student_id, date) do nothing;
 
-insert into public.parent_student_links (school_id, parent_id, student_id)
-values ('$SCHOOL_ID','$PARENT','$STUDENT')
+-- parent_name / student_name are denormalised copies. Leaving them null made
+-- the family portal render the relationship type ("guardian") where the
+-- child's name belongs, because the UI fell through to it.
+insert into public.parent_student_links
+  (school_id, parent_id, student_id, parent_name, student_name, relationship)
+select '$SCHOOL_ID','$PARENT','$STUDENT',
+       (select user_name from public.school_memberships where user_id='$PARENT'  and school_id='$SCHOOL_ID' limit 1),
+       (select user_name from public.school_memberships where user_id='$STUDENT' and school_id='$SCHOOL_ID' limit 1),
+       'guardian'
 on conflict do nothing;
 SQL
 
