@@ -45,7 +45,14 @@ export function useSchoolOperationsData(schoolId) {
 
       // --- Member Breakdown ---
       const students = memberships.filter(m => m.role === 'student');
-      const teachers = memberships.filter(m => ['teacher', 'ib_coordinator'].includes(m.role));
+      // School admins are staff. They belonged to none of the three buckets
+      // while `total` counted every membership, so the breakdown was drawn as
+      // shares of a number it did not add up to — 2 + 3 + 1 against a total of
+      // 7, giving 86% — and an administrator could not find themselves on
+      // their own dashboard.
+      const teachers = memberships.filter(
+        m => ['teacher', 'ib_coordinator', 'school_admin', 'admin'].includes(m.role),
+      );
       const parents = memberships.filter(m => m.role === 'parent');
 
       // --- Enrollment gaps ---

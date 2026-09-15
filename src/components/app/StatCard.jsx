@@ -13,7 +13,22 @@ import React from 'react';
  * `color` and `icon` are gone. There is one accent in this product and a stat
  * tile is not what it is for.
  */
-export default function StatCard({ label, value, trend, hint }) {
+/* `tone` colours the FIGURE, not the tile.
+ *
+ * A metric that used to be an alert loses its urgency the moment it becomes a
+ * plain number: "work missing 100%" rendered exactly as calmly as "3 classes".
+ * The reserved palette carries it back, on the digits only — a fully tinted
+ * tile would make a normal reading look like an incident, and four tinted
+ * tiles in a row is the wall of colour this product spent the day removing.
+ * The hint text still says what the number means, so colour is never the only
+ * encoding. */
+const TONE_COLOR = {
+  good: 'var(--good)',
+  warn: 'var(--warn)',
+  crit: 'var(--crit)',
+};
+
+export default function StatCard({ label, value, trend, hint, tone }) {
   return (
     <div style={{ padding: '.85rem .95rem' }}>
       <p className="scholr-label" style={{ margin: 0 }}>{label}</p>
@@ -26,7 +41,7 @@ export default function StatCard({ label, value, trend, hint }) {
           fontWeight: 620,
           letterSpacing: '-0.04em',
           lineHeight: 1,
-          color: 'var(--ink)',
+          color: TONE_COLOR[tone] || 'var(--ink)',
         }}
       >
         {value}

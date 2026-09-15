@@ -32,39 +32,12 @@ function buildAlerts(data) {
     });
   }
 
-  if (attendanceRate !== null && attendanceRate < 75) {
-    alerts.push({
-      id: 'attendance-low',
-      severity: 'crit',
-      title: `Attendance at ${attendanceRate}%`,
-      desc: 'School-wide attendance has been below 75% for the last 30 days.',
-      detail: null,
-      action: 'View attendance',
-      link: 'SchoolAdminAttendance',
-    });
-  } else if (attendanceRate !== null && attendanceRate < 90) {
-    alerts.push({
-      id: 'attendance-warn',
-      severity: 'warn',
-      title: `Attendance at ${attendanceRate}%`,
-      desc: 'Between 75% and 90% over the last 30 days — worth reviewing chronic absentees.',
-      detail: null,
-      action: 'View attendance',
-      link: 'SchoolAdminAttendance',
-    });
-  }
-
-  if (missingWorkRate !== null && missingWorkRate > 30) {
-    alerts.push({
-      id: 'missing-work',
-      severity: 'warn',
-      title: `${missingWorkRate}% of work is missing`,
-      desc: 'More than 30% of expected submissions are outstanding.',
-      detail: null,
-      action: 'View classes',
-      link: 'SchoolAdminClasses',
-    });
-  }
+  /* Attendance and missing work used to be raised here as well as printed in
+     the instrument panel above, so the same fact appeared twice on one screen:
+     once as a percentage, once as a warning about that percentage. They are
+     numbers with a normal range, not exceptions, so they live in the panel
+     wearing their status. This list is reserved for things that are not
+     already a figure on the page and that have somewhere to go and be fixed. */
 
   if (failedSyncs && failedSyncs.length > 0) {
     alerts.push({
@@ -194,7 +167,12 @@ export default function OperationalAlerts({ data }) {
       <div className="app-group" style={{ padding: '.85rem .9rem', display: 'flex', alignItems: 'center', gap: '.75rem', flexWrap: 'wrap' }}>
         <StatusChip tone="good">Clear</StatusChip>
         <p className="m-0 text-sm" style={{ color: 'var(--body)' }}>
-          Nothing needs attention — enrolments, attendance, billing and the timetable all check out.
+          {/* Names only what this list actually checks. It used to say
+              attendance checked out, and that stayed on screen while the panel
+              below showed 80% — the alert had been removed, the boast had not.
+              A clear state must be narrower than the page, never wider. */}
+          No teacherless classes, no unenrolled students, billing settled and the
+          timetable in sync.
         </p>
       </div>
     );
