@@ -593,19 +593,34 @@ body { background: var(--paper); color: var(--body); }
 
 /* An annotation pinned to a product capture. Sits on the paper, not on the
    screenshot, so it never obscures the thing it is pointing at. */
+/* The note under a product capture.
+   Was absolutely positioned over the image at a hand-tuned percentage, which
+   only ever held for one screenshot at one width — it ended up printed across
+   a student's name and over a status chip. It sits under the figure now, tied
+   to it by a short rule, and cannot collide with anything. */
 .bench-note {
-  position: absolute;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1.1rem;
+  margin-top: .7rem;
+  padding-left: 1.6rem;
+  position: relative;
   font-family: var(--font-mono);
-  font-size: .64rem;
-  letter-spacing: .1em;
+  font-size: .66rem;
+  letter-spacing: .09em;
   text-transform: uppercase;
   color: var(--brand);
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-pill);
-  padding: .3rem .6rem;
-  box-shadow: var(--lift-sm);
-  white-space: nowrap;
+}
+/* The leader: a short rule that points back up at the capture. */
+.bench-note::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: .48em;
+  width: 1.1rem;
+  height: 1px;
+  background: var(--brand);
+  opacity: .55;
 }
 @media (max-width: 60rem) { .bench-note { display: none; } }
 

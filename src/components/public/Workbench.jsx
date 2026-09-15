@@ -103,15 +103,19 @@ export function Bench({ n, caption, note, src, alt, annotations = [], eager = fa
           decoding="async"
           fetchPriority={eager ? 'high' : undefined}
         />
-        {annotations.map(a => (
-          <figcaption
-            key={a.text}
-            className="bench-note"
-            style={{ top: a.top, left: a.left, right: a.right }}
-          >
-            {a.text}
+        {/* Annotations sit BELOW the capture, not on top of it.
+            They used to be absolutely positioned at a hand-tuned percentage,
+            aimed at a patch of the screenshot that looked empty. That only
+            holds for one image at one width: on the coordinator capture the
+            note landed across a student's name, and on the operations one it
+            covered the "due soon" chip. Guessing where a fixed image is empty
+            is not a thing that can be made reliable, so the note stops
+            guessing. The rule keeps it tied to the figure. */}
+        {annotations.length > 0 && (
+          <figcaption className="bench-note">
+            {annotations.map(a => <span key={a.text}>{a.text}</span>)}
           </figcaption>
-        ))}
+        )}
       </figure>
     </section>
   );
