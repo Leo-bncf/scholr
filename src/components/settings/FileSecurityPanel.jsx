@@ -85,8 +85,10 @@ function StorageMonitor({ schoolId, plan }) {
             /* The tile behind this used to be tinted too, so a school near its
                storage limit got the same signal three times over. The bar
                alone carries it. */
-            style={{ background: isCritical ? 'var(--crit)' : isHigh ? 'var(--warn)' : 'var(--brand)' }}
-            style={{ width: `${usedPct}%` }}
+            style={{
+              width: `${usedPct}%`,
+              background: isCritical ? 'var(--crit)' : isHigh ? 'var(--warn)' : 'var(--brand)',
+            }}
           />
         </div>
         <p className="text-[11px] scholr-faint mt-1">
