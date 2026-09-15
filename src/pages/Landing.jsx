@@ -1,416 +1,156 @@
-/* Hallmark · genre: modern-minimal · macrostructure: Workbench · theme: custom (leaf green)
- * nav: N5 Floating pill · footer: Ft1 Mast-headed
- * enrichment: real product screenshots (demo sandbox, no chrome redrawn) +
- *   an interactive role explorer (F5 Annotated screenshot, tab-driven)
- * pre-emit critique: P5 H4 E5 S4 R4 V4
- */
 import React, { useEffect, useRef, useState } from 'react';
-import DetachedNavbar from '@/components/public/DetachedNavbar';
-import PublicFooter from '@/components/public/PublicFooter';
-import ConsentModal from '@/components/public/ConsentModal';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { isAuthenticated } from '@/data/session';
-import { ArrowRight, X } from 'lucide-react';
+import PublicShell, { Section, CTA, RuledList } from '@/components/public/PublicShell';
+import { Bench, StickyCTA } from '@/components/public/Workbench';
+import ConsentModal from '@/components/public/ConsentModal';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
+import { isAuthenticated } from '@/data/session';
+import SHOTS from '@/marketing/manifest.json';
 
-const handleSignIn = async () => {
-  if (await isAuthenticated()) {
-    window.location.href = '/AppHome';
-  } else {
-    window.location.href = `/Login?next=${encodeURIComponent('/AppHome')}`;
-  }
-};
+/* eslint-disable react/no-unescaped-entities */
 
-function Reveal({ children, className = '' }) {
-  const ref = useRef(null);
-  const [shown, setShown] = useState(false);
+/**
+ * Macrostructure 05 · Workbench.
+ *
+ * The captures are the page. Four screens in sequence — a teacher's morning, a
+ * coordinator's cohort, a family's view, a school's operations — each with a
+ * short caption and an annotation, separated by gap and frame rather than by
+ * rules or coloured bands. The ask arrives as a sticky bar after the third,
+ * once there is enough context for it to mean anything.
+ *
+ * Workbench specifies small, functional headings: the page doesn't shout,
+ * because the software is doing the talking. That is the opposite of the three
+ * previous attempts, all of which opened on a large marketing headline and
+ * then explained the product in prose.
+ */
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShown(true);
-          io.disconnect();
-        }
-      },
-      { threshold: 0.2 }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className={`transition-[opacity,transform] duration-500 ease-out ${
-        shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
-      } ${className}`}
-    >
-      {children}
-    </div>
-  );
-}
-
-function HeroSection() {
-  return (
-    <section className="relative overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-28">
-      {/* A soft green wash behind the shot, bleeding past the container's right
-          edge — one deliberate grid-break rather than a flat, edge-to-edge paper. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute right-0 top-16 hidden h-[34rem] w-[60vw] overflow-hidden rounded-l-[3rem] bg-[var(--mkt-paper-2)] lg:block"
-      />
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-          <div className="lg:col-span-4">
-            <h1
-              className="motion-safe:animate-[mkt-fade-in_550ms_var(--mkt-ease-out)_backwards] font-bold tracking-[-0.03em] text-[var(--mkt-ink)]"
-              style={{ fontFamily: 'var(--mkt-font-display)', fontSize: 'clamp(2.5rem, 4.2vw + 1rem, 3.75rem)', lineHeight: 1.05, animationDelay: '0ms' }}
-            >
-              One system for every curriculum you teach.
-            </h1>
-            <p
-              className="motion-safe:animate-[mkt-fade-in_550ms_var(--mkt-ease-out)_backwards] mt-5 text-lg text-[var(--mkt-ink-2)] leading-relaxed max-w-md"
-              style={{ animationDelay: '80ms' }}
-            >
-              Gradebooks, timetables, attendance and parent communication — for schools
-              running IB, IGCSE, A&#8209;Level and US programmes side by side.
-            </p>
-            <div
-              className="motion-safe:animate-[mkt-fade-in_550ms_var(--mkt-ease-out)_backwards] mt-8 flex flex-wrap items-center gap-4"
-              style={{ animationDelay: '160ms' }}
-            >
-              <Link to="/BookDemo">
-                <Button className="h-12 px-7 rounded-lg bg-[var(--mkt-ink)] hover:bg-[var(--mkt-ink)]/90 text-[var(--mkt-paper)] text-base font-medium shadow-none whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[var(--mkt-focus)] focus-visible:ring-offset-2">
-                  Book a demo <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </Link>
-              <button
-                onClick={handleSignIn}
-                className="h-12 px-2 text-base font-medium text-[var(--mkt-ink-2)] hover:text-[var(--mkt-ink)] transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--mkt-focus)] focus-visible:ring-offset-2 rounded-md"
-              >
-                Sign in
-              </button>
-            </div>
-          </div>
-          <div
-            className="motion-safe:animate-[mkt-fade-in_650ms_var(--mkt-ease-out)_backwards] relative lg:col-span-8"
-            style={{ animationDelay: '120ms' }}
-          >
-            <figure className="rounded-xl border border-[var(--mkt-rule)] shadow-[0_1px_2px_oklch(20%_0.01_150/0.06)] overflow-hidden bg-[var(--mkt-paper-2)]">
-              <img
-                src="/product/teacher.png"
-                alt="A teacher's Scholr dashboard showing assignments to grade, today's schedule and class overview"
-                width={1400}
-                height={933}
-                fetchPriority="high"
-                className="block w-full h-auto"
-              />
-            </figure>
-            <div className="absolute -bottom-4 left-6 rounded-lg border border-[var(--mkt-rule)] bg-[var(--mkt-paper)] px-3 py-2 text-xs font-medium text-[var(--mkt-ink-2)] shadow-[0_4px_16px_-6px_oklch(20%_0.03_150/0.25)] sm:left-10">
-              Late work is flagged and sorted first — no hunting through a list.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const ROLES = [
-  {
-    key: 'teacher',
-    label: 'Teacher',
-    title: 'Grading, attendance and the day’s schedule in one workspace.',
-    body: 'Submissions queue by due date with late work surfaced first. One-click attendance per class, criterion-based feedback, and a running class average — no spreadsheet exports.',
-    src: '/product/teacher.png',
-    alt: 'Teacher dashboard listing assignments to review, today’s schedule and class overview',
-    note: 'Late work is flagged and sorted first.',
-  },
-  {
-    key: 'student',
-    label: 'Student',
-    title: 'Every deadline, grade and class in one dashboard.',
-    body: 'Upcoming work sorted by urgency, predicted grades trending by subject, and today’s timetable — the same view whether a student is doing IB, IGCSE, or A-Levels.',
-    src: '/product/student.png',
-    alt: 'Student dashboard showing upcoming deadlines, performance by subject and today’s schedule',
-    note: 'The most urgent deadline is always pinned to the top.',
-  },
-  {
-    key: 'parent',
-    label: 'Parent',
-    title: 'Real-time visibility across every child at the school.',
-    body: 'Grades, attendance and teacher feedback per child, switchable from one login. No chasing emails for a progress update that’s already on the screen.',
-    src: '/product/parent.png',
-    alt: 'Parent dashboard showing multiple children, grades, attendance and upcoming deadlines',
-    note: 'Switch children from one login — nothing is shared between them.',
-  },
-  {
-    key: 'leader',
-    label: 'Leadership',
-    title: 'School-wide performance, with problems flagged before they grow.',
-    body: 'Subject performance trends term over term, at-risk students surfaced automatically, filterable by year group and subject — the view a head of school actually needs.',
-    src: '/product/leader.png',
-    alt: 'School leadership dashboard showing subject performance trends and flagged at-risk students',
-    note: 'At-risk students are flagged automatically, not hunted for.',
-  },
+const CURRICULA = [
+  ['IB', 'DP, MYP and PYP. The 1–7 scale, predicted grades with their history, and CAS, EE and TOK as modules rather than a folder of uploads.'],
+  ['IGCSE / GCSE', 'A*–G and 9–1, tiered entry, and coursework tracked against the syllabus rather than against a generic assignment.'],
+  ['A-Level', 'AS and A2 units, UMS-style aggregation, and predicted grades in the shape UCAS wants them.'],
+  ['US / AP', 'GPA, letter grades and credits, with reporting that comes out looking like a transcript.'],
 ];
 
-function RoleExplorer({ sectionRef }) {
-  const [active, setActive] = useState('student');
-  const role = ROLES.find((r) => r.key === active) ?? ROLES[0];
-  const tabRefs = useRef({});
-
-  const onTabKeyDown = (e, index) => {
-    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-    e.preventDefault();
-    const next = (index + (e.key === 'ArrowRight' ? 1 : -1) + ROLES.length) % ROLES.length;
-    const nextRole = ROLES[next];
-    setActive(nextRole.key);
-    tabRefs.current[nextRole.key]?.focus();
+function Masthead() {
+  const signIn = async () => {
+    if (await isAuthenticated()) window.location.href = '/AppHome';
+    else window.location.href = `/Login?next=${encodeURIComponent('/AppHome')}`;
   };
 
   return (
-    <section ref={sectionRef} className="py-20 sm:py-28">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl">
-          <h2 className="text-2xl sm:text-[1.75rem] font-semibold tracking-[-0.02em] text-[var(--mkt-ink)]">
-            The same platform, a different screen for every role.
-          </h2>
-          <p className="mt-3 text-[15px] leading-relaxed text-[var(--mkt-ink-2)]">
-            Nobody gets a general-purpose dashboard. Pick a role to see what they actually open.
-          </p>
-        </div>
-
-        <div role="tablist" aria-label="Choose a role" className="mt-8 flex flex-wrap gap-2">
-          {ROLES.map((r, i) => {
-            const isActive = r.key === active;
-            return (
-              <button
-                key={r.key}
-                ref={(el) => (tabRefs.current[r.key] = el)}
-                role="tab"
-                id={`role-tab-${r.key}`}
-                aria-selected={isActive}
-                aria-controls={`role-panel-${r.key}`}
-                tabIndex={isActive ? 0 : -1}
-                onClick={() => setActive(r.key)}
-                onKeyDown={(e) => onTabKeyDown(e, i)}
-                className={`rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--mkt-focus)] focus-visible:ring-offset-2 ${
-                  isActive
-                    ? 'bg-[var(--mkt-ink)] text-[var(--mkt-paper)]'
-                    : 'bg-[var(--mkt-paper-2)] text-[var(--mkt-ink-2)] hover:text-[var(--mkt-ink)]'
-                }`}
-              >
-                {r.label}
-              </button>
-            );
-          })}
-        </div>
-
-        <div
-          id={`role-panel-${role.key}`}
-          role="tabpanel"
-          aria-labelledby={`role-tab-${role.key}`}
-          className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start"
-        >
-          <div className="lg:col-span-4">
-            <h3 className="text-xl font-semibold tracking-[-0.01em] text-[var(--mkt-ink)]">{role.title}</h3>
-            <p className="mt-4 text-[15px] leading-relaxed text-[var(--mkt-ink-2)] max-w-md">{role.body}</p>
-          </div>
-          <div className="relative lg:col-span-8">
-            <figure
-              key={role.key}
-              className="motion-safe:animate-[mkt-fade-in_360ms_var(--mkt-ease-out)] rounded-xl border border-[var(--mkt-rule)] shadow-[0_1px_2px_oklch(20%_0.01_150/0.06)] overflow-hidden bg-[var(--mkt-paper-2)]"
-            >
-              <img src={role.src} alt={role.alt} width={1400} height={933} loading="lazy" className="block w-full h-auto" />
-            </figure>
-            <div className="absolute -bottom-4 left-6 rounded-lg border border-[var(--mkt-rule)] bg-[var(--mkt-paper)] px-3 py-2 text-xs font-medium text-[var(--mkt-ink-2)] shadow-[0_4px_16px_-6px_oklch(20%_0.03_150/0.25)] sm:left-8">
-              {role.note}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const CAPABILITIES = [
-  {
-    name: 'Multi-curriculum grading',
-    desc: '1–7 IB, A*–E, letter grades and percentages, with predicted-grade tracking and criterion-based rubrics.',
-  },
-  {
-    name: 'IB Core suite',
-    desc: 'CAS, Extended Essay and TOK tracked from proposal to final submission, with coordinator approval built in.',
-  },
-  {
-    name: 'Timetable integration',
-    desc: 'Syncs with Veracross and iSAMS, resolves scheduling conflicts, and handles exam-period changes.',
-  },
-  {
-    name: 'Internal messaging',
-    desc: 'Role-aware threads between teachers, students and parents, with quiet-hours policies and compliance logging.',
-  },
-  {
-    name: 'Enterprise security',
-    desc: 'Multi-tenant isolation, audit logging and GDPR export/deletion tools, encrypted at rest and in transit.',
-  },
-  {
-    name: 'Curriculum-aware interface',
-    desc: 'IB-only tools stay hidden at IGCSE and A-Level schools. Terminology adapts to your framework automatically.',
-  },
-];
-
-function CapabilitiesSection() {
-  const [first, ...rest] = CAPABILITIES;
-  return (
-    <Reveal className="py-16 sm:py-24 bg-[var(--mkt-paper-2)]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl sm:text-[1.75rem] font-semibold tracking-[-0.02em] text-[var(--mkt-ink)] max-w-2xl">
-          Underneath the dashboards
-        </h2>
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-0 border-t border-[var(--mkt-rule)]">
-          {/* One deliberately wider row — the grid isn't uniform on purpose. */}
-          <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-[minmax(0,16rem)_1fr] gap-x-8 gap-y-1 py-6 border-b border-[var(--mkt-rule)]">
-            <p className="font-medium text-[var(--mkt-ink)]">{first.name}</p>
-            <p className="text-[15px] leading-relaxed text-[var(--mkt-ink-2)] max-w-xl">{first.desc}</p>
-          </div>
-          {rest.map((c) => (
-            <div key={c.name} className="py-6 border-b border-[var(--mkt-rule)] sm:odd:pr-8">
-              <p className="font-medium text-[var(--mkt-ink)]">{c.name}</p>
-              <p className="mt-1.5 text-[15px] leading-relaxed text-[var(--mkt-ink-2)]">{c.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </Reveal>
-  );
-}
-
-function FinalCTA() {
-  return (
-    <section className="bg-[var(--mkt-dark)] py-20 sm:py-28">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2
-          className="font-bold tracking-[-0.02em] text-[var(--mkt-dark-ink)]"
-          style={{ fontFamily: 'var(--mkt-font-display)', fontSize: 'clamp(1.75rem, 2vw + 1.2rem, 2.5rem)', lineHeight: 1.15 }}
-        >
-          See it running in your school.
-        </h2>
-        <p className="mt-4 text-[var(--mkt-dark-ink-2)] text-lg">
-          A 20-minute walkthrough with your own curriculum mix, not a generic script.
+    <section className="pub-wash" style={{ paddingTop: '1.5rem', paddingBottom: '3rem' }}>
+      <div style={{ maxWidth: '76rem', margin: '0 auto', padding: '0 1.5rem' }}>
+        <p className="scholr-label reveal" style={{ margin: 0, color: 'var(--brand)', '--i': 0 }}>
+          Dublin · school management software
         </p>
-        <div className="mt-8">
-          <Link to="/BookDemo">
-            <Button className="h-12 px-8 rounded-lg bg-[var(--mkt-accent)] hover:bg-[var(--mkt-accent)]/90 text-[var(--mkt-accent-ink)] text-base font-medium shadow-none whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[var(--mkt-dark-ink)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--mkt-dark)]">
-              Book a demo <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-          </Link>
+        <h1
+          className="pub-display reveal"
+          style={{ margin: 'var(--space-xs) 0 0', fontSize: 'var(--text-3xl)', maxWidth: '22ch', '--i': 1 }}
+        >
+          Your school teaches more than one curriculum. Your software should know that.
+        </h1>
+        <p className="pub-lede reveal" style={{ margin: 'var(--space-sm) 0 0', maxWidth: '54ch', color: 'var(--muted)', '--i': 2 }}>
+          Scholr runs IB, IGCSE, A-Level and US programmes side by side in one school, on one set of
+          records — different grading scales, different reporting, different rules about who sees
+          what. Here is what that looks like on screen.
+        </p>
+        <div className="reveal" style={{ display: 'flex', gap: 'var(--space-2xs)', marginTop: 'var(--space-md)', flexWrap: 'wrap', '--i': 3 }}>
+          <CTA to="/BookDemo">Book a demo</CTA>
+          <button type="button" onClick={signIn} className="pub-btn pub-btn-line pub-btn-lg scholr-focus">
+            Sign in
+          </button>
         </div>
       </div>
     </section>
-  );
-}
-
-function StickyDemoBar({ visible, onDismiss }) {
-  return (
-    <div
-      className={`fixed inset-x-0 bottom-0 z-40 transition-transform duration-300 ease-out ${
-        visible ? 'translate-y-0' : 'translate-y-full'
-      }`}
-      aria-hidden={!visible}
-    >
-      <div className="mx-auto max-w-6xl px-4 pb-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4 rounded-xl border border-[var(--mkt-rule)] bg-[var(--mkt-paper)]/95 backdrop-blur-md shadow-[0_8px_24px_-12px_oklch(0%_0_0/0.22)] px-5 py-3">
-          <p className="text-sm font-medium text-[var(--mkt-ink)] truncate">
-            See how this looks with your school's curriculum.
-          </p>
-          <div className="flex items-center gap-2 shrink-0">
-            <Link to="/BookDemo">
-              <Button className="h-9 px-4 rounded-lg bg-[var(--mkt-ink)] hover:bg-[var(--mkt-ink)]/90 text-[var(--mkt-paper)] text-sm font-medium shadow-none whitespace-nowrap">
-                Book a demo
-              </Button>
-            </Link>
-            <button
-              onClick={onDismiss}
-              aria-label="Dismiss"
-              className="h-9 w-9 flex items-center justify-center rounded-lg text-[var(--mkt-ink-3)] hover:text-[var(--mkt-ink)] hover:bg-[var(--mkt-paper-2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--mkt-focus)]"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   );
 }
 
 export default function Landing() {
   const [showConsent, setShowConsent] = useState(false);
-  const [barVisible, setBarVisible] = useState(false);
-  const [barDismissed, setBarDismissed] = useState(false);
-  const explorerRef = useRef(null);
+  const thirdBench = useRef(null);
 
   useEffect(() => {
     try {
-      // Either answer counts as answered — a decline used to store nothing,
-      // so the notice came back on every visit.
+      // Either answer counts as answered — declining used to store nothing, so
+      // the notice came back on every visit.
       setShowConsent(localStorage.getItem('scholr_consent_accepted') === null);
     } catch {
       setShowConsent(true);
     }
   }, []);
 
-  useEffect(() => {
-    const el = explorerRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([entry]) => setBarVisible(entry.isIntersecting || entry.boundingClientRect.top < 0), {
-      threshold: 0,
-    });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
   return (
-    <div className="relative min-h-screen bg-[var(--mkt-paper)]" style={{ fontFamily: 'var(--mkt-font-body)' }}>
-      {/* Two blooms framing the nav — fixed to the viewport, not the
-          document, so they stay put at the top of the screen as the page
-          scrolls beneath them rather than scrolling away with the hero.
-          pointer-events-none so they never block clicks on the nav/content
-          that scrolls under them. A mask fade (not overflow-hidden) closes
-          out the bottom edge, so the blur dissolves smoothly instead of
-          getting clipped into a hard rectangle as content scrolls behind
-          it — horizontal overflow is still caught by the global
-          `overflow-x: clip` on html/body. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-x-0 top-0 h-[28rem]"
-        style={{
-          WebkitMaskImage: 'linear-gradient(to bottom, black, black 45%, transparent 85%)',
-          maskImage: 'linear-gradient(to bottom, black, black 45%, transparent 85%)',
-        }}
+    <PublicShell>
+      <Masthead />
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(3.5rem, 7vw, 6rem)', paddingBottom: '4rem' }}>
+        <Bench
+          n="Teacher"
+          caption="The period you are about to teach, not a homepage"
+          note="A teacher gets a few minutes between lessons. The dashboard opens on today's timetable with the current period marked, the room, and the work waiting to be marked — no navigating to find it."
+          src={SHOTS['teacher-dashboard']}
+          alt="A teacher's dashboard: today's timetable with the current period marked, twenty-three pieces of work waiting to be graded, and the term's deadlines."
+          annotations={[{ text: 'the current period, marked', top: '30%', right: '1.25rem' }]}
+          eager
+        />
+
+        <Bench
+          n="Coordinator"
+          caption="Predicted grades with the trend behind them"
+          note="A coordinator signs off predictions for the whole cohort. Each one shows its history and its target, so a number you disagree with can be questioned rather than simply overwritten — and Extended Essay progress is tracked per student, not per spreadsheet."
+          src={SHOTS['coordinator-cohort']}
+          alt="A coordinator's cohort view: predicted mean against target per subject, Extended Essay progress across the year group, and the students who need a conversation."
+          annotations={[{ text: 'the trend behind the number', top: '73%', right: '1.25rem' }]}
+          layout="left"
+        />
+
+        <div ref={thirdBench}>
+          <Bench
+            n="Family"
+            caption="A parent's own children, and only what has been released"
+            note="Parents are linked to specific students and see nothing outside that link. Marks appear when the teacher publishes them; attendance visibility is a school-level setting; notes marked staff-only never leave the staff room."
+            src={SHOTS['parent-portal']}
+            alt="The family portal: attendance for the term, grades released by teachers, and what is due this week for one named child."
+            annotations={[{ text: 'released by the teacher, not automatic', top: '76%', right: '1.25rem' }]}
+            layout="right"
+          />
+        </div>
+
+        <Bench
+          n="Operations"
+          caption="What is broken this morning, in order"
+          note="Classes with no teacher assigned, students enrolled in nothing, attendance drifting, a reporting deadline approaching. The page is a ranked list of things that need a decision, not a wall of charts."
+          src={SHOTS['admin-operations']}
+          alt="The operations page: two classes without a teacher flagged critical, attendance at 87% flagged as a warning, and the term's reporting deadline nine days out."
+          annotations={[{ text: 'ranked, not an inbox', top: '62%', right: '1.25rem' }]}
+        />
+      </div>
+
+      <Section
+        eyebrow="Curricula"
+        title="Four frameworks, each behaving the way it actually works"
+        lede="Not four labels on the same gradebook. A school sets its programmes once; the grading scales, the reporting shape and the vocabulary follow, and anything that doesn't apply is hidden rather than greyed out. An IGCSE school never sees a CAS tab; an IB school is never asked for a GPA."
+        tint
       >
-        <div className="mkt-bloom-a absolute -top-24 left-[8%] h-96 w-96 rounded-full bg-[var(--mkt-accent)] opacity-[0.55] blur-2xl sm:h-[28rem] sm:w-[28rem]" />
-        <div className="mkt-bloom-b absolute -top-16 right-[8%] h-80 w-80 rounded-full bg-[var(--mkt-accent)] opacity-[0.46] blur-2xl sm:h-[30rem] sm:w-[30rem]" />
-      </div>
+        <RuledList items={CURRICULA} />
+      </Section>
 
-      <div className="fixed top-4 left-0 right-0 z-50 px-4 flex justify-center sm:top-6">
-        <DetachedNavbar />
-      </div>
+      <Section
+        eyebrow="What holds"
+        title="One school cannot read another"
+        lede="Separation is a row-level security policy in the database, not a filter in the interface — so it holds for anything that reaches the data, not only for the screens we remembered to guard. The same page lists what we have not built yet, because you are going to ask."
+      >
+        <p style={{ margin: 0, fontSize: '.95rem' }}>
+          <Link to="/Security" className="scholr-focus" style={{ color: 'var(--brand)' }}>
+            How isolation works, and what we haven't done yet →
+          </Link>
+        </p>
+      </Section>
 
-      <HeroSection />
-      <RoleExplorer sectionRef={explorerRef} />
-      <CapabilitiesSection />
       <PricingTiersSection />
-      <FinalCTA />
-      <PublicFooter />
 
-      <StickyDemoBar visible={barVisible && !barDismissed} onDismiss={() => setBarDismissed(true)} />
+      <StickyCTA afterRef={thirdBench} suppressed={showConsent} />
       <ConsentModal isOpen={showConsent} onClose={() => setShowConsent(false)} />
-    </div>
+    </PublicShell>
   );
 }
