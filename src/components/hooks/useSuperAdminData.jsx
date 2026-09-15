@@ -5,11 +5,11 @@ import * as schoolsData from '@/data/schools';
 import * as membershipsData from '@/data/memberships';
 import * as fns from '@/data/functions';
 import {
-  getPlanPrice,
   getSchoolHealthIssues,
   isAtRiskSchool,
   isPaidSchool,
 } from '@/components/admin/super-admin/superAdminConfig';
+import { annualCost } from '@/lib/pricing';
 
 const DEFAULT_STALE_TIME = 5 * 60 * 1000;
 
@@ -223,7 +223,7 @@ export function getSuperAdminPlatformMetrics(schools) {
 export function getSuperAdminBillingMetrics(schools) {
   const totalMRR = schools
     .filter((school) => school.billing_status === 'active')
-    .reduce((sum, school) => sum + getPlanPrice(school.plan), 0);
+    .reduce((sum, school) => sum + annualCost(school.max_students || 0) / 12, 0);
 
   return {
     totalMRR,
@@ -248,7 +248,7 @@ export function getSuperAdminPlanMetrics(schools) {
 
   const mrrEstimate = schools
     .filter((school) => school.billing_status === 'active')
-    .reduce((sum, school) => sum + getPlanPrice(school.plan), 0);
+    .reduce((sum, school) => sum + annualCost(school.max_students || 0) / 12, 0);
 
   return {
     byPlan,

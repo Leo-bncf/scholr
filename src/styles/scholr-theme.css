@@ -828,6 +828,83 @@ a.app-row:hover, button.app-row:hover { background: color-mix(in oklab, var(--in
 .scholr-crit-sf     { background: var(--crit-sf); }
 .scholr-hover:hover { background: color-mix(in oklab, var(--ink) 4%, transparent); }
 
+
+/* ── Pricing calculator ───────────────────────────────────────────────────
+   The pricing page shows the arithmetic instead of three cards to choose
+   between, because with graduated bands there is nothing to choose: there is
+   one product and one curve. */
+.pricing-calc {
+  display: grid; gap: var(--space-lg);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  padding: var(--space-lg);
+  border: 1px solid var(--mkt-rule);
+  border-radius: var(--radius-surface);
+  background: var(--mkt-paper-2);
+}
+@media (max-width: 46rem) { .pricing-calc { grid-template-columns: minmax(0, 1fr); } }
+
+.pricing-calc__number {
+  width: 100%; font-family: var(--mkt-font-mono); font-size: 1.6rem;
+  padding: .5rem .7rem; color: var(--mkt-ink);
+  background: var(--mkt-paper); border: 1px solid var(--mkt-rule);
+  border-radius: var(--radius-control);
+}
+.pricing-calc__number:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand) 18%, transparent); }
+.pricing-calc__range { width: 100%; margin-top: .7rem; accent-color: var(--brand); }
+
+.pricing-calc__preset {
+  font: inherit; font-size: .78rem; padding: .22rem .6rem; cursor: pointer;
+  color: var(--mkt-ink-2); background: var(--mkt-paper);
+  border: 1px solid var(--mkt-rule); border-radius: var(--radius-pill);
+}
+.pricing-calc__preset[aria-pressed='true'] { border-color: var(--brand); color: var(--brand); }
+
+/* The figure is the loudest thing on the page, which is the whole argument:
+   competitors make you ask for it. */
+.pricing-calc__total {
+  margin: 0; font-size: clamp(2.4rem, 6vw, 3.4rem); line-height: 1;
+  letter-spacing: -0.035em; font-weight: 700; color: var(--mkt-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.pricing-work { margin-top: var(--space-md); }
+.pricing-work__label {
+  font-family: var(--mkt-font-mono); font-size: .66rem; letter-spacing: .11em;
+  text-transform: uppercase; color: var(--mkt-ink-3); margin: 0 0 .5rem;
+}
+.pricing-work__table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.pricing-work__table td { padding: .38rem 0; border-top: 1px solid var(--mkt-rule); color: var(--mkt-ink-2); }
+.pricing-work__table tr:first-child td { border-top: none; }
+.pricing-work__table .n {
+  text-align: right; font-family: var(--mkt-font-mono);
+  font-variant-numeric: tabular-nums; color: var(--mkt-ink); white-space: nowrap;
+}
+
+.pricing-bands {
+  display: flex; flex-wrap: wrap; gap: 0 var(--space-lg);
+  margin-top: var(--space-lg); padding-top: var(--space-md);
+  border-top: 1px solid var(--mkt-rule);
+}
+.pricing-bands__item {
+  display: flex; align-items: baseline; gap: .45rem;
+  font-size: .84rem; color: var(--mkt-ink-3); padding: .2rem 0;
+}
+.pricing-bands__item strong { font-family: var(--mkt-font-mono); color: var(--mkt-ink); }
+
+.pricing-included { margin-top: var(--space-lg); }
+.pricing-included ul {
+  margin: 0; padding: 0; list-style: none;
+  display: grid; gap: .35rem var(--space-lg);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  font-size: .9rem; color: var(--mkt-ink-2);
+}
+.pricing-included li { padding-left: 1.1rem; position: relative; }
+.pricing-included li::before {
+  content: ''; position: absolute; left: 0; top: .62em;
+  width: .5rem; height: 1px; background: var(--brand);
+}
+
 /* ── Tables ───────────────────────────────────────────────────────────────
    A table lives INSIDE a Group, so it draws no border and no shadow of its
    own — the group is already the containment layer. Its job is only to line

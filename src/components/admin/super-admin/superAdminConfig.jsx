@@ -5,11 +5,14 @@ export const DEFAULT_SCHOOL_STATUS = 'onboarding';
 export const DEFAULT_BILLING_STATUS = 'trial';
 export const SCHOOL_TRIAL_DURATION_DAYS = 30;
 
-export const SCHOOL_PLAN_PRICES = {
-  starter: 99,
-  professional: 299,
-  enterprise: 799,
-};
+/* Price does not live here any more.
+ *
+ * This file used to declare flat monthly figures of €99 / €299 / €799 that no
+ * school was ever quoted — the public site sold per student and Stripe was
+ * configured per student. The super-admin revenue screen read these, so its
+ * "estimated MRR" was derived from prices that existed nowhere else.
+ *
+ * What a school pays is now answered in one place: src/lib/pricing.js. */
 
 /* Two axes, not eight hues.
  *
@@ -44,10 +47,11 @@ const BILLING_STATUS_META = {
   none: { label: 'No billing', tone: 'mute' },
 };
 
+/* The `plan` column is legacy: one product now, priced by roll. These options
+   remain so existing rows still render a label. */
 export const SCHOOL_PLAN_OPTIONS = Object.entries(PLAN_META).map(([value, meta]) => ({
   value,
   label: meta.label,
-  price: SCHOOL_PLAN_PRICES[value],
 }));
 
 export const SCHOOL_STATUS_OPTIONS = Object.entries(SCHOOL_STATUS_META).map(([value, meta]) => ({
@@ -62,10 +66,6 @@ export const BILLING_STATUS_OPTIONS = Object.entries(BILLING_STATUS_META).map(([
 
 export function canAccessSuperAdmin(user, allowedRoles = SUPER_ADMIN_ALLOWED_ROLES) {
   return !!user && allowedRoles.includes(user.role);
-}
-
-export function getPlanPrice(plan) {
-  return SCHOOL_PLAN_PRICES[plan] || SCHOOL_PLAN_PRICES[DEFAULT_SCHOOL_PLAN];
 }
 
 export function getPlanMeta(plan) {

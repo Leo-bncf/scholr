@@ -1,206 +1,168 @@
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, Loader2, GraduationCap, Users, BookOpen, Zap, CreditCard } from 'lucide-react';
-import { PLAN_LIMITS, PLAN_DESCRIPTIONS, calcAnnualCost } from './PlanConfig';
+import { Loader2 } from 'lucide-react';
 import * as fns from '@/data/functions';
+import {
+  ANNUAL_FLOOR,
+  TALK_TO_US_ABOVE,
+  annualCost,
+  bandSummary,
+  costBreakdown,
+  effectiveRate,
+  formatMoney,
+  formatRate,
+  monthsRemaining,
+  proratedCost,
+} from '@/lib/pricing';
 
-const PLANS = [
-  {
-    key: 'starter',
-    color: 'scholr-rule',
-    highlight: false,
-  },
-  {
-    key: 'growth',
-    color: 'scholr-accent-rule',
-    highlight: true,
-  },
-  {
-    key: 'enterprise',
-    color: 'scholr-rule',
-    highlight: false,
-  },
-];
-
-const PLAN_MIN_STUDENTS = { starter: 1, growth: 201, enterprise: 601 };
-const PLAN_MAX_STUDENTS = { starter: 200, growth: 600, enterprise: 2000 };
-
-export default function StudentPricingUpgrade({ schoolId, currentPlan, currentStudents }) {
-  const [selectedPlan, setSelectedPlan] = useState(currentPlan || 'growth');
-  const [studentCount, setStudentCount] = useState(() => {
-    if (currentStudents > 0) return currentStudents;
-    if (currentPlan === 'growth') return 300;
-    if (currentPlan === 'enterprise') return 700;
-    return 100;
-  });
+/**
+ * Buy more student seats.
+ *
+ * This used to be a plan picker: three cards, Starter / Growth / Enterprise,
+ * each printing its own flat per-student rate. There are no plans any more —
+ * one product, priced on graduated bands — so there is nothing to pick between
+ * and the only question is how many seats the school wants.
+ *
+ * The bands are shown as the working rather than as options, and the figure
+ * updates as the number changes. A bursar approving this needs to see how it
+ * was reached, not a marketing tile.
+ */
+export default function StudentPricingUpgrade({ schoolId, currentStudents }) {
+  const [seats, setSeats] = useState(() => Math.max(currentStudents || 0, 50));
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const limits = PLAN_LIMITS[selectedPlan];
-  const annualTotal = calcAnnualCost(selectedPlan, studentCount);
-  const monthlyEstimate = Math.round(annualTotal / 12);
+  const count = Math.max(0, Math.min(5000, parseInt(seats, 10) || 0));
+  const beyondPublished = count > TALK_TO_US_ABOVE;
+  const { lines, floorTopUp } = costBreakdown(count);
+  const months = monthsRemaining();
+  const changed = count !== (currentStudents || 0);
 
   const handleCheckout = async () => {
-    if (window.self !== window.top) {
-      alert('Checkout is only available from the published app, not the preview.');
-      return;
-    }
     setLoading(true);
+    setError('');
     try {
       const response = await fns.invoke('createCheckoutSession', {
         schoolId,
-        plan: selectedPlan,
-        studentCount,
+        studentCount: count,
       });
-      window.location.href = response.url;
-    } catch (error) {
-      console.error('Checkout error:', error);
+      if (response?.url) {
+        window.location.href = response.url;
+        return;
+      }
+      throw new Error('No checkout URL was returned.');
+    } catch (err) {
+      // Stripe is not configured on the server, so this returns 503 today. Say
+      // so plainly instead of leaving a spinner running — a school that has
+      // decided to pay should not be met with silence.
+      setError(
+        err?.status === 503
+          ? 'Card payment is not switched on yet. Email contact@scholr.pro and we will invoice you.'
+          : err?.message || 'That could not be started. Try again, or email contact@scholr.pro.',
+      );
+    } finally {
       setLoading(false);
     }
   };
 
-  const clampStudentCount = (plan, val) => {
-    const min = PLAN_MIN_STUDENTS[plan];
-    const max = PLAN_MAX_STUDENTS[plan];
-    return Math.min(Math.max(val, min), max);
-  };
-
-  const handlePlanSelect = (planKey) => {
-    setSelectedPlan(planKey);
-    setStudentCount(prev => clampStudentCount(planKey, prev));
-  };
-
   return (
-    <div className="space-y-6">
-      {/* Plan cards */}
-      <div className="grid md:grid-cols-3 gap-4">
-        {PLANS.map(({ key, color, highlight, badge }) => {
-          const l = PLAN_LIMITS[key];
-          const isSelected = selectedPlan === key;
-          return (
-            <button
-              key={key}
-              onClick={() => handlePlanSelect(key)}
-              className={`text-left p-5 rounded-xl border-2 transition-colors ${
-                isSelected ? 'scholr-accent-rule scholr-accent-sf shadow-md' : `${color} bg-white hover:scholr-accent-rule hover:shadow-sm`
-              }`}
-            >
-              {badge && (
-                <div className="flex justify-end mb-2">
-                  <Badge className="scholr-accent-sf scholr-accent border-0 text-xs">{badge}</Badge>
-                </div>
-              )}
-              <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-3xl font-black scholr-ink">€{l.price_per_student}</span>
-                <span className="scholr-faint text-sm">/student/yr</span>
-              </div>
-              <p className="text-xs scholr-muted">{PLAN_DESCRIPTIONS[key]}</p>
-
-              <div className="mt-4 space-y-1.5 text-xs scholr-muted">
-                <div className="flex items-center gap-1.5">
-                  <GraduationCap className="w-3.5 h-3.5 scholr-accent" />
-                  <span>{l.max_students === -1 ? 'Unlimited students' : `Up to ${l.max_students} students`}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Users className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>Unlimited teachers & staff</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <BookOpen className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>Unlimited classes</span>
-                </div>
-                {l.features.advanced_analytics && (
-                  <div className="flex items-center gap-1.5">
-                    <Zap className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Advanced analytics + parent portal</span>
-                  </div>
-                )}
-              </div>
-
-              {isSelected && (
-                <div className="mt-3 flex items-center gap-1.5 text-xs font-semibold scholr-accent">
-                  <CheckCircle2 className="w-4 h-4" /> Selected
-                </div>
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Student count configurator */}
-      <div className="bg-white rounded-xl border scholr-rule p-6">
-        <p className="text-sm font-semibold scholr-body mb-4">How many students does your school have?</p>
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setStudentCount(v => clampStudentCount(selectedPlan, v - 10))}
-              className="w-8 h-8 rounded-lg border scholr-rule flex items-center justify-center scholr-muted hover:scholr-sunk font-bold text-lg leading-none"
-            >−</button>
-            <input
-              type="number"
-              min={PLAN_MIN_STUDENTS[selectedPlan]}
-              max={PLAN_MAX_STUDENTS[selectedPlan]}
-              value={studentCount}
-              onChange={e => setStudentCount(clampStudentCount(selectedPlan, parseInt(e.target.value) || PLAN_MIN_STUDENTS[selectedPlan]))}
-              className="w-24 text-center text-xl font-bold scholr-ink border scholr-rule rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:scholr-accent-rule"
-            />
-            <button
-              onClick={() => setStudentCount(v => clampStudentCount(selectedPlan, v + 10))}
-              className="w-8 h-8 rounded-lg border scholr-rule flex items-center justify-center scholr-muted hover:scholr-sunk font-bold text-lg leading-none"
-            >+</button>
-            <span className="scholr-muted text-sm">students</span>
-          </div>
-
-          {/* Quick-select buttons */}
-          <div className="flex gap-2 flex-wrap">
-            {selectedPlan === 'starter' && [50, 100, 150, 200].map(n => (
-              <button key={n} onClick={() => setStudentCount(n)}
-                className={`px-3 py-1 text-xs rounded-full border transition-colors ${studentCount === n ? 'pub-btn pub-btn-gold scholr-accent-rule' : 'scholr-rule scholr-muted hover:scholr-accent-rule'}`}>
-                {n}
-              </button>
-            ))}
-            {selectedPlan === 'growth' && [250, 300, 400, 500, 600].map(n => (
-              <button key={n} onClick={() => setStudentCount(n)}
-                className={`px-3 py-1 text-xs rounded-full border transition-colors ${studentCount === n ? 'pub-btn pub-btn-gold scholr-accent-rule' : 'scholr-rule scholr-muted hover:scholr-accent-rule'}`}>
-                {n}
-              </button>
-            ))}
-            {selectedPlan === 'enterprise' && [700, 800, 1000, 1500, 2000].map(n => (
-              <button key={n} onClick={() => setStudentCount(n)}
-                className={`px-3 py-1 text-xs rounded-full border transition-colors ${studentCount === n ? 'pub-btn pub-btn-gold scholr-accent-rule' : 'scholr-rule scholr-muted hover:scholr-accent-rule'}`}>
-                {n}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Pricing summary */}
-        <div className="mt-5 flex items-end gap-6 flex-wrap">
-          <div>
-            <p className="text-xs scholr-faint">Annual total</p>
-            <p className="text-3xl font-black scholr-ink">€{annualTotal.toLocaleString()}</p>
-            <p className="text-xs scholr-faint mt-0.5">≈ €{monthlyEstimate.toLocaleString()}/month</p>
-          </div>
-          <div className="pb-1 text-sm scholr-muted">
-            {studentCount} students × €{PLAN_LIMITS[selectedPlan].price_per_student}/student/yr
-          </div>
-          <div className="ml-auto">
-            <Button
-              onClick={handleCheckout}
-              disabled={loading}
-              className="scholr-accent-sf hover:scholr-accent-sf gap-2 px-6"
-              size="lg"
-            >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className="w-4 h-4" />}
-              Subscribe — €{annualTotal.toLocaleString()}/yr
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      <p className="text-xs scholr-faint text-center">
-        14-day free trial included. Annual billing. Cancel anytime via Stripe portal. Prices in EUR, excl. VAT.
+    <div className="bg-white rounded-xl border scholr-rule p-6">
+      <p className="text-xs scholr-faint uppercase tracking-wide font-semibold mb-4">
+        Change your seat count
       </p>
+
+      <div className="flex flex-wrap items-end gap-5">
+        <label className="flex flex-col gap-1.5" htmlFor="seat-count">
+          <span className="text-xs scholr-faint font-medium">Student seats</span>
+          <input
+            id="seat-count"
+            type="number"
+            min="0"
+            max="5000"
+            step="10"
+            value={seats}
+            onChange={(e) => setSeats(e.target.value)}
+            className="app-input scholr-focus"
+            style={{ width: '9rem', fontFamily: 'var(--font-mono)', fontSize: '1.1rem' }}
+          />
+        </label>
+
+        <div>
+          <p className="text-xs scholr-faint font-medium">Per year</p>
+          <p className="text-3xl font-black scholr-ink" style={{ fontVariantNumeric: 'tabular-nums' }}>
+            {beyondPublished ? '—' : formatMoney(annualCost(count))}
+          </p>
+        </div>
+
+        {!beyondPublished && count > 0 && (
+          <div>
+            <p className="text-xs scholr-faint font-medium">Per student</p>
+            <p className="text-lg font-bold scholr-body">{formatRate(effectiveRate(count))}</p>
+          </div>
+        )}
+      </div>
+
+      {beyondPublished ? (
+        <p className="text-sm scholr-muted mt-4">
+          Above {TALK_TO_US_ABOVE.toLocaleString('en-IE')} seats the hosting and support
+          model change, so we quote rather than calculate. Email{' '}
+          <a href="mailto:contact@scholr.pro" className="scholr-accent">contact@scholr.pro</a>.
+        </p>
+      ) : (
+        count > 0 && (
+          <>
+            <table className="w-full mt-5 text-sm">
+              <tbody>
+                {lines.map((l) => (
+                  <tr key={l.from}>
+                    <td className="py-1.5 border-t scholr-rule-soft scholr-muted">
+                      Seats {l.from}–{l.to}
+                    </td>
+                    <td className="py-1.5 border-t scholr-rule-soft text-right scholr-muted" style={{ fontFamily: 'var(--font-mono)' }}>
+                      {l.students} × €{l.rate}
+                    </td>
+                    <td className="py-1.5 border-t scholr-rule-soft text-right scholr-ink font-semibold" style={{ fontFamily: 'var(--font-mono)' }}>
+                      {formatMoney(l.subtotal)}
+                    </td>
+                  </tr>
+                ))}
+                {floorTopUp > 0 && (
+                  <tr>
+                    <td className="py-1.5 border-t scholr-rule-soft scholr-muted">Minimum annual fee</td>
+                    <td className="py-1.5 border-t scholr-rule-soft text-right scholr-muted" style={{ fontFamily: 'var(--font-mono)' }}>
+                      floor {formatMoney(ANNUAL_FLOOR)}
+                    </td>
+                    <td className="py-1.5 border-t scholr-rule-soft text-right scholr-ink font-semibold" style={{ fontFamily: 'var(--font-mono)' }}>
+                      +{formatMoney(floorTopUp)}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+            <p className="text-xs scholr-faint mt-3">
+              {months} month{months === 1 ? '' : 's'} left in this academic year, so a change
+              today is charged at {formatMoney(proratedCost(count))}. Bands:{' '}
+              {bandSummary().map((b, i) => (
+                <span key={b.label}>{i > 0 ? ' · ' : ''}{b.label} €{b.rate}</span>
+              ))}.
+            </p>
+          </>
+        )
+      )}
+
+      {error && <p className="text-sm mt-4" style={{ color: 'var(--crit)' }}>{error}</p>}
+
+      <div className="mt-5">
+        <button
+          type="button"
+          onClick={handleCheckout}
+          disabled={loading || !changed || beyondPublished || count === 0}
+          className="pub-btn pub-btn-gold scholr-focus"
+        >
+          {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+          {changed ? `Change to ${count.toLocaleString('en-IE')} seats` : 'No change'}
+        </button>
+      </div>
     </div>
   );
 }

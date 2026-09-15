@@ -1,3 +1,4 @@
+import { annualCost } from '@/lib/pricing';
 // Student-based pricing tiers
 // Starter:    up to 200 students  @ €24/student/yr
 // Growth:     201–600 students    @ €20/student/yr
@@ -9,7 +10,6 @@ export const PLAN_LIMITS = {
     max_students: 200,
     max_teachers: -1, // unlimited
     max_classes: -1,  // unlimited
-    price_per_student: 24,
     modules: ['core', 'gradebook', 'assignments', 'attendance'],
     features: {
       parent_portal: false,
@@ -27,7 +27,6 @@ export const PLAN_LIMITS = {
     max_students: 600,
     max_teachers: -1,
     max_classes: -1,
-    price_per_student: 20,
     modules: ['core', 'gradebook', 'assignments', 'attendance', 'ib_core', 'behavior', 'messaging'],
     features: {
       parent_portal: true,
@@ -45,7 +44,6 @@ export const PLAN_LIMITS = {
     max_students: -1, // unlimited
     max_teachers: -1,
     max_classes: -1,
-    price_per_student: 16,
     modules: ['core', 'gradebook', 'assignments', 'attendance', 'ib_core', 'behavior', 'messaging', 'timetable'],
     features: {
       parent_portal: true,
@@ -74,17 +72,29 @@ export const PLAN_DESCRIPTIONS = {
 };
 
 // Price IDs in Stripe (per student per year)
-export const STRIPE_PRICE_IDS = {
+/* Stripe products predating the graduated model — one flat price ID per plan.
+   They must be replaced with a single tiered price before billing is switched
+   on, or Stripe will charge the old flat rates regardless of what this app
+   computes. Left in place, and unused, so the migration is visible. */
+export const STRIPE_PRICE_IDS_LEGACY_FLAT = {
   starter:    'price_1TCqN7BCrwoLhJNy0ZUAckNW',
   growth:     'price_1TCqN7BCrwoLhJNydURe3Oyz',
   enterprise: 'price_1TCqN7BCrwoLhJNyELaRhBGI',
 };
 
 // Calculate annual cost for a given plan + student count
-export function calcAnnualCost(plan, studentCount) {
-  const limits = PLAN_LIMITS[plan];
-  if (!limits) return 0;
-  return limits.price_per_student * studentCount;
+/**
+ * What a school pays for a year, from src/lib/pricing.js.
+ *
+ * This used to be `limits.price_per_student * studentCount`, with the rate
+ * taken from the plan — €24, €20 or €16 depending on which band the school
+ * fell in. That is the flat-rate scheme that made a 201-pupil school cheaper
+ * than a 199-pupil one, and its rates were 14% above what the public site
+ * advertised. The plan argument is ignored and kept only so the existing call
+ * sites did not all have to change at once.
+ */
+export function calcAnnualCost(_plan, studentCount) {
+  return annualCost(studentCount);
 }
 
 // Determine which plan applies for a given student count

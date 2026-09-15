@@ -13,6 +13,7 @@ import {
   YAxis,
 } from 'recharts';
 import { Download } from 'lucide-react';
+import { annualCost } from '@/lib/pricing';
 import SuperAdminLoadingState from '@/components/admin/super-admin/SuperAdminLoadingState';
 import SuperAdminShell from '@/components/admin/super-admin/SuperAdminShell';
 import { Group, GroupEmpty, Segmented } from '@/components/app/AppShell';
@@ -25,7 +26,6 @@ import { SelectField } from '@/components/app/Field';
 import { useSuperAdminAccess } from '@/components/hooks/useSuperAdminAccess';
 import { useSuperAdminAnalyticsQuery } from '@/components/hooks/useSuperAdminData';
 import {
-  getPlanPrice,
   getBillingStatusMeta,
   isPaidSchool,
   isAtRiskSchool,
@@ -143,14 +143,14 @@ export default function SuperAdminAnalytics() {
 
     const currentMRR = schools
       .filter((school) => school.billing_status === 'active')
-      .reduce((sum, school) => sum + getPlanPrice(school.plan), 0);
+      .reduce((sum, school) => sum + annualCost(school.max_students || 0) / 12, 0);
 
     const growthValues = schoolGrowthSeries.map((row) => row.newSchools);
     const revenueSeries = monthBuckets.map((bucket) => ({
       month: bucket.label,
       mrrAdded: schools
         .filter((school) => isPaidSchool(school) && monthKey(new Date(school.created_at)) === bucket.key)
-        .reduce((sum, school) => sum + getPlanPrice(school.plan), 0),
+        .reduce((sum, school) => sum + annualCost(school.max_students || 0) / 12, 0),
     }));
     const avgNewSchools = Math.max(0, Math.round(average(growthValues.slice(-3))));
     const avgMrrAdded = Math.max(0, Math.round(average(revenueSeries.map((row) => row.mrrAdded).slice(-3))));
@@ -179,7 +179,7 @@ export default function SuperAdminAnalytics() {
         school: school.name,
         plan: school.plan,
         billing_status: school.billing_status,
-        estimated_mrr: school.billing_status === 'active' ? getPlanPrice(school.plan) : 0,
+        estimated_mrr: school.billing_status === 'active' ? Math.round(annualCost(school.max_students || 0) / 12) : 0,
         at_risk: isAtRiskSchool(school),
       })),
       adoption: featureAdoption.map((item) => ({
@@ -269,7 +269,7 @@ export default function SuperAdminAnalytics() {
         <StatCard label="Activity" value={analytics.rangedAuditLogs.length} hint="audited events" />
         <StatCard
           label="Est. MRR"
-          value={money(schools.filter((s) => s.billing_status === 'active').reduce((sum, s) => sum + getPlanPrice(s.plan), 0))}
+          value={money(schools.filter((s) => s.billing_status === 'active').reduce((sum, s) => sum + annualCost(s.max_students || 0) / 12, 0))}
           hint="from list prices, not Stripe"
         />
       </StatRow>

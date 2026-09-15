@@ -15,7 +15,8 @@ import AdminTabNavigation from '@/components/admin/AdminTabNavigation';
 import TrialBanner from '@/components/plan/TrialBanner';
 import BillingStatusBanner from '@/components/plan/BillingStatusBanner';
 import StudentPricingUpgrade from '@/components/plan/StudentPricingUpgrade';
-import { PLAN_LIMITS, PLAN_NAMES, PLAN_DESCRIPTIONS, calcAnnualCost, getUpgradePlans } from '@/components/plan/PlanConfig';
+import { PLAN_LIMITS, getUpgradePlans } from '@/components/plan/PlanConfig';
+import { annualCost as costForSeats, effectiveRate, formatMoney, formatRate } from '@/lib/pricing';
 import { format } from 'date-fns';
 import * as schoolsData from '@/data/schools';
 import * as membershipsData from '@/data/memberships';
@@ -96,7 +97,10 @@ export default function SchoolAdminBilling() {
   const upgradePlans = getUpgradePlans(currentPlan);
   const planLimits = PLAN_LIMITS[currentPlan] || PLAN_LIMITS.starter;
   const purchasedStudents = schoolData?.max_students || 0;
-  const annualCost = purchasedStudents > 0 ? calcAnnualCost(currentPlan, purchasedStudents) : null;
+  // One product, priced on the roll — there is no plan to name and no flat
+  // per-student rate to print. The rate a school actually pays is blended
+  // across the bands, so it is derived rather than looked up.
+  const annualCost = purchasedStudents > 0 ? costForSeats(purchasedStudents) : null;
   const studentPct = purchasedStudents > 0 ? Math.round((studentCount / purchasedStudents) * 100) : 0;
   const hasStudentWarning = purchasedStudents > 0 && studentPct >= 80;
 
@@ -110,12 +114,12 @@ export default function SchoolAdminBilling() {
             tabs={[
               { id: 'status', label: 'Subscription', icon: CreditCard },
               { id: 'students', label: 'Student Slots', icon: GraduationCap, badge: hasStudentWarning ? '!' : null },
-              ...(upgradePlans.length > 0 ? [{ id: 'upgrade', label: 'Upgrade / Change Plan', icon: ArrowUpCircle }] : []),
+              ...(upgradePlans.length > 0 ? [{ id: 'upgrade', label: 'Change seats', icon: ArrowUpCircle }] : []),
             ]}
             activeTab={billingTab}
             onTabChange={setBillingTab}
             title="Billing"
-            subtitle="Per student, per year"
+            subtitle="Your seats and what they cost"
             rightContent={
               <Button size="sm" variant="ghost" onClick={() => refetch()} className="gap-1.5 scholr-muted">
                 <RefreshCw className="w-3.5 h-3.5" /> Refresh
@@ -146,15 +150,18 @@ export default function SchoolAdminBilling() {
                 <div className="md:col-span-2 bg-white rounded-xl border scholr-rule p-6 space-y-5">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-xs scholr-faint uppercase tracking-wide font-semibold mb-2">Current Plan</p>
-                      <div className="flex items-center gap-3 flex-wrap">
-                        <h2 className="text-3xl font-black scholr-ink">{PLAN_NAMES[currentPlan] || currentPlan}</h2>
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-2xl font-bold scholr-accent">€{planLimits.price_per_student}</span>
-                          <span className="scholr-faint text-sm">/student/yr</span>
-                        </div>
+                      <p className="text-xs scholr-faint uppercase tracking-wide font-semibold mb-2">Your subscription</p>
+                      <div className="flex items-baseline gap-3 flex-wrap">
+                        <h2 className="text-3xl font-black scholr-ink">
+                          {annualCost ? formatMoney(annualCost) : '—'}
+                        </h2>
+                        <span className="scholr-faint text-sm">a year</span>
                       </div>
-                      <p className="text-sm scholr-muted mt-1">{PLAN_DESCRIPTIONS[currentPlan]}</p>
+                      <p className="text-sm scholr-muted mt-1">
+                        {purchasedStudents > 0
+                          ? `${purchasedStudents.toLocaleString()} student seats · ${formatRate(effectiveRate(purchasedStudents))} each, blended across the bands`
+                          : 'No student seats purchased yet.'}
+                      </p>
                     </div>
                     {billingStatus && <StatusPill status={billingStatus} />}
                   </div>
@@ -165,8 +172,10 @@ export default function SchoolAdminBilling() {
                       <p className="text-lg font-bold scholr-ink">{purchasedStudents > 0 ? purchasedStudents.toLocaleString() : '—'}</p>
                     </div>
                     <div>
-                      <p className="text-xs scholr-faint font-medium">Annual Cost</p>
-                      <p className="text-lg font-bold scholr-ink">{annualCost ? `€${annualCost.toLocaleString()}` : '—'}</p>
+                      <p className="text-xs scholr-faint font-medium">Per student</p>
+                      <p className="text-lg font-bold scholr-ink">
+                        {purchasedStudents > 0 ? formatRate(effectiveRate(purchasedStudents)) : '—'}
+                      </p>
                     </div>
                     <div>
                       <p className="text-xs scholr-faint font-medium">Teachers / Staff</p>
@@ -212,7 +221,7 @@ export default function SchoolAdminBilling() {
                     )}
                     {upgradePlans.length > 0 && (
                       <Button variant="outline" onClick={() => setBillingTab('upgrade')} className="gap-1.5">
-                        <ArrowUpCircle className="w-4 h-4" /> Change Plan
+                        <ArrowUpCircle className="w-4 h-4" /> Change seats
                       </Button>
                     )}
                   </div>
@@ -307,7 +316,7 @@ export default function SchoolAdminBilling() {
             {/* ── UPGRADE ── */}
             {billingTab === 'upgrade' && (
               <div className="mt-2">
-                <StudentPricingUpgrade schoolId={schoolId} currentPlan={currentPlan} currentStudents={purchasedStudents} />
+                <StudentPricingUpgrade schoolId={schoolId} currentStudents={purchasedStudents} />
               </div>
             )}
           </div>
