@@ -58,15 +58,15 @@ export default function InvitationsManager({ schoolId, schoolName }) {
 
   const getStatusConfig = (invitation) => {
     if (invitation.status === 'accepted') {
-      return { color: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle };
+      return { tone: null, icon: CheckCircle };
     }
     if (invitation.status === 'cancelled') {
       return { color: 'scholr-sunk scholr-muted scholr-rule', icon: XCircle };
     }
     if (invitation.status === 'expired' || new Date(invitation.expires_at) < new Date()) {
-      return { color: 'bg-red-50 text-red-700 border-red-200', icon: XCircle };
+      return { tone: 'crit', icon: XCircle };
     }
-    return { color: 'bg-amber-50 text-amber-700 border-amber-200', icon: Clock };
+    return { tone: 'warn', icon: Clock };
   };
 
   const pendingInvitations = invitations.filter(i => 
@@ -105,7 +105,7 @@ export default function InvitationsManager({ schoolId, schoolName }) {
       </div>
 
       {invitations.length === 0 ? (
-        <div className="bg-white rounded-xl border scholr-rule p-12 text-center">
+        <div className="app-group p-12 text-center">
           <Mail className="w-12 h-12 scholr-faint mx-auto mb-3" />
           <p className="scholr-muted mb-4">No invitations sent yet</p>
           <Button 
@@ -130,7 +130,10 @@ export default function InvitationsManager({ schoolId, schoolName }) {
                     <div className="flex items-center gap-2 mb-2">
                       <Mail className="w-4 h-4 scholr-faint flex-shrink-0" />
                       <span className="font-medium scholr-ink">{invitation.email}</span>
-                      <Badge className={`${statusConfig.color} border-0 capitalize text-xs`}>
+                      <Badge
+                        className="border-0 capitalize text-xs"
+                        style={{ color: statusConfig.tone ? `var(--${statusConfig.tone})` : 'var(--muted)', background: 'transparent' }}
+                      >
                         <StatusIcon className="w-3 h-3 mr-1" />
                         {isExpired ? 'Expired' : invitation.status}
                       </Badge>

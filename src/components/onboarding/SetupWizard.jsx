@@ -1,13 +1,12 @@
+import Meter from '@/components/app/Meter';
 import React, { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
 import { useOnboardingStatus } from './useOnboardingStatus';
-import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   CheckCircle2, ChevronRight, ChevronLeft, Calendar, Clock,
-  BookOpen, Layers, Mail, GraduationCap, Sparkles
+  BookOpen, Layers, Mail, GraduationCap
 } from 'lucide-react';
 import WizardStepCurriculum from './wizard-steps/WizardStepCurriculum';
 import WizardStepAcademicYear from './wizard-steps/WizardStepAcademicYear';
@@ -37,26 +36,32 @@ function StepNav({ steps, currentIndex, completedStepIds }) {
         return (
           <React.Fragment key={step.id}>
             <div className="flex flex-col items-center">
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center border-2 transition-colors ${
-                isDone || isPast
-                  ? 'bg-emerald-500 border-emerald-500 text-white'
-                  : isCurrent
-                  ? 'scholr-accent-sf scholr-accent-rule text-white'
-                  : 'bg-white scholr-rule scholr-faint'
-              }`}>
-                {isDone || isPast
-                  ? <CheckCircle2 className="w-4 h-4" />
-                  : <Icon className="w-4 h-4" />
-                }
+              {/* One accent, three states: done is filled, current is
+                  outlined, still-to-come is a hairline. Emerald-500 for done
+                  and the brand green for current were two greens side by
+                  side, which read as one indistinct blur. */}
+              <div
+                className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
+                style={{
+                  border: `1px solid ${isDone || isPast || isCurrent ? 'var(--brand)' : 'var(--rule)'}`,
+                  background: isDone || isPast ? 'var(--brand)' : 'transparent',
+                  color: isDone || isPast ? 'var(--surface)' : isCurrent ? 'var(--brand)' : 'var(--faint)',
+                }}
+              >
+                {isDone || isPast ? <CheckCircle2 className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
               </div>
-              <p className={`text-xs mt-1 font-medium hidden md:block ${
-                isCurrent ? 'scholr-accent' : isDone || isPast ? 'text-emerald-600' : 'scholr-faint'
-              }`}>
+              <p
+                className="text-xs mt-1 font-medium hidden md:block"
+                style={{ color: isCurrent || isDone || isPast ? 'var(--brand)' : 'var(--faint)' }}
+              >
                 {step.label}
               </p>
             </div>
             {i < steps.length - 1 && (
-              <div className={`flex-1 h-0.5 mx-1 mb-4 ${isPast || isDone ? 'bg-emerald-300' : 'scholr-sunk'}`} />
+              <div
+                className="flex-1 mx-1 mb-4"
+                style={{ height: '1px', background: isPast || isDone ? 'var(--brand)' : 'var(--rule)' }}
+              />
             )}
           </React.Fragment>
         );
@@ -151,26 +156,17 @@ export default function SetupWizard({ onComplete }) {
 
   return (
     <div className="app-group overflow-hidden">
-      {/* Wizard header */}
-      <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-5 text-white">
-        <div className="flex items-center gap-3 mb-4">
-          <Sparkles className="w-5 h-5" />
-          <div>
-            <h2 className="text-base font-bold">School Setup Wizard</h2>
-            <p className="text-indigo-200 text-xs">Step {currentIndex + 1} of {STEPS.length} — {currentStep.description}</p>
-          </div>
-          <div className="ml-auto">
-            <Badge className="bg-white/20 text-white border-0 text-xs">
-              {currentIndex}/{STEPS.length} complete
-            </Badge>
-          </div>
+      {/* An indigo-to-indigo gradient with white type, on a product whose one
+          accent is green — the second such banner on this page. */}
+      <div className="px-5 py-4" style={{ borderBottom: '1px solid var(--rule-soft)' }}>
+        <div className="flex items-baseline gap-3 mb-4">
+          <h2 className="scholr-label" style={{ margin: 0 }}>Step {currentIndex + 1} of {STEPS.length}</h2>
+          <p style={{ margin: 0, fontSize: '.88rem', color: 'var(--muted)' }}>{currentStep.description}</p>
         </div>
         <StepNav steps={STEPS} currentIndex={currentIndex} completedStepIds={completedStepIds} />
-        <Progress
-          value={(currentIndex / STEPS.length) * 100}
-          className="h-1 mt-4 bg-indigo-400/50"
-          indicatorClassName="bg-white"
-        />
+        <div style={{ marginTop: '1rem' }}>
+          <Meter value={(currentIndex / STEPS.length) * 100} height={3} />
+        </div>
       </div>
 
       {/* Step content */}
@@ -194,8 +190,8 @@ export default function SetupWizard({ onComplete }) {
             Skip this step
           </Button>
           {isLastStep ? (
-            <Button size="sm" onClick={onComplete} className="bg-emerald-600 hover:bg-emerald-700 gap-1.5">
-              <CheckCircle2 className="w-4 h-4" /> Finish Setup
+            <Button size="sm" onClick={onComplete} className="pub-btn pub-btn-primary gap-1.5">
+              <CheckCircle2 className="w-4 h-4" /> Finish
             </Button>
           ) : (
             <Button

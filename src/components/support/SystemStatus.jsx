@@ -1,8 +1,9 @@
+import StatusChip from '@/components/app/StatusChip';
+import Notice from '@/components/app/Notice';
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Badge } from '@/components/ui/badge';
-import {
-  CheckCircle2, AlertTriangle, XCircle, Clock, RefreshCw,
+import { RefreshCw,
   Database, Globe, Lock, FileText, Bell, Activity
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -18,11 +19,14 @@ const SERVICES = [
   { id: 'integrations',label: 'Integrations',          icon: Activity, description: 'Google Drive, Stripe, and external timetable connectors' },
 ];
 
+/* Running normally is the answer you want and the answer you usually get, so
+   it carries no colour. A status page where every one of six services glows
+   green is a status page nobody scans. */
 const STATUS_CONFIG = {
-  operational: { label: 'Operational', color: 'scholr-sunk scholr-muted border-emerald-200', dot: 'bg-emerald-500', icon: CheckCircle2 },
-  degraded:    { label: 'Degraded',    color: 'scholr-sunk scholr-muted border-amber-200',       dot: 'bg-amber-500',   icon: AlertTriangle },
-  outage:      { label: 'Outage',      color: 'bg-red-100 text-red-700 border-red-200',             dot: 'bg-red-500 animate-pulse', icon: XCircle },
-  maintenance: { label: 'Maintenance', color: 'scholr-sunk scholr-muted border-blue-200',          dot: 'bg-blue-500',    icon: Clock },
+  operational: { label: 'Running', tone: null },
+  degraded:    { label: 'Slow',    tone: 'warn' },
+  outage:      { label: 'Down',    tone: 'crit' },
+  maintenance: { label: 'Maintenance', tone: 'mute' },
 };
 
 // Static maintenance / incident notices — would be fetched from a status endpoint in production
@@ -42,47 +46,34 @@ function OverallStatusBanner({ statuses }) {
   const hasDegraded = Object.values(statuses).some(s => s === 'degraded');
   const hasMaintenance = Object.values(statuses).some(s => s === 'maintenance');
 
+  /* Four near-identical tinted banners became one Notice. Only the two states
+     that need a person carry colour; "all systems operational" is the normal
+     case and reads as a plain line. */
   if (hasOutage) {
     return (
-      <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
-        <XCircle className="w-5 h-5 shrink-0" />
-        <div>
-          <p className="text-sm font-bold" style={{ color: 'var(--crit)' }}>Service outage detected</p>
-          <p className="text-xs mt-0.5" style={{ color: 'var(--crit)' }}>One or more services are unavailable. Our team is investigating.</p>
-        </div>
-      </div>
+      <Notice tone="crit" title="Something is down">
+        One or more services are unavailable. Our team is already looking at it.
+      </Notice>
     );
   }
   if (hasDegraded) {
     return (
-      <div className="flex items-center gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-        <AlertTriangle className="w-5 h-5 shrink-0" />
-        <div>
-          <p className="text-sm font-bold" style={{ color: 'var(--warn)' }}>Degraded performance</p>
-          <p className="text-xs mt-0.5" style={{ color: 'var(--warn)' }}>Some services are running slower than usual. We are monitoring the situation.</p>
-        </div>
-      </div>
+      <Notice tone="warn" title="Slower than usual">
+        Some services are responding slowly. We are watching it.
+      </Notice>
     );
   }
   if (hasMaintenance) {
     return (
-      <div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-        <Clock className="w-5 h-5 shrink-0" />
-        <div>
-          <p className="text-sm font-bold" style={{ color: 'var(--ink)' }}>Scheduled maintenance in progress</p>
-          <p className="text-xs mt-0.5" style={{ color: 'var(--ink)' }}>Some services may be temporarily unavailable. Check the notice below for details.</p>
-        </div>
-      </div>
+      <Notice title="Maintenance is running">
+        Some services may be briefly unavailable. The notice below has the details.
+      </Notice>
     );
   }
   return (
-    <div className="flex items-center gap-3 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
-      <CheckCircle2 className="w-5 h-5 shrink-0" />
-      <div>
-        <p className="text-sm font-bold" style={{ color: 'var(--good)' }}>All systems operational</p>
-        <p className="text-xs mt-0.5" style={{ color: 'var(--good)' }}>No known incidents. Platform is running normally.</p>
-      </div>
-    </div>
+    <Notice title="Everything is running">
+      No known incidents.
+    </Notice>
   );
 }
 
@@ -157,8 +148,9 @@ export default function SystemStatus({ schoolId, school }) {
                   <p className="text-xs scholr-faint truncate">{svc.description}</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className={`w-2 h-2 rounded-full ${cfg.dot}`} />
-                  <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${cfg.color}`}>{cfg.label}</span>
+                  {cfg.tone
+                    ? <StatusChip tone={cfg.tone}>{cfg.label}</StatusChip>
+                    : <span style={{ fontSize: '.82rem', color: 'var(--muted)' }}>{cfg.label}</span>}
                 </div>
               </div>
             );
@@ -172,23 +164,17 @@ export default function SystemStatus({ schoolId, school }) {
           <p className="text-xs font-bold scholr-muted uppercase tracking-wide mb-3">Notices & Incidents</p>
           <div className="space-y-3">
             {NOTICES.map(notice => (
-              <div key={notice.id} className={`rounded-xl border p-4 ${
-                notice.type === 'info' ? 'bg-blue-50 border-blue-200' :
-                notice.type === 'warning' ? 'bg-amber-50 border-amber-200' :
-                'bg-red-50 border-red-200'
-              }`}>
-                <div className="flex items-start gap-3">
-                  <Clock className={`w-4 h-4 shrink-0 mt-0.5 ${notice.type === 'info' ? 'text-blue-600' : 'text-amber-600'}`} />
-                  <div className="flex-1">
-                    <p className="text-sm font-bold scholr-ink">{notice.title}</p>
-                    <p className="text-xs scholr-muted mt-1 leading-relaxed">{notice.body}</p>
-                    <p className="text-xs scholr-faint mt-2">{formatDistanceToNow(new Date(notice.date), { addSuffix: true })}</p>
-                  </div>
-                  {!notice.resolved && (
-                    <Badge className="scholr-sunk scholr-muted border-0 text-xs shrink-0">Upcoming</Badge>
-                  )}
-                </div>
-              </div>
+              <Notice
+                key={notice.id}
+                tone={notice.type === 'info' ? 'info' : notice.type === 'warning' ? 'warn' : 'crit'}
+                title={notice.title}
+                action={!notice.resolved ? <StatusChip tone="mute">Upcoming</StatusChip> : null}
+              >
+                {notice.body}
+                <span style={{ display: 'block', marginTop: '.4rem', fontSize: '.76rem', color: 'var(--faint)' }}>
+                  {formatDistanceToNow(new Date(notice.date), { addSuffix: true })}
+                </span>
+              </Notice>
             ))}
           </div>
         </div>
@@ -196,18 +182,10 @@ export default function SystemStatus({ schoolId, school }) {
 
       {/* School-specific alerts */}
       {['past_due', 'unpaid', 'canceled'].includes(billingStatus) && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
-            <div>
-              <p className="text-sm font-bold" style={{ color: 'var(--warn)' }}>Billing issue affecting your school</p>
-              <p className="text-xs mt-1" style={{ color: 'var(--warn)' }}>
-                Your school's subscription is <strong>{billingStatus?.replace('_', ' ')}</strong>. Some features may be restricted.
-                {' '}Resolve this from <a href="/SchoolAdminBilling" className="underline font-semibold">Billing & Subscription</a>.
-              </p>
-            </div>
-          </div>
-        </div>
+        <Notice tone="warn" title="Your subscription needs attention">
+          It is currently <strong>{billingStatus?.replace('_', ' ')}</strong>, which restricts some features.
+          {' '}Sort it out under <a href="/SchoolAdminBilling" className="underline">Billing</a>.
+        </Notice>
       )}
 
       {/* Uptime SLA note */}

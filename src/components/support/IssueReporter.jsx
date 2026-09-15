@@ -1,3 +1,5 @@
+import { Switch } from '@/components/ui/switch';
+import { Group, Row } from '@/components/app/AppShell';
 import React, { useState } from 'react';
 import Notice from '@/components/app/Notice';
 import { humanise } from '@/lib/labels';
@@ -7,20 +9,19 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
 import * as admin from '@/data/admin';
 import * as supportTicketsData from '@/data/supportTickets';
 import * as email from '@/data/email';
 import {
-  Bug, MessageSquare, CheckCircle2, Loader2, Upload,
+  Bug, MessageSquare, Loader2, Upload,
   Info, AlertTriangle, Zap, ChevronDown, ChevronUp
 } from 'lucide-react';
 
 const ISSUE_TYPES = [
-  { value: 'bug', label: 'Bug Report', icon: Bug, color: 'bg-red-100 text-red-600', description: 'Something is broken or behaving unexpectedly' },
-  { value: 'question', label: 'Question / Help', icon: MessageSquare, color: 'bg-blue-100 text-blue-600', description: 'I need help understanding how something works' },
-  { value: 'feature', label: 'Feature Request', icon: Zap, color: 'bg-amber-100 text-amber-600', description: 'I have a suggestion or improvement idea' },
-  { value: 'urgent', label: 'Urgent Issue', icon: AlertTriangle, color: 'bg-rose-100 text-rose-600', description: 'Something is blocking critical school operations' },
+  { value: 'bug', label: 'Bug Report', icon: Bug, description: 'Something is broken or behaving unexpectedly' },
+  { value: 'question', label: 'Question / Help', icon: MessageSquare, description: 'I need help understanding how something works' },
+  { value: 'feature', label: 'Feature Request', icon: Zap, description: 'I have a suggestion or improvement idea' },
+  { value: 'urgent', label: 'Urgent Issue', icon: AlertTriangle, description: 'Something is blocking critical school operations' },
 ];
 
 const PRIORITY_MAP = {
@@ -102,18 +103,20 @@ export default function IssueReporter({ schoolId, user, school }) {
 
   if (submitted) {
     return (
-      <div className="bg-white rounded-xl border border-emerald-200 p-10 text-center">
-        <div className="w-14 h-14 scholr-sunk rounded-full flex items-center justify-center mx-auto mb-4">
-          <CheckCircle2 className="w-7 h-7" />
-        </div>
-        <h3 className="text-lg font-bold scholr-ink mb-2">Request submitted</h3>
-        <p className="text-sm scholr-muted mb-5 max-w-sm mx-auto">
-          Your support request has been logged. Our team typically responds within 1–2 business days. Urgent issues are prioritised.
-        </p>
-        <Button variant="outline" size="sm" onClick={() => { setSubmitted(false); setSubject(''); setDescription(''); setType('bug'); setScreenshotFile(null); }}>
-          Submit another request
-        </Button>
-      </div>
+      <Group title="Sent">
+        <Row
+          label="We have your request"
+          detail="We usually reply within one or two working days. Anything marked urgent jumps the queue."
+        >
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => { setSubmitted(false); setSubject(''); setDescription(''); setType('bug'); setScreenshotFile(null); }}
+          >
+            Send another
+          </Button>
+        </Row>
+      </Group>
     );
   }
 
@@ -133,9 +136,6 @@ export default function IssueReporter({ schoolId, user, school }) {
                   type === t.value ? 'scholr-accent-rule scholr-accent-sf' : 'scholr-rule bg-white hover:scholr-rule'
                 }`}
               >
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${t.color}`}>
-                  <Icon className="w-4 h-4" />
-                </div>
                 <div>
                   <p className={`text-sm font-bold ${type === t.value ? 'scholr-accent' : 'scholr-ink'}`}>{t.label}</p>
                   <p className="text-xs scholr-faint mt-0.5">{t.description}</p>
@@ -146,7 +146,7 @@ export default function IssueReporter({ schoolId, user, school }) {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border scholr-rule p-6 space-y-4">
+      <form onSubmit={handleSubmit} className="app-group space-y-4" style={{ padding: '1.1rem 1.2rem' }}>
         <div>
           <Label className="text-xs font-semibold scholr-muted">Subject *</Label>
           <Input
@@ -198,18 +198,16 @@ export default function IssueReporter({ schoolId, user, school }) {
             <div className="flex items-center gap-2">
               <Info className="w-3.5 h-3.5 scholr-faint" />
               <span className="text-xs font-semibold scholr-muted">Include diagnostic context</span>
-              <Badge className={`${includeContext ? 'scholr-sunk scholr-muted' : 'scholr-sunk scholr-muted'} border-0 text-xs`}>
-                {includeContext ? 'Included' : 'Off'}
-              </Badge>
+              <span className="scholr-label" style={{ margin: 0 }}>{includeContext ? 'included' : 'off'}</span>
             </div>
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setIncludeContext(v => !v)}
-                className={`w-10 h-5 rounded-full transition-colors relative ${includeContext ? 'bg-indigo-500' : 'scholr-sunk'}`}
-              >
-                <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-colors ${includeContext ? 'left-5' : 'left-0.5'}`} />
-              </button>
+              {/* A div pretending to be a switch: not focusable, no role, and
+                  drawn in an indigo that predates the green accent. */}
+              <Switch
+                checked={includeContext}
+                onCheckedChange={setIncludeContext}
+                aria-label="Include diagnostic context"
+              />
               <button type="button" onClick={() => setShowContext(v => !v)} className="scholr-faint">
                 {showContext ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </button>

@@ -1,15 +1,16 @@
+import { Group, Row } from '@/components/app/AppShell';
+import StatCard from '@/components/app/StatCard';
+import StatusChip from '@/components/app/StatusChip';
+import Meter from '@/components/app/Meter';
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
 import * as membershipsData from '@/data/memberships';
 import * as userInvitationsData from '@/data/userInvitations';
 import * as classesData from '@/data/classes';
 import * as academics from '@/data/academics';
 import * as parentStudentLinksData from '@/data/parentStudentLinks';
 import {
-  GraduationCap, Users, BookOpen, Layers, Mail, Link2,
-  CheckCircle2, AlertCircle, Rocket, Clock
+  GraduationCap, Users, BookOpen, Layers, Link2
 } from 'lucide-react';
 
 /**
@@ -64,9 +65,9 @@ export default function SchoolReadiness({ schoolId }) {
 
   if (isLoading || !data) {
     return (
-      <div className="bg-white rounded-2xl border scholr-rule shadow-sm p-6">
-        <div className="animate-pulse h-24 scholr-sunk rounded" />
-      </div>
+      <Group>
+        <div className="animate-pulse h-24 scholr-sunk rounded m-4" />
+      </Group>
     );
   }
 
@@ -85,80 +86,46 @@ export default function SchoolReadiness({ schoolId }) {
   const isReady = doneCount === gates.length;
 
   return (
-    <div className="app-group overflow-hidden">
-      <div className={`px-6 py-5 ${isReady ? 'bg-gradient-to-r from-emerald-600 to-teal-600' : 'bg-gradient-to-r from-indigo-600 to-indigo-500'} text-white`}>
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-3">
-            {isReady ? <Rocket className="w-5 h-5" /> : <Clock className="w-5 h-5" />}
-            <div>
-              <h2 className="text-base font-bold">
-                {isReady ? 'Your school is ready to launch' : 'School activation progress'}
-              </h2>
-              <p className="text-xs text-white/80">
-                {isReady
-                  ? 'All key setup tasks are complete. Users can log in and start working.'
-                  : `${doneCount} of ${gates.length} activation gates complete`
-                }
-              </p>
-            </div>
-          </div>
-          <Badge className="bg-white/20 text-white border-0 text-xs">{pct}%</Badge>
-        </div>
-        <Progress value={pct} className="h-1.5 bg-white/25" indicatorClassName="bg-white" />
+    <Group
+      title={isReady ? 'Ready to go' : 'Getting set up'}
+      action={
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '.5rem' }}>
+          <span className="scholr-label" style={{ margin: 0 }}>{doneCount} of {gates.length}</span>
+          <span
+            className="scholr-num"
+            style={{ fontFamily: 'var(--font-mono)', fontSize: '.82rem', color: isReady ? 'var(--good)' : 'var(--body)' }}
+          >
+            {pct}%
+          </span>
+        </span>
+      }
+    >
+      {/* This was a full-bleed indigo-to-indigo gradient with white type — the
+          loudest thing in the product, on the first page a new school opens,
+          in a hue the brand does not use. It said one number. */}
+      <div style={{ padding: '.8rem .9rem' }}>
+        <p style={{ margin: '0 0 .5rem', fontSize: '.88rem', color: 'var(--muted)' }}>
+          {isReady
+            ? 'Everything is in place. Staff and students can sign in and start working.'
+            : 'Finish the steps below and your school is live. Nothing here has to be done in order.'}
+        </p>
+        <Meter value={pct} tone={isReady ? 'good' : 'accent'} height={4} />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 p-4">
-        <StatTile icon={Mail} color="indigo" label="Pending invites" value={data.pendingInvites} sub={`${data.acceptedInvites} accepted`} />
-        <StatTile icon={Users} color="sky" label="Teachers" value={data.teachers} sub={`${data.classesWithTeachers}/${data.classes || 0} classes staffed`} />
-        <StatTile icon={GraduationCap} color="emerald" label="Students" value={data.students} sub={`${data.classesWithStudents}/${data.classes || 0} classes populated`} />
-        <StatTile icon={Link2} color="violet" label="Parent links" value={data.parentLinks} sub={`${data.parents} parent${data.parents !== 1 ? 's' : ''}`} />
+      <div className="scholr-grid app-cols-4">
+        <StatCard label="Invitations" value={data.pendingInvites} hint={`${data.acceptedInvites} accepted`} />
+        <StatCard label="Teachers" value={data.teachers} hint={`${data.classesWithTeachers} of ${data.classes || 0} classes staffed`} />
+        <StatCard label="Students" value={data.students} hint={`${data.classesWithStudents} of ${data.classes || 0} classes filled`} />
+        <StatCard label="Parent links" value={data.parentLinks} hint={`${data.parents} parent${data.parents !== 1 ? 's' : ''}`} />
       </div>
 
-      <div className="border-t scholr-rule-soft divide-y scholr-divide">
-        {gates.map((gate) => {
-          const Icon = gate.icon;
-          return (
-            <div key={gate.id} className="px-5 py-3 flex items-center gap-3">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${gate.value ? 'bg-emerald-100' : 'scholr-sunk'}`}>
-                {gate.value
-                  ? <CheckCircle2 className="w-4 h-4" />
-                  : <AlertCircle className="w-4 h-4 scholr-faint" />
-                }
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className={`text-sm font-medium ${gate.value ? 'scholr-ink' : 'scholr-muted'}`}>
-                  {gate.label}
-                </p>
-                <p className="text-xs scholr-muted mt-0.5 flex items-center gap-1.5">
-                  <Icon className="w-3 h-3" /> {gate.detail}
-                </p>
-              </div>
-              {gate.value && <Badge className="bg-emerald-50 border-0 text-[10px]">Ready</Badge>}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function StatTile({ icon: Icon, color, label, value, sub }) {
-  const colorMap = {
-    indigo: 'scholr-accent-sf scholr-accent',
-    sky: 'bg-sky-50 text-sky-600',
-    emerald: 'bg-emerald-50 text-emerald-600',
-    violet: 'scholr-accent-sf scholr-accent',
-  };
-  return (
-    <div className="scholr-sunk rounded-xl p-3 flex items-center gap-3">
-      <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${colorMap[color]}`}>
-        <Icon className="w-4 h-4" />
-      </div>
-      <div className="min-w-0">
-        <p className="text-[10px] font-semibold uppercase tracking-wide scholr-muted">{label}</p>
-        <p className="text-xl font-bold scholr-ink leading-tight">{value}</p>
-        <p className="text-[10px] scholr-muted truncate">{sub}</p>
-      </div>
-    </div>
+      {gates.map((gate) => (
+        <Row key={gate.id} label={gate.label} detail={gate.detail}>
+          {gate.value
+            ? <span style={{ fontSize: '.82rem', color: 'var(--muted)' }}>Done</span>
+            : <StatusChip tone="warn">To do</StatusChip>}
+        </Row>
+      ))}
+    </Group>
   );
 }

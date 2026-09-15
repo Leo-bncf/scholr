@@ -69,11 +69,11 @@ function DemoActionCard({
             {loading ? 'Please wait…' : title}
           </Button>
         ) : (
-          <div className="rounded-2xl border border-red-200 bg-red-50 p-4 space-y-4">
+          <div className="rounded-lg p-4 space-y-4" style={{ borderLeft: '2px solid var(--crit)', background: 'var(--crit-sf)' }}>
             <p className="text-sm font-semibold" style={{ color: 'var(--crit)' }}>This will remove demo-tagged records only. Continue?</p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button variant="outline" className="flex-1" onClick={onCancel} disabled={loading}>Cancel</Button>
-              <Button className="flex-1 bg-red-600 hover:bg-red-700" onClick={onConfirm} disabled={loading}>
+              <Button className="flex-1" style={{ background: 'var(--crit)', color: 'var(--surface)' }} onClick={onConfirm} disabled={loading}>
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                 {loading ? 'Removing…' : 'Yes, remove demo data'}
               </Button>
@@ -125,9 +125,11 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-slate-50 p-6">
+      {/* A three-stop gradient in a rounded-3xl card, the only one of its
+          shape in the product. */}
+      <div className="app-group" style={{ padding: '1.2rem 1.3rem' }}>
         <div className="flex items-start gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-100">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl scholr-sunk">
             <ShieldCheck className="h-7 w-7" />
           </div>
           <div className="space-y-2">
@@ -160,7 +162,7 @@ export default function DemoDataControls({ schoolId, onRefresh }) {
           icon={Trash2}
           title="Remove Demo Data"
           badge="Irreversible"
-          badgeClassName="bg-red-100 text-red-700 border-0"
+          badgeClassName="scholr-sunk scholr-muted border-0"
           description="Permanently removes all records tagged as demo data from this school. Only demo-tagged records are deleted and your real data stays untouched."
           items={removalItems}
           action={() => setConfirmClear(true)}
