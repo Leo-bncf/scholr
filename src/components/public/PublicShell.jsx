@@ -12,7 +12,13 @@ export default function PublicShell({ children }) {
   useLightTheme();
 
   return (
-    <div className="scholr-page min-h-screen flex flex-col">
+    // isolate: gives this element its own stacking context, so its own
+    // background counts as that context's step-1 paint rather than being
+    // lumped in with ordinary in-flow content at step-3. Without it, a
+    // negative-z-index descendant (the landing bloom) painted BEHIND this
+    // div's own background and vanished entirely — z-index alone can't fix
+    // that, the missing piece is the stacking-context boundary itself.
+    <div className="scholr-page min-h-screen flex flex-col isolate">
       <PublicNav />
       <main className="flex-1">{children}</main>
       <PublicFooter />

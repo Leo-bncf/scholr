@@ -69,7 +69,7 @@
     --mkt-ink-2:       oklch(38%   0.026 148);
     --mkt-ink-3:       oklch(56%   0.02  148);
     --mkt-rule:        oklch(87%   0.02  145);
-    --mkt-accent:      oklch(56%   0.17  145);
+    --mkt-accent:      oklch(54%   0.19  145);
     --mkt-accent-ink:  oklch(99%   0.01  145);
     --mkt-focus:       oklch(56%   0.17  145);
     --mkt-dark:        oklch(19%   0.03  150);
@@ -174,15 +174,17 @@
   }
 }
 
-/* Landing's bloom — two low-opacity blurred circles, fixed to the viewport
-   across the whole page. Blooms in once on load; the outer wrapper drifts
-   a few px over a very long, slow cycle, and the inner blob layers a
-   smaller, quicker hover-bob on top (two elements because one element's
-   `transform` can't hold two independent animations at once). The two
-   blobs run different durations/delays/directions on both layers so they
-   never move in sync. Kept deliberately restrained: <14% opacity, drift
-   amplitude under 30px, bob amplitude under 14px — nothing else on the
-   page moves on a loop. */
+/* Landing's bloom — two blurred circles, fixed to the viewport across the
+   whole page. Blooms in once on load; the outer wrapper drifts a few px
+   over a very long, slow cycle, and the inner blob layers a smaller,
+   quicker hover-bob on top (two elements because one element's `transform`
+   can't hold two independent animations at once). The two blobs run
+   different durations/delays/directions on both layers so they never move
+   in sync. Opacity is ~0.3–0.4 (raised from an earlier 11–13% pass at
+   Erik's request); drift amplitude stays under 30px and bob amplitude
+   under 14px — the motion itself is still restrained even though the
+   colour now reads much more present. Nothing else on the page moves on a
+   loop. */
 @keyframes mkt-bloom-in {
   from { opacity: 0; }
 }

@@ -70,21 +70,27 @@ export default function Landing() {
           their screen position — same spot — as every section scrolls
           beneath them, reading as suspended in the page's white background
           rather than attached to any one section. pointer-events-none so
-          they never block clicks, z-0 keeps them behind the nav's own z-50.
-          Each blob nests two animations on separate elements (transform
-          can't cleanly combine two animations on one element): the outer
-          wrapper carries the slow, wide drift; the inner blob carries a
-          smaller, faster hover-bob, out of phase between A and B so the pair
-          never move in lockstep. Opacity stays under 14%, per the restraint
-          this was calibrated to — the version this was lifted from had
-          drifted past that (0.55/0.46) on its way to looking generated,
-          which is the specific thing still being avoided here. */}
-      <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
-        <div className="mkt-bloom-drift-a absolute left-[6%] top-[10vh] h-96 w-96 sm:h-[28rem] sm:w-[28rem]">
-          <div className="mkt-bloom-a h-full w-full rounded-full bg-[var(--mkt-accent)] opacity-[0.13] blur-2xl" />
+          they never block clicks. -z-10, not z-0: a `position: fixed`
+          element at z-index 0 still paints AFTER normal static in-flow
+          content in stacking order, i.e. on top of it — that was the bug
+          where page content sat under the blobs. A negative z-index puts
+          the layer behind everything in normal flow, which is what
+          "background" actually requires; the nav still clears it easily at
+          its own z-50. Each blob nests two animations on separate elements
+          (transform can't cleanly combine two animations on one element):
+          the outer wrapper carries the slow, wide drift; the inner blob
+          carries a smaller, faster hover-bob, out of phase between A and B
+          so the pair never move in lockstep. Opacity raised to ~0.3–0.4 at
+          Erik's request — deliberately more present than the earlier
+          restrained pass (11–13%), though still short of the 0.55/0.46 the
+          codebase's history flags as having read as AI-generated; easy to
+          push further if this still isn't enough. */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
+        <div className="mkt-bloom-drift-a absolute left-[6%] top-[10vh] h-[26rem] w-[26rem] sm:h-[32rem] sm:w-[32rem]">
+          <div className="mkt-bloom-a h-full w-full rounded-full bg-[var(--mkt-accent)] opacity-[0.4] blur-xl" />
         </div>
-        <div className="mkt-bloom-drift-b absolute right-[8%] top-[52vh] h-80 w-80 sm:h-[30rem] sm:w-[30rem]">
-          <div className="mkt-bloom-b h-full w-full rounded-full bg-[var(--mkt-accent)] opacity-[0.11] blur-2xl" />
+        <div className="mkt-bloom-drift-b absolute right-[8%] top-[52vh] h-[22rem] w-[22rem] sm:h-[34rem] sm:w-[34rem]">
+          <div className="mkt-bloom-b h-full w-full rounded-full bg-[var(--mkt-accent)] opacity-[0.34] blur-xl" />
         </div>
       </div>
 
