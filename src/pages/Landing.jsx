@@ -67,51 +67,42 @@ export default function Landing() {
 
   return (
     <PublicShell>
-      {/* Hallmark · redesign pass (hero enrichment), shape upgrade: the
-          corner blobs were a CSS `border-radius` trick — four elliptical
-          corners blended together, which reads as "rounder circle" no
-          matter how extreme the percentages get. These are hand-drawn
-          6-point SVG paths instead (Tier B — a genuine irregular
-          silhouette, not a formula), each morphing between two variants
-          via the CSS `d` property (the same technique the wave-border
-          experiment proved out earlier: two path strings sharing the same
-          command structure, so the edge interpolates instead of jump-
-          cutting). Fixed to the viewport, -z-10 + `isolate` on PublicShell
-          — same reasoning as every prior iteration. Nested per blob: the
-          outer wrapper's `transform` carries the drift + rotation, the
-          inner `<path>`'s `transform` carries a hover-bob, and its `d`
-          morphs independently since it's a different property. Opacity
-          unchanged from the last pass (~0.16–0.2) — this round only
-          changes the shape, not the vibrancy. */}
+      {/* Erik: back to the original idea — not a shape at all, a glow.
+          Every version since (border-radius blob, hand-drawn SVG blob,
+          even the halo+core bloom) was still a FILLED SHAPE with blur on
+          top, and a blurred fill always keeps a perceptible boundary once
+          you look for it. This is a radial gradient instead — colour
+          fades smoothly to full transparency across four stops, so there
+          is no edge to blur in the first place. That's what actually
+          reads as "a bulb of light behind glass" rather than a shape.
+          A modest blur on top adds the frosted-glass softness, but it is
+          no longer doing the work of hiding an edge. Fixed to the
+          viewport, -z-10 + `isolate` on PublicShell — same reasoning as
+          every prior iteration. Motion is drift + rotation on the outer
+          wrapper and a small hover-bob on the inner glow; nothing morphs
+          a silhouette anymore, because there isn't one. */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
         <div className="mkt-blob-drift-a absolute -bottom-16 -left-16 h-[26rem] w-[26rem] sm:h-[32rem] sm:w-[32rem]">
-          <svg className="h-full w-full overflow-visible" viewBox="0 0 200 200">
-            {/* Bloom, not just blur: a big soft halo behind a slightly more
-                defined core, both driven by the same `mkt-blob-a` class so
-                they morph in lockstep — one blurred shape alone just looks
-                like a crisp silhouette with fuzzy edges, this is what
-                actually reads as a glow. */}
-            <path
-              className="mkt-blob-a fill-[var(--mkt-accent)] opacity-[0.11] blur-[72px]"
-              d="M58,14 C88,4 126,8 148,32 C170,55 182,90 172,122 C162,154 128,178 94,180 C60,182 26,166 14,132 C8,100 14,60 34,34 C42,24 50,18 58,14 Z"
-            />
-            <path
-              className="mkt-blob-a fill-[var(--mkt-accent)] opacity-[0.22] blur-[34px]"
-              d="M58,14 C88,4 126,8 148,32 C170,55 182,90 172,122 C162,154 128,178 94,180 C60,182 26,166 14,132 C8,100 14,60 34,34 C42,24 50,18 58,14 Z"
-            />
-          </svg>
+          <div
+            className="mkt-blob-a h-full w-full rounded-full blur-2xl"
+            style={{
+              background:
+                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 42%, transparent) 0%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 20%, transparent) 32%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 7%, transparent) 58%, transparent 76%)',
+            }}
+          />
         </div>
         <div className="mkt-blob-drift-b absolute -right-16 -top-16 h-[24rem] w-[24rem] sm:h-[30rem] sm:w-[30rem]">
-          <svg className="h-full w-full overflow-visible" viewBox="0 0 200 200">
-            <path
-              className="mkt-blob-b fill-[var(--mkt-accent)] opacity-[0.09] blur-[72px]"
-              d="M70,8 C105,4 145,20 158,52 C170,82 168,118 145,145 C122,172 85,185 52,172 C20,160 4,125 10,90 C15,58 35,28 65,14 C67,12 68,10 70,8 Z"
-            />
-            <path
-              className="mkt-blob-b fill-[var(--mkt-accent)] opacity-[0.18] blur-[34px]"
-              d="M70,8 C105,4 145,20 158,52 C170,82 168,118 145,145 C122,172 85,185 52,172 C20,160 4,125 10,90 C15,58 35,28 65,14 C67,12 68,10 70,8 Z"
-            />
-          </svg>
+          <div
+            className="mkt-blob-b h-full w-full rounded-full blur-2xl"
+            style={{
+              background:
+                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 36%, transparent) 0%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 16%, transparent) 32%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 5%, transparent) 58%, transparent 76%)',
+            }}
+          />
         </div>
       </div>
 
