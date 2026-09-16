@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PublicShell from '@/components/public/PublicShell';
 import ConsentModal from '@/components/public/ConsentModal';
+import Rise from '@/components/public/Rise';
 import WeekMap from '@/components/landing/WeekMap';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
 import ZoomableShot from '@/components/landing/ZoomableShot';
@@ -130,10 +131,13 @@ export default function Landing() {
           {/* Each screenshot is click-to-zoom (ZoomableShot) — a real
               1320x840 capture is illegible at this grid width, and the
               zoom is the only way to actually read one without leaving
-              the page. */}
+              the page. Staggered <Rise from="right"> per card: entrance
+              only, same IntersectionObserver/reveal-once mechanism as
+              every other Rise on the site — no layout, spacing or design
+              changed, just the direction and timing they arrive in. */}
           <div className="landing-roles">
-            {ROLES.map((r) => (
-              <figure key={r.key} style={{ margin: 0 }}>
+            {ROLES.map((r, i) => (
+              <Rise as="figure" from="right" delay={i * 90} key={r.key} style={{ margin: 0 }}>
                 <ZoomableShot
                   src={SHOTS[r.key]}
                   alt={`${r.who} view in Scholr`}
@@ -154,7 +158,7 @@ export default function Landing() {
                     {r.line}
                   </span>
                 </figcaption>
-              </figure>
+              </Rise>
             ))}
           </div>
 
@@ -176,7 +180,7 @@ export default function Landing() {
         style={{ padding: 'clamp(2.5rem, 6vw, 4rem) var(--space-md)', borderTop: '1px solid var(--rule)' }}
       >
         <div style={{ maxWidth: '72rem', margin: '0 auto', display: 'grid', gap: 'var(--space-lg) var(--space-2xl)', gridTemplateColumns: 'repeat(auto-fit, minmax(min(26rem, 100%), 1fr))' }}>
-          <div>
+          <Rise from="right">
             <h2
               id="what-it-is-heading"
               style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--ink)' }}
@@ -194,9 +198,9 @@ export default function Landing() {
               eventually sees and the same mark a report is built from. Nothing is re-keyed between
               a gradebook and a report, because there is only one place the number lives.
             </p>
-          </div>
+          </Rise>
 
-          <div>
+          <Rise from="right" delay={90}>
             <h2 style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--ink)' }}>
               What a second programme costs you elsewhere
             </h2>
@@ -212,9 +216,9 @@ export default function Landing() {
               stores each mark in the shape its programme expects — which is why the reports come out
               right in July rather than needing a spreadsheet to fix.
             </p>
-          </div>
+          </Rise>
 
-          <div>
+          <Rise from="right" delay={180}>
             <h2 style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--ink)' }}>
               What it does not do yet
             </h2>
@@ -230,7 +234,7 @@ export default function Landing() {
               our other product, and the automatic sync between them is not live. We would rather you
               found this here than in week three.
             </p>
-          </div>
+          </Rise>
         </div>
       </section>
 
@@ -242,7 +246,7 @@ export default function Landing() {
           borderTop: '1px solid var(--rule)',
         }}
       >
-        <div style={{ maxWidth: '72rem', margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 'var(--space-md)' }}>
+        <Rise from="right" style={{ maxWidth: '72rem', margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 'var(--space-md)' }}>
           <p style={{ margin: 0, fontSize: '1.15rem', letterSpacing: '-0.015em', color: 'var(--ink)', maxWidth: '34ch' }}>
             Bring us your own timetable and we will walk through it.
           </p>
@@ -250,7 +254,7 @@ export default function Landing() {
             <Link to="/BookDemo" className="pub-btn pub-btn-primary scholr-focus">Book a demo</Link>
             <Link to="/demo" className="pub-btn pub-btn-line scholr-focus">Open the sandbox</Link>
           </div>
-        </div>
+        </Rise>
       </section>
 
       <ConsentModal isOpen={showConsent} onClose={() => setShowConsent(false)} />

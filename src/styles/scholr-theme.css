@@ -589,9 +589,14 @@ body { background: var(--paper); color: var(--body); }
 @keyframes reveal { to { opacity: 1; transform: none; } }
 
 /* Scroll-revealed blocks. The class is added by IntersectionObserver; the
-   element is visible without it, so a failed observer can never hide content. */
+   element is visible without it, so a failed observer can never hide content.
+   data-from='up' (default, every existing use via <Section>) keeps the
+   original vertical rise. data-from='right' is new — Landing only — slides
+   in from the right instead, so the scroll down the page isn't the same
+   single vertical motion on every section. */
 .rise { transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out); }
-.rise[data-rise='pending'] { opacity: 0; transform: translateY(14px); }
+.rise[data-from='up'][data-rise='pending'] { opacity: 0; transform: translateY(14px); }
+.rise[data-from='right'][data-rise='pending'] { opacity: 0; transform: translateX(34px); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -600,7 +605,10 @@ body { background: var(--paper); color: var(--body); }
     transition-duration: 150ms !important;
   }
   .reveal { transform: none; animation-delay: 0ms; }
-  .rise[data-rise='pending'] { transform: none; }
+  .rise[data-from='up'][data-rise='pending'],
+  .rise[data-from='right'][data-rise='pending'] {
+    transform: none;
+  }
 }
 
 /* Workbench rhythm. `wide` runs the capture full measure; the aside layouts

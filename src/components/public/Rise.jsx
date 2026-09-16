@@ -8,8 +8,14 @@ import React, { useEffect, useRef, useState } from 'react';
  * started at opacity 0 stayed there because its observer never fired.
  *
  * IntersectionObserver, never a scroll listener; reveal-once, never parallax.
+ *
+ * `from` picks the pending-state offset: 'up' (default, the original
+ * vertical rise) or 'right' (slides in from the right instead — Landing
+ * uses this on a few elements for a less uniform entrance; every other
+ * page's use of Rise, via PublicShell's <Section>, is untouched since it
+ * doesn't pass `from` and keeps defaulting to 'up').
  */
-export default function Rise({ as: As = 'div', delay = 0, children, ...rest }) {
+export default function Rise({ as: As = 'div', delay = 0, from = 'up', children, ...rest }) {
   const ref = useRef(null);
   const [pending, setPending] = useState(false);
 
@@ -34,6 +40,7 @@ export default function Rise({ as: As = 'div', delay = 0, children, ...rest }) {
       ref={ref}
       className={`rise ${rest.className || ''}`}
       data-rise={pending ? 'pending' : 'in'}
+      data-from={from}
       style={{ transitionDelay: pending ? `${delay}ms` : '0ms', ...rest.style }}
       {...Object.fromEntries(Object.entries(rest).filter(([k]) => k !== 'className' && k !== 'style'))}
     >
