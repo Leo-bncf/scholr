@@ -45,13 +45,17 @@ export default function PublicNav() {
     <div style={{ position: 'sticky', top: 0, zIndex: 50 }}>
       {/* Gate 14: never animate padding itself — it's a layout property and
           every frame costs a reflow. Each state's padding is a fixed,
-          discrete value (bumped up in both states so the buttons have real
-          room — this was cramped, and the stuck state had collapsed to
-          literally zero padding, a leftover bug from an earlier pass); the
-          `transform` slide is what makes the swap between them read as
-          motion instead of a jump. backdrop-filter and box-shadow are in
-          the transition list now too, so the glass blur and the lift
-          fade in instead of snapping on with the class toggle. */}
+          discrete value; the `transform` slide is what makes the swap
+          between them read as motion instead of a jump. Everything that
+          CAN animate cheaply (background, box-shadow, backdrop-filter,
+          border-radius, transform) is on one slower, shared duration
+          (560ms, up from 420ms) so the whole stuck/unstuck swap reads as
+          one graceful move rather than several properties arriving at
+          slightly different times. border-radius is constant across both
+          states (var(--radius-surface) — soft corners, not a full pill;
+          see the .pub-nav comment on why a pill specifically is out) so
+          there's nothing jarring about it being "in" the transition list,
+          it's just there so a future per-state value wouldn't snap. */}
       <div style={{ padding: 'var(--space-2xs) var(--space-sm)' }}>
         <nav
           className={stuck ? 'pub-nav' : ''}
@@ -63,14 +67,15 @@ export default function PublicNav() {
             gap: '1.4rem',
             padding: stuck ? undefined : 'var(--space-sm) var(--space-sm) var(--space-sm) var(--space-xs)',
             transform: stuck ? 'translateY(0)' : 'translateY(2px)',
+            borderRadius: 'var(--radius-surface)',
             // Same shadow layer count as .pub-nav's, just transparent — so
             // box-shadow has something real to interpolate FROM instead of
             // jumping from `none` to two layers on the class toggle.
             boxShadow: stuck ? undefined : 'inset 0 1px 0 transparent, 0 0 0 transparent',
             transition:
-              'background var(--dur-long) var(--ease-out), box-shadow var(--dur-long) var(--ease-out), '
-              + 'backdrop-filter var(--dur-long) var(--ease-out), border-color var(--dur-long) var(--ease-out), '
-              + 'transform var(--dur-long) var(--ease-out)',
+              'background 560ms var(--ease-out), box-shadow 560ms var(--ease-out), '
+              + 'backdrop-filter 560ms var(--ease-out), border-color 560ms var(--ease-out), '
+              + 'border-radius 560ms var(--ease-out), transform 560ms var(--ease-out)',
             border: stuck ? undefined : '1px solid transparent',
           }}
         >
