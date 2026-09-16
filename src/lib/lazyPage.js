@@ -23,6 +23,12 @@ const registry = new Map();
  * `import()` caches, so calling preload twice costs nothing.
  */
 export function lazyPage(name, importer) {
+  /* Called with one argument this used to build `lazy(undefined)` — a route
+     that never resolves, which shows up as a blank page and a prerender
+     timeout rather than as an error anyone can read. */
+  if (typeof name !== 'string' || typeof importer !== 'function') {
+    throw new TypeError(`lazyPage(name, importer): got (${typeof name}, ${typeof importer}). Pass the route name first.`);
+  }
   const Component = lazy(importer);
   Component.preload = importer;
   // Self-register. The first version took only the importer and relied on

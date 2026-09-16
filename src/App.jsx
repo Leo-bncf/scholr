@@ -32,15 +32,15 @@ const StudentAttendance = lazyPage('StudentAttendance', () => import('./pages/St
 const StudentCommunication = lazyPage('StudentCommunication', () => import('./pages/StudentCommunication'));
 const StudentIBCore = lazyPage('StudentIBCore', () => import('./pages/StudentIBCore'));
 const SchoolAdminOnboarding = lazyPage('SchoolAdminOnboarding', () => import('./pages/SchoolAdminOnboarding'));
-const DemoHub = lazyPage(() => import('./pages/demo/DemoHub'));
-const DemoStudent = lazyPage(() => import('./pages/demo/DemoStudent'));
-const DemoStudentAssignment = lazyPage(() => import('./pages/demo/DemoStudentAssignment'));
-const DemoTeacher = lazyPage(() => import('./pages/demo/DemoTeacher'));
-const DemoTeacherClass = lazyPage(() => import('./pages/demo/DemoTeacherClass'));
-const DemoTeacherReview = lazyPage(() => import('./pages/demo/DemoTeacherReview'));
-const DemoParent = lazyPage(() => import('./pages/demo/DemoParent'));
-const DemoParentAssignment = lazyPage(() => import('./pages/demo/DemoParentAssignment'));
-const DemoLeader = lazyPage(() => import('./pages/demo/DemoLeader'));
+const DemoHub = lazyPage('DemoHub', () => import('./pages/demo/DemoHub'));
+const DemoStudent = lazyPage('DemoStudent', () => import('./pages/demo/DemoStudent'));
+const DemoStudentAssignment = lazyPage('DemoStudentAssignment', () => import('./pages/demo/DemoStudentAssignment'));
+const DemoTeacher = lazyPage('DemoTeacher', () => import('./pages/demo/DemoTeacher'));
+const DemoTeacherClass = lazyPage('DemoTeacherClass', () => import('./pages/demo/DemoTeacherClass'));
+const DemoTeacherReview = lazyPage('DemoTeacherReview', () => import('./pages/demo/DemoTeacherReview'));
+const DemoParent = lazyPage('DemoParent', () => import('./pages/demo/DemoParent'));
+const DemoParentAssignment = lazyPage('DemoParentAssignment', () => import('./pages/demo/DemoParentAssignment'));
+const DemoLeader = lazyPage('DemoLeader', () => import('./pages/demo/DemoLeader'));
 const SchoolAdminSupport = lazyPage('SchoolAdminSupport', () => import('./pages/SchoolAdminSupport'));
 const SchoolAdminBehavior = lazyPage('SchoolAdminBehavior', () => import('./pages/SchoolAdminBehavior'));
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -390,7 +390,7 @@ function App() {
                 Measured on production before this: 5 of 12 navigations blanked
                 despite the preload, because a 16-68 kB chunk does not arrive
                 inside the ~200 ms between hover and click over real latency. */}
-            <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <Router future={{ v7_startTransition: true }}>
               <ImpersonationBanner />
               <AuthenticatedApp />
             </Router>
