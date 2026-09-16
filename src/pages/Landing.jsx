@@ -4,6 +4,7 @@ import PublicShell from '@/components/public/PublicShell';
 import ConsentModal from '@/components/public/ConsentModal';
 import WeekMap from '@/components/landing/WeekMap';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
+import ZoomableShot from '@/components/landing/ZoomableShot';
 import SHOTS from '@/marketing/manifest.json';
 
 /**
@@ -66,31 +67,38 @@ export default function Landing() {
 
   return (
     <PublicShell>
-      {/* Hallmark · redesign pass (hero enrichment): back to the corner-
-          blob concept after the wave-border experiment, and improved on
-          the circular-blob version before that. A perfect blurred circle
-          is the generic "gradient orb" — every one of these is a plain div
-          with an irregular `border-radius` (a genuine organic blob, not a
-          circle), and that shape itself drifts slowly between two variants
-          so the outline breathes rather than holding one static silhouette.
-          Fixed to the viewport, not the document (same reasoning as the
-          two prior iterations): holds its screen position as the page
-          scrolls. -z-10 + `isolate` on PublicShell keeps it behind normal
-          content while still showing over the page's own background.
-          Nested two elements per blob for the same reason as before — the
-          outer wrapper's `transform` carries the slow drift, the inner
-          blob's `transform` carries a smaller hover-bob, and the inner
-          blob's `border-radius` morphs independently since it's a
-          different property. Opacity (~0.16–0.2) is deliberately quieter
-          than the previous blob pass (~0.34–0.4) — Erik's call, dialing
-          back toward restraint after "way more vibrant" turned out to be
-          more than the redesign wanted to keep. */}
+      {/* Hallmark · redesign pass (hero enrichment), shape upgrade: the
+          corner blobs were a CSS `border-radius` trick — four elliptical
+          corners blended together, which reads as "rounder circle" no
+          matter how extreme the percentages get. These are hand-drawn
+          6-point SVG paths instead (Tier B — a genuine irregular
+          silhouette, not a formula), each morphing between two variants
+          via the CSS `d` property (the same technique the wave-border
+          experiment proved out earlier: two path strings sharing the same
+          command structure, so the edge interpolates instead of jump-
+          cutting). Fixed to the viewport, -z-10 + `isolate` on PublicShell
+          — same reasoning as every prior iteration. Nested per blob: the
+          outer wrapper's `transform` carries the drift + rotation, the
+          inner `<path>`'s `transform` carries a hover-bob, and its `d`
+          morphs independently since it's a different property. Opacity
+          unchanged from the last pass (~0.16–0.2) — this round only
+          changes the shape, not the vibrancy. */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
         <div className="mkt-blob-drift-a absolute -bottom-16 -left-16 h-[26rem] w-[26rem] sm:h-[32rem] sm:w-[32rem]">
-          <div className="mkt-blob-a h-full w-full bg-[var(--mkt-accent)] opacity-[0.2] blur-xl" />
+          <svg className="h-full w-full" viewBox="0 0 200 200">
+            <path
+              className="mkt-blob-a fill-[var(--mkt-accent)] opacity-[0.2] blur-xl"
+              d="M58,14 C88,4 126,8 148,32 C170,55 182,90 172,122 C162,154 128,178 94,180 C60,182 26,166 14,132 C8,100 14,60 34,34 C42,24 50,18 58,14 Z"
+            />
+          </svg>
         </div>
         <div className="mkt-blob-drift-b absolute -right-16 -top-16 h-[24rem] w-[24rem] sm:h-[30rem] sm:w-[30rem]">
-          <div className="mkt-blob-b h-full w-full bg-[var(--mkt-accent)] opacity-[0.16] blur-xl" />
+          <svg className="h-full w-full" viewBox="0 0 200 200">
+            <path
+              className="mkt-blob-b fill-[var(--mkt-accent)] opacity-[0.16] blur-xl"
+              d="M70,8 C105,4 145,20 158,52 C170,82 168,118 145,145 C122,172 85,185 52,172 C20,160 4,125 10,90 C15,58 35,28 65,14 C67,12 68,10 70,8 Z"
+            />
+          </svg>
         </div>
       </div>
 
@@ -115,20 +123,18 @@ export default function Landing() {
             The same week, from four desks.
           </h2>
 
+          {/* Each screenshot is click-to-zoom (ZoomableShot) — a real
+              1320x840 capture is illegible at this grid width, and the
+              zoom is the only way to actually read one without leaving
+              the page. */}
           <div className="landing-roles">
             {ROLES.map((r) => (
               <figure key={r.key} style={{ margin: 0 }}>
-                <img
+                <ZoomableShot
                   src={SHOTS[r.key]}
                   alt={`${r.who} view in Scholr`}
                   width="1320"
                   height="840"
-                  loading="lazy"
-                  decoding="async"
-                  style={{
-                    width: '100%', height: 'auto', display: 'block',
-                    border: '1px solid var(--rule)', borderRadius: '4px',
-                  }}
                 />
                 <figcaption style={{ marginTop: '.5rem' }}>
                   <span
