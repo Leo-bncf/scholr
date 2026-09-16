@@ -119,10 +119,6 @@ export default function CurriculumMapping() {
     return { subjects: subjectRows, selectedRows: activeSubject?.rows || [], stats };
   }, [data, selectedSubjectId]);
 
-  if (isLoading) {
-    return <div className="min-h-screen scholr-sunk flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-700" /></div>;
-  }
-
   return (
     <SchoolAdminPage
       title="Curriculum"
@@ -134,15 +130,27 @@ export default function CurriculumMapping() {
         ? [['SchoolAdminAcademicSetup', 'Subjects'], ['SchoolAdminReports', 'Reports'], ['SchoolAdminClasses', 'Classes']]
         : []}
     >
-      <CoverageSummaryCards stats={computed.stats} />
-      <div className="grid grid-cols-1 xl:grid-cols-[340px_minmax(0,1fr)] gap-6 items-start">
-        <SubjectCoverageList
-          subjects={computed.subjects}
-          selectedSubjectId={selectedSubjectId || computed.subjects[0]?.id}
-          onSelectSubject={setSelectedSubjectId}
-        />
-        <TopicCoverageTable rows={computed.selectedRows} />
-      </div>
+      {/* The loading state used to be an early return: a full-height spinner
+          that replaced the sidebar and the header too, so arriving here looked
+          like the application had gone away rather than like a page fetching
+          its data. */}
+      {isLoading ? (
+        <div className="flex justify-center py-20">
+          <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--brand)' }} />
+        </div>
+      ) : (
+        <>
+          <CoverageSummaryCards stats={computed.stats} />
+          <div className="grid grid-cols-1 xl:grid-cols-[340px_minmax(0,1fr)] gap-6 items-start">
+            <SubjectCoverageList
+              subjects={computed.subjects}
+              selectedSubjectId={selectedSubjectId || computed.subjects[0]?.id}
+              onSelectSubject={setSelectedSubjectId}
+            />
+            <TopicCoverageTable rows={computed.selectedRows} />
+          </div>
+        </>
+      )}
     </SchoolAdminPage>
   );
 }
