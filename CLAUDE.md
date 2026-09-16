@@ -29,13 +29,14 @@ Everything else: decide, do it, say what you did.
 
 ## Hard rules
 
-**Work on a branch and open a pull request.** `main` is merged by Leo on
-GitHub, the same way Schedual works. Push your branch, say it's ready, and let
-the PR be the review surface — don't commit to `main` directly.
+**Work on a branch and open a pull request.** Features merge into `staging`;
+`main` is promoted from `staging` and is merged by Leo on GitHub, the same way
+Schedual works. Push your branch, say it's ready, and let the PR be the review
+surface — don't commit to `main` directly.
 
 **Deploy from a clean, up-to-date checkout.** `npm run deploy` and
-`npm run deploy:functions` publish straight to the live site, and there is one
-shared production with no staging yet.
+`npm run deploy:functions` publish straight to the live site. There is one
+shared production server: `staging` is a test branch, not a separate host.
 
 Both scripts refuse to run if your tree is dirty or behind `origin`. That guard
 exists because of a real incident: in September 2026 a deploy from an older

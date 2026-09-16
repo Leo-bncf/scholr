@@ -163,8 +163,19 @@ starting, and keep branches short.
 
 ## Branches and review
 
-`main` is protected by convention: **work on a branch, open a pull request, Leo
-merges it.** Same as Schedual.
+There are two long-lived branches:
+
+- **`staging`** — the integration branch where features are tested together.
+  Everyone runs it locally the same way they run `main` (`npm install`,
+  `cp .env.example .env.local`, `npm run dev`).
+- **`main`** — production. Nothing gets merged here that hasn't been tested on
+  `staging`.
+
+Work on a short feature branch, open a pull request **into `staging`**, and Leo
+merges it. Once the batch on `staging` is ready to ship, promote it to `main`
+with a PR from `staging` → `main`. The promotion is a clean merge — no config
+swap, no code edits, because environment differences are handled by env vars,
+not by branch.
 
 ```bash
 git checkout -b feature/what-it-does
@@ -172,18 +183,24 @@ git checkout -b feature/what-it-does
 git push -u origin feature/what-it-does
 ```
 
-Then open the PR on GitHub and say it's ready.
+Then open the PR on GitHub against `staging` and say it's ready.
 
 ## Deploying
 
-`main` is not auto-deployed. `npm run deploy` publishes the frontend;
-`npm run deploy:functions` publishes edge functions and restarts the runtime.
+`main` is not auto-deployed; it's the branch that runs production. Before a
+release, pull `staging` up to date, confirm it against `main` is exactly what
+you intend to ship, and merge `staging` → `main` via PR. Then, from a clean
+`main` checkout:
 
-There's one shared production and no staging yet, so both scripts **refuse to
-run from a dirty or out-of-date checkout**. That's not about who's allowed —
-it's because a deploy from a stale fork once wiped features off the sibling
-project. Pull, commit, push, then deploy. `ALLOW_DIRTY_DEPLOY=1` overrides it
-if you really mean to publish unpushed work.
+- `npm run deploy` publishes the frontend
+- `npm run deploy:functions` publishes edge functions and restarts the runtime
+
+There's one shared production server, so both scripts **refuse to run from a
+dirty or out-of-date checkout**. That's not about who's allowed — it's because
+a deploy from a stale fork once wiped features off the sibling project. Pull,
+commit, push, then deploy. `ALLOW_DIRTY_DEPLOY=1` overrides it if you really
+mean to publish unpushed work. If staging and main have diverged, deploy from a
+clean checkout of the branch you actually intend to ship.
 
 ## Test logins
 
