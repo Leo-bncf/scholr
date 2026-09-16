@@ -174,33 +174,66 @@
   }
 }
 
-/* Landing's wave borders — two large, blurred wave-edged shapes anchored at
-   opposite corners (see the JSX comment for why one path serves both). The
-   edge itself undulates by animating the CSS `d` property between two path
-   variants that share the same command structure (M, L, C, C, L, Z — only
-   the curve coordinates move), so it interpolates smoothly instead of
-   jump-cutting. Control points shift by roughly 25–50 units in the
-   400-unit viewBox — enough to read as genuine wave motion, not just a
-   sliding shape — over a long, slow cycle. The two shapes run different
-   durations/delays so they're never in phase with each other. Nothing
-   else on the page moves on a loop. */
-@keyframes mkt-wave-a {
-  0%, 100% { d: path("M0,400 L0,230 C90,195 150,260 220,230 C290,200 330,150 400,180 L400,400 Z"); }
-  50%      { d: path("M0,400 L0,195 C90,240 150,175 220,220 C290,265 330,190 400,150 L400,400 Z"); }
+/* Hallmark · macrostructure: 19 Map / Diagram (unchanged — redesign pass,
+   not a rebuild) · genre: modern-minimal · theme: page-local (site tokens)
+   Landing's corner blobs — two irregular shapes (CSS `border-radius`, not
+   SVG, not a circle) fixed to the viewport at opposite corners. Two
+   animated layers per blob, on separate elements since one element's
+   `transform` can't hold two independent motions: the outer wrapper
+   drifts a few px over a long, slow cycle; the inner blob layers a
+   smaller, quicker hover-bob AND morphs its own `border-radius` between
+   two irregular variants, so the silhouette itself breathes rather than
+   just the position. Quieter than the previous vibrant pass — opacity
+   ~0.16–0.2, restraint restored at Erik's request. */
+@keyframes mkt-blob-in {
+  from { opacity: 0; }
 }
-@keyframes mkt-wave-b {
-  0%, 100% { d: path("M0,400 L0,230 C90,195 150,260 220,230 C290,200 330,150 400,180 L400,400 Z"); }
-  50%      { d: path("M0,400 L0,260 C90,210 150,275 220,235 C290,195 330,155 400,205 L400,400 Z"); }
+@keyframes mkt-blob-drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(22px, -16px) scale(1.05); }
 }
-.mkt-wave-path-a {
-  animation: mkt-wave-a 22s var(--mkt-ease-in-out) infinite;
+@keyframes mkt-blob-drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-20px, 14px) scale(0.96); }
 }
-.mkt-wave-path-b {
-  animation: mkt-wave-b 26s var(--mkt-ease-in-out) 3s infinite;
+@keyframes mkt-blob-hover {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+@keyframes mkt-blob-morph-a {
+  0%, 100% { border-radius: 63% 37% 54% 46% / 43% 51% 49% 57%; }
+  50%      { border-radius: 41% 59% 68% 32% / 57% 40% 60% 43%; }
+}
+@keyframes mkt-blob-morph-b {
+  0%, 100% { border-radius: 37% 63% 46% 54% / 51% 43% 57% 49%; }
+  50%      { border-radius: 55% 45% 38% 62% / 40% 62% 38% 60%; }
+}
+.mkt-blob-drift-a {
+  animation: mkt-blob-drift-a 24s var(--mkt-ease-in-out) infinite;
+}
+.mkt-blob-drift-b {
+  animation: mkt-blob-drift-b 28s var(--mkt-ease-in-out) infinite;
+}
+.mkt-blob-a {
+  animation:
+    mkt-blob-in 1.1s var(--mkt-ease-out) forwards,
+    mkt-blob-hover 7s ease-in-out 1.1s infinite,
+    mkt-blob-morph-a 18s var(--mkt-ease-in-out) infinite;
+}
+.mkt-blob-b {
+  animation:
+    mkt-blob-in 1.3s var(--mkt-ease-out) 0.15s forwards,
+    mkt-blob-hover 8s ease-in-out 1.85s infinite reverse,
+    mkt-blob-morph-b 21s var(--mkt-ease-in-out) 2s infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .mkt-wave-path-a,
-  .mkt-wave-path-b {
+  .mkt-blob-a,
+  .mkt-blob-b {
+    animation: none;
+    border-radius: 63% 37% 54% 46% / 43% 51% 49% 57%;
+  }
+  .mkt-blob-drift-a,
+  .mkt-blob-drift-b {
     animation: none;
   }
 }

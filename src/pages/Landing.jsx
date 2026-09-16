@@ -66,41 +66,32 @@ export default function Landing() {
 
   return (
     <PublicShell>
-      {/* Two wave-edged shapes fixed to the viewport, anchored at opposite
-          corners (bottom-left / top-right) — same fixed-position, -z-10
-          reasoning as the circular blooms this replaced: they hold their
-          screen position as the page scrolls, and -z-10 (plus `isolate` on
-          PublicShell) keeps them behind normal content while still showing
-          over the page's own background. Both shapes reuse ONE hand-drawn
-          path — the top-right instance is the bottom-left path rotated
-          180deg, since that's exactly the shape a corner-anchored wave
-          needs at the opposite corner. The wave edge itself animates via
-          the CSS `d` property (mkt-wave-a/-b keyframes below), morphing
-          between two path variants with the same command structure so the
-          edge undulates rather than just sliding — a browser that can't
-          animate `d` still renders the static rest-state path correctly.
-          Out-of-phase durations/delays so the two never move in sync. */}
+      {/* Hallmark · redesign pass (hero enrichment): back to the corner-
+          blob concept after the wave-border experiment, and improved on
+          the circular-blob version before that. A perfect blurred circle
+          is the generic "gradient orb" — every one of these is a plain div
+          with an irregular `border-radius` (a genuine organic blob, not a
+          circle), and that shape itself drifts slowly between two variants
+          so the outline breathes rather than holding one static silhouette.
+          Fixed to the viewport, not the document (same reasoning as the
+          two prior iterations): holds its screen position as the page
+          scrolls. -z-10 + `isolate` on PublicShell keeps it behind normal
+          content while still showing over the page's own background.
+          Nested two elements per blob for the same reason as before — the
+          outer wrapper's `transform` carries the slow drift, the inner
+          blob's `transform` carries a smaller hover-bob, and the inner
+          blob's `border-radius` morphs independently since it's a
+          different property. Opacity (~0.16–0.2) is deliberately quieter
+          than the previous blob pass (~0.34–0.4) — Erik's call, dialing
+          back toward restraint after "way more vibrant" turned out to be
+          more than the redesign wanted to keep. */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
-        <svg
-          className="absolute bottom-0 left-0 h-[70vh] w-[85vw] sm:h-[65vh] sm:w-[60vw]"
-          viewBox="0 0 400 400"
-          preserveAspectRatio="none"
-        >
-          <path
-            className="mkt-wave-path-a fill-[var(--mkt-accent)] opacity-[0.32] blur-sm"
-            d="M0,400 L0,230 C90,195 150,260 220,230 C290,200 330,150 400,180 L400,400 Z"
-          />
-        </svg>
-        <svg
-          className="absolute right-0 top-0 h-[70vh] w-[85vw] rotate-180 sm:h-[65vh] sm:w-[60vw]"
-          viewBox="0 0 400 400"
-          preserveAspectRatio="none"
-        >
-          <path
-            className="mkt-wave-path-b fill-[var(--mkt-accent)] opacity-[0.28] blur-sm"
-            d="M0,400 L0,230 C90,195 150,260 220,230 C290,200 330,150 400,180 L400,400 Z"
-          />
-        </svg>
+        <div className="mkt-blob-drift-a absolute -bottom-16 -left-16 h-[26rem] w-[26rem] sm:h-[32rem] sm:w-[32rem]">
+          <div className="mkt-blob-a h-full w-full bg-[var(--mkt-accent)] opacity-[0.2] blur-xl" />
+        </div>
+        <div className="mkt-blob-drift-b absolute -right-16 -top-16 h-[24rem] w-[24rem] sm:h-[30rem] sm:w-[30rem]">
+          <div className="mkt-blob-b h-full w-full bg-[var(--mkt-accent)] opacity-[0.16] blur-xl" />
+        </div>
       </div>
 
       <WeekMap />

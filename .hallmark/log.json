@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-09-17",
+    "macrostructure": "19 Map / Diagram (unchanged — scoped redesign pass, not a rebuild)",
+    "theme": "custom",
+    "theme_axes": "light / grotesk-sans / chromatic-green",
+    "vibe": "same system, quieter enrichment: an organic CSS border-radius blob (not a circle, not SVG) replacing a wave-border experiment that itself replaced the original circular bloom",
+    "nav": "masthead (unchanged)",
+    "footer": "Ft1 mast-headed (unchanged)",
+    "enrichment": "corner-anchored organic blob, Tier A pure CSS art — two nested elements per blob (outer drift, inner hover-bob + border-radius morph), opacity ~0.16-0.2 (down from an interim ~0.34-0.4 pass)",
+    "brief": "Scholr · Landing, hallmark redesign at Erik's request: keep layout/IA/copy, return the hero enrichment to a blob concept (less vibrant than the immediately-prior version), and fix two AI-tell inconsistencies found on read-through — pricing preset buttons were a full pill contradicting .pub-btn's own documented anti-pill decision, and the page repeated its uppercase-mono-eyebrow device 4 times (hero + 3 in pricing) where hallmark's own rule caps that at 1-2; dropped the purely-decorative \"Pricing\" eyebrow, kept the two eyebrows that functionally label a table and a list."
+  },
+  {
     "date": "2026-09-14",
     "macrostructure": "Workbench",
     "theme": "custom",

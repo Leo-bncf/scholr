@@ -978,9 +978,13 @@ a.app-row:hover, button.app-row:hover { background: color-mix(in oklab, var(--in
 .pricing-calc__range { width: 100%; margin-top: .7rem; accent-color: var(--brand); }
 
 .pricing-calc__preset {
+  /* var(--radius-control), not --radius-pill: .pub-btn rejected the fully-
+     rounded shape deliberately (see its own comment above) — these presets
+     are buttons too, and a pill here contradicted that choice everywhere
+     else on the page. */
   font: inherit; font-size: .78rem; padding: .22rem .6rem; cursor: pointer;
   color: var(--mkt-ink-2); background: var(--mkt-paper);
-  border: 1px solid var(--mkt-rule); border-radius: var(--radius-pill);
+  border: 1px solid var(--mkt-rule); border-radius: var(--radius-control);
 }
 .pricing-calc__preset[aria-pressed='true'] { border-color: var(--brand); color: var(--brand); }
 
