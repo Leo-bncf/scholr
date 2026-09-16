@@ -86,10 +86,10 @@ export default function Landing() {
           codebase's history flags as having read as AI-generated; easy to
           push further if this still isn't enough. */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
-        <div className="mkt-bloom-drift-a absolute left-[6%] top-[10vh] h-[26rem] w-[26rem] sm:h-[32rem] sm:w-[32rem]">
+        <div className="mkt-bloom-drift-a absolute left-[4%] top-[6vh] h-[34rem] w-[34rem] sm:h-[42rem] sm:w-[42rem]">
           <div className="mkt-bloom-a h-full w-full rounded-full bg-[var(--mkt-accent)] opacity-[0.4] blur-xl" />
         </div>
-        <div className="mkt-bloom-drift-b absolute right-[8%] top-[52vh] h-[22rem] w-[22rem] sm:h-[34rem] sm:w-[34rem]">
+        <div className="mkt-bloom-drift-b absolute right-[4%] top-[48vh] h-[30rem] w-[30rem] sm:h-[44rem] sm:w-[44rem]">
           <div className="mkt-bloom-b h-full w-full rounded-full bg-[var(--mkt-accent)] opacity-[0.34] blur-xl" />
         </div>
       </div>
