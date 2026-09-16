@@ -43,9 +43,15 @@ export default function PublicNav() {
 
   return (
     <div style={{ position: 'sticky', top: 0, zIndex: 50 }}>
-      {/* Gate 14: never animate padding — it's a layout property and every
-          frame costs a reflow. The bar keeps a fixed box and the inner pill
-          slides up into it on `transform`. */}
+      {/* Gate 14: never animate padding itself — it's a layout property and
+          every frame costs a reflow. Each state's padding is a fixed,
+          discrete value (bumped up in both states so the buttons have real
+          room — this was cramped, and the stuck state had collapsed to
+          literally zero padding, a leftover bug from an earlier pass); the
+          `transform` slide is what makes the swap between them read as
+          motion instead of a jump. backdrop-filter and box-shadow are in
+          the transition list now too, so the glass blur and the lift
+          fade in instead of snapping on with the class toggle. */}
       <div style={{ padding: 'var(--space-2xs) var(--space-sm)' }}>
         <nav
           className={stuck ? 'pub-nav' : ''}
@@ -55,13 +61,17 @@ export default function PublicNav() {
             display: 'flex',
             alignItems: 'center',
             gap: '1.4rem',
-            padding: stuck ? undefined : 'var(--space-2xs) var(--space-2xs) var(--space-2xs) var(--space-3xs)',
+            padding: stuck ? undefined : 'var(--space-sm) var(--space-sm) var(--space-sm) var(--space-xs)',
             transform: stuck ? 'translateY(0)' : 'translateY(2px)',
+            // Same shadow layer count as .pub-nav's, just transparent — so
+            // box-shadow has something real to interpolate FROM instead of
+            // jumping from `none` to two layers on the class toggle.
+            boxShadow: stuck ? undefined : 'inset 0 1px 0 transparent, 0 0 0 transparent',
             transition:
               'background var(--dur-long) var(--ease-out), box-shadow var(--dur-long) var(--ease-out), '
-              + 'border-color var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out)',
+              + 'backdrop-filter var(--dur-long) var(--ease-out), border-color var(--dur-long) var(--ease-out), '
+              + 'transform var(--dur-long) var(--ease-out)',
             border: stuck ? undefined : '1px solid transparent',
-            borderRadius: 'var(--radius-pill)',
           }}
         >
           <Link to="/" className="scholr-focus" style={{ display: 'flex', alignItems: 'center', gap: '.55rem', textDecoration: 'none', flex: 'none' }}>

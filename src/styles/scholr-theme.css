@@ -481,9 +481,17 @@ body { background: var(--paper); color: var(--body); }
  * scrolling underneath does not collide with the links. */
 .pub-nav {
   display: flex; align-items: center; gap: 1.4rem;
-  background: color-mix(in oklab, var(--paper) 88%, transparent);
-  backdrop-filter: saturate(180%) blur(12px);
+  /* More transparent + a glossier glass read, at Erik's request: paper
+     opacity down from 88% to 58%, blur and saturation both up, and a
+     hairline inset highlight along the top edge (the way light catches
+     real glass) rather than another coloured glow. */
+  padding: var(--space-xs) var(--space-md);
+  background: color-mix(in oklab, var(--paper) 58%, transparent);
+  backdrop-filter: saturate(200%) blur(18px);
   border-bottom: 1px solid var(--rule);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 55%, transparent),
+    var(--lift-sm);
 }
 
 .pub-btn {

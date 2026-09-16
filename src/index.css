@@ -183,48 +183,58 @@
    drifts a few px over a long, slow cycle; the inner blob layers a
    smaller, quicker hover-bob AND morphs its own `border-radius` between
    two irregular variants, so the silhouette itself breathes rather than
-   just the position. Quieter than the previous vibrant pass — opacity
-   ~0.16–0.2, restraint restored at Erik's request. */
+   just the position. Opacity stays quiet (~0.16–0.2) but the motion was
+   turned up at Erik's request: wider drift, a touch of rotation, and a
+   third waypoint on the morph so the path isn't a simple back-and-forth —
+   opacity and motion are separate knobs, and this pass only turns one. */
 @keyframes mkt-blob-in {
   from { opacity: 0; }
 }
 @keyframes mkt-blob-drift-a {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(22px, -16px) scale(1.05); }
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
+  33%  { transform: translate(38px, -30px) rotate(5deg) scale(1.1); }
+  66%  { transform: translate(14px, 20px) rotate(-3deg) scale(0.95); }
+  100% { transform: translate(0, 0) rotate(0deg) scale(1); }
 }
 @keyframes mkt-blob-drift-b {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(-20px, 14px) scale(0.96); }
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
+  33%  { transform: translate(-34px, 26px) rotate(-6deg) scale(0.9); }
+  66%  { transform: translate(-12px, -18px) rotate(4deg) scale(1.06); }
+  100% { transform: translate(0, 0) rotate(0deg) scale(1); }
 }
 @keyframes mkt-blob-hover {
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-10px); }
+  50%      { transform: translateY(-16px); }
 }
 @keyframes mkt-blob-morph-a {
-  0%, 100% { border-radius: 63% 37% 54% 46% / 43% 51% 49% 57%; }
-  50%      { border-radius: 41% 59% 68% 32% / 57% 40% 60% 43%; }
+  0%   { border-radius: 63% 37% 54% 46% / 43% 51% 49% 57%; }
+  33%  { border-radius: 41% 59% 68% 32% / 57% 40% 60% 43%; }
+  66%  { border-radius: 34% 66% 40% 60% / 62% 35% 65% 38%; }
+  100% { border-radius: 63% 37% 54% 46% / 43% 51% 49% 57%; }
 }
 @keyframes mkt-blob-morph-b {
-  0%, 100% { border-radius: 37% 63% 46% 54% / 51% 43% 57% 49%; }
-  50%      { border-radius: 55% 45% 38% 62% / 40% 62% 38% 60%; }
+  0%   { border-radius: 37% 63% 46% 54% / 51% 43% 57% 49%; }
+  33%  { border-radius: 55% 45% 38% 62% / 40% 62% 38% 60%; }
+  66%  { border-radius: 62% 38% 60% 40% / 35% 58% 42% 65%; }
+  100% { border-radius: 37% 63% 46% 54% / 51% 43% 57% 49%; }
 }
 .mkt-blob-drift-a {
-  animation: mkt-blob-drift-a 24s var(--mkt-ease-in-out) infinite;
+  animation: mkt-blob-drift-a 15s var(--mkt-ease-in-out) infinite;
 }
 .mkt-blob-drift-b {
-  animation: mkt-blob-drift-b 28s var(--mkt-ease-in-out) infinite;
+  animation: mkt-blob-drift-b 18s var(--mkt-ease-in-out) infinite;
 }
 .mkt-blob-a {
   animation:
     mkt-blob-in 1.1s var(--mkt-ease-out) forwards,
-    mkt-blob-hover 7s ease-in-out 1.1s infinite,
-    mkt-blob-morph-a 18s var(--mkt-ease-in-out) infinite;
+    mkt-blob-hover 5s ease-in-out 1.1s infinite,
+    mkt-blob-morph-a 12s var(--mkt-ease-in-out) infinite;
 }
 .mkt-blob-b {
   animation:
     mkt-blob-in 1.3s var(--mkt-ease-out) 0.15s forwards,
-    mkt-blob-hover 8s ease-in-out 1.85s infinite reverse,
-    mkt-blob-morph-b 21s var(--mkt-ease-in-out) 2s infinite;
+    mkt-blob-hover 5.6s ease-in-out 1.85s infinite reverse,
+    mkt-blob-morph-b 14s var(--mkt-ease-in-out) 2s infinite;
 }
 @media (prefers-reduced-motion: reduce) {
   .mkt-blob-a,
