@@ -87,7 +87,7 @@ export default function Landing() {
         <div className="mkt-blob-drift-a absolute -bottom-16 -left-16 h-[26rem] w-[26rem] sm:h-[32rem] sm:w-[32rem]">
           <svg className="h-full w-full" viewBox="0 0 200 200">
             <path
-              className="mkt-blob-a fill-[var(--mkt-accent)] opacity-[0.2] blur-xl"
+              className="mkt-blob-a fill-[var(--mkt-accent)] opacity-[0.2] blur-2xl"
               d="M58,14 C88,4 126,8 148,32 C170,55 182,90 172,122 C162,154 128,178 94,180 C60,182 26,166 14,132 C8,100 14,60 34,34 C42,24 50,18 58,14 Z"
             />
           </svg>
@@ -95,7 +95,7 @@ export default function Landing() {
         <div className="mkt-blob-drift-b absolute -right-16 -top-16 h-[24rem] w-[24rem] sm:h-[30rem] sm:w-[30rem]">
           <svg className="h-full w-full" viewBox="0 0 200 200">
             <path
-              className="mkt-blob-b fill-[var(--mkt-accent)] opacity-[0.16] blur-xl"
+              className="mkt-blob-b fill-[var(--mkt-accent)] opacity-[0.16] blur-2xl"
               d="M70,8 C105,4 145,20 158,52 C170,82 168,118 145,145 C122,172 85,185 52,172 C20,160 4,125 10,90 C15,58 35,28 65,14 C67,12 68,10 70,8 Z"
             />
           </svg>
