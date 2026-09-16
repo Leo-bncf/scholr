@@ -66,24 +66,26 @@ export default function Landing() {
 
   return (
     <PublicShell>
-      {/* Two blooms framing the nav — fixed to the viewport, not the
-          document, so they stay in place at the top of the screen as the
-          page scrolls beneath them. pointer-events-none so they never block
-          clicks, and z-0 keeps them behind the nav's own z-50. Opacity is
-          held under 14%, per the restraint the mkt-bloom-in/-drift keyframes
-          in index.css already document — the version this was lifted from
-          had drifted past that (0.55/0.46) on its way to looking generated,
-          which is the specific thing being avoided here. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-x-0 top-0 z-0 h-[28rem]"
-        style={{
-          WebkitMaskImage: 'linear-gradient(to bottom, black, black 45%, transparent 85%)',
-          maskImage: 'linear-gradient(to bottom, black, black 45%, transparent 85%)',
-        }}
-      >
-        <div className="mkt-bloom-a absolute -top-24 left-[8%] h-96 w-96 rounded-full bg-[var(--mkt-accent)] opacity-[0.13] blur-2xl sm:h-[28rem] sm:w-[28rem]" />
-        <div className="mkt-bloom-b absolute -top-16 right-[8%] h-80 w-80 rounded-full bg-[var(--mkt-accent)] opacity-[0.11] blur-2xl sm:h-[30rem] sm:w-[30rem]" />
+      {/* Two blooms fixed to the viewport, not the document, so they hold
+          their screen position — same spot — as every section scrolls
+          beneath them, reading as suspended in the page's white background
+          rather than attached to any one section. pointer-events-none so
+          they never block clicks, z-0 keeps them behind the nav's own z-50.
+          Each blob nests two animations on separate elements (transform
+          can't cleanly combine two animations on one element): the outer
+          wrapper carries the slow, wide drift; the inner blob carries a
+          smaller, faster hover-bob, out of phase between A and B so the pair
+          never move in lockstep. Opacity stays under 14%, per the restraint
+          this was calibrated to — the version this was lifted from had
+          drifted past that (0.55/0.46) on its way to looking generated,
+          which is the specific thing still being avoided here. */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
+        <div className="mkt-bloom-drift-a absolute left-[6%] top-[10vh] h-96 w-96 sm:h-[28rem] sm:w-[28rem]">
+          <div className="mkt-bloom-a h-full w-full rounded-full bg-[var(--mkt-accent)] opacity-[0.13] blur-2xl" />
+        </div>
+        <div className="mkt-bloom-drift-b absolute right-[8%] top-[52vh] h-80 w-80 sm:h-[30rem] sm:w-[30rem]">
+          <div className="mkt-bloom-b h-full w-full rounded-full bg-[var(--mkt-accent)] opacity-[0.11] blur-2xl" />
+        </div>
       </div>
 
       <WeekMap />

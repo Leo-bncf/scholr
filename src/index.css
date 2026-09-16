@@ -174,10 +174,15 @@
   }
 }
 
-/* Landing hero's bloom — two low-opacity blurred circles, confined to the
-   hero only. Blooms in once on load, then drifts by a few px over a very
-   long, slow cycle. Kept deliberately restrained: <14% opacity, motion
-   amplitude under 20px, nothing else on the page moves on a loop. */
+/* Landing's bloom — two low-opacity blurred circles, fixed to the viewport
+   across the whole page. Blooms in once on load; the outer wrapper drifts
+   a few px over a very long, slow cycle, and the inner blob layers a
+   smaller, quicker hover-bob on top (two elements because one element's
+   `transform` can't hold two independent animations at once). The two
+   blobs run different durations/delays/directions on both layers so they
+   never move in sync. Kept deliberately restrained: <14% opacity, drift
+   amplitude under 30px, bob amplitude under 14px — nothing else on the
+   page moves on a loop. */
 @keyframes mkt-bloom-in {
   from { opacity: 0; }
 }
@@ -189,22 +194,34 @@
   0%, 100% { transform: translate(0, 0) scale(1); }
   50%      { transform: translate(-28px, 18px) scale(0.94); }
 }
+@keyframes mkt-bloom-hover {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+.mkt-bloom-drift-a {
+  animation: mkt-bloom-drift-a 24s var(--mkt-ease-in-out) infinite;
+}
+.mkt-bloom-drift-b {
+  animation: mkt-bloom-drift-b 28s var(--mkt-ease-in-out) infinite;
+}
 .mkt-bloom-a {
   animation:
     mkt-bloom-in 1.1s var(--mkt-ease-out) forwards,
-    mkt-bloom-drift-a 24s ease-in-out 1.1s infinite;
+    mkt-bloom-hover 6.5s ease-in-out 1.1s infinite;
 }
 .mkt-bloom-b {
   animation:
     mkt-bloom-in 1.3s var(--mkt-ease-out) 0.15s forwards,
-    mkt-bloom-drift-b 28s ease-in-out 1.45s infinite;
+    mkt-bloom-hover 7.5s ease-in-out 1.85s infinite reverse;
 }
 @media (prefers-reduced-motion: reduce) {
   /* Cancel the animation only — opacity stays whatever the element's own
      opacity-[…] utility sets. Forcing opacity:1 here previously overrode
      that utility and turned the subtle bloom into a solid green blob. */
   .mkt-bloom-a,
-  .mkt-bloom-b {
+  .mkt-bloom-b,
+  .mkt-bloom-drift-a,
+  .mkt-bloom-drift-b {
     animation: none;
   }
 }
