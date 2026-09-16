@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import { useUser } from '@/components/auth/UserContext';
-import LoadingStateBase from '@/components/common/LoadingStateBase';
 import AcademicYearsTab from '@/components/academic-setup/AcademicYearsTab';
 import TermsTab from '@/components/academic-setup/TermsTab';
 import CohortsTab from '@/components/academic-setup/CohortsTab';
@@ -17,8 +16,6 @@ const TABS = [
 export default function SchoolAdminAcademicSetup() {
   const { user, school, schoolId, loading } = useUser();
   const [activeTab, setActiveTab] = useState('years');
-
-  if (loading || !user) return <LoadingStateBase />;
 
   return (
     <SchoolAdminPage

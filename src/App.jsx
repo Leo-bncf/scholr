@@ -11,27 +11,27 @@ import { Suspense } from 'react';
  * SuperAdminAnalytics imports recharts, so a static import put the whole
  * 421 kB charting library in the entry graph. Every visitor to the
  * marketing site downloaded it. */
-const SchoolAdminRules = lazyPage(() => import('./pages/SchoolAdminRules'));
-const SuperAdminAnalytics = lazyPage(() => import('./pages/SuperAdminAnalytics'));
-const SuperAdminSupport = lazyPage(() => import('./pages/SuperAdminSupport'));
-const SuperAdminTimetables = lazyPage(() => import('./pages/SuperAdminTimetables'));
-const PrivacyPolicy = lazyPage(() => import('./pages/PrivacyPolicy'));
-const TermsOfService = lazyPage(() => import('./pages/TermsOfService'));
-const SecurityAndCompliance = lazyPage(() => import('./pages/SecurityAndCompliance'));
-const SuperAdminSchoolDetail = lazyPage(() => import('./pages/SuperAdminSchoolDetail'));
-const SuperAdminSettings = lazyPage(() => import('./pages/SuperAdminSettings'));
-const SchoolAdminAcademicSetup = lazyPage(() => import('./pages/SchoolAdminAcademicSetup'));
-const PersonalSettings = lazyPage(() => import('./pages/PersonalSettings'));
-const TeacherWorkspace = lazyPage(() => import('./pages/TeacherWorkspace'));
-const ParentInsightsDashboard = lazyPage(() => import('./pages/ParentInsightsDashboard'));
-const UnifiedCalendar = lazyPage(() => import('./pages/UnifiedCalendar'));
-const CurriculumMapping = lazyPage(() => import('./pages/CurriculumMapping'));
-const StudentAcademicDashboard = lazyPage(() => import('./pages/StudentAcademicDashboard'));
-const StudentTimetable = lazyPage(() => import('./pages/StudentTimetable'));
-const StudentAttendance = lazyPage(() => import('./pages/StudentAttendance'));
-const StudentCommunication = lazyPage(() => import('./pages/StudentCommunication'));
-const StudentIBCore = lazyPage(() => import('./pages/StudentIBCore'));
-const SchoolAdminOnboarding = lazyPage(() => import('./pages/SchoolAdminOnboarding'));
+const SchoolAdminRules = lazyPage('SchoolAdminRules', () => import('./pages/SchoolAdminRules'));
+const SuperAdminAnalytics = lazyPage('SuperAdminAnalytics', () => import('./pages/SuperAdminAnalytics'));
+const SuperAdminSupport = lazyPage('SuperAdminSupport', () => import('./pages/SuperAdminSupport'));
+const SuperAdminTimetables = lazyPage('SuperAdminTimetables', () => import('./pages/SuperAdminTimetables'));
+const PrivacyPolicy = lazyPage('PrivacyPolicy', () => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazyPage('TermsOfService', () => import('./pages/TermsOfService'));
+const SecurityAndCompliance = lazyPage('SecurityAndCompliance', () => import('./pages/SecurityAndCompliance'));
+const SuperAdminSchoolDetail = lazyPage('SuperAdminSchoolDetail', () => import('./pages/SuperAdminSchoolDetail'));
+const SuperAdminSettings = lazyPage('SuperAdminSettings', () => import('./pages/SuperAdminSettings'));
+const SchoolAdminAcademicSetup = lazyPage('SchoolAdminAcademicSetup', () => import('./pages/SchoolAdminAcademicSetup'));
+const PersonalSettings = lazyPage('PersonalSettings', () => import('./pages/PersonalSettings'));
+const TeacherWorkspace = lazyPage('TeacherWorkspace', () => import('./pages/TeacherWorkspace'));
+const ParentInsightsDashboard = lazyPage('ParentInsightsDashboard', () => import('./pages/ParentInsightsDashboard'));
+const UnifiedCalendar = lazyPage('UnifiedCalendar', () => import('./pages/UnifiedCalendar'));
+const CurriculumMapping = lazyPage('CurriculumMapping', () => import('./pages/CurriculumMapping'));
+const StudentAcademicDashboard = lazyPage('StudentAcademicDashboard', () => import('./pages/StudentAcademicDashboard'));
+const StudentTimetable = lazyPage('StudentTimetable', () => import('./pages/StudentTimetable'));
+const StudentAttendance = lazyPage('StudentAttendance', () => import('./pages/StudentAttendance'));
+const StudentCommunication = lazyPage('StudentCommunication', () => import('./pages/StudentCommunication'));
+const StudentIBCore = lazyPage('StudentIBCore', () => import('./pages/StudentIBCore'));
+const SchoolAdminOnboarding = lazyPage('SchoolAdminOnboarding', () => import('./pages/SchoolAdminOnboarding'));
 const DemoHub = lazyPage(() => import('./pages/demo/DemoHub'));
 const DemoStudent = lazyPage(() => import('./pages/demo/DemoStudent'));
 const DemoStudentAssignment = lazyPage(() => import('./pages/demo/DemoStudentAssignment'));
@@ -41,8 +41,8 @@ const DemoTeacherReview = lazyPage(() => import('./pages/demo/DemoTeacherReview'
 const DemoParent = lazyPage(() => import('./pages/demo/DemoParent'));
 const DemoParentAssignment = lazyPage(() => import('./pages/demo/DemoParentAssignment'));
 const DemoLeader = lazyPage(() => import('./pages/demo/DemoLeader'));
-const SchoolAdminSupport = lazyPage(() => import('./pages/SchoolAdminSupport'));
-const SchoolAdminBehavior = lazyPage(() => import('./pages/SchoolAdminBehavior'));
+const SchoolAdminSupport = lazyPage('SchoolAdminSupport', () => import('./pages/SchoolAdminSupport'));
+const SchoolAdminBehavior = lazyPage('SchoolAdminBehavior', () => import('./pages/SchoolAdminBehavior'));
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -378,7 +378,19 @@ function App() {
 
               Mounted once here, the session is loaded once and stays. */}
           <UserProvider>
-            <Router>
+            {/* v7_startTransition wraps router state updates in
+                React.startTransition. When the next route's chunk has not
+                arrived yet, React keeps the page you are on rendered instead
+                of falling back to <Suspense> — so a slow network makes a
+                navigation feel late, rather than blanking the whole app.
+
+                Preloading on hover (see lazyPage) handles the fast case and
+                removes the wait entirely on a warm connection; this handles
+                the case where the fetch is still in flight when you click.
+                Measured on production before this: 5 of 12 navigations blanked
+                despite the preload, because a 16-68 kB chunk does not arrive
+                inside the ~200 ms between hover and click over real latency. */}
+            <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
               <ImpersonationBanner />
               <AuthenticatedApp />
             </Router>
