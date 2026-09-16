@@ -467,17 +467,18 @@ body { background: var(--paper); color: var(--body); }
 }
 .pub-ruled > * { position: relative; }
 
-/* The masthead, once the page has scrolled.
+/* The nav bar, once the page has scrolled.
  *
- * This was a floating pill: fully-rounded, blurred glass, its own shadow,
- * detached from the page and sliding up on scroll. It is Hallmark nav
- * archetype N5, and it has become the single most recognisable piece of
- * 2020s SaaS chrome — a page wearing one announces its genre before a word
- * is read. Softened corners came back at Erik's later request (see the
- * inline style's border-radius) — but a moderate var(--radius-surface),
- * not the full var(--radius-pill) capsule this comment is specifically
- * about. The rest of the "not a floating pill" reasoning still applies:
- * full width, no shadow-as-detachment, one hairline under it.
+ * This went through three shapes: a floating pill (Hallmark nav archetype
+ * N5 — the single most recognisable piece of 2020s SaaS chrome), then a
+ * deliberate full-width masthead specifically to avoid that, then a
+ * moderate var(--radius-surface) softening at Erik's request, and now back
+ * to a full var(--radius-pill) capsule at his further, explicit request —
+ * "more circular." The .pub-btn CTA inside is rounded to match it (see
+ * the inline style on that Link in PublicNav.jsx) rather than this file,
+ * since that's scoped to the nav's one instance, not every button on the
+ * site. Horizontal padding bumped up alongside the radius change — a
+ * pill's rounded ends want more side breathing room than a rectangle did.
  *
  * The paper stays behind it, lightly veiled, so text scrolling underneath
  * does not collide with the links. */
@@ -487,8 +488,8 @@ body { background: var(--paper); color: var(--body); }
      opacity 88% -> 58% -> 42%, blur and saturation both up, and a
      hairline inset highlight along the top edge (the way light catches
      real glass) rather than another coloured glow. */
-  padding: var(--space-xs) var(--space-md);
-  border-radius: var(--radius-surface);
+  padding: var(--space-xs) var(--space-lg);
+  border-radius: var(--radius-pill);
   background: color-mix(in oklab, var(--paper) 42%, transparent);
   /* Blur pushed up alongside the opacity drop, not instead of it — more
      transparent needs more blur to keep link text legible over whatever

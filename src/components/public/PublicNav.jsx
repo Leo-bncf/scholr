@@ -52,10 +52,10 @@ export default function PublicNav() {
           (560ms, up from 420ms) so the whole stuck/unstuck swap reads as
           one graceful move rather than several properties arriving at
           slightly different times. border-radius is constant across both
-          states (var(--radius-surface) — soft corners, not a full pill;
-          see the .pub-nav comment on why a pill specifically is out) so
-          there's nothing jarring about it being "in" the transition list,
-          it's just there so a future per-state value wouldn't snap. */}
+          states (var(--radius-pill), full capsule — see the .pub-nav
+          comment) so there's nothing jarring about it being "in" the
+          transition list, it's just there so a future per-state value
+          wouldn't snap. */}
       <div style={{ padding: 'var(--space-2xs) var(--space-sm)' }}>
         <nav
           className={stuck ? 'pub-nav' : ''}
@@ -67,7 +67,7 @@ export default function PublicNav() {
             gap: '1.4rem',
             padding: stuck ? undefined : 'var(--space-sm) var(--space-sm) var(--space-sm) var(--space-xs)',
             transform: stuck ? 'translateY(0)' : 'translateY(2px)',
-            borderRadius: 'var(--radius-surface)',
+            borderRadius: 'var(--radius-pill)',
             // Same shadow layer count as .pub-nav's, just transparent — so
             // box-shadow has something real to interpolate FROM instead of
             // jumping from `none` to two layers on the class toggle.
@@ -111,7 +111,19 @@ export default function PublicNav() {
             <button type="button" onClick={signIn} className="scholr-focus" style={{ background: 'none', border: 'none', font: 'inherit', fontSize: '.89rem', color: 'var(--body)', cursor: 'pointer' }}>
               Sign in
             </button>
-            <Link to="/BookDemo" className="pub-btn pub-btn-primary scholr-focus">Book a demo</Link>
+            {/* Rounded to match the now-pill nav bar around it — scoped to
+                this one instance via inline style, not a change to
+                .pub-btn-primary itself: every other CTA on the site (hero,
+                pricing, the closing CTA band) keeps the site-wide
+                rectangle-with-small-radius button language. Same routing,
+                same onClick-free <Link to="/BookDemo">, just the corners. */}
+            <Link
+              to="/BookDemo"
+              className="pub-btn pub-btn-primary scholr-focus"
+              style={{ borderRadius: 'var(--radius-pill)' }}
+            >
+              Book a demo
+            </Link>
           </div>
 
           <button
