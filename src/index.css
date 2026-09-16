@@ -174,56 +174,33 @@
   }
 }
 
-/* Landing's bloom — two blurred circles, fixed to the viewport across the
-   whole page. Blooms in once on load; the outer wrapper drifts a few px
-   over a very long, slow cycle, and the inner blob layers a smaller,
-   quicker hover-bob on top (two elements because one element's `transform`
-   can't hold two independent animations at once). The two blobs run
-   different durations/delays/directions on both layers so they never move
-   in sync. Opacity is ~0.3–0.4 (raised from an earlier 11–13% pass at
-   Erik's request); drift amplitude stays under 30px and bob amplitude
-   under 14px — the motion itself is still restrained even though the
-   colour now reads much more present. Nothing else on the page moves on a
-   loop. */
-@keyframes mkt-bloom-in {
-  from { opacity: 0; }
+/* Landing's wave borders — two large, blurred wave-edged shapes anchored at
+   opposite corners (see the JSX comment for why one path serves both). The
+   edge itself undulates by animating the CSS `d` property between two path
+   variants that share the same command structure (M, L, C, C, L, Z — only
+   the curve coordinates move), so it interpolates smoothly instead of
+   jump-cutting. Control points shift by roughly 25–50 units in the
+   400-unit viewBox — enough to read as genuine wave motion, not just a
+   sliding shape — over a long, slow cycle. The two shapes run different
+   durations/delays so they're never in phase with each other. Nothing
+   else on the page moves on a loop. */
+@keyframes mkt-wave-a {
+  0%, 100% { d: path("M0,400 L0,230 C90,195 150,260 220,230 C290,200 330,150 400,180 L400,400 Z"); }
+  50%      { d: path("M0,400 L0,195 C90,240 150,175 220,220 C290,265 330,190 400,150 L400,400 Z"); }
 }
-@keyframes mkt-bloom-drift-a {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(26px, -20px) scale(1.08); }
+@keyframes mkt-wave-b {
+  0%, 100% { d: path("M0,400 L0,230 C90,195 150,260 220,230 C290,200 330,150 400,180 L400,400 Z"); }
+  50%      { d: path("M0,400 L0,260 C90,210 150,275 220,235 C290,195 330,155 400,205 L400,400 Z"); }
 }
-@keyframes mkt-bloom-drift-b {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(-28px, 18px) scale(0.94); }
+.mkt-wave-path-a {
+  animation: mkt-wave-a 22s var(--mkt-ease-in-out) infinite;
 }
-@keyframes mkt-bloom-hover {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-12px); }
-}
-.mkt-bloom-drift-a {
-  animation: mkt-bloom-drift-a 24s var(--mkt-ease-in-out) infinite;
-}
-.mkt-bloom-drift-b {
-  animation: mkt-bloom-drift-b 28s var(--mkt-ease-in-out) infinite;
-}
-.mkt-bloom-a {
-  animation:
-    mkt-bloom-in 1.1s var(--mkt-ease-out) forwards,
-    mkt-bloom-hover 6.5s ease-in-out 1.1s infinite;
-}
-.mkt-bloom-b {
-  animation:
-    mkt-bloom-in 1.3s var(--mkt-ease-out) 0.15s forwards,
-    mkt-bloom-hover 7.5s ease-in-out 1.85s infinite reverse;
+.mkt-wave-path-b {
+  animation: mkt-wave-b 26s var(--mkt-ease-in-out) 3s infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  /* Cancel the animation only — opacity stays whatever the element's own
-     opacity-[…] utility sets. Forcing opacity:1 here previously overrode
-     that utility and turned the subtle bloom into a solid green blob. */
-  .mkt-bloom-a,
-  .mkt-bloom-b,
-  .mkt-bloom-drift-a,
-  .mkt-bloom-drift-b {
+  .mkt-wave-path-a,
+  .mkt-wave-path-b {
     animation: none;
   }
 }

@@ -66,32 +66,41 @@ export default function Landing() {
 
   return (
     <PublicShell>
-      {/* Two blooms fixed to the viewport, not the document, so they hold
-          their screen position — same spot — as every section scrolls
-          beneath them, reading as suspended in the page's white background
-          rather than attached to any one section. pointer-events-none so
-          they never block clicks. -z-10, not z-0: a `position: fixed`
-          element at z-index 0 still paints AFTER normal static in-flow
-          content in stacking order, i.e. on top of it — that was the bug
-          where page content sat under the blobs. A negative z-index puts
-          the layer behind everything in normal flow, which is what
-          "background" actually requires; the nav still clears it easily at
-          its own z-50. Each blob nests two animations on separate elements
-          (transform can't cleanly combine two animations on one element):
-          the outer wrapper carries the slow, wide drift; the inner blob
-          carries a smaller, faster hover-bob, out of phase between A and B
-          so the pair never move in lockstep. Opacity raised to ~0.3–0.4 at
-          Erik's request — deliberately more present than the earlier
-          restrained pass (11–13%), though still short of the 0.55/0.46 the
-          codebase's history flags as having read as AI-generated; easy to
-          push further if this still isn't enough. */}
+      {/* Two wave-edged shapes fixed to the viewport, anchored at opposite
+          corners (bottom-left / top-right) — same fixed-position, -z-10
+          reasoning as the circular blooms this replaced: they hold their
+          screen position as the page scrolls, and -z-10 (plus `isolate` on
+          PublicShell) keeps them behind normal content while still showing
+          over the page's own background. Both shapes reuse ONE hand-drawn
+          path — the top-right instance is the bottom-left path rotated
+          180deg, since that's exactly the shape a corner-anchored wave
+          needs at the opposite corner. The wave edge itself animates via
+          the CSS `d` property (mkt-wave-a/-b keyframes below), morphing
+          between two path variants with the same command structure so the
+          edge undulates rather than just sliding — a browser that can't
+          animate `d` still renders the static rest-state path correctly.
+          Out-of-phase durations/delays so the two never move in sync. */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
-        <div className="mkt-bloom-drift-a absolute left-[4%] top-[6vh] h-[34rem] w-[34rem] sm:h-[42rem] sm:w-[42rem]">
-          <div className="mkt-bloom-a h-full w-full rounded-full bg-[var(--mkt-accent)] opacity-[0.4] blur-xl" />
-        </div>
-        <div className="mkt-bloom-drift-b absolute right-[4%] top-[48vh] h-[30rem] w-[30rem] sm:h-[44rem] sm:w-[44rem]">
-          <div className="mkt-bloom-b h-full w-full rounded-full bg-[var(--mkt-accent)] opacity-[0.34] blur-xl" />
-        </div>
+        <svg
+          className="absolute bottom-0 left-0 h-[70vh] w-[85vw] sm:h-[65vh] sm:w-[60vw]"
+          viewBox="0 0 400 400"
+          preserveAspectRatio="none"
+        >
+          <path
+            className="mkt-wave-path-a fill-[var(--mkt-accent)] opacity-[0.32] blur-sm"
+            d="M0,400 L0,230 C90,195 150,260 220,230 C290,200 330,150 400,180 L400,400 Z"
+          />
+        </svg>
+        <svg
+          className="absolute right-0 top-0 h-[70vh] w-[85vw] rotate-180 sm:h-[65vh] sm:w-[60vw]"
+          viewBox="0 0 400 400"
+          preserveAspectRatio="none"
+        >
+          <path
+            className="mkt-wave-path-b fill-[var(--mkt-accent)] opacity-[0.28] blur-sm"
+            d="M0,400 L0,230 C90,195 150,260 220,230 C290,200 330,150 400,180 L400,400 Z"
+          />
+        </svg>
       </div>
 
       <WeekMap />
