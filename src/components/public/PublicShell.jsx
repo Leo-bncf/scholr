@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import Rise from './Rise';
 import useLightTheme from './useLightTheme';
 import PublicNav from './PublicNav';
@@ -57,6 +57,19 @@ export default function PublicShell({ children }) {
     prevIndexRef.current = currentIndex;
   }, [currentIndex]);
 
+  // Scroll-linked parallax for the glow, layered ON TOP of its existing
+  // CSS-keyframe ambient drift, not replacing it — that's why this applies
+  // to a separate outer element per blob (see below) rather than adding a
+  // `y` style to the same div the `mkt-blob-drift-*` animation runs on:
+  // framer-motion's tracked transform and a running CSS animation's
+  // transform would both be fighting over the same property on the same
+  // element. `useScroll()` with no `target` tracks window scroll directly.
+  // Opposite signs on the two blobs (A drifts down with scroll, B drifts
+  // up) so they separate rather than moving as one unit.
+  const { scrollY } = useScroll();
+  const parallaxA = useTransform(scrollY, (v) => (reduced ? 0 : v * 0.18));
+  const parallaxB = useTransform(scrollY, (v) => (reduced ? 0 : v * -0.14));
+
   return (
     // isolate: gives this element its own stacking context, so its own
     // background counts as that context's step-1 paint rather than being
@@ -77,10 +90,16 @@ export default function PublicShell({ children }) {
           viewport, so it holds its screen position on every page as the
           page scrolls beneath it. -z-10 + the `isolate` above keep it
           behind normal content but above the page's own background.
-          Motion is drift + rotation on the outer wrapper and a small
+          Motion is drift + rotation on the outer wrapper, scroll-linked
+          parallax on top of that (see the hooks above), and a small
           hover-bob on the inner glow — nothing morphs a silhouette,
-          because there isn't one. */}
-      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
+          because there isn't one. Two separate fixed+motion containers
+          (one per blob) rather than one shared one: each needs its own
+          `y` value, and applying a transform to a `position:fixed`
+          element doesn't disturb its `inset-0` viewport sizing or its
+          absolutely-positioned children — it just translates the already-
+          fixed box, which is exactly the parallax effect. */}
+      <motion.div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10" style={{ y: parallaxA }}>
         <div className="mkt-blob-drift-a absolute -bottom-16 -left-16 h-[30rem] w-[30rem] sm:h-[38rem] sm:w-[38rem]">
           <div
             className="mkt-blob-a h-full w-full rounded-full blur-2xl"
@@ -92,6 +111,8 @@ export default function PublicShell({ children }) {
             }}
           />
         </div>
+      </motion.div>
+      <motion.div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10" style={{ y: parallaxB }}>
         <div className="mkt-blob-drift-b absolute -right-16 -top-16 h-[28rem] w-[28rem] sm:h-[36rem] sm:w-[36rem]">
           <div
             className="mkt-blob-b h-full w-full rounded-full blur-2xl"
@@ -103,7 +124,7 @@ export default function PublicShell({ children }) {
             }}
           />
         </div>
-      </div>
+      </motion.div>
 
       <PublicNav />
       <main className="flex-1">
