@@ -81,7 +81,9 @@ export function AuthCard({ title, subtitle, footnote, children }) {
           .auth-aside { display: block; position: relative; overflow: hidden; border-left: 1px solid var(--rule); }
           .auth-aside__in { position: relative; padding: var(--space-2xl) 0 0 var(--space-2xl); height: 100%; }
           .auth-aside__shot {
-            display: block; width: 100%; max-width: 100%; height: auto;
+            display: block; width: 100%; height: clamp(16rem, 42vh, 26rem);
+            box-sizing: border-box;
+            object-fit: cover; object-position: top center;
             margin-top: var(--space-lg);
             border-radius: var(--radius-large);
             border: 1px solid var(--rule);
