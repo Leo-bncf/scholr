@@ -183,6 +183,29 @@ export function removeCohort(id) {
   return none(supabase.from('cohorts').delete().eq('id', id), 'academics.removeCohort');
 }
 
+/**
+ * Remove one student from a cohort's `student_ids` roster.
+ *
+ * Read-modify-write on a uuid[] — the same trade-off as
+ * `classes.setStudentEnrolled`. Intended for GDPR erasure, where the write is
+ * rare and super-admin-only, so the race window is negligible. The student's
+ * id must stop appearing in cohort rosters once their account is erased.
+ *
+ * Returns 1 when a reference was removed, 0 when the student was already gone
+ * (so a caller can count removals honestly).
+ */
+export async function removeCohortMember(cohortId, studentId) {
+  const cohort = await maybeOne(
+    supabase.from('cohorts').select('id, student_ids').eq('id', cohortId),
+    'academics.removeCohortMember/read',
+  );
+  if (!cohort) return 0;
+  const next = (cohort.student_ids ?? []).filter((id) => id !== studentId);
+  if (next.length === (cohort.student_ids ?? []).length) return 0;
+  await updateCohort(cohortId, { student_ids: next });
+  return 1;
+}
+
 /** Equality filters over subjects. See the note on generic `where` helpers. */
 export function whereSubjects(filters = {}, { order, ascending = false, limit } = {}) {
   let q = supabase.from('subjects').select(SUBJECT_COLUMNS);

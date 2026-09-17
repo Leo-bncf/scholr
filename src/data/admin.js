@@ -66,6 +66,43 @@ export function recordAuditLog(entry) {
   return one(supabase.from('audit_logs').insert(entry).select(AUDIT_COLUMNS), 'admin.recordAuditLog');
 }
 
+/**
+ * Audit entries tied to one user, newest first.
+ *
+ * Matches on `user_id` and on `user_email`, because some entries carry one
+ * but not the other. Used by the GDPR console to count the subject's audit
+ * footprint before anonymising it.
+ */
+export function listAuditLogsForUser(userId, { email } = {}) {
+  const filter = email
+    ? `user_id.eq.${userId},user_email.eq.${email}`
+    : `user_id.eq.${userId}`;
+  return rows(
+    supabase.from('audit_logs').select(AUDIT_COLUMNS).or(filter)
+      .order('created_at', { ascending: false }),
+    'admin.listAuditLogsForUser',
+  );
+}
+
+/**
+ * Strip the subject's identity from their audit entries, keeping the trail.
+ *
+ * An audit log must outlive a GDPR erasure, so the rows are not deleted —
+ * only the denormalised `user_email` is replaced. The `user_id` foreign key
+ * is nulled automatically once the profile itself is deleted. Returns how
+ * many entries were touched so a caller can report the count honestly.
+ */
+export async function anonymiseAuditLogsForUser(userId, { email, anonEmail }) {
+  const filter = email
+    ? `user_id.eq.${userId},user_email.eq.${email}`
+    : `user_id.eq.${userId}`;
+  const data = await rows(
+    supabase.from('audit_logs').update({ user_email: anonEmail }).or(filter).select('id'),
+    'admin.anonymiseAuditLogsForUser',
+  );
+  return data.length;
+}
+
 // ── Platform config ─────────────────────────────────────────────────────────
 
 const CONFIG_COLUMNS = `

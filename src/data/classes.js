@@ -108,6 +108,27 @@ export async function setStudentEnrolled(classId, studentId, enrolled) {
 }
 
 /**
+ * Remove a student from a class roster.
+ *
+ * Deliberately without `setStudentEnrolled`'s roster-lock guard: GDPR erasure
+ * must be able to un-roster a deleted account even from a locked class. Same
+ * read-modify-write on the uuid[] as the enrolled toggle; the write is rare
+ * and super-admin-only. Returns 1 when a reference was removed, 0 when the
+ * student was already gone.
+ */
+export async function removeStudentRoster(classId, studentId) {
+  const cls = await maybeOne(
+    supabase.from('classes').select('id, student_ids').eq('id', classId),
+    'classes.removeStudentRoster/read',
+  );
+  if (!cls) return 0;
+  const next = (cls.student_ids ?? []).filter((id) => id !== studentId);
+  if (next.length === (cls.student_ids ?? []).length) return 0;
+  await update(classId, { student_ids: next });
+  return 1;
+}
+
+/**
  * Equality filters, for call sites migrated mechanically from base44's
  * `.filter({...})`. Prefer a named query above when you touch one of these.
  */
