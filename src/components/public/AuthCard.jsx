@@ -81,10 +81,10 @@ export function AuthCard({ title, subtitle, footnote, children }) {
           .auth-aside { display: block; position: relative; overflow: hidden; border-left: 1px solid var(--rule); }
           .auth-aside__in { position: relative; padding: var(--space-2xl) 0 0 var(--space-2xl); height: 100%; }
           .auth-aside__shot {
-            display: block; width: 130%; max-width: none; height: auto;
+            display: block; width: 100%; max-width: 100%; height: auto;
             margin-top: var(--space-lg);
-            border-radius: var(--radius-large) 0 0 0;
-            border: 1px solid var(--rule); border-right: none; border-bottom: none;
+            border-radius: var(--radius-large);
+            border: 1px solid var(--rule);
             box-shadow: var(--lift-lg);
           }
         }
