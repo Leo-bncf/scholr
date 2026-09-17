@@ -173,7 +173,7 @@ export default function Schedual() {
           {STATUS.map(([title, state, desc]) => (
             <div key={title} style={{ padding: 'var(--space-sm) 0', borderTop: '1px solid var(--rule)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2xs)', flexWrap: 'wrap' }}>
-                <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-base)', letterSpacing: '-0.02em', color: 'var(--ink)' }}>
+                <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-base)', letterSpacing: '-0.02em', color: 'var(--brand)' }}>
                   {title}
                 </h3>
                 <StatusChip tone={state === 'in progress' ? 'info' : 'warn'}>{state}</StatusChip>

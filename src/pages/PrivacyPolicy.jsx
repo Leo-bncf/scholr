@@ -15,7 +15,7 @@ export default function PrivacyPolicy() {
 
           {/* Header */}
           <div className="mb-10 pb-8 border-b border-slate-200">
-            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-4">Privacy Policy</h1>
+            <h1 className="text-4xl sm:text-5xl font-bold mb-4" style={{ color: 'var(--brand)' }}>Privacy Policy</h1>
             <p className="text-sm text-slate-500">Mobile &amp; Web Application — Version 1.0 — 17 March 2026</p>
             <p className="text-sm text-slate-500 mt-1">GDPR Compliant — French Data Protection Law (Loi Informatique et Libertés)</p>
             <p className="text-sm text-slate-500 mt-1">Supervisory Authority: Commission Nationale de l'Informatique et des Libertés (CNIL)</p>
@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
 
             {/* Section 1 */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">1. Identity of the Data Controller</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--brand)' }}>1. Identity of the Data Controller</h2>
               <p className="mb-3">This Privacy Policy is established by:</p>
               <div className="bg-slate-50 rounded-lg p-5 space-y-2">
                 <p><span className="font-medium text-slate-800">Company name:</span> Scholr SAS</p>
@@ -41,7 +41,7 @@ export default function PrivacyPolicy() {
 
             {/* Section 2 */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">2. About the Scholr Application</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--brand)' }}>2. About the Scholr Application</h2>
               <p className="mb-3">Scholr is an online educational management platform designed for schools, teachers, students, and their families. It provides the following core features:</p>
               <ul className="list-disc list-inside space-y-1.5 ml-2">
                 <li>Academic records and report card management</li>
@@ -58,9 +58,9 @@ export default function PrivacyPolicy() {
 
             {/* Section 3 */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">3. Personal Data Collected</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--brand)' }}>3. Personal Data Collected</h2>
 
-              <h3 className="font-semibold text-slate-800 mb-2">3.1 Student data</h3>
+              <h3 className="font-semibold mb-2" style={{ color: 'var(--brand)' }}>3.1 Student data</h3>
               <ul className="list-disc list-inside space-y-1.5 ml-2 mb-5">
                 <li>Full name, date of birth, nationality</li>
                 <li>Contact details (address, email, phone number)</li>
@@ -71,7 +71,7 @@ export default function PrivacyPolicy() {
                 <li>Profile photographs (if provided by the school)</li>
               </ul>
 
-              <h3 className="font-semibold text-slate-800 mb-2">3.2 Parent and legal guardian data</h3>
+              <h3 className="font-semibold mb-2" style={{ color: 'var(--brand)' }}>3.2 Parent and legal guardian data</h3>
               <ul className="list-disc list-inside space-y-1.5 ml-2 mb-5">
                 <li>Full name and relationship to the student (parent, guardian, etc.)</li>
                 <li>Contact details (email address, phone number)</li>
@@ -79,7 +79,7 @@ export default function PrivacyPolicy() {
                 <li>Message history via the Scholr messaging system</li>
               </ul>
 
-              <h3 className="font-semibold text-slate-800 mb-2">3.3 Teacher and educational staff data</h3>
+              <h3 className="font-semibold mb-2" style={{ color: 'var(--brand)' }}>3.3 Teacher and educational staff data</h3>
               <ul className="list-disc list-inside space-y-1.5 ml-2 mb-5">
                 <li>Full name and professional email address</li>
                 <li>Subjects taught, classes, and school assignments</li>
@@ -87,7 +87,7 @@ export default function PrivacyPolicy() {
                 <li>Educational content created or shared on the platform</li>
               </ul>
 
-              <h3 className="font-semibold text-slate-800 mb-2">3.4 School administrator data</h3>
+              <h3 className="font-semibold mb-2" style={{ color: 'var(--brand)' }}>3.4 School administrator data</h3>
               <ul className="list-disc list-inside space-y-1.5 ml-2 mb-5">
                 <li>Full name and job title</li>
                 <li>Professional contact details</li>
@@ -95,7 +95,7 @@ export default function PrivacyPolicy() {
                 <li>Audit and access logs</li>
               </ul>
 
-              <h3 className="font-semibold text-slate-800 mb-2">3.5 Technical and navigation data</h3>
+              <h3 className="font-semibold mb-2" style={{ color: 'var(--brand)' }}>3.5 Technical and navigation data</h3>
               <ul className="list-disc list-inside space-y-1.5 ml-2">
                 <li>IP address, browser type, and device information</li>
                 <li>Operating system and application version</li>
@@ -106,7 +106,7 @@ export default function PrivacyPolicy() {
 
             {/* Section 4 */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">4. Legal Basis for Processing</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--brand)' }}>4. Legal Basis for Processing</h2>
               <p className="mb-3">In accordance with Article 6 of the GDPR, each processing activity carried out by Scholr is based on one of the following legal grounds:</p>
               <ul className="list-disc list-inside space-y-2 ml-2">
                 <li><span className="font-medium text-slate-800">Performance of a contract:</span> processing necessary to deliver Scholr's services to client schools (Article 6(1)(b) GDPR).</li>
@@ -119,7 +119,7 @@ export default function PrivacyPolicy() {
 
             {/* Section 5 */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">5. Purposes of Processing</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--brand)' }}>5. Purposes of Processing</h2>
               <p className="mb-3">Scholr processes your personal data for the following purposes:</p>
               <ul className="list-disc list-inside space-y-1.5 ml-2">
                 <li>Providing and operating the school management platform</li>
@@ -137,24 +137,24 @@ export default function PrivacyPolicy() {
 
             {/* Section 6 */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">6. Recipients of Personal Data</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--brand)' }}>6. Recipients of Personal Data</h2>
 
-              <h3 className="font-semibold text-slate-800 mb-2">6.1 Internal access</h3>
+              <h3 className="font-semibold mb-2" style={{ color: 'var(--brand)' }}>6.1 Internal access</h3>
               <p className="mb-4">Personal data is accessible only to authorised Scholr staff members, strictly within the scope of their duties (technical teams, support, and the DPO).</p>
 
-              <h3 className="font-semibold text-slate-800 mb-2">6.2 Technical sub-processors</h3>
+              <h3 className="font-semibold mb-2" style={{ color: 'var(--brand)' }}>6.2 Technical sub-processors</h3>
               <p className="mb-4">Scholr uses third-party service providers for hosting, messaging, and other technical services. These providers are bound by data processing agreements compliant with Article 28 of the GDPR and may only use your data for the purposes determined by Scholr. All sub-processors are selected on the basis of their data protection guarantees. The list of our main sub-processors is available upon request from our DPO.</p>
 
-              <h3 className="font-semibold text-slate-800 mb-2">6.3 Schools</h3>
+              <h3 className="font-semibold mb-2" style={{ color: 'var(--brand)' }}>6.3 Schools</h3>
               <p className="mb-4">Administrators and teachers at your school have access to student and family data in the context of their educational mission, in accordance with the access permissions configured by the school.</p>
 
-              <h3 className="font-semibold text-slate-800 mb-2">6.4 Transfers outside the EU</h3>
+              <h3 className="font-semibold mb-2" style={{ color: 'var(--brand)' }}>6.4 Transfers outside the EU</h3>
               <p>Scholr is committed to hosting user data within the European Union. Should a transfer outside the EU be required by a sub-processor, Scholr ensures appropriate safeguards are in place (European Commission Standard Contractual Clauses or an adequacy decision) in accordance with Chapter V of the GDPR.</p>
             </section>
 
             {/* Section 7 */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">7. Data Retention Periods</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--brand)' }}>7. Data Retention Periods</h2>
               <p className="mb-3">Scholr retains personal data only for as long as is strictly necessary for the purposes for which it was collected:</p>
               <ul className="list-disc list-inside space-y-2 ml-2">
                 <li><span className="font-medium text-slate-800">Student, teacher, and parent account data:</span> for the duration of the contractual relationship between the school and Scholr, plus a 3-year period to handle any potential disputes.</li>
@@ -168,7 +168,7 @@ export default function PrivacyPolicy() {
 
             {/* Section 8 */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">8. Your Data Protection Rights</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--brand)' }}>8. Your Data Protection Rights</h2>
               <p className="mb-3">In accordance with the GDPR (Articles 15 to 22) and the French Data Protection Act (Loi Informatique et Libertés), you have the following rights:</p>
               <ul className="list-disc list-inside space-y-2 ml-2">
                 <li><span className="font-medium text-slate-800">Right of access (Art. 15 GDPR):</span> obtain confirmation that data about you is being processed and receive a copy of it.</li>
@@ -187,16 +187,16 @@ export default function PrivacyPolicy() {
 
             {/* Section 9 */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">9. Cookies and Trackers</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--brand)' }}>9. Cookies and Trackers</h2>
               <p className="mb-4">The Scholr application uses cookies and similar technologies. In accordance with CNIL guidelines and Article 82 of the French Data Protection Act, cookies are categorised as follows:</p>
 
-              <h3 className="font-semibold text-slate-800 mb-2">9.1 Strictly necessary cookies</h3>
+              <h3 className="font-semibold mb-2" style={{ color: 'var(--brand)' }}>9.1 Strictly necessary cookies</h3>
               <p className="mb-4">These cookies are essential for the application to function correctly (session management, authentication, CSRF security). They do not require your consent.</p>
 
-              <h3 className="font-semibold text-slate-800 mb-2">9.2 Analytical cookies</h3>
+              <h3 className="font-semibold mb-2" style={{ color: 'var(--brand)' }}>9.2 Analytical cookies</h3>
               <p className="mb-4">These cookies help us understand how the application is used so that we can improve it (anonymised audience measurement). They are only placed with your consent.</p>
 
-              <h3 className="font-semibold text-slate-800 mb-2">9.3 Preference cookies</h3>
+              <h3 className="font-semibold mb-2" style={{ color: 'var(--brand)' }}>9.3 Preference cookies</h3>
               <p className="mb-4">These cookies remember your display preferences (language, theme). They are only placed with your consent.</p>
 
               <p>You can manage your cookie preferences at any time via the cookie management panel in your account settings or through the cookie banner displayed on your first visit.</p>
@@ -204,7 +204,7 @@ export default function PrivacyPolicy() {
 
             {/* Section 10 */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">10. Data Security</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--brand)' }}>10. Data Security</h2>
               <p className="mb-3">Scholr implements appropriate technical and organisational measures to ensure a level of security appropriate to the risk, in accordance with Article 32 of the GDPR:</p>
               <ul className="list-disc list-inside space-y-1.5 ml-2">
                 <li>Encryption of data in transit (TLS 1.3) and at rest (AES-256)</li>
@@ -221,7 +221,7 @@ export default function PrivacyPolicy() {
 
             {/* Section 11 */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">11. Protection of Minors' Data</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--brand)' }}>11. Protection of Minors' Data</h2>
               <p className="mb-3">Scholr pays particular attention to the protection of data relating to student minors. In this respect:</p>
               <ul className="list-disc list-inside space-y-1.5 ml-2">
                 <li>Accounts for minor students are created and managed exclusively by schools, which act as data controllers.</li>
@@ -234,7 +234,7 @@ export default function PrivacyPolicy() {
 
             {/* Section 12 */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">12. Data Protection Officer (DPO)</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--brand)' }}>12. Data Protection Officer (DPO)</h2>
               <p className="mb-3">Scholr has appointed a Data Protection Officer (DPO) in accordance with Article 37 of the GDPR, given the large-scale processing of data relating to minors.</p>
               <p>The DPO can be contacted at: <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>
               <p className="mt-2">The DPO is also the primary point of contact with the CNIL for any questions relating to Scholr's data processing activities.</p>
@@ -242,14 +242,14 @@ export default function PrivacyPolicy() {
 
             {/* Section 13 */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">13. Changes to This Policy</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--brand)' }}>13. Changes to This Policy</h2>
               <p>Scholr reserves the right to amend this Privacy Policy in order to adapt it to changes in regulations or in its practices. In the event of a material change, users will be notified by email or by an in-app notification at least thirty (30) days before the new version takes effect.</p>
               <p className="mt-3">The current version is always accessible from the Scholr application and website. The date of the last update appears at the top of this document.</p>
             </section>
 
             {/* Section 14 */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">14. Contact Us</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--brand)' }}>14. Contact Us</h2>
               <p className="mb-3">For any questions regarding this Privacy Policy or the exercise of your rights, please contact us:</p>
               <div className="bg-slate-50 rounded-lg p-5 space-y-2">
                 <p><span className="font-medium text-slate-800">By email:</span> <a href="mailto:support@scholr.pro" className="text-blue-600 hover:underline">support@scholr.pro</a></p>

@@ -84,7 +84,7 @@ export default function Landing() {
             id="roles-heading"
             style={{
               margin: '0 0 var(--space-md)', fontSize: '1.05rem', fontWeight: 650,
-              letterSpacing: '-0.012em', color: 'var(--ink)',
+              letterSpacing: '-0.012em', color: 'var(--brand)',
             }}
           >
             The same week, from four desks.
@@ -145,7 +145,7 @@ export default function Landing() {
           <Rise from="right">
             <h2
               id="what-it-is-heading"
-              style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--ink)' }}
+              style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--brand)' }}
             >
               What the software actually is
             </h2>
@@ -163,7 +163,7 @@ export default function Landing() {
           </Rise>
 
           <Rise from="right" delay={90}>
-            <h2 style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--ink)' }}>
+            <h2 style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--brand)' }}>
               What a second programme costs you elsewhere
             </h2>
             <p style={{ margin: '0 0 var(--space-sm)', fontSize: '.96rem', lineHeight: 1.65, color: 'var(--muted)' }}>
@@ -181,7 +181,7 @@ export default function Landing() {
           </Rise>
 
           <Rise from="right" delay={180}>
-            <h2 style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--ink)' }}>
+            <h2 style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--brand)' }}>
               What it does not do yet
             </h2>
             <p style={{ margin: '0 0 var(--space-sm)', fontSize: '.96rem', lineHeight: 1.65, color: 'var(--muted)' }}>

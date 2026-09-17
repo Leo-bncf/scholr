@@ -47,7 +47,7 @@ export default function Pricing() {
         <div style={{ maxWidth: '46rem' }}>
           {QUESTIONS.map(([q, a]) => (
             <div key={q} className="py-4" style={{ borderTop: '1px solid var(--rule)' }}>
-              <h3 className="m-0 text-base font-medium" style={{ color: 'var(--ink)' }}>{q}</h3>
+              <h3 className="m-0 text-base font-medium" style={{ color: 'var(--brand)' }}>{q}</h3>
               <p className="m-0 mt-1.5 text-sm leading-relaxed" style={{ color: 'var(--muted)' }}>{a}</p>
             </div>
           ))}

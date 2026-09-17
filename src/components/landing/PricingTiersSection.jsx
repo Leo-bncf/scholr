@@ -72,7 +72,7 @@ export default function PricingTiersSection() {
             announcing a section that's already self-evident. */}
         <h2
           id="pricing-heading"
-          style={{ fontSize: 'clamp(1.7rem, 3.6vw, 2.4rem)', lineHeight: 1.1, letterSpacing: '-0.028em', margin: '0 0 .7rem', textWrap: 'balance' }}
+          style={{ fontSize: 'clamp(1.7rem, 3.6vw, 2.4rem)', lineHeight: 1.1, letterSpacing: '-0.028em', margin: '0 0 .7rem', textWrap: 'balance', color: 'var(--brand)' }}
         >
           One price, published, and it falls as you grow.
         </h2>

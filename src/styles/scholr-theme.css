@@ -284,7 +284,7 @@
 
 .scholr-h1 {
   font-family: var(--font-display); font-weight: 600; font-style: normal;
-  letter-spacing: -0.03em; color: var(--ink);
+  letter-spacing: -0.03em; color: var(--brand);
   /* Long words in a display size must break rather than force a scrollbar. */
   overflow-wrap: anywhere; min-width: 0; text-wrap: balance;
 }
@@ -550,7 +550,7 @@ body { background: var(--paper); color: var(--body); }
    The gap between them is most of the personality. */
 .pub-display {
   font-family: var(--font-display); font-weight: 600;
-  letter-spacing: -0.038em; line-height: 1.03; color: var(--ink);
+  letter-spacing: -0.038em; line-height: 1.03; color: var(--brand);
   text-wrap: balance; overflow-wrap: anywhere;
 }
 .pub-lede { font-size: 1.08rem; line-height: 1.55; color: var(--body); }
@@ -967,7 +967,7 @@ a.app-row:hover, button.app-row:hover { background: color-mix(in oklab, var(--in
 }
 .weekmap__panel-title {
   margin: 0 0 .4rem; font-size: 1.15rem; letter-spacing: -0.018em;
-  font-weight: 650; color: var(--ink);
+  font-weight: 650; color: var(--brand);
 }
 .weekmap__panel-body { margin: 0; color: var(--body); font-size: .96rem; line-height: 1.6; }
 
