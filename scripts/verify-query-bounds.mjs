@@ -57,7 +57,7 @@ function walk(dir, out = []) {
   return out;
 }
 
-const rel = (f) => f.replace(`${ROOT}/`, '');
+const rel = (f) => f.replace(/\\/g, '/').replace(`${ROOT.replace(/\\/g, '/')}/`, '');
 const found = [];
 
 for (const file of walk(SRC)) {
