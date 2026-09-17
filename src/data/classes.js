@@ -140,3 +140,22 @@ export async function completionBySchool(schoolId) {
   if (error) raise(error, 'classes.completionBySchool');
   return data || [];
 }
+
+/**
+ * Whole-school missing-work figure for the admin dashboard.
+ *
+ * { expected, missing } — one aggregated row instead of fetching every
+ * assignment and submission. Mirrors the dashboard's existing calculation:
+ * expected is the sum of roster sizes over published assignments, missing is
+ * the shortfall against submissions in a submitted/graded state. Superseded
+ * versions are deliberately not excluded, to keep the number identical to what
+ * the dashboard showed when it did this in JavaScript.
+ * See supabase/migrations/0015_bounded_reads.sql.
+ */
+export async function missingWork(schoolId) {
+  const { data, error } = await supabase.rpc('school_missing_work', {
+    p_school_id: schoolId,
+  });
+  if (error) raise(error, 'classes.missingWork');
+  return data?.[0] ?? null;
+}

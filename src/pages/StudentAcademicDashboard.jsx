@@ -255,11 +255,7 @@ function AssignmentsTab({ schoolId, userId, userName, classes }) {
 
   const { data: assignments = [], isLoading: loadingA } = useQuery({
     queryKey: ['student-all-assignments', schoolId, userId],
-    queryFn: async () => {
-      const all = await assignmentsData.where({ school_id: schoolId, status: 'published' });
-      const classIds = new Set(classes.map(c => c.id));
-      return all.filter(a => classIds.has(a.class_id));
-    },
+    queryFn: () => assignmentsData.listPublishedForClasses(classes.map(c => c.id)),
     enabled: !!schoolId && classes.length > 0,
   });
 

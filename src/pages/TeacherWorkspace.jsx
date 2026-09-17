@@ -26,24 +26,28 @@ export default function TeacherWorkspace() {
   const { data, isLoading } = useQuery({
     queryKey: ['teacher-workspace', schoolId, userId],
     queryFn: async () => {
-      const [allClasses, assignments, submissions, memberships, gradeItems] = await Promise.all([
+      const [allClasses, memberships, gradeItems] = await Promise.all([
         classesData.where({ school_id: schoolId, status: 'active' }),
-        assignmentsData.where({ school_id: schoolId, teacher_id: userId }),
-        submissionsData.where({ school_id: schoolId }),
         membershipsData.where({ school_id: schoolId, status: 'active' }),
         gradebookData.whereGradeItems({ school_id: schoolId }),
       ]);
 
       const teacherClasses = allClasses.filter((item) => item.teacher_ids?.includes(userId));
       const teacherClassIds = teacherClasses.map((item) => item.id);
-      const relevantAssignments = assignments.filter((item) => teacherClassIds.includes(item.class_id));
-      const relevantSubmissions = submissions.filter((item) => teacherClassIds.includes(item.class_id));
+
+      /* Both reads are scoped to the teacher's own classes. Submissions come
+         back as current versions only — a superseded resubmission is not a
+         second piece of work in the marking queue. */
+      const [assignments, submissions] = await Promise.all([
+        assignmentsData.listForClasses(teacherClassIds),
+        submissionsData.listForClasses(teacherClassIds),
+      ]);
       const studentMemberships = memberships.filter((item) => item.role === 'student');
 
       return {
         classes: teacherClasses,
-        assignments: relevantAssignments,
-        submissions: relevantSubmissions,
+        assignments,
+        submissions,
         students: studentMemberships,
         gradeItems,
       };

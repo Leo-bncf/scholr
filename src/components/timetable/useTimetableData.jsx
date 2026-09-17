@@ -10,7 +10,10 @@ import * as classesData from '@/data/classes';
 export function useTimetableData(schoolId) {
   const scheduleEntries = useQuery({
     queryKey: ['timetable-entries', schoolId],
-    queryFn: () => scheduleEntriesData.where({ school_id: schoolId }),
+    /* The whole-school timetable is the admin's grid editor: every row is on
+       screen and editable, so this stays a full-school read by design. It goes
+       through the named helper rather than a raw filter. */
+    queryFn: () => scheduleEntriesData.listForSchool(schoolId),
     enabled: !!schoolId,
   });
 

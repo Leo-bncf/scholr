@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { rows, maybeOne, one, none } from './_query';
+import { rows, maybeOne, one, none, count, raise } from './_query';
 
 /**
  * Student submissions against assignments.
@@ -41,6 +41,47 @@ export function getForStudent(assignmentId, studentId) {
       .eq('is_current_version', true),
     'submissions.getForStudent',
   );
+}
+
+/**
+ * Current submissions across a set of classes.
+ *
+ * Scoped to the caller's classes (the teacher workspace) and to the current
+ * version only — a superseded resubmission is not a second piece of work in
+ * the marking queue.
+ */
+export function listForClasses(classIds, { limit } = {}) {
+  if (!classIds?.length) return Promise.resolve([]);
+  let q = supabase
+    .from('submissions')
+    .select(COLUMNS)
+    .in('class_id', classIds)
+    .eq('is_current_version', true)
+    .order('submitted_at', { ascending: false });
+  if (limit) q = q.limit(limit);
+  return rows(q, 'submissions.listForClasses');
+}
+
+/** Head-count of submissions, without transferring any rows. */
+export function countForSchool(schoolId) {
+  return count(
+    supabase.from('submissions').select('id', { count: 'exact', head: true }).eq('school_id', schoolId),
+    'submissions.countForSchool',
+  );
+}
+
+/**
+ * Storage in use by a school's submissions, computed in Postgres.
+ *
+ * The files panel used to fetch every submission to sum `size_bytes` on the
+ * document arrays. See supabase/migrations/0015_bounded_reads.sql.
+ */
+export async function storageUsage(schoolId) {
+  const { data, error } = await supabase.rpc('school_storage_usage', {
+    p_school_id: schoolId,
+  });
+  if (error) raise(error, 'submissions.storageUsage');
+  return data?.[0] ?? null;
 }
 
 export function listForStudent(schoolId, studentId, { status } = {}) {

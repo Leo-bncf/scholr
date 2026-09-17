@@ -20,9 +20,18 @@ export default function CoordinatorIBCore() {
   const { curriculum, config } = useCurriculum();
   const sidebarLinks = getCoordinatorSidebarLinks(curriculum, config);
 
-  const { data: casExperiences = [], isLoading: casLoading } = useQuery({
-    queryKey: ['all-cas', schoolId],
-    queryFn: () => casExperiencesData.where({ school_id: schoolId }),
+  const { data: casStatsRow } = useQuery({
+    queryKey: ['all-cas-summary', schoolId],
+    /* The six CAS numbers are an aggregate, computed in Postgres — no need to
+       ship every experience for six counters. The awaiting-approval tray is
+       its own limited fetch below. See supabase/migrations/0015_bounded_reads.sql. */
+    queryFn: () => casExperiencesData.summaryForSchool(schoolId),
+    enabled: !!schoolId,
+  });
+
+  const { data: recentCasCompleted = [], isLoading: casLoading } = useQuery({
+    queryKey: ['all-cas-recent', schoolId],
+    queryFn: () => casExperiencesData.listRecentlyCompleted(schoolId, { limit: 10 }),
     enabled: !!schoolId,
   });
 
@@ -48,12 +57,12 @@ export default function CoordinatorIBCore() {
   });
 
   const casStats = {
-    total: casExperiences.length,
-    approved: casExperiences.filter(e => e.status === 'approved').length,
-    pending: casExperiences.filter(e => e.status === 'completed').length,
-    creativity: casExperiences.filter(e => e.cas_strands?.includes('creativity')).length,
-    activity: casExperiences.filter(e => e.cas_strands?.includes('activity')).length,
-    service: casExperiences.filter(e => e.cas_strands?.includes('service')).length,
+    total: casStatsRow?.total ?? 0,
+    approved: casStatsRow?.approved ?? 0,
+    pending: casStatsRow?.pending ?? 0,
+    creativity: casStatsRow?.creativity ?? 0,
+    activity: casStatsRow?.activity ?? 0,
+    service: casStatsRow?.service ?? 0,
   };
 
   const eeStats = {
@@ -185,11 +194,11 @@ export default function CoordinatorIBCore() {
                       <div className="flex justify-center py-12">
                         <Loader2 className="w-6 h-6 animate-spin scholr-accent" />
                       </div>
-                    ) : casExperiences.filter(e => e.status === 'completed').slice(0, 10).length === 0 ? (
+                    ) : recentCasCompleted.length === 0 ? (
                       <p className="text-center py-12 scholr-faint text-sm">No experiences awaiting approval</p>
                     ) : (
                       <div className="space-y-2">
-                        {casExperiences.filter(e => e.status === 'completed').slice(0, 10).map(exp => (
+                        {recentCasCompleted.map(exp => (
                           <div key={exp.id} className="border scholr-rule rounded-lg p-4 flex items-center justify-between">
                             <div>
                               <p className="font-medium scholr-ink">{exp.title}</p>

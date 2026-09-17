@@ -49,7 +49,10 @@ export default function SchoolAdminReports() {
 
   const { data: behavior = [] } = useQuery({
     queryKey: ['school-behavior-reports', schoolId],
-    queryFn: () => behaviorRecordsData.where({ school_id: schoolId }),
+    /* The reports hub is the full export/print path — CSV, PDF and the CAS
+       log all print every row inside the school's own filters, so this stays
+       a whole-school read by design. It goes through the named helper. */
+    queryFn: () => behaviorRecordsData.listForSchool(schoolId),
     enabled: !!schoolId,
   });
 
@@ -61,7 +64,10 @@ export default function SchoolAdminReports() {
 
   const { data: casExperiences = [] } = useQuery({
     queryKey: ['school-cas-reports', schoolId],
-    queryFn: () => casExperiencesData.where({ school_id: schoolId }),
+    /* Same story as behaviour: CoordinatorReports prints the full CAS log and
+       the CSV export takes all CAS rows, so this whole-school read is the
+       export surface. */
+    queryFn: () => casExperiencesData.listForSchool(schoolId),
     enabled: !!schoolId,
   });
 

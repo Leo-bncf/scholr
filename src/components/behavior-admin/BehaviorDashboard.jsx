@@ -39,8 +39,14 @@ export default function BehaviorDashboard({ schoolId, isPastoral = false }) {
   const [expandedId, setExpandedId] = useState(null);
 
   const { data: records = [], isLoading } = useQuery({
-    queryKey: ['behavior-admin', schoolId],
-    queryFn: () => behaviorRecordsData.where({ school_id: schoolId }),
+    queryKey: ['behavior-admin', schoolId, dateFrom, dateTo],
+    queryFn: () => behaviorRecordsData.listRange(schoolId, { from: dateFrom, to: dateTo }),
+    enabled: !!schoolId,
+  });
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ['behavior-categories', schoolId],
+    queryFn: () => behaviorRecordsData.listCategories(schoolId),
     enabled: !!schoolId,
   });
 
@@ -75,7 +81,6 @@ export default function BehaviorDashboard({ schoolId, isPastoral = false }) {
   const counts = filtered.reduce((acc, r) => { acc[r.type] = (acc[r.type] || 0) + 1; return acc; }, {});
   const pendingFollowUp = filtered.filter(r => r.follow_up_required && !r.follow_up_completed).length;
   const pendingPastoral = filtered.filter(r => !r.pastoral_reviewed && (r.severity === 'high' || r.severity === 'critical')).length;
-  const categories = [...new Set(records.map(r => r.category).filter(Boolean))];
 
   return (
     <div className="space-y-6">

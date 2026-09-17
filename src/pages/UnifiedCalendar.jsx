@@ -103,10 +103,8 @@ export default function UnifiedCalendar() {
   const { data, isLoading } = useQuery({
     queryKey: ['unified-calendar', schoolId, user?.id, role],
     queryFn: async () => {
-      const [classes, scheduleEntries, assignments, manualEvents, subjects, parentLinks] = await Promise.all([
+      const [classes, manualEvents, subjects, parentLinks] = await Promise.all([
         classesData.where({ school_id: schoolId, status: 'active' }),
-        scheduleEntriesData.where({ school_id: schoolId, status: 'active' }),
-        assignmentsData.where({ school_id: schoolId, status: 'published' }),
         unifiedCalendarEventsData.where({ school_id: schoolId }),
         academics.whereSubjects({ school_id: schoolId, status: 'active' }),
         role === 'parent' ? parentStudentLinksData.where({ school_id: schoolId, parent_id: user.id }) : Promise.resolve([]),
@@ -120,12 +118,19 @@ export default function UnifiedCalendar() {
         relevantClasses = classes.filter((item) => item.student_ids?.some((studentId) => childIds.includes(studentId)));
       }
 
-      const classIds = new Set(relevantClasses.map((item) => item.id));
+      const classIds = relevantClasses.map((item) => item.id);
       const subjectMap = Object.fromEntries(subjects.map((item) => [item.id, item.name]));
 
-      const classEvents = scheduleEntries
-        .filter((item) => classIds.has(item.class_id))
-        .map((item) => {
+      /* Schedule entries and assignments are both fetched for the visible
+         classes only — a student's calendar doesn't ship the whole school's
+         timetable, and published work is the only kind a class calendar
+         shows. */
+      const [scheduleEntries, assignments] = await Promise.all([
+        scheduleEntriesData.listForClasses(classIds, { status: 'active' }),
+        assignmentsData.listPublishedForClasses(classIds),
+      ]);
+
+      const classEvents = scheduleEntries.map((item) => {
           const startDate = new Date();
           const endDate = new Date();
           const [startHour, startMinute] = (item.start_time || '00:00').split(':').map(Number);
@@ -151,7 +156,7 @@ export default function UnifiedCalendar() {
         });
 
       const assignmentEvents = assignments
-        .filter((item) => classIds.has(item.class_id) && item.due_date)
+        .filter((item) => classIds.includes(item.class_id) && item.due_date)
         .map((item) => ({
           id: `assignment-${item.id}`,
           title: item.title,

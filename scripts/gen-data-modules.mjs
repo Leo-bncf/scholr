@@ -25,6 +25,10 @@ const HAND_WRITTEN = new Set([
   '_query', 'session', 'schools', 'memberships', 'classes', 'academics',
   'assignments', 'gradebook', 'attendance', 'submissions', 'demoRequests',
   'admin', 'functions', 'storage',
+  // Promoted because they now carry named bounded queries beyond the
+  // generated boilerplate (behaviour ranges/pastoral queues, recipient-scoped
+  // messages, per-class timetable entries, CAS aggregates).
+  'behaviorRecords', 'messages', 'scheduleEntries', 'casExperiences',
 ]);
 
 // Tables already covered by a hand-written module, or not addressable as an

@@ -27,8 +27,8 @@ export default function BehaviorExport({ schoolId, schoolName }) {
   const [isExporting, setIsExporting] = useState(false);
 
   const { data: records = [], isLoading } = useQuery({
-    queryKey: ['behavior-export', schoolId],
-    queryFn: () => behaviorRecordsData.where({ school_id: schoolId }),
+    queryKey: ['behavior-export', schoolId, startDate, endDate],
+    queryFn: () => behaviorRecordsData.listRange(schoolId, { from: startDate, to: endDate }),
     enabled: !!schoolId,
   });
 
