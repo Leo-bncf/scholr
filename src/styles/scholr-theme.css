@@ -553,6 +553,15 @@ body { background: var(--paper); color: var(--body); }
 .pub-btn-line { border-color: var(--rule); color: var(--ink); background: color-mix(in oklab, var(--surface) 70%, transparent); }
 .pub-btn-line:hover { border-color: var(--muted); }
 
+/* Gold's second appearance, at Erik's explicit request — the nav bar's own
+ * "Book a demo" link (see PublicNav.jsx), and only that one instance. Every
+ * other CTA site-wide — hero, pricing, the closing band, anything built with
+ * the <CTA> component — stays .pub-btn-primary in brand green. The warning
+ * above is about gold running on every call to action until it read as a
+ * second palette; one deliberately chosen spot is the opposite of that. */
+.pub-btn-gold { background: var(--gold); color: var(--gold-ink); box-shadow: var(--lift-sm); }
+.pub-btn-gold:hover { background: color-mix(in oklab, var(--gold) 88%, black); }
+
 /* Display type wants to be big and tight; the body face wants to stay small.
    The gap between them is most of the personality. */
 .pub-display {

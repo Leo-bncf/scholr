@@ -116,10 +116,13 @@ export default function PublicNav() {
                 .pub-btn-primary itself: every other CTA on the site (hero,
                 pricing, the closing CTA band) keeps the site-wide
                 rectangle-with-small-radius button language. Same routing,
-                same onClick-free <Link to="/BookDemo">, just the corners. */}
+                same onClick-free <Link to="/BookDemo">, just the corners.
+                pub-btn-gold, not -primary: Erik's call to give this one CTA
+                the logo's gold rather than brand green — see that class in
+                scholr-theme.css for why it's scoped to just this link. */}
             <Link
               to="/BookDemo"
-              className="pub-btn pub-btn-primary scholr-focus"
+              className="pub-btn pub-btn-gold scholr-focus"
               style={{ borderRadius: 'var(--radius-pill)' }}
             >
               Book a demo
@@ -148,7 +151,7 @@ export default function PublicNav() {
           ))}
           <div style={{ display: 'flex', alignItems: 'center', gap: '.8rem', paddingTop: '.9rem' }}>
             <button type="button" onClick={signIn} className="scholr-focus" style={{ background: 'none', border: 'none', font: 'inherit', fontSize: '.9rem', color: 'var(--body)', cursor: 'pointer' }}>Sign in</button>
-            <Link to="/BookDemo" onClick={() => setOpen(false)} className="pub-btn pub-btn-primary scholr-focus" style={{ marginLeft: 'auto' }}>Book a demo</Link>
+            <Link to="/BookDemo" onClick={() => setOpen(false)} className="pub-btn pub-btn-gold scholr-focus" style={{ marginLeft: 'auto' }}>Book a demo</Link>
           </div>
         </div>
       )}
