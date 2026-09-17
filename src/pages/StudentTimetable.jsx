@@ -217,21 +217,16 @@ export default function StudentTimetable() {
 
   const { data: scheduleEntries = [], isLoading: loadingSchedule } = useQuery({
     queryKey: ['student-schedule', schoolId, user?.id],
-    queryFn: async () => {
-      const all = await scheduleEntriesData.where({ school_id: schoolId, status: 'active' });
-      const classIds = new Set(classes.map(c => c.id));
-      return all.filter(e => classIds.has(e.class_id));
-    },
+    queryFn: () => scheduleEntriesData.listForClasses(classes.map(c => c.id), { status: 'active' }),
     enabled: !!schoolId && classes.length > 0,
   });
 
   const { data: assignments = [] } = useQuery({
     queryKey: ['student-assignments-tt', schoolId, user?.id],
     queryFn: async () => {
-      const classIds = new Set(classes.map(c => c.id));
-      const all = await assignmentsData.where({ school_id: schoolId, status: 'published' });
       const classMap = Object.fromEntries(classes.map(c => [c.id, c.name]));
-      return all.filter(a => classIds.has(a.class_id)).map(a => ({ ...a, class_name: classMap[a.class_id] || '' }));
+      const all = await assignmentsData.listPublishedForClasses(classes.map(c => c.id));
+      return all.map(a => ({ ...a, class_name: classMap[a.class_id] || '' }));
     },
     enabled: classes.length > 0,
   });

@@ -3,8 +3,6 @@ import * as membershipsData from '@/data/memberships';
 import * as classesData from '@/data/classes';
 import * as academics from '@/data/academics';
 import * as attendanceData from '@/data/attendance';
-import * as assignmentsData from '@/data/assignments';
-import * as submissionsData from '@/data/submissions';
 import * as messagesData from '@/data/messages';
 import * as timetableSyncsData from '@/data/timetableSyncs';
 import * as schoolsData from '@/data/schools';
@@ -17,6 +15,9 @@ export function useSchoolOperationsData(schoolId) {
   return useQuery({
     queryKey: ['school-operations', schoolId],
     queryFn: async () => {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
       const [
         memberships,
         classes,
@@ -24,11 +25,10 @@ export function useSchoolOperationsData(schoolId) {
         terms,
         subjects,
         attendance,
-        assignments,
-        submissions,
-        messages,
         timetableSyncs,
         school,
+        missingWork,
+        recentMessageCount,
       ] = await Promise.all([
         membershipsData.where({ school_id: schoolId, status: 'active' }),
         classesData.where({ school_id: schoolId, status: 'active' }),
@@ -36,11 +36,13 @@ export function useSchoolOperationsData(schoolId) {
         academics.whereTerms({ school_id: schoolId }),
         academics.whereSubjects({ school_id: schoolId }),
         attendanceData.whereRecords({ school_id: schoolId }),
-        assignmentsData.where({ school_id: schoolId }),
-        submissionsData.where({ school_id: schoolId }),
-        messagesData.where({ school_id: schoolId }),
         timetableSyncsData.where({ school_id: schoolId }).catch(() => []),
         schoolsData.where({ id: schoolId }).then(r => r[0] || null),
+        /* Missing-work used to fetch every assignment and submission to derive
+           a percentage; the RPC aggregates it. Messaging volume is a count
+           over the last 30 days, not the whole message history. */
+        classesData.missingWork(schoolId),
+        messagesData.countRecentForSchool(schoolId, { since: thirtyDaysAgo }),
       ]);
 
       // --- Member Breakdown ---
@@ -68,32 +70,21 @@ export function useSchoolOperationsData(schoolId) {
       });
 
       // --- Attendance trend (last 30 days) ---
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       const recentAttendance = attendance.filter(a => new Date(a.date) >= thirtyDaysAgo);
       const presentCount = recentAttendance.filter(a => a.status === 'present').length;
       const attendanceRate = recentAttendance.length > 0
         ? Math.round((presentCount / recentAttendance.length) * 100)
         : null;
 
-      // --- Missing work rate ---
-      const publishedAssignments = assignments.filter(a => a.status === 'published');
-      let missingCount = 0;
-      let expectedSubmissions = 0;
-      publishedAssignments.forEach(a => {
-        const classObj = classes.find(c => c.id === a.class_id);
-        if (!classObj) return;
-        const studentCount = (classObj.student_ids || []).length;
-        expectedSubmissions += studentCount;
-        const submitted = submissions.filter(s => s.assignment_id === a.id && ['submitted', 'graded', 'returned', 'late', 'resubmitted'].includes(s.status)).length;
-        missingCount += Math.max(0, studentCount - submitted);
-      });
+      // --- Missing work rate (aggregated in Postgres) ---
+      const missingCount = missingWork?.missing ?? 0;
+      const expectedSubmissions = missingWork?.expected ?? 0;
       const missingWorkRate = expectedSubmissions > 0
         ? Math.round((missingCount / expectedSubmissions) * 100)
         : null;
 
       // --- Messaging volume (last 30 days) ---
-      const recentMessages = messages.filter(m => new Date(m.created_at) >= thirtyDaysAgo);
+      const recentMessages = recentMessageCount;
 
       // --- Timetable sync errors ---
       const failedSyncs = timetableSyncs.filter(s => s.status === 'error' || s.status === 'failed');
@@ -128,7 +119,7 @@ export function useSchoolOperationsData(schoolId) {
         recentAttendanceCount: recentAttendance.length,
         missingWorkRate,
         missingCount,
-        messagingVolume: recentMessages.length,
+        messagingVolume: recentMessages,
         upcomingTerms,
         subjects,
         academicYears,

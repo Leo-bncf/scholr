@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { Plus, X, HardDrive, Clock, AlertTriangle } from 'lucide-react';
 import * as submissionsData from '@/data/submissions';
-import * as assignmentsData from '@/data/assignments';
 
 const COMMON_EXTENSIONS = ['.pdf', '.docx', '.doc', '.pptx', '.xlsx', '.txt', '.jpg', '.jpeg', '.png', '.mp4', '.zip'];
 
@@ -17,25 +16,19 @@ const PLAN_STORAGE_LIMITS = {
 };
 
 function StorageMonitor({ schoolId, plan }) {
-  const { data: submissions = [] } = useQuery({
-    queryKey: ['storage-monitor-submissions', schoolId],
-    queryFn: () => submissionsData.where({ school_id: schoolId }),
+  const { data: usage } = useQuery({
+    queryKey: ['storage-monitor-usage', schoolId],
+    /* The monitor used to fetch every submission (and assignment) to sum
+       document sizes client-side. storageUsage aggregates the same numbers
+       in Postgres. See supabase/migrations/0015_bounded_reads.sql. */
+    queryFn: () => submissionsData.storageUsage(schoolId),
     enabled: !!schoolId,
   });
 
-  const { data: assignments = [] } = useQuery({
-    queryKey: ['storage-monitor-assignments', schoolId],
-    queryFn: () => assignmentsData.where({ school_id: schoolId }),
-    enabled: !!schoolId,
-  });
-
-  // Estimate storage from document size_bytes fields
-  const submissionBytes = submissions.reduce((sum, s) => {
-    return sum + (s.documents || []).reduce((ds, d) => ds + (d.size_bytes || 0), 0);
-  }, 0);
-
-  const submissionMB = submissionBytes / (1024 * 1024);
-  const totalFilesCount = submissions.reduce((sum, s) => sum + (s.documents || []).length, 0);
+  // The monitor's numbers now come straight from the aggregate.
+  const totalFilesCount = usage?.file_count ?? 0;
+  const submissionCount = usage?.submission_count ?? 0;
+  const submissionMB = (usage?.total_bytes ?? 0) / (1024 * 1024);
   const limitMB = PLAN_STORAGE_LIMITS[plan] || PLAN_STORAGE_LIMITS.starter;
   const usedPct = Math.min((submissionMB / limitMB) * 100, 100);
   const isHigh = usedPct > 80;
@@ -59,7 +52,7 @@ function StorageMonitor({ schoolId, plan }) {
           <p className="text-[11px] scholr-faint mt-0.5">Total Files</p>
         </div>
         <div className="scholr-sunk rounded-lg p-3 text-center">
-          <p className="text-lg font-bold scholr-ink">{submissions.length}</p>
+          <p className="text-lg font-bold scholr-ink">{submissionCount}</p>
           <p className="text-[11px] scholr-faint mt-0.5">Submissions</p>
         </div>
         <div className="rounded-lg p-3 text-center scholr-sunk">

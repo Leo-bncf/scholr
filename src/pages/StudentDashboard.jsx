@@ -31,12 +31,7 @@ export default function StudentDashboard() {
 
   const { data: assignments = [] } = useQuery({
     queryKey: ['student-assignments', schoolId, userId],
-    queryFn: async () => {
-      const classIds = classes.map(c => c.id);
-      if (classIds.length === 0) return [];
-      const all = await assignmentsData.where({ school_id: schoolId, status: 'published' });
-      return all.filter(a => classIds.includes(a.class_id));
-    },
+    queryFn: () => assignmentsData.listPublishedForClasses(classes.map(c => c.id)),
     enabled: !!schoolId && classes.length > 0,
   });
 

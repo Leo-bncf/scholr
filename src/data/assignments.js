@@ -68,6 +68,26 @@ export function listUpcomingForClasses(classIds, { limit = 10 } = {}) {
   );
 }
 
+/**
+ * Every assignment in a set of classes, regardless of status.
+ *
+ * The curriculum map needs assignments with the entire class set to compute
+ * topic coverage; drafts are part of that picture for a teacher looking at
+ * their own subjects, so this does not filter status. Callers that only show
+ * student-facing work should use `listPublishedForClasses`.
+ */
+export function listForClasses(classIds) {
+  if (!classIds?.length) return Promise.resolve([]);
+  return rows(
+    supabase
+      .from('assignments')
+      .select(WITH_CLASS)
+      .in('class_id', classIds)
+      .order('due_date', { ascending: false, nullsFirst: false }),
+    'assignments.listForClasses',
+  );
+}
+
 export function get(id) {
   return maybeOne(supabase.from('assignments').select(WITH_CLASS).eq('id', id), 'assignments.get');
 }

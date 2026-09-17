@@ -25,9 +25,18 @@ export default function PastoralOversight({ schoolId }) {
   const [followUpNote, setFollowUpNote] = useState('');
   const [activeTab, setActiveTab] = useState('needs_review');
 
-  const { data: records = [], isLoading } = useQuery({
-    queryKey: ['behavior-pastoral', schoolId],
-    queryFn: () => behaviorRecordsData.where({ school_id: schoolId }),
+  /* The queues are joined in one filtered query (open work is small), and the
+     'recently reviewed' tray is its own limited fetch — no reason to pull the
+     entire log to show the last twenty reviews. */
+  const { data: queueRecords = [], isLoading } = useQuery({
+    queryKey: ['behavior-pastoral-queue', schoolId],
+    queryFn: () => behaviorRecordsData.listPastoralQueue(schoolId),
+    enabled: !!schoolId,
+  });
+
+  const { data: recentReviewed = [] } = useQuery({
+    queryKey: ['behavior-pastoral-recent', schoolId],
+    queryFn: () => behaviorRecordsData.listRecentlyReviewed(schoolId, { limit: 20 }),
     enabled: !!schoolId,
   });
 
@@ -39,7 +48,8 @@ export default function PastoralOversight({ schoolId }) {
     }),
     onSuccess: async (_, { id }) => {
       await logAudit({ action: 'pastoral_review_completed', entityType: 'BehaviorRecord', entityId: id, details: `Pastoral review marked complete by ${user?.full_name || user?.email}`, level: AuditLevels.INFO, schoolId });
-      queryClient.invalidateQueries({ queryKey: ['behavior-pastoral', schoolId] });
+      queryClient.invalidateQueries({ queryKey: ['behavior-pastoral-queue', schoolId] });
+      queryClient.invalidateQueries({ queryKey: ['behavior-pastoral-recent', schoolId] });
       setReviewing(null);
       setReviewNote('');
     },
@@ -51,15 +61,15 @@ export default function PastoralOversight({ schoolId }) {
       follow_up_note: note,
     }),
     onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ['behavior-pastoral', schoolId] });
+      queryClient.invalidateQueries({ queryKey: ['behavior-pastoral-queue', schoolId] });
+      queryClient.invalidateQueries({ queryKey: ['behavior-pastoral-recent', schoolId] });
       setReviewing(null);
       setFollowUpNote('');
     },
   });
 
-  const needsReview = records.filter(r => !r.pastoral_reviewed && (r.severity === 'high' || r.severity === 'critical'));
-  const pendingFollowUp = records.filter(r => r.follow_up_required && !r.follow_up_completed);
-  const recentReviewed = records.filter(r => r.pastoral_reviewed).sort((a, b) => (b.pastoral_reviewed_at || '').localeCompare(a.pastoral_reviewed_at || '')).slice(0, 20);
+  const needsReview = queueRecords.filter(r => !r.pastoral_reviewed && (r.severity === 'high' || r.severity === 'critical'));
+  const pendingFollowUp = queueRecords.filter(r => r.follow_up_required && !r.follow_up_completed);
 
   const TABS = [
     { id: 'needs_review', label: 'Needs Pastoral Review', count: needsReview.length, urgent: true },

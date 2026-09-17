@@ -30,12 +30,10 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
   // Upcoming deadlines
   const { data: assignments = [] } = useQuery({
     queryKey: ['parent-child-assignments', schoolId, studentId],
-    queryFn: async () => {
-      const all = await assignmentsData.where({ school_id: schoolId, status: 'published' });
-      return all
-        .filter(a => classIds.includes(a.class_id) && a.due_date && isAfter(new Date(a.due_date), now))
-        .sort((a, b) => new Date(a.due_date) - new Date(b.due_date));
-    },
+    queryFn: () => assignmentsData.listPublishedForClasses(classIds)
+        .then(all => all
+          .filter(a => a.due_date && isAfter(new Date(a.due_date), now))
+          .sort((a, b) => new Date(a.due_date) - new Date(b.due_date))),
     enabled: !!schoolId && classIds.length > 0,
   });
 
@@ -71,13 +69,7 @@ export default function ParentDashboardHome({ schoolId, studentId, parentUserId 
   // Messages for this parent
   const { data: messages = [] } = useQuery({
     queryKey: ['parent-messages', schoolId, parentUserId],
-    queryFn: async () => {
-      const all = await messagesData.where({ school_id: schoolId });
-      return all
-        .filter(m => m.recipient_ids?.includes(parentUserId))
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-        .slice(0, 8);
-    },
+    queryFn: () => messagesData.listForRecipient(schoolId, parentUserId, { limit: 8 }),
     enabled: !!schoolId && !!parentUserId,
   });
 

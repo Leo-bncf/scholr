@@ -100,12 +100,12 @@ export default function DataRetentionPanel({ policy, onChange, onSave, saving, s
     queryKey: ['governance-data-stats', schoolId],
     queryFn: async () => {
       const [attendance, behavior, auditLogs, submissions] = await Promise.all([
-        attendanceData.whereRecords({ school_id: schoolId }),
-        behaviorRecordsData.where({ school_id: schoolId }),
-        admin.whereAuditLogs({ school_id: schoolId }),
-        submissionsData.where({ school_id: schoolId }),
+        attendanceData.countForSchool(schoolId),
+        behaviorRecordsData.countForSchool(schoolId),
+        admin.countAuditLogs({ schoolId }),
+        submissionsData.countForSchool(schoolId),
       ]);
-      return { attendance: attendance.length, behavior: behavior.length, auditLogs: auditLogs.length, submissions: submissions.length };
+      return { attendance, behavior, auditLogs, submissions };
     },
     enabled: !!schoolId,
   });

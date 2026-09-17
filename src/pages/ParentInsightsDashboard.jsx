@@ -24,9 +24,8 @@ export default function ParentInsightsDashboard() {
   const { data, isLoading } = useQuery({
     queryKey: ['parent-insights-dashboard', schoolId, selectedChildId],
     queryFn: async () => {
-      const [classes, assignments, submissions, grades, attendance] = await Promise.all([
+      const [classes, submissions, grades, attendance] = await Promise.all([
         classesData.where({ school_id: schoolId, status: 'active' }),
-        assignmentsData.where({ school_id: schoolId, status: 'published' }),
         submissionsData.where({ school_id: schoolId, student_id: selectedChildId }),
         gradebookData.whereGradeItems({ school_id: schoolId, student_id: selectedChildId, visible_to_parent: true }),
         attendanceData.whereRecords({ school_id: schoolId, student_id: selectedChildId }),
@@ -34,7 +33,10 @@ export default function ParentInsightsDashboard() {
 
       const studentClasses = classes.filter((item) => item.student_ids?.includes(selectedChildId));
       const classIds = studentClasses.map((item) => item.id);
-      const relevantAssignments = assignments.filter((item) => classIds.includes(item.class_id));
+
+      /* Published work across the child's own classes, not the whole school.
+         Missing-work alerts run against this shape. */
+      const relevantAssignments = await assignmentsData.listPublishedForClasses(classIds);
 
       return {
         classes: studentClasses,

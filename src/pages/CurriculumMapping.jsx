@@ -34,10 +34,9 @@ export default function CurriculumMapping() {
   const { data, isLoading } = useQuery({
     queryKey: ['curriculum-mapping', schoolId, role, user?.id],
     queryFn: async () => {
-      const [subjects, topics, assignments, gradeItems, classes] = await Promise.all([
+      const [subjects, topics, gradeItems, classes] = await Promise.all([
         academics.whereSubjects({ school_id: schoolId, status: 'active' }),
         curriculumTopicsData.where({ school_id: schoolId, status: 'active' }),
-        assignmentsData.where({ school_id: schoolId }),
         gradebookData.whereGradeItems({ school_id: schoolId }),
         classesData.where({ school_id: schoolId, status: 'active' }),
       ]);
@@ -46,10 +45,16 @@ export default function CurriculumMapping() {
         ? classes.filter((item) => item.teacher_ids?.includes(user.id)).map((item) => item.id)
         : classes.map((item) => item.id);
 
+      /* Assignments are the one whole-school read here, and they are fetched
+         for the visible classes only — a teacher never pulls the whole
+         school's assignment table across the wire. The map needs every status
+         (draft and published) to judge coverage, so no status filter. */
+      const assignments = await assignmentsData.listForClasses(visibleClassIds);
+
       return {
         subjects,
         topics,
-        assignments: assignments.filter((item) => visibleClassIds.includes(item.class_id)),
+        assignments,
         gradeItems: gradeItems.filter((item) => visibleClassIds.includes(item.class_id)),
       };
     },

@@ -33,9 +33,9 @@ export default function ChildOverviewHub({ schoolId, studentId }) {
   const { data: assignments = [], isLoading: loadingAssignments } = useQuery({
     queryKey: ['parent-child-assignments', schoolId, studentClasses],
     queryFn: async () => {
-      const classIds = new Set(studentClasses.map(c => c.id));
-      const all = await assignmentsData.where({ school_id: schoolId, status: 'published' });
-      return all.filter(a => classIds.has(a.class_id)).slice(0, 5);
+      const classIds = studentClasses.map(c => c.id);
+      const all = await assignmentsData.listPublishedForClasses(classIds);
+      return all.slice(0, 5);
     },
     enabled: !!schoolId && studentClasses.length > 0,
   });

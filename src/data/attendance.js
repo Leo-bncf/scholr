@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { rows, one, none } from './_query';
+import { rows, one, none, count } from './_query';
 
 /**
  * Attendance.
@@ -45,6 +45,17 @@ export function listForStudent(schoolId, studentId, { from, to } = {}) {
   if (from) q = q.gte('date', from);
   if (to) q = q.lte('date', to);
   return rows(q.order('date', { ascending: false }), 'attendance.listForStudent');
+}
+
+/** Head-count of records for a school, without transferring any rows. */
+export function countForSchool(schoolId) {
+  return count(
+    supabase
+      .from('attendance_records')
+      .select('id', { count: 'exact', head: true })
+      .eq('school_id', schoolId),
+    'attendance.countForSchool',
+  );
 }
 
 /**

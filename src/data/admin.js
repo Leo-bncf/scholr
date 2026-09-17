@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { rows, maybeOne, one, raise } from './_query';
+import { rows, maybeOne, one, raise, count } from './_query';
 
 /**
  * Platform administration: cross-school stats, the audit trail, and global
@@ -60,6 +60,14 @@ export function listAuditLogs({ limit = 500, schoolId, level } = {}) {
   if (schoolId) q = q.eq('school_id', schoolId);
   if (level) q = q.eq('level', level);
   return rows(q.order('created_at', { ascending: false }).limit(limit), 'admin.listAuditLogs');
+}
+
+/** Head-count of audit entries, without transferring any rows. */
+export function countAuditLogs({ schoolId, level } = {}) {
+  let q = supabase.from('audit_logs').select('id', { count: 'exact', head: true });
+  if (schoolId) q = q.eq('school_id', schoolId);
+  if (level) q = q.eq('level', level);
+  return count(q, 'admin.countAuditLogs');
 }
 
 export function recordAuditLog(entry) {

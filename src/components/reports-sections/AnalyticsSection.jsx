@@ -345,7 +345,7 @@ export default function AnalyticsSection() {
 
   const { data: behavior = [] } = useQuery({
     queryKey: ['analytics-behavior', schoolId],
-    queryFn: () => behaviorRecordsData.where({ school_id: schoolId }),
+    queryFn: () => behaviorRecordsData.countsByStudentAndType(schoolId),
     enabled: !!schoolId,
   });
 
@@ -369,7 +369,19 @@ export default function AnalyticsSection() {
   const filteredGrades = useMemo(() => grades.filter(g => filteredStudentIds.has(g.student_id) && (classFilter === 'all' || g.class_id === classFilter)), [grades, filteredStudentIds, classFilter]);
   const filteredAttendance = useMemo(() => attendance.filter(a => filteredStudentIds.has(a.student_id) && (classFilter === 'all' || a.class_id === classFilter)), [attendance, filteredStudentIds, classFilter]);
   const filteredPG = useMemo(() => predictedGrades.filter(p => filteredStudentIds.has(p.student_id)), [predictedGrades, filteredStudentIds]);
-  const filteredBehavior = useMemo(() => behavior.filter(b => filteredStudentIds.has(b.student_id)), [behavior, filteredStudentIds]);
+  /* Behaviour arrives pre-aggregated as one row per (student, type); summing
+     the counts of the students in scope gives the same totals the old
+     "filter every record" did, without shipping the records. */
+  const behaviorTotals = useMemo(() => {
+    const totals = { incident: 0, concern: 0, positive: 0, note: 0, total: 0 };
+    behavior.forEach(b => {
+      if (!filteredStudentIds.has(b.student_id)) return;
+      const n = b.count ?? 0;
+      totals[b.type] = (totals[b.type] || 0) + n;
+      totals.total += n;
+    });
+    return totals;
+  }, [behavior, filteredStudentIds]);
 
   // KPIs
   const students = useMemo(() => memberships.filter(m => m.role === 'student' && filteredStudentIds.has(m.user_id)), [memberships, filteredStudentIds]);
@@ -379,7 +391,7 @@ export default function AnalyticsSection() {
     : null;
   const presentCount = filteredAttendance.filter(a => a.status === 'present').length;
   const attRate = filteredAttendance.length > 0 ? ((presentCount / filteredAttendance.length) * 100).toFixed(1) : null;
-  const incidentCount = filteredBehavior.filter(b => b.type === 'incident').length;
+  const incidentCount = behaviorTotals.incident;
 
   return (
     <div className="space-y-4">
@@ -410,7 +422,7 @@ export default function AnalyticsSection() {
             <KpiCard icon={Users} label="Students" value={students.length} sub={`${filteredClasses.length} classes`} color="indigo" />
             <KpiCard icon={TrendingUp} label="Avg Score" value={avgScore ? `${avgScore}%` : '—'} sub={`${publishedGrades.length} grades`} color="violet" />
             <KpiCard icon={Activity} label="Attendance Rate" value={attRate ? `${attRate}%` : '—'} sub={`${filteredAttendance.length} records`} color="emerald" />
-            <KpiCard icon={AlertTriangle} label="Incidents" value={incidentCount} sub={`${filteredBehavior.length} total records`} color="rose" />
+            <KpiCard icon={AlertTriangle} label="Incidents" value={incidentCount} sub={`${behaviorTotals.total} total records`} color="rose" />
           </div>
 
           {/* Attendance trend + grade distribution */}
@@ -451,7 +463,7 @@ export default function AnalyticsSection() {
               { label: 'Notes', type: 'note', color: 'scholr-sunk scholr-muted scholr-rule' },
             ].map(({ label, type, color }) => (
               <div key={type} className={`rounded-xl border p-4 text-center ${color}`}>
-                <p className="text-2xl font-bold">{filteredBehavior.filter(b => b.type === type).length}</p>
+                <p className="text-2xl font-bold">{behaviorTotals[type] || 0}</p>
                 <p className="text-sm font-medium mt-1">{label} Behavior</p>
               </div>
             ))}
