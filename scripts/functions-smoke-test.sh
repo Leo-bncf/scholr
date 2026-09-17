@@ -236,8 +236,71 @@ ST=$($PSQLQ -tAc "select status from public.classes where id='cccccccc-0000-4000
 check "class is archived"         "archived" "$ST"
 
 echo
+echo "== verifyGoogleConnection =="
+$PSQL -q <<'SQL'
+insert into public.google_connections (id, school_id, user_id, user_email, status, token_expiry, created_at)
+values ('11111111-0000-4000-8000-000000000001','ffffffff-0000-4000-8000-00000000000f',
+        'f1000000-0000-4000-8000-000000000001','admin@fn-test.invalid','connected',
+        now() + interval '1 day', now());
+SQL
+GID='ffffffff-0000-4000-8000-00000000000f'
+r=$(call "$JWT_ADMIN" verifyGoogleConnection "{\"schoolId\":\"$GID\"}")
+check "connected connection is 200"        "200" "${r%%|*}"
+echo "$r" | grep -q '"status":"connected"' && echo "  PASS  connected status reported" || { echo "  FAIL  expected connected status, got ${r#*|}"; fail=$((fail+1)); }
+
+$PSQL -q <<'SQL'
+update public.google_connections set token_expiry = now() - interval '1 hour' where id='11111111-0000-4000-8000-000000000001';
+SQL
+r=$(call "$JWT_ADMIN" verifyGoogleConnection "{\"schoolId\":\"$GID\"}")
+check "expired connection is 200"          "200" "${r%%|*}"
+echo "$r" | grep -q '"status":"expired"' && echo "  PASS  expired status and reconnection flagged" || { echo "  FAIL  expected expired status, got ${r#*|}"; fail=$((fail+1)); }
+
+r=$(call "$JWT_STRANGER" verifyGoogleConnection "{\"schoolId\":\"$GID\"}")
+check "someone with no row is 200"        "200" "${r%%|*}"
+echo "$r" | grep -q '"status":"disconnected"' && echo "  PASS  disconnected reported for no connection" || { echo "  FAIL  expected disconnected, got ${r#*|}"; fail=$((fail+1)); }
+
+echo
+echo "== deploymentReady =="
+r=$(call "$JWT_ADMIN" deploymentReady '{}')
+check "school admin refused"        "403" "${r%%|*}"
+r=$(call "$JWT_SUPER" deploymentReady '{}')
+check "super admin allowed"         "200" "${r%%|*}"
+echo "$r" | grep -q '"readyForDeployment"' && echo "  PASS  readiness report returned" || { echo "  FAIL  expected readiness report, got ${r#*|}"; fail=$((fail+1)); }
+
+echo
+echo "== exportReportPDF =="
+$PSQL -q <<'SQL'
+insert into public.reports (id, school_id, report_type, title, generated_by, generated_by_name, student_id, report_data, status)
+values ('11110000-0000-4000-8000-0000000000aa','ffffffff-0000-4000-8000-00000000000f','term_report','FN Test Report',
+        'f1000000-0000-4000-8000-000000000001','FN Admin','f2000000-0000-4000-8000-000000000002',
+        '{"student_info":{"name":"FN Invitee","grade_level":"DP1"},"overall_summary":{"average_grade":85,"attendance_percentage":92},"subject_reports":[{"subject_name":"Math","percentage":85,"teacher_comment":"Good"}],"attendance_data":{"days_present":20,"total_days":22,"attendance_percentage":91}}'::jsonb,
+        'published');
+SQL
+
+pdfcall() { # jwt body outfile -> status
+  curl -s -m 30 -o "$3" -w '%{http_code}' -X POST "$FN/exportReportPDF" \
+    -H "apikey: $ANON_KEY" -H "Authorization: Bearer $1" \
+    -H 'Content-Type: application/json' -d "$2"
+}
+RID='11110000-0000-4000-8000-0000000000aa'
+code=$(pdfcall "$JWT_ADMIN" "{\"reportId\":\"$RID\"}" /tmp/scholr-fn-test.pdf)
+check "report PDF renders 200"    "200" "$code"
+head -c 4 /tmp/scholr-fn-test.pdf | grep -q '%PDF' && echo "  PASS  valid PDF magic bytes" || { echo "  FAIL  response is not a PDF"; fail=$((fail+1)); }
+
+code=$(pdfcall "$JWT_ADMIN" '{"reportId":null,"reporting_engine":{"title":"Builder","columns":[{"key":"className","label":"Class"},{"key":"averageScore","label":"Avg"}],"rows":[{"className":"Biology","averageScore":88}]}}' /tmp/scholr-fn-test2.pdf)
+check "builder table PDF renders 200" "200" "$code"
+head -c 4 /tmp/scholr-fn-test2.pdf | grep -q '%PDF' && echo "  PASS  builder PDF valid" || { echo "  FAIL  builder response is not a PDF"; fail=$((fail+1)); }
+
+code=$(pdfcall "$JWT_STRANGER" "{\"reportId\":\"$RID\"}" /tmp/scholr-fn-test3.pdf)
+check "non-member cannot export"  "403" "$code"
+code=$(pdfcall "$JWT_ADMIN" '{"reportId":"aaaaaaaa-0000-4000-8000-000000000000"}' /tmp/scholr-fn-test4.pdf)
+check "unknown report is 404"      "404" "$code"
+
+echo
 echo "== cleanup =="
 $PSQL -q <<'SQL'
+delete from public.reports where id='11110000-0000-4000-8000-0000000000aa';
+delete from public.google_connections where id='11111111-0000-4000-8000-000000000001';
 delete from public.user_invitations where email like '%@fn-test.invalid';
 delete from public.school_memberships where user_id in (
   select id from auth.users where email like '%@fn-test.invalid');
