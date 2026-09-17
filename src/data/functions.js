@@ -30,13 +30,41 @@ export const PORTED = new Set([
   'createAccountFromInvitation',
   'createCheckoutSession',
   'createCustomerPortalSession',
+  'verifyGoogleConnection',
+  'deploymentReady',
+  'exportReportPDF',
   // stripeWebhook is called by Stripe, never from the browser.
 ]);
+
+/**
+ * Why the still-unported functions are stuck. Everything here is a real
+ * configuration or semantic blocker — none of these can be made true with code
+ * alone, so they are surfaced rather than faked.
+ */
+const BLOCKERS = {
+  getGooglePickerToken:
+    'It needs Google Workspace OAuth credentials (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET and a refresh token) in the edge runtime to mint a Picker token — those are unset, so there is no access token to hand the Picker.',
+  googleDrivePicker:
+    'It needs Google Workspace OAuth credentials in the edge runtime to call the Drive API for file metadata — those are unset.',
+  googleDocsCreate:
+    'It needs Google Workspace OAuth credentials in the edge runtime to create files in Drive — those are unset.',
+  seedDemoData:
+    'It seeds a whole demo school including real auth accounts; the base44 spec predates the current schema (memberships now require a profiles row per user, and subjects use text ib_group codes), so it cannot be reconstructed 1:1 from the repo. The sanctioned path is scripts/seed-dev-school.sh on the server.',
+  seedSchoolDemoData:
+    'It creates demo memberships, which require real profiles/auth users in the current schema (school_memberships.user_id → profiles.id). base44 auto-provisioned users; porting it means provisioning auth users too. The sanctioned path is scripts/seed-dev-school.sh on the server.',
+  clearSchoolDemoData:
+    'It pairs with seedSchoolDemoData (safe deletion of [Demo]-tagged rows only), which is itself blocked on the demo-user provisioning above.',
+  generateReport:
+    'It aggregates grades/attendance/behaviour/IB records into `reports` rows. No current UI calls it, and base44\'s version predates the current schema, so it is a real (but deferred) port, not a config blocker.',
+  productionLaunchSign:
+    'base44\'s spec returned hardcoded launch status. There is no sign-off storage or real check behind it in the current schema, so a truthful port needs an agreed data model first. The only caller (ProductionLaunch.jsx) is not routed to any page.',
+};
 
 export class FunctionNotPortedError extends Error {
   constructor(name) {
     super(
-      `The "${name}" function has not been ported from base44 to Supabase yet, so this action cannot complete.`,
+      `The "${name}" function has not been ported from base44 to Supabase yet, so this action cannot complete.` +
+        (BLOCKERS[name] ? ` ${BLOCKERS[name]}` : ''),
     );
     this.name = 'FunctionNotPortedError';
     this.functionName = name;

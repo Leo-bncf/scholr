@@ -13,6 +13,7 @@ import * as fns from '@/data/functions';
 
 export default function ChildReporting({ schoolId, studentId, studentName }) {
   const [downloading, setDownloading] = useState(null);
+  const [downloadError, setDownloadError] = useState(null);
 
   // Fetch term reports
   const { data: reports = [], isLoading: reportsLoading } = useQuery({
@@ -68,23 +69,32 @@ export default function ChildReporting({ schoolId, studentId, studentName }) {
 
   const handleDownloadReport = async (reportId) => {
     setDownloading(reportId);
+    setDownloadError(null);
     try {
       const response = await fns.invoke('exportReportPDF', {
         reportId,
         studentId,
         schoolId,
       });
-      
-      if (response?.url) {
-        const link = document.createElement('a');
-        link.href = response.url;
-        link.download = `report-${reportId}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+
+      // The edge function returns the PDF itself (a Blob); base44's older
+      // shape returned `response.url`. Accept both so the button never
+      // silently does nothing if the transport of one of them changes.
+      const downloadUrl = response?.url || (response instanceof Blob ? URL.createObjectURL(response) : null);
+
+      if (!downloadUrl) {
+        throw new Error('The report PDF came back empty.');
       }
+
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = `report-${reportId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (error) {
       console.error('Failed to download report:', error);
+      setDownloadError(error?.message || 'Failed to download report.');
     } finally {
       setDownloading(null);
     }
@@ -122,6 +132,13 @@ export default function ChildReporting({ schoolId, studentId, studentName }) {
           <CardDescription>Download term reports, progress snapshots, and assessment summaries</CardDescription>
         </CardHeader>
         <CardContent>
+          {downloadError && (
+            <Alert className="mb-4">
+              <AlertDescription className="text-red-800">
+                Could not download the report: {downloadError}
+              </AlertDescription>
+            </Alert>
+          )}
           {reportsLoading ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="w-5 h-5 animate-spin scholr-faint" />
