@@ -280,7 +280,14 @@
 
 /* --- shared dashboard primitives ---------------------------------------- */
 
-.scholr-page { background: var(--paper); color: var(--body); font-family: var(--font-sans); }
+/* font-family: var(--font-display), not --font-sans — Erik's request that
+   all text match the hero's font. This is the one place the whole public
+   site's body-text font is set (everything inherits from here unless a
+   more specific rule overrides it, e.g. --font-mono labels and timetable
+   cells, which are untouched since they were never on --font-sans to
+   begin with — that's a functional monospace choice for tabular
+   alignment, a different question from "same font as the hero"). */
+.scholr-page { background: var(--paper); color: var(--body); font-family: var(--font-display); }
 
 .scholr-h1 {
   font-family: var(--font-display); font-weight: 600; font-style: normal;
@@ -502,7 +509,7 @@ body { background: var(--paper); color: var(--body); }
 }
 
 .pub-btn {
-  font-family: var(--font-sans); font-weight: 550; font-size: 0.88rem;
+  font-family: var(--font-display); font-weight: 550; font-size: 0.88rem;
   /* A rectangle with a small radius, not a pill. The fully-rounded button is
      the single most recognisable shape of 2020s SaaS marketing, and a page
      wearing it reads as generated before anyone reads a word of it. */
