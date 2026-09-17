@@ -73,10 +73,12 @@ export default function Landing() {
 
       {/* Was a full-bleed bar (section background + top hairline spanning the
           viewport). Now an inset "island": the section itself is a plain
-          layout container, and the coloured surface + green outline +
-          radius live on the inner max-width div instead, so it reads as a
-          distinct rounded card floating in the page rather than a band
-          that touches both edges. */}
+          layout container, and the coloured surface + radius live on the
+          inner max-width div instead, so it reads as a distinct rounded
+          card floating in the page rather than a band that touches both
+          edges. The green outline this card also had is gone again —
+          Erik's call, right after asking for it — the rounded shape
+          stays, just without a border drawing a line around it. */}
       <section
         aria-labelledby="roles-heading"
         style={{ padding: 'clamp(2.5rem, 6vw, 4rem) var(--space-md)' }}
@@ -85,7 +87,6 @@ export default function Landing() {
           style={{
             maxWidth: '72rem', margin: '0 auto',
             background: 'var(--surface)',
-            border: '1.5px solid var(--brand)',
             borderRadius: 'var(--radius-large)',
             padding: 'clamp(1.75rem, 5vw, 3rem)',
           }}
