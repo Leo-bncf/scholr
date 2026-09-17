@@ -62,14 +62,14 @@ export default function PricingTiersSection() {
       aria-labelledby="pricing-heading"
     >
       <div style={{ maxWidth: '68rem', margin: '0 auto', padding: '0 1.25rem' }}>
-        <p
-          style={{
-            fontFamily: 'var(--mkt-font-mono)', fontSize: '.72rem', letterSpacing: '.12em',
-            textTransform: 'uppercase', color: 'var(--mkt-ink-3)', margin: '0 0 .6rem',
-          }}
-        >
-          Pricing
-        </p>
+        {/* Dropped the "PRICING" eyebrow that used to sit here: it repeated
+            the nav's own "Pricing" link and the heading right below it, and
+            was the fourth uppercase-mono-label on this page (hero, this one,
+            "How that is made up", "Included, on every roll") — the same
+            device stamped four times reads as templated even though each
+            use was individually fine. The other three stay: they label a
+            timetable, a table and a list, which is a different job than
+            announcing a section that's already self-evident. */}
         <h2
           id="pricing-heading"
           style={{ fontSize: 'clamp(1.7rem, 3.6vw, 2.4rem)', lineHeight: 1.1, letterSpacing: '-0.028em', margin: '0 0 .7rem', textWrap: 'balance' }}

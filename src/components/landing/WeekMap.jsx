@@ -129,6 +129,7 @@ export default function WeekMap() {
           style={{
             margin: '0 0 .7rem', fontSize: 'clamp(1.9rem, 4.2vw, 2.9rem)',
             lineHeight: 1.08, letterSpacing: '-0.03em', maxWidth: '22ch',
+            color: 'var(--brand)',
           }}
         >
           This is a real school week. Your software should read it too.

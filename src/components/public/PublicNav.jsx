@@ -43,9 +43,19 @@ export default function PublicNav() {
 
   return (
     <div style={{ position: 'sticky', top: 0, zIndex: 50 }}>
-      {/* Gate 14: never animate padding — it's a layout property and every
-          frame costs a reflow. The bar keeps a fixed box and the inner pill
-          slides up into it on `transform`. */}
+      {/* Gate 14: never animate padding itself — it's a layout property and
+          every frame costs a reflow. Each state's padding is a fixed,
+          discrete value; the `transform` slide is what makes the swap
+          between them read as motion instead of a jump. Everything that
+          CAN animate cheaply (background, box-shadow, backdrop-filter,
+          border-radius, transform) is on one slower, shared duration
+          (560ms, up from 420ms) so the whole stuck/unstuck swap reads as
+          one graceful move rather than several properties arriving at
+          slightly different times. border-radius is constant across both
+          states (var(--radius-pill), full capsule — see the .pub-nav
+          comment) so there's nothing jarring about it being "in" the
+          transition list, it's just there so a future per-state value
+          wouldn't snap. */}
       <div style={{ padding: 'var(--space-2xs) var(--space-sm)' }}>
         <nav
           className={stuck ? 'pub-nav' : ''}
@@ -55,13 +65,18 @@ export default function PublicNav() {
             display: 'flex',
             alignItems: 'center',
             gap: '1.4rem',
-            padding: stuck ? undefined : 'var(--space-2xs) var(--space-2xs) var(--space-2xs) var(--space-3xs)',
+            padding: stuck ? undefined : 'var(--space-sm) var(--space-sm) var(--space-sm) var(--space-xs)',
             transform: stuck ? 'translateY(0)' : 'translateY(2px)',
-            transition:
-              'background var(--dur-long) var(--ease-out), box-shadow var(--dur-long) var(--ease-out), '
-              + 'border-color var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out)',
-            border: stuck ? undefined : '1px solid transparent',
             borderRadius: 'var(--radius-pill)',
+            // Same shadow layer count as .pub-nav's, just transparent — so
+            // box-shadow has something real to interpolate FROM instead of
+            // jumping from `none` to two layers on the class toggle.
+            boxShadow: stuck ? undefined : 'inset 0 1px 0 transparent, 0 0 0 transparent',
+            transition:
+              'background 560ms var(--ease-out), box-shadow 560ms var(--ease-out), '
+              + 'backdrop-filter 560ms var(--ease-out), border-color 560ms var(--ease-out), '
+              + 'border-radius 560ms var(--ease-out), transform 560ms var(--ease-out)',
+            border: stuck ? undefined : '1px solid transparent',
           }}
         >
           <Link to="/" className="scholr-focus" style={{ display: 'flex', alignItems: 'center', gap: '.55rem', textDecoration: 'none', flex: 'none' }}>
@@ -96,7 +111,19 @@ export default function PublicNav() {
             <button type="button" onClick={signIn} className="scholr-focus" style={{ background: 'none', border: 'none', font: 'inherit', fontSize: '.89rem', color: 'var(--body)', cursor: 'pointer' }}>
               Sign in
             </button>
-            <Link to="/BookDemo" className="pub-btn pub-btn-primary scholr-focus">Book a demo</Link>
+            {/* Rounded to match the now-pill nav bar around it — scoped to
+                this one instance via inline style, not a change to
+                .pub-btn-primary itself: every other CTA on the site (hero,
+                pricing, the closing CTA band) keeps the site-wide
+                rectangle-with-small-radius button language. Same routing,
+                same onClick-free <Link to="/BookDemo">, just the corners. */}
+            <Link
+              to="/BookDemo"
+              className="pub-btn pub-btn-primary scholr-focus"
+              style={{ borderRadius: 'var(--radius-pill)' }}
+            >
+              Book a demo
+            </Link>
           </div>
 
           <button

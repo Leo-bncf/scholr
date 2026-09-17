@@ -467,23 +467,38 @@ body { background: var(--paper); color: var(--body); }
 }
 .pub-ruled > * { position: relative; }
 
-/* The masthead, once the page has scrolled.
+/* The nav bar, once the page has scrolled.
  *
- * This was a floating pill: fully-rounded, blurred glass, its own shadow,
- * detached from the page and sliding up on scroll. It is Hallmark nav
- * archetype N5, and it has become the single most recognisable piece of
- * 2020s SaaS chrome — a page wearing one announces its genre before a word
- * is read.
+ * This went through three shapes: a floating pill (Hallmark nav archetype
+ * N5 — the single most recognisable piece of 2020s SaaS chrome), then a
+ * deliberate full-width masthead specifically to avoid that, then a
+ * moderate var(--radius-surface) softening at Erik's request, and now back
+ * to a full var(--radius-pill) capsule at his further, explicit request —
+ * "more circular." The .pub-btn CTA inside is rounded to match it (see
+ * the inline style on that Link in PublicNav.jsx) rather than this file,
+ * since that's scoped to the nav's one instance, not every button on the
+ * site. Horizontal padding bumped up alongside the radius change — a
+ * pill's rounded ends want more side breathing room than a rectangle did.
  *
- * What replaces it is a masthead: full width, no radius, no shadow, one
- * hairline under it. A newspaper or a memo has a masthead; it does not have
- * a floating capsule. The paper stays behind it, lightly veiled, so text
- * scrolling underneath does not collide with the links. */
+ * The paper stays behind it, lightly veiled, so text scrolling underneath
+ * does not collide with the links. */
 .pub-nav {
   display: flex; align-items: center; gap: 1.4rem;
-  background: color-mix(in oklab, var(--paper) 88%, transparent);
-  backdrop-filter: saturate(180%) blur(12px);
+  /* Progressively more transparent + glossier across two requests: paper
+     opacity 88% -> 58% -> 42%, blur and saturation both up, and a
+     hairline inset highlight along the top edge (the way light catches
+     real glass) rather than another coloured glow. */
+  padding: var(--space-xs) var(--space-lg);
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--paper) 42%, transparent);
+  /* Blur pushed up alongside the opacity drop, not instead of it — more
+     transparent needs more blur to keep link text legible over whatever
+     busy content (the map, a blob) happens to be scrolling underneath. */
+  backdrop-filter: saturate(200%) blur(22px);
   border-bottom: 1px solid var(--rule);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 55%, transparent),
+    var(--lift-sm);
 }
 
 .pub-btn {
@@ -574,9 +589,14 @@ body { background: var(--paper); color: var(--body); }
 @keyframes reveal { to { opacity: 1; transform: none; } }
 
 /* Scroll-revealed blocks. The class is added by IntersectionObserver; the
-   element is visible without it, so a failed observer can never hide content. */
+   element is visible without it, so a failed observer can never hide content.
+   data-from='up' (default, every existing use via <Section>) keeps the
+   original vertical rise. data-from='right' is new — Landing only — slides
+   in from the right instead, so the scroll down the page isn't the same
+   single vertical motion on every section. */
 .rise { transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out); }
-.rise[data-rise='pending'] { opacity: 0; transform: translateY(14px); }
+.rise[data-from='up'][data-rise='pending'] { opacity: 0; transform: translateY(14px); }
+.rise[data-from='right'][data-rise='pending'] { opacity: 0; transform: translateX(34px); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -585,7 +605,10 @@ body { background: var(--paper); color: var(--body); }
     transition-duration: 150ms !important;
   }
   .reveal { transform: none; animation-delay: 0ms; }
-  .rise[data-rise='pending'] { transform: none; }
+  .rise[data-from='up'][data-rise='pending'],
+  .rise[data-from='right'][data-rise='pending'] {
+    transform: none;
+  }
 }
 
 /* Workbench rhythm. `wide` runs the capture full measure; the aside layouts
@@ -978,9 +1001,13 @@ a.app-row:hover, button.app-row:hover { background: color-mix(in oklab, var(--in
 .pricing-calc__range { width: 100%; margin-top: .7rem; accent-color: var(--brand); }
 
 .pricing-calc__preset {
+  /* var(--radius-control), not --radius-pill: .pub-btn rejected the fully-
+     rounded shape deliberately (see its own comment above) — these presets
+     are buttons too, and a pill here contradicted that choice everywhere
+     else on the page. */
   font: inherit; font-size: .78rem; padding: .22rem .6rem; cursor: pointer;
   color: var(--mkt-ink-2); background: var(--mkt-paper);
-  border: 1px solid var(--mkt-rule); border-radius: var(--radius-pill);
+  border: 1px solid var(--mkt-rule); border-radius: var(--radius-control);
 }
 .pricing-calc__preset[aria-pressed='true'] { border-color: var(--brand); color: var(--brand); }
 

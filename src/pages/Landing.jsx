@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PublicShell from '@/components/public/PublicShell';
 import ConsentModal from '@/components/public/ConsentModal';
+import Rise from '@/components/public/Rise';
 import WeekMap from '@/components/landing/WeekMap';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
+import ZoomableShot from '@/components/landing/ZoomableShot';
 import SHOTS from '@/marketing/manifest.json';
 
 /**
@@ -66,6 +68,45 @@ export default function Landing() {
 
   return (
     <PublicShell>
+      {/* Erik: back to the original idea — not a shape at all, a glow.
+          Every version since (border-radius blob, hand-drawn SVG blob,
+          even the halo+core bloom) was still a FILLED SHAPE with blur on
+          top, and a blurred fill always keeps a perceptible boundary once
+          you look for it. This is a radial gradient instead — colour
+          fades smoothly to full transparency across four stops, so there
+          is no edge to blur in the first place. That's what actually
+          reads as "a bulb of light behind glass" rather than a shape.
+          A modest blur on top adds the frosted-glass softness, but it is
+          no longer doing the work of hiding an edge. Fixed to the
+          viewport, -z-10 + `isolate` on PublicShell — same reasoning as
+          every prior iteration. Motion is drift + rotation on the outer
+          wrapper and a small hover-bob on the inner glow; nothing morphs
+          a silhouette anymore, because there isn't one. */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
+        <div className="mkt-blob-drift-a absolute -bottom-16 -left-16 h-[30rem] w-[30rem] sm:h-[38rem] sm:w-[38rem]">
+          <div
+            className="mkt-blob-a h-full w-full rounded-full blur-2xl"
+            style={{
+              background:
+                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 72%, transparent) 0%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 42%, transparent) 32%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 16%, transparent) 58%, transparent 78%)',
+            }}
+          />
+        </div>
+        <div className="mkt-blob-drift-b absolute -right-16 -top-16 h-[28rem] w-[28rem] sm:h-[36rem] sm:w-[36rem]">
+          <div
+            className="mkt-blob-b h-full w-full rounded-full blur-2xl"
+            style={{
+              background:
+                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 64%, transparent) 0%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 36%, transparent) 32%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 13%, transparent) 58%, transparent 78%)',
+            }}
+          />
+        </div>
+      </div>
+
       <WeekMap />
 
       <section
@@ -87,20 +128,21 @@ export default function Landing() {
             The same week, from four desks.
           </h2>
 
+          {/* Each screenshot is click-to-zoom (ZoomableShot) — a real
+              1320x840 capture is illegible at this grid width, and the
+              zoom is the only way to actually read one without leaving
+              the page. Staggered <Rise from="right"> per card: entrance
+              only, same IntersectionObserver/reveal-once mechanism as
+              every other Rise on the site — no layout, spacing or design
+              changed, just the direction and timing they arrive in. */}
           <div className="landing-roles">
-            {ROLES.map((r) => (
-              <figure key={r.key} style={{ margin: 0 }}>
-                <img
+            {ROLES.map((r, i) => (
+              <Rise as="figure" from="right" delay={i * 90} key={r.key} style={{ margin: 0 }}>
+                <ZoomableShot
                   src={SHOTS[r.key]}
                   alt={`${r.who} view in Scholr`}
                   width="1320"
                   height="840"
-                  loading="lazy"
-                  decoding="async"
-                  style={{
-                    width: '100%', height: 'auto', display: 'block',
-                    border: '1px solid var(--rule)', borderRadius: '4px',
-                  }}
                 />
                 <figcaption style={{ marginTop: '.5rem' }}>
                   <span
@@ -116,7 +158,7 @@ export default function Landing() {
                     {r.line}
                   </span>
                 </figcaption>
-              </figure>
+              </Rise>
             ))}
           </div>
 
@@ -138,7 +180,7 @@ export default function Landing() {
         style={{ padding: 'clamp(2.5rem, 6vw, 4rem) var(--space-md)', borderTop: '1px solid var(--rule)' }}
       >
         <div style={{ maxWidth: '72rem', margin: '0 auto', display: 'grid', gap: 'var(--space-lg) var(--space-2xl)', gridTemplateColumns: 'repeat(auto-fit, minmax(min(26rem, 100%), 1fr))' }}>
-          <div>
+          <Rise from="right">
             <h2
               id="what-it-is-heading"
               style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--ink)' }}
@@ -156,9 +198,9 @@ export default function Landing() {
               eventually sees and the same mark a report is built from. Nothing is re-keyed between
               a gradebook and a report, because there is only one place the number lives.
             </p>
-          </div>
+          </Rise>
 
-          <div>
+          <Rise from="right" delay={90}>
             <h2 style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--ink)' }}>
               What a second programme costs you elsewhere
             </h2>
@@ -174,9 +216,9 @@ export default function Landing() {
               stores each mark in the shape its programme expects — which is why the reports come out
               right in July rather than needing a spreadsheet to fix.
             </p>
-          </div>
+          </Rise>
 
-          <div>
+          <Rise from="right" delay={180}>
             <h2 style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--ink)' }}>
               What it does not do yet
             </h2>
@@ -192,7 +234,7 @@ export default function Landing() {
               our other product, and the automatic sync between them is not live. We would rather you
               found this here than in week three.
             </p>
-          </div>
+          </Rise>
         </div>
       </section>
 
@@ -204,7 +246,7 @@ export default function Landing() {
           borderTop: '1px solid var(--rule)',
         }}
       >
-        <div style={{ maxWidth: '72rem', margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 'var(--space-md)' }}>
+        <Rise from="right" style={{ maxWidth: '72rem', margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 'var(--space-md)' }}>
           <p style={{ margin: 0, fontSize: '1.15rem', letterSpacing: '-0.015em', color: 'var(--ink)', maxWidth: '34ch' }}>
             Bring us your own timetable and we will walk through it.
           </p>
@@ -212,7 +254,7 @@ export default function Landing() {
             <Link to="/BookDemo" className="pub-btn pub-btn-primary scholr-focus">Book a demo</Link>
             <Link to="/demo" className="pub-btn pub-btn-line scholr-focus">Open the sandbox</Link>
           </div>
-        </div>
+        </Rise>
       </section>
 
       <ConsentModal isOpen={showConsent} onClose={() => setShowConsent(false)} />
