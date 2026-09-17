@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
 import Rise from './Rise';
 import useLightTheme from './useLightTheme';
 import PublicNav from './PublicNav';
@@ -66,9 +66,21 @@ export default function PublicShell({ children }) {
   // element. `useScroll()` with no `target` tracks window scroll directly.
   // Opposite signs on the two blobs (A drifts down with scroll, B drifts
   // up) so they separate rather than moving as one unit.
+  //
+  // Raw scroll * factor (the previous version) is a flat, linear follow —
+  // every pixel of scroll produces exactly proportional motion, which
+  // reads as smooth, not frantic. useSpring wraps that target in spring
+  // physics instead: low damping relative to stiffness means it overshoots
+  // and wobbles past the target on every scroll-direction change rather
+  // than tracking it directly, which is what actually reads as energetic/
+  // erratic rather than a calm trailing lag. Factors themselves also
+  // roughly doubled for "even bigger."
   const { scrollY } = useScroll();
-  const parallaxA = useTransform(scrollY, (v) => (reduced ? 0 : v * 0.18));
-  const parallaxB = useTransform(scrollY, (v) => (reduced ? 0 : v * -0.14));
+  const rawParallaxA = useTransform(scrollY, (v) => (reduced ? 0 : v * 0.32));
+  const rawParallaxB = useTransform(scrollY, (v) => (reduced ? 0 : v * -0.28));
+  const springConfig = { stiffness: 180, damping: 9, mass: 0.4 };
+  const parallaxA = useSpring(rawParallaxA, springConfig);
+  const parallaxB = useSpring(rawParallaxB, springConfig);
 
   return (
     // isolate: gives this element its own stacking context, so its own
@@ -104,10 +116,16 @@ export default function PublicShell({ children }) {
           <div
             className="mkt-blob-a h-full w-full rounded-full blur-2xl"
             style={{
+              // Peak opacity brought down from 72/42/16 — the bigger
+              // parallax swing means the glow now actually passes over
+              // headings and body copy, and text colour here is the same
+              // green family as the glow, so a strong core reduced
+              // contrast right where they overlapped. Confirmed the fix
+              // by screenshotting the exact scroll depth that showed it.
               background:
-                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 72%, transparent) 0%, '
-                + 'color-mix(in oklab, var(--mkt-accent) 42%, transparent) 32%, '
-                + 'color-mix(in oklab, var(--mkt-accent) 16%, transparent) 58%, transparent 78%)',
+                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 38%, transparent) 0%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 22%, transparent) 32%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 9%, transparent) 58%, transparent 78%)',
             }}
           />
         </div>
@@ -118,9 +136,9 @@ export default function PublicShell({ children }) {
             className="mkt-blob-b h-full w-full rounded-full blur-2xl"
             style={{
               background:
-                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 64%, transparent) 0%, '
-                + 'color-mix(in oklab, var(--mkt-accent) 36%, transparent) 32%, '
-                + 'color-mix(in oklab, var(--mkt-accent) 13%, transparent) 58%, transparent 78%)',
+                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 34%, transparent) 0%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 19%, transparent) 32%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 8%, transparent) 58%, transparent 78%)',
             }}
           />
         </div>

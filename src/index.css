@@ -182,40 +182,49 @@
    blurred shape always keeps a findable edge). No `d` or `border-radius`
    morph anymore: there's no silhouette to morph. Motion is just the
    outer wrapper's drift + rotation and the inner glow's small hover-bob. */
+/* Frantic, not smooth: an overshoot curve (back-out flavour) instead of
+   --mkt-ease-in-out, more keyframe stops with sharp direction reversals
+   instead of one gentle there-and-back arc, and shorter durations. */
 @keyframes mkt-blob-in {
   from { opacity: 0; }
 }
 @keyframes mkt-blob-drift-a {
   0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
-  33%  { transform: translate(54px, -42px) rotate(8deg) scale(1.16); }
-  66%  { transform: translate(20px, 30px) rotate(-5deg) scale(0.92); }
+  20%  { transform: translate(78px, -60px) rotate(15deg) scale(1.24); }
+  40%  { transform: translate(32px, 48px) rotate(-11deg) scale(0.82); }
+  60%  { transform: translate(-44px, -22px) rotate(17deg) scale(1.14); }
+  80%  { transform: translate(58px, 18px) rotate(-7deg) scale(0.93); }
   100% { transform: translate(0, 0) rotate(0deg) scale(1); }
 }
 @keyframes mkt-blob-drift-b {
   0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
-  33%  { transform: translate(-48px, 38px) rotate(-9deg) scale(0.86); }
-  66%  { transform: translate(-18px, -26px) rotate(6deg) scale(1.1); }
+  20%  { transform: translate(-66px, 54px) rotate(-16deg) scale(0.8); }
+  40%  { transform: translate(-28px, -44px) rotate(12deg) scale(1.2); }
+  60%  { transform: translate(48px, 27px) rotate(-15deg) scale(0.88); }
+  80%  { transform: translate(-52px, -12px) rotate(8deg) scale(1.08); }
   100% { transform: translate(0, 0) rotate(0deg) scale(1); }
 }
 @keyframes mkt-blob-hover {
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-24px); }
+  25%      { transform: translateY(-36px); }
+  50%      { transform: translateY(12px); }
+  75%      { transform: translateY(-22px); }
 }
 .mkt-blob-drift-a {
-  animation: mkt-blob-drift-a 15s var(--mkt-ease-in-out) infinite;
+  animation: mkt-blob-drift-a 9s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
 }
 .mkt-blob-drift-b {
-  animation: mkt-blob-drift-b 18s var(--mkt-ease-in-out) infinite;
+  animation: mkt-blob-drift-b 11s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
 }
 .mkt-blob-a {
   animation:
     mkt-blob-in 1.1s var(--mkt-ease-out) forwards,
-    mkt-blob-hover 5s ease-in-out 1.1s infinite;
+    mkt-blob-hover 3.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) 1.1s infinite;
 }
 .mkt-blob-b {
   animation:
     mkt-blob-in 1.3s var(--mkt-ease-out) 0.15s forwards,
-    mkt-blob-hover 5.6s ease-in-out 1.85s infinite reverse;
+    mkt-blob-hover 3.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) 1.85s infinite reverse;
 }
 @media (prefers-reduced-motion: reduce) {
   .mkt-blob-a,
