@@ -71,15 +71,25 @@ export default function Landing() {
           it, not just this one. See that file for the implementation. */}
       <WeekMap />
 
+      {/* Was a full-bleed bar (section background + top hairline spanning the
+          viewport). Now an inset "island": the section itself is a plain
+          layout container, and the coloured surface + green outline +
+          radius live on the inner max-width div instead, so it reads as a
+          distinct rounded card floating in the page rather than a band
+          that touches both edges. */}
       <section
         aria-labelledby="roles-heading"
-        style={{
-          padding: 'clamp(2.5rem, 6vw, 4rem) var(--space-md)',
-          borderTop: '1px solid var(--rule)',
-          background: 'var(--surface)',
-        }}
+        style={{ padding: 'clamp(2.5rem, 6vw, 4rem) var(--space-md)' }}
       >
-        <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+        <div
+          style={{
+            maxWidth: '72rem', margin: '0 auto',
+            background: 'var(--surface)',
+            border: '1.5px solid var(--brand)',
+            borderRadius: 'var(--radius-large)',
+            padding: 'clamp(1.75rem, 5vw, 3rem)',
+          }}
+        >
           <h2
             id="roles-heading"
             style={{
