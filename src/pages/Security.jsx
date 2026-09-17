@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Seo from '@/components/public/Seo';
-import PublicShell, { Section, CTA, RuledList } from '@/components/public/PublicShell';
+import { Section, CTA, RuledList } from '@/components/public/PublicShell';
 import StatusChip from '@/components/app/StatusChip';
 import { ArrowRight } from 'lucide-react';
 
@@ -49,7 +49,7 @@ const ROADMAP = [
 
 export default function Security() {
   return (
-    <PublicShell>
+    <>
       <Seo
         title="Security"
         description="How tenant separation works in Scholr, enforced as a row-level security policy in Postgres — and a plain list of what we have not built yet."
@@ -190,6 +190,6 @@ export default function Security() {
           </span>
         </div>
       </Section>
-    </PublicShell>
+    </>
   );
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Seo from '@/components/public/Seo';
-import PublicShell, { Section, CTA } from '@/components/public/PublicShell';
+import { Section, CTA } from '@/components/public/PublicShell';
 import StatusChip from '@/components/app/StatusChip';
 import Meter from '@/components/app/Meter';
 import { ArrowRight } from 'lucide-react';
@@ -189,7 +189,7 @@ const FEATURES = [
 
 export default function Features() {
   return (
-    <PublicShell>
+    <>
       <Seo
         title="Platform"
         description="What Scholr does, screen by screen: role-specific dashboards, assignments end to end, multi-framework gradebooks, the family portal and the IB Core."
@@ -261,6 +261,6 @@ No feature list padded to look longer. If something is not built yet, it is on t
           </Link>
         </p>
       </Section>
-    </PublicShell>
+    </>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Seo from '@/components/public/Seo';
-import PublicShell, { Section } from '@/components/public/PublicShell';
+import { Section } from '@/components/public/PublicShell';
 import * as demoRequests from '@/data/demoRequests';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 
@@ -70,7 +70,7 @@ export default function Demo() {
   };
 
   return (
-    <PublicShell>
+    <>
       <Seo
         title="Book a demo"
         description="Thirty minutes against your own timetable and mark scheme, with one of the two people who build it. No slide deck and no sales team."
@@ -198,6 +198,6 @@ export default function Demo() {
           </div>
         </div>
       </Section>
-    </PublicShell>
+    </>
   );
 }

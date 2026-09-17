@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import PublicShell, { Section, CTA, RuledList } from '@/components/public/PublicShell';
+import { Section, CTA, RuledList } from '@/components/public/PublicShell';
 import Seo from '@/components/public/Seo';
 import { ArrowRight } from 'lucide-react';
 
@@ -21,7 +21,7 @@ const HOW = [
 
 export default function About() {
   return (
-    <PublicShell>
+    <>
       <Seo
         title="About"
         description="Scholr is school-management software for international schools, built in Ireland by the two people who also build Schedual. Self-hosted in Europe, no third-party tracking."
@@ -114,6 +114,6 @@ export default function About() {
           <span style={{ marginLeft: 'auto' }}><CTA to="/Contact">Email us <ArrowRight className="w-4 h-4" /></CTA></span>
         </div>
       </Section>
-    </PublicShell>
+    </>
   );
 }

@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import Rise from './Rise';
 import useLightTheme from './useLightTheme';
 import PublicNav from './PublicNav';
@@ -7,9 +9,53 @@ import PublicFooter from './PublicFooter';
 /**
  * Every public page, wrapped the same way. Pages used to each assemble their
  * own nav and footer, which is how the two navbars diverged.
+ *
+ * Now mounted once by PublicShellLayout (see that file) instead of once per
+ * page, so nav/glow/footer persist across navigation between these pages —
+ * see below for why that also drives the page-transition direction.
  */
+
+// Rough left-to-right order of the public pages — nav link order first
+// (Platform/Features, Curricula's four curriculum pages, Pricing, Security,
+// Timetabling/Schedual), everything else after. Only used to decide which
+// way a transition slides; a page not in this list (there isn't one, but
+// belt-and-braces) just gets a plain crossfade via routeIndex's fallback.
+const ROUTE_ORDER = [
+  '/', '/Features',
+  '/ib-school-management-software', '/igcse-school-management-software',
+  '/a-level-school-management-software', '/us-school-management-software',
+  '/Pricing', '/Security', '/Schedual',
+  '/About', '/FAQ', '/Contact', '/BookDemo',
+  '/PrivacyPolicy', '/TermsOfService',
+];
+
+function routeIndex(pathname) {
+  const i = ROUTE_ORDER.indexOf(pathname);
+  return i === -1 ? ROUTE_ORDER.length : i;
+}
+
+const slideVariants = {
+  enter: (dir) => ({ opacity: 0, x: dir === 0 ? 0 : dir > 0 ? 24 : -24 }),
+  center: { opacity: 1, x: 0 },
+  exit: (dir) => ({ opacity: 0, x: dir > 0 ? -24 : dir < 0 ? 24 : 0 }),
+};
+
 export default function PublicShell({ children }) {
   useLightTheme();
+  const location = useLocation();
+  const reduced = useReducedMotion();
+
+  // Ref, not state: reading the PREVIOUS render's index during THIS render
+  // is exactly what decides direction, and updating it in an effect (which
+  // runs after commit) is what keeps it holding the old value long enough
+  // to be read that way — see the comment at the effect below.
+  const prevIndexRef = useRef(routeIndex(location.pathname));
+  const currentIndex = routeIndex(location.pathname);
+  const direction = Math.sign(currentIndex - prevIndexRef.current);
+
+  useEffect(() => {
+    prevIndexRef.current = currentIndex;
+  }, [currentIndex]);
 
   return (
     // isolate: gives this element its own stacking context, so its own
@@ -60,7 +106,28 @@ export default function PublicShell({ children }) {
       </div>
 
       <PublicNav />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1">
+        {reduced ? (
+          // motion.md: spatial motion collapses to nothing for reduced
+          // motion, not a faster version of itself — no AnimatePresence,
+          // no slide, the new page is just there.
+          children
+        ) : (
+          <AnimatePresence mode="wait" initial={false} custom={direction}>
+            <motion.div
+              key={location.pathname}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
+        )}
+      </main>
       <PublicFooter />
     </div>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Seo from '@/components/public/Seo';
-import PublicShell, { Section, CTA } from '@/components/public/PublicShell';
+import { Section, CTA } from '@/components/public/PublicShell';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
 import { ArrowRight } from 'lucide-react';
 
@@ -25,7 +25,7 @@ const QUESTIONS = [
 
 export default function Pricing() {
   return (
-    <PublicShell>
+    <>
       <Seo
         title="Pricing"
         description="One rate per enrolled student per year, from €13.99 to €20.99 by capacity band. Staff, admin and parent accounts are free and uncounted. No setup fee."
@@ -72,6 +72,6 @@ export default function Pricing() {
           </Link>
         </p>
       </Section>
-    </PublicShell>
+    </>
   );
 }

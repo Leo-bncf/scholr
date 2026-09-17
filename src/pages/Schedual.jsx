@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import PublicShell, { Section, CTA, RuledList } from '@/components/public/PublicShell';
+import { Section, CTA, RuledList } from '@/components/public/PublicShell';
 import Seo from '@/components/public/Seo';
 import StatusChip from '@/components/app/StatusChip';
 import { SCHEDUAL_HOME, SCHEDUAL_PAGES, SCHEDUAL_BY_CURRICULUM } from '@/components/public/schedual';
@@ -66,7 +66,7 @@ const STATUS = [
 
 export default function Schedual() {
   return (
-    <PublicShell>
+    <>
       <Seo
         title="Schedual — the timetabling half"
         description="Scholr and Schedual are built by the same two people in Ireland: Schedual solves the timetable, Scholr runs the school year around it. What each does, how they fit, and exactly where the sync stands."
@@ -199,6 +199,6 @@ export default function Schedual() {
           <CTA to="/BookDemo">Book one call for both <ArrowRight className="w-4 h-4" /></CTA>
         </div>
       </Section>
-    </PublicShell>
+    </>
   );
 }

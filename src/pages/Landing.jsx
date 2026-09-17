@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import PublicShell from '@/components/public/PublicShell';
 import ConsentModal from '@/components/public/ConsentModal';
 import Rise from '@/components/public/Rise';
 import WeekMap from '@/components/landing/WeekMap';
@@ -67,7 +66,7 @@ export default function Landing() {
   }, []);
 
   return (
-    <PublicShell>
+    <>
       {/* Background glow now lives in PublicShell — every public page gets
           it, not just this one. See that file for the implementation. */}
       <WeekMap />
@@ -221,6 +220,6 @@ export default function Landing() {
       </section>
 
       <ConsentModal isOpen={showConsent} onClose={() => setShowConsent(false)} />
-    </PublicShell>
+    </>
   );
 }

@@ -50,10 +50,21 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { ImpersonationProvider } from '@/components/auth/ImpersonationContext';
 import { UserProvider } from '@/components/auth/UserContext';
 import ImpersonationBanner from '@/components/auth/ImpersonationBanner';
+import PublicShellLayout from '@/components/public/PublicShellLayout';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
+
+/* These pages all render inside one persistent PublicShell (nav + background
+ * glow + footer) via the pathless layout route below, instead of each
+ * mounting its own — see PublicShellLayout for why. Excluded from the
+ * generic pagesConfig loop further down so they aren't registered twice. */
+const PUBLIC_SHELL_PAGE_KEYS = [
+  'Features', 'Pricing', 'Security', 'Contact', 'BookDemo', 'About', 'FAQ', 'Schedual',
+  'ib-school-management-software', 'igcse-school-management-software',
+  'a-level-school-management-software', 'us-school-management-software',
+];
 
 const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -102,11 +113,22 @@ const AuthenticatedApp = () => {
   return (
     <Suspense fallback={<RouteFallback />}>
     <Routes>
-      <Route path="/" element={
-        <LayoutWrapper currentPageName={mainPageKey}>
-          <MainPage />
-        </LayoutWrapper>
-      } />
+      {/* One persistent PublicShell (nav + background glow + footer) for
+          every marketing/public page, instead of each page mounting its
+          own — see PublicShellLayout. A pathless layout route: it
+          contributes no path segment of its own, so each child's path
+          below is exactly the same URL it always was. PrivacyPolicy and
+          TermsOfService move in here too, next to their standalone routes
+          further down previously. */}
+      <Route element={<PublicShellLayout />}>
+        <Route path="/" element={<MainPage />} />
+        {PUBLIC_SHELL_PAGE_KEYS.map((path) => {
+          const Page = Pages[path];
+          return <Route key={path} path={`/${path}`} element={<Page />} />;
+        })}
+        <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
+        <Route path="/TermsOfService" element={<TermsOfService />} />
+      </Route>
       {/* The interactive sandbox. These come before the pagesConfig loop, and
           because React Router matches case-insensitively they also claim /Demo,
           /DEMO and so on. The lead-capture form is therefore registered as
@@ -120,17 +142,19 @@ const AuthenticatedApp = () => {
       <Route path="/demo/parent" element={<DemoParent />} />
       <Route path="/demo/parent/assignment/:assignmentId" element={<DemoParentAssignment />} />
       <Route path="/demo/leader" element={<DemoLeader />} />
-      {Object.entries(Pages).map(([path, Page]) => (
-        <Route
-          key={path}
-          path={`/${path}`}
-          element={
-            <LayoutWrapper currentPageName={path}>
-              <Page />
-            </LayoutWrapper>
-          }
-        />
-      ))}
+      {Object.entries(Pages)
+        .filter(([path]) => !PUBLIC_SHELL_PAGE_KEYS.includes(path))
+        .map(([path, Page]) => (
+          <Route
+            key={path}
+            path={`/${path}`}
+            element={
+              <LayoutWrapper currentPageName={path}>
+                <Page />
+              </LayoutWrapper>
+            }
+          />
+        ))}
       <Route
         path="/SuperAdminAnalytics"
         element={
@@ -280,22 +304,6 @@ const AuthenticatedApp = () => {
         element={
           <LayoutWrapper currentPageName="ReportingEngine">
             <SchoolAdminRedirect />
-          </LayoutWrapper>
-        }
-      />
-      <Route
-        path="/PrivacyPolicy"
-        element={
-          <LayoutWrapper currentPageName="PrivacyPolicy">
-            <PrivacyPolicy />
-          </LayoutWrapper>
-        }
-      />
-      <Route
-        path="/TermsOfService"
-        element={
-          <LayoutWrapper currentPageName="TermsOfService">
-            <TermsOfService />
           </LayoutWrapper>
         }
       />
