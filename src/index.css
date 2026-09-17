@@ -71,6 +71,14 @@
     --mkt-rule:        oklch(87%   0.02  145);
     --mkt-accent:      oklch(54%   0.19  145);
     --mkt-accent-ink:  oklch(99%   0.01  145);
+    /* Erik's call: water the green down with a little yellow "in some
+       places," since gold is also in the logo. Reuses --gold (the same
+       token the logo dot and the primary button already carry, defined in
+       scholr-theme.css) rather than inventing a new hue — one blob (A) gets
+       this warmed variant, the other (B) stays pure --mkt-accent, so the
+       glow reads as two temperatures rather than the whole background
+       shifting hue. */
+    --mkt-accent-warm: color-mix(in oklab, var(--mkt-accent) 80%, var(--gold) 20%);
     --mkt-focus:       oklch(56%   0.17  145);
     --mkt-dark:        oklch(19%   0.03  150);
     --mkt-dark-ink:    oklch(96%   0.012 145);

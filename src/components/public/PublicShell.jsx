@@ -122,10 +122,13 @@ export default function PublicShell({ children }) {
               // green family as the glow, so a strong core reduced
               // contrast right where they overlapped. Confirmed the fix
               // by screenshotting the exact scroll depth that showed it.
+              //
+              // This blob (not B) carries the warmed gold-in-green variant
+              // — see --mkt-accent-warm in index.css.
               background:
-                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 38%, transparent) 0%, '
-                + 'color-mix(in oklab, var(--mkt-accent) 22%, transparent) 32%, '
-                + 'color-mix(in oklab, var(--mkt-accent) 9%, transparent) 58%, transparent 78%)',
+                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent-warm) 38%, transparent) 0%, '
+                + 'color-mix(in oklab, var(--mkt-accent-warm) 22%, transparent) 32%, '
+                + 'color-mix(in oklab, var(--mkt-accent-warm) 9%, transparent) 58%, transparent 78%)',
             }}
           />
         </div>
