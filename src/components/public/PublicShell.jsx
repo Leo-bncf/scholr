@@ -15,10 +15,50 @@ export default function PublicShell({ children }) {
     // isolate: gives this element its own stacking context, so its own
     // background counts as that context's step-1 paint rather than being
     // lumped in with ordinary in-flow content at step-3. Without it, a
-    // negative-z-index descendant (the landing bloom) painted BEHIND this
-    // div's own background and vanished entirely — z-index alone can't fix
-    // that, the missing piece is the stacking-context boundary itself.
+    // negative-z-index descendant (the background glow below) painted
+    // BEHIND this div's own background and vanished entirely — z-index
+    // alone can't fix that, the missing piece is the stacking-context
+    // boundary itself.
     <div className="scholr-page min-h-screen flex flex-col isolate">
+      {/* Background glow — was Landing-only, moved here at Erik's request
+          so every public page gets it, not just the one. Not a shape: a
+          radial gradient fading smoothly to full transparency across four
+          colour-mix stops, so there's no edge for the blur on top to hide
+          — that's what reads as "a bulb of light behind glass" rather
+          than a blurred shape (every earlier shaped version — border-
+          radius blob, hand-drawn SVG blob, halo+core bloom — kept a
+          findable boundary no matter how much blur). Fixed to the
+          viewport, so it holds its screen position on every page as the
+          page scrolls beneath it. -z-10 + the `isolate` above keep it
+          behind normal content but above the page's own background.
+          Motion is drift + rotation on the outer wrapper and a small
+          hover-bob on the inner glow — nothing morphs a silhouette,
+          because there isn't one. */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
+        <div className="mkt-blob-drift-a absolute -bottom-16 -left-16 h-[30rem] w-[30rem] sm:h-[38rem] sm:w-[38rem]">
+          <div
+            className="mkt-blob-a h-full w-full rounded-full blur-2xl"
+            style={{
+              background:
+                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 72%, transparent) 0%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 42%, transparent) 32%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 16%, transparent) 58%, transparent 78%)',
+            }}
+          />
+        </div>
+        <div className="mkt-blob-drift-b absolute -right-16 -top-16 h-[28rem] w-[28rem] sm:h-[36rem] sm:w-[36rem]">
+          <div
+            className="mkt-blob-b h-full w-full rounded-full blur-2xl"
+            style={{
+              background:
+                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 64%, transparent) 0%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 36%, transparent) 32%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 13%, transparent) 58%, transparent 78%)',
+            }}
+          />
+        </div>
+      </div>
+
       <PublicNav />
       <main className="flex-1">{children}</main>
       <PublicFooter />

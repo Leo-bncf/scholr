@@ -68,45 +68,8 @@ export default function Landing() {
 
   return (
     <PublicShell>
-      {/* Erik: back to the original idea — not a shape at all, a glow.
-          Every version since (border-radius blob, hand-drawn SVG blob,
-          even the halo+core bloom) was still a FILLED SHAPE with blur on
-          top, and a blurred fill always keeps a perceptible boundary once
-          you look for it. This is a radial gradient instead — colour
-          fades smoothly to full transparency across four stops, so there
-          is no edge to blur in the first place. That's what actually
-          reads as "a bulb of light behind glass" rather than a shape.
-          A modest blur on top adds the frosted-glass softness, but it is
-          no longer doing the work of hiding an edge. Fixed to the
-          viewport, -z-10 + `isolate` on PublicShell — same reasoning as
-          every prior iteration. Motion is drift + rotation on the outer
-          wrapper and a small hover-bob on the inner glow; nothing morphs
-          a silhouette anymore, because there isn't one. */}
-      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
-        <div className="mkt-blob-drift-a absolute -bottom-16 -left-16 h-[30rem] w-[30rem] sm:h-[38rem] sm:w-[38rem]">
-          <div
-            className="mkt-blob-a h-full w-full rounded-full blur-2xl"
-            style={{
-              background:
-                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 72%, transparent) 0%, '
-                + 'color-mix(in oklab, var(--mkt-accent) 42%, transparent) 32%, '
-                + 'color-mix(in oklab, var(--mkt-accent) 16%, transparent) 58%, transparent 78%)',
-            }}
-          />
-        </div>
-        <div className="mkt-blob-drift-b absolute -right-16 -top-16 h-[28rem] w-[28rem] sm:h-[36rem] sm:w-[36rem]">
-          <div
-            className="mkt-blob-b h-full w-full rounded-full blur-2xl"
-            style={{
-              background:
-                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 64%, transparent) 0%, '
-                + 'color-mix(in oklab, var(--mkt-accent) 36%, transparent) 32%, '
-                + 'color-mix(in oklab, var(--mkt-accent) 13%, transparent) 58%, transparent 78%)',
-            }}
-          />
-        </div>
-      </div>
-
+      {/* Background glow now lives in PublicShell — every public page gets
+          it, not just this one. See that file for the implementation. */}
       <WeekMap />
 
       <section
