@@ -5,7 +5,7 @@ import ConsentModal from '@/components/public/ConsentModal';
 import Rise from '@/components/public/Rise';
 import WeekMap from '@/components/landing/WeekMap';
 import PricingTiersSection from '@/components/landing/PricingTiersSection';
-import RolesScrollReveal from '@/components/landing/RolesScrollReveal';
+import ZoomableShot from '@/components/landing/ZoomableShot';
 import SHOTS from '@/marketing/manifest.json';
 
 /**
@@ -131,11 +131,36 @@ export default function Landing() {
           {/* Each screenshot is click-to-zoom (ZoomableShot) — a real
               1320x840 capture is illegible at this grid width, and the
               zoom is the only way to actually read one without leaving
-              the page. RolesScrollReveal pins this grid and drives each
-              card in from the right as you scroll (scroll-linked, not a
-              one-time trigger) — see that component for why. Same grid,
-              same four cards, same captions; only how they arrive changed. */}
-          <RolesScrollReveal roles={ROLES} shots={SHOTS} />
+              the page. Staggered <Rise from="right"> per card: entrance
+              only, same IntersectionObserver/reveal-once mechanism as
+              every other Rise on the site — no layout, spacing or design
+              changed, just the direction and timing they arrive in. */}
+          <div className="landing-roles">
+            {ROLES.map((r, i) => (
+              <Rise as="figure" from="right" delay={i * 90} key={r.key} style={{ margin: 0 }}>
+                <ZoomableShot
+                  src={SHOTS[r.key]}
+                  alt={`${r.who} view in Scholr`}
+                  width="1320"
+                  height="840"
+                />
+                <figcaption style={{ marginTop: '.5rem' }}>
+                  <span
+                    className="scholr-num"
+                    style={{
+                      display: 'block', fontFamily: 'var(--font-mono)', fontSize: '.64rem',
+                      letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--brand)',
+                    }}
+                  >
+                    {r.who}
+                  </span>
+                  <span style={{ display: 'block', marginTop: '.2rem', fontSize: '.84rem', lineHeight: 1.5, color: 'var(--muted)' }}>
+                    {r.line}
+                  </span>
+                </figcaption>
+              </Rise>
+            ))}
+          </div>
 
           <p style={{ margin: 'var(--space-lg) 0 0', fontSize: '.9rem', color: 'var(--muted)', maxWidth: '58ch' }}>
             Separation is a row-level security policy in Postgres, not a filter in the
