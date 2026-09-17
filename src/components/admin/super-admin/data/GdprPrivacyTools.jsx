@@ -12,18 +12,22 @@ import * as assessmentSubmissionsData from '@/data/assessmentSubmissions';
 import * as reportsData from '@/data/reports';
 import * as casExperiencesData from '@/data/casExperiences';
 import * as parentStudentLinksData from '@/data/parentStudentLinks';
+import * as academicsData from '@/data/academics';
+import * as classesData from '@/data/classes';
+import * as adminData from '@/data/admin';
 import * as fns from '@/data/functions';
 import {
   ShieldAlert, Search, Loader2, Trash2, EyeOff, CheckCircle2,
   AlertCircle, UserX, FileX, User, BookOpen, ClipboardList,
-  FileText, Sparkles, Link2
+  FileText, Sparkles, Link2, Users, GraduationCap, ScrollText
 } from 'lucide-react';
 
 function UserDataSummary({ result }) {
   if (!result) return null;
   const {
     memberships, submissions, messages, attendance, behavior,
-    gradeItems, assessmentSubmissions, reports, casExperiences, parentLinks
+    gradeItems, assessmentSubmissions, reports, casExperiences, parentLinks,
+    cohortMemberships, classRosters, auditEntries
   } = result;
   const rows = [
     { label: 'School Memberships', count: memberships, icon: User },
@@ -36,6 +40,9 @@ function UserDataSummary({ result }) {
     { label: 'Reports', count: reports, icon: FileText },
     { label: 'CAS Experiences', count: casExperiences, icon: Sparkles },
     { label: 'Parent Links', count: parentLinks, icon: Link2 },
+    { label: 'Cohort Memberships', count: cohortMemberships, icon: Users },
+    { label: 'Class Rosters', count: classRosters, icon: GraduationCap },
+    { label: 'Audit Log Entries', count: auditEntries, icon: ScrollText },
   ];
   return (
     <div className="mt-3 border scholr-rule rounded-md overflow-hidden">
@@ -96,6 +103,15 @@ export default function GdprPrivacyTools() {
       parentStudentLinksData.where({ parent_id: userId }),
       parentStudentLinksData.where({ student_id: userId }),
     ]);
+    // Array memberships (cohorts.student_ids, classes.student_ids) and the
+    // audit trail are resolved per school / per user, not by a single column.
+    const [cohortBySchool, rosterBySchool] = await Promise.all([
+      Promise.all(memberships.map(m => academicsData.listCohortsForStudent(m.school_id, userId))),
+      Promise.all(memberships.map(m => classesData.listForStudent(m.school_id, userId))),
+    ]);
+    const cohortIds = cohortBySchool.flat().map(c => c.id);
+    const classRosterIds = rosterBySchool.flat().map(c => c.id);
+    const auditEntries = await adminData.listAuditLogsForUser(userId, { email: email.trim() });
     setFound({ userId, email: email.trim(), memberships });
     setSummary({
       memberships: memberships.length,
@@ -108,6 +124,9 @@ export default function GdprPrivacyTools() {
       reports: reports.length,
       casExperiences: casExperiences.length,
       parentLinks: parentLinks.length + childLinks.length,
+      cohortMemberships: cohortIds.length,
+      classRosters: classRosterIds.length,
+      auditEntries: auditEntries.length,
       submissionIds: submissions.map(s => s.id),
       attendanceIds: attendance.map(a => a.id),
       behaviorIds: behavior.map(b => b.id),
@@ -118,6 +137,8 @@ export default function GdprPrivacyTools() {
       casExperienceIds: casExperiences.map(c => c.id),
       parentLinkIds: parentLinks.map(l => l.id),
       childLinkIds: childLinks.map(l => l.id),
+      cohortIds,
+      classRosterIds,
     });
     setSearching(false);
   };
@@ -167,7 +188,10 @@ export default function GdprPrivacyTools() {
     for (const id of summary.childLinkIds) {
       await parentStudentLinksData.update(id, { student_name: anonName });
     }
-    const updatedCount = summary.membershipIds.length + summary.submissionIds.length + summary.attendanceIds.length + summary.behaviorIds.length + summary.gradeItemIds.length + summary.assessmentSubmissionIds.length + summary.reportIds.length + summary.casExperienceIds.length + summary.parentLinkIds.length + summary.childLinkIds.length;
+    // Anonymize the audit trail rather than deleting it: the entries must
+    // survive legal scrutiny, but with the subject's identity stripped.
+    const auditAnonymised = await adminData.anonymiseAuditLogsForUser(found.userId, { email: found.email, anonEmail });
+    const updatedCount = summary.membershipIds.length + summary.submissionIds.length + summary.attendanceIds.length + summary.behaviorIds.length + summary.gradeItemIds.length + summary.assessmentSubmissionIds.length + summary.reportIds.length + summary.casExperienceIds.length + summary.parentLinkIds.length + summary.childLinkIds.length + auditAnonymised;
     setActionResult({ type: 'success', message: `User data anonymized. ${updatedCount} records updated.` });
     setAnonymizing(false);
     setFound(null);
@@ -189,19 +213,40 @@ export default function GdprPrivacyTools() {
     for (const id of summary.casExperienceIds) await casExperiencesData.remove(id);
     for (const id of summary.parentLinkIds) await parentStudentLinksData.remove(id);
     for (const id of summary.childLinkIds) await parentStudentLinksData.remove(id);
+    // Cohorts and class rosters hold the student's id in arrays; erasure means
+    // removing that reference from each row, not deleting the row itself.
+    let referencesRemoved = 0;
+    for (const id of summary.cohortIds) referencesRemoved += await academicsData.removeCohortMember(id, found.userId);
+    for (const id of summary.classRosterIds) referencesRemoved += await classesData.removeStudentRoster(id, found.userId);
+    // The audit trail survives, with the subject's identity stripped.
+    const auditAnonymised = await adminData.anonymiseAuditLogsForUser(found.userId, { email: found.email, anonEmail: `anon_${found.userId.slice(-6)}@redacted.invalid` });
     const total = summary.membershipIds.length + summary.submissionIds.length + summary.attendanceIds.length + summary.behaviorIds.length + summary.gradeItemIds.length + summary.assessmentSubmissionIds.length + summary.reportIds.length + summary.casExperienceIds.length + summary.parentLinkIds.length + summary.childLinkIds.length;
     let authNote = '';
+    let authOk = false;
     try {
       const res = await fns.invoke('superAdminDeleteUser', { userId: found.userId });
       const errMsg = res?.error;
       const failures = res?.failures || [];
       if (errMsg) throw new Error(errMsg);
       if (failures.length > 0) throw new Error(failures[0].error || 'Delete failed');
-      authNote = ' Their auth record was also deleted.';
+      if (!res || res.success !== true) throw new Error('no confirmation returned');
+      // The function also erases the user's remaining own records (account
+      // state, notifications, Google connection, predicted grades, EE
+      // milestones) so the auth delete is unobstructed — reflect that in the
+      // count instead of pretending it didn't happen.
+      const extraDeleted = Object.values(res?.extraDeleted ?? {}).reduce((a, b) => a + b, 0);
+      let deletedNote = `${total + extraDeleted} records permanently deleted for this user.`;
+      const fileErrors = res?.fileErrors || [];
+      if (res?.filesRemoved > 0) deletedNote += ` ${res.filesRemoved} stored file(s) removed.`;
+      if (fileErrors.length > 0) deletedNote += ` ${fileErrors.length} stored-file batch(es) failed to remove.`;
+      if (referencesRemoved > 0) deletedNote += ` ${referencesRemoved} cohort/class roster reference(s) removed.`;
+      if (auditAnonymised > 0) deletedNote += ` ${auditAnonymised} audit entr${auditAnonymised === 1 ? 'y' : 'ies'} anonymised.`;
+      authNote = `${deletedNote} Their auth record was also deleted.`;
+      authOk = true;
     } catch (err) {
-      authNote = ' Their auth record could not be deleted (' + (err?.message || 'unexpected error') + ').';
+      authNote = `${total} records permanently deleted for this user. Their auth record could not be deleted (` + (err?.message || 'unexpected error') + ').';
     }
-    setActionResult({ type: 'success', message: `${total} records permanently deleted for this user.${authNote}` });
+    setActionResult({ type: authOk ? 'success' : 'error', message: authNote });
     setDeleting(false);
     setFound(null);
     setSummary(null);
