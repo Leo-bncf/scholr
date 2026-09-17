@@ -394,12 +394,12 @@ export default function SuperAdminSettings() {
             title="Integration Management"
             description="Monitor external integrations across the platform."
           >
-            <IntegrationStatusCard />
+            <IntegrationStatusCard integrationSettings={formData.integration_settings} />
           </ConfigSectionCard>
 
           <ConfigSectionCard
             title="System Health"
-            description="Live metrics for API performance, errors, and uptime."
+            description="Uptime, database and connection metrics are read live from Postgres on the Health page."
           >
             <SystemHealthPanel />
           </ConfigSectionCard>
@@ -413,7 +413,7 @@ export default function SuperAdminSettings() {
 
           <ConfigSectionCard
             title="Maintenance Mode"
-            description="Put the platform or individual schools into maintenance mode."
+            description="Suspend individual schools to block their logins. There is no platform-wide maintenance flag."
           >
             <MaintenanceModePanel schools={schools} />
           </ConfigSectionCard>

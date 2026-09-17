@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertTriangle, Loader2, ShieldAlert } from 'lucide-react';
+import { Loader2, ShieldAlert } from 'lucide-react';
 import * as schoolsData from '@/data/schools';
 
 export default function MaintenanceModePanel({ schools }) {
-  const [platformMaintenance, setPlatformMaintenance] = useState(false);
   const [schoolMaintenance, setSchoolMaintenance] = useState({});
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -39,26 +38,9 @@ export default function MaintenanceModePanel({ schools }) {
         </Alert>
       )}
 
-      <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
-        <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
-        <div>
-          <p className="text-sm font-semibold text-amber-800">Platform-Wide Maintenance Mode</p>
-          <p className="text-xs text-amber-700 mt-1">Enabling this will display a maintenance notice to all users across all schools. It does not suspend any accounts.</p>
-          <div className="flex items-center gap-3 mt-3">
-            <Switch
-              checked={platformMaintenance}
-              onCheckedChange={setPlatformMaintenance}
-            />
-            <span className="text-sm font-medium text-amber-800">
-              {platformMaintenance ? 'Maintenance mode ON' : 'Maintenance mode OFF'}
-            </span>
-          </div>
-        </div>
-      </div>
-
       <div>
         <p className="text-sm font-semibold scholr-ink mb-1">School-Level Maintenance</p>
-        <p className="text-xs scholr-muted mb-3">Toggle individual schools into suspended state. This will prevent logins for users of that school.</p>
+        <p className="text-xs scholr-muted mb-3">Toggle individual schools into suspended state. This will prevent logins for users of that school. There is no platform-wide maintenance flag on this server, so this panel only controls per-school state.</p>
         <div className="border scholr-rule rounded-lg divide-y scholr-divide max-h-64 overflow-y-auto">
           {schools.length === 0 ? (
             <p className="text-sm scholr-muted p-4">No schools found.</p>

@@ -7,20 +7,35 @@ import * as submissionsData from '@/data/submissions';
 import * as messagesData from '@/data/messages';
 import * as attendanceData from '@/data/attendance';
 import * as behaviorRecordsData from '@/data/behaviorRecords';
+import * as gradebookData from '@/data/gradebook';
+import * as assessmentSubmissionsData from '@/data/assessmentSubmissions';
+import * as reportsData from '@/data/reports';
+import * as casExperiencesData from '@/data/casExperiences';
+import * as parentStudentLinksData from '@/data/parentStudentLinks';
+import * as fns from '@/data/functions';
 import {
   ShieldAlert, Search, Loader2, Trash2, EyeOff, CheckCircle2,
-  AlertCircle, UserX, FileX, User
+  AlertCircle, UserX, FileX, User, BookOpen, ClipboardList,
+  FileText, Sparkles, Link2
 } from 'lucide-react';
 
 function UserDataSummary({ result }) {
   if (!result) return null;
-  const { memberships, submissions, messages, attendance, behavior } = result;
+  const {
+    memberships, submissions, messages, attendance, behavior,
+    gradeItems, assessmentSubmissions, reports, casExperiences, parentLinks
+  } = result;
   const rows = [
     { label: 'School Memberships', count: memberships, icon: User },
     { label: 'Assignment Submissions', count: submissions, icon: FileX },
     { label: 'Messages Sent', count: messages, icon: FileX },
     { label: 'Attendance Records', count: attendance, icon: FileX },
     { label: 'Behavior Records', count: behavior, icon: FileX },
+    { label: 'Grade Items', count: gradeItems, icon: BookOpen },
+    { label: 'Assessment Submissions', count: assessmentSubmissions, icon: ClipboardList },
+    { label: 'Reports', count: reports, icon: FileText },
+    { label: 'CAS Experiences', count: casExperiences, icon: Sparkles },
+    { label: 'Parent Links', count: parentLinks, icon: Link2 },
   ];
   return (
     <div className="mt-3 border scholr-rule rounded-md overflow-hidden">
@@ -65,11 +80,21 @@ export default function GdprPrivacyTools() {
       return;
     }
     const userId = memberships[0].user_id;
-    const [submissions, messages, attendance, behavior] = await Promise.all([
+    const [
+      submissions, messages, attendance, behavior,
+      gradeItems, assessmentSubmissions, reports, casExperiences,
+      parentLinks, childLinks,
+    ] = await Promise.all([
       submissionsData.where({ student_id: userId }),
       messagesData.where({ sender_id: userId }),
       attendanceData.whereRecords({ student_id: userId }),
       behaviorRecordsData.where({ student_id: userId }),
+      gradebookData.whereGradeItems({ student_id: userId }),
+      assessmentSubmissionsData.where({ student_id: userId }),
+      reportsData.where({ student_id: userId }),
+      casExperiencesData.where({ student_id: userId }),
+      parentStudentLinksData.where({ parent_id: userId }),
+      parentStudentLinksData.where({ student_id: userId }),
     ]);
     setFound({ userId, email: email.trim(), memberships });
     setSummary({
@@ -78,10 +103,21 @@ export default function GdprPrivacyTools() {
       messages: messages.length,
       attendance: attendance.length,
       behavior: behavior.length,
+      gradeItems: gradeItems.length,
+      assessmentSubmissions: assessmentSubmissions.length,
+      reports: reports.length,
+      casExperiences: casExperiences.length,
+      parentLinks: parentLinks.length + childLinks.length,
       submissionIds: submissions.map(s => s.id),
       attendanceIds: attendance.map(a => a.id),
       behaviorIds: behavior.map(b => b.id),
       membershipIds: memberships.map(m => m.id),
+      gradeItemIds: gradeItems.map(g => g.id),
+      assessmentSubmissionIds: assessmentSubmissions.map(a => a.id),
+      reportIds: reports.map(r => r.id),
+      casExperienceIds: casExperiences.map(c => c.id),
+      parentLinkIds: parentLinks.map(l => l.id),
+      childLinkIds: childLinks.map(l => l.id),
     });
     setSearching(false);
   };
@@ -108,7 +144,31 @@ export default function GdprPrivacyTools() {
     for (const id of summary.behaviorIds) {
       await behaviorRecordsData.update(id, { student_name: anonName });
     }
-    setActionResult({ type: 'success', message: `User data anonymized. ${summary.membershipIds.length + summary.submissionIds.length + summary.attendanceIds.length + summary.behaviorIds.length} records updated.` });
+    // Anonymize grade items
+    for (const id of summary.gradeItemIds) {
+      await gradebookData.update(id, { student_name: anonName });
+    }
+    // Anonymize assessment submissions
+    for (const id of summary.assessmentSubmissionIds) {
+      await assessmentSubmissionsData.update(id, { student_name: anonName });
+    }
+    // Anonymize reports
+    for (const id of summary.reportIds) {
+      await reportsData.update(id, { student_name: anonName });
+    }
+    // Anonymize CAS experiences
+    for (const id of summary.casExperienceIds) {
+      await casExperiencesData.update(id, { student_name: anonName });
+    }
+    // Anonymize parent links on whichever side the subject is linked
+    for (const id of summary.parentLinkIds) {
+      await parentStudentLinksData.update(id, { parent_name: anonName });
+    }
+    for (const id of summary.childLinkIds) {
+      await parentStudentLinksData.update(id, { student_name: anonName });
+    }
+    const updatedCount = summary.membershipIds.length + summary.submissionIds.length + summary.attendanceIds.length + summary.behaviorIds.length + summary.gradeItemIds.length + summary.assessmentSubmissionIds.length + summary.reportIds.length + summary.casExperienceIds.length + summary.parentLinkIds.length + summary.childLinkIds.length;
+    setActionResult({ type: 'success', message: `User data anonymized. ${updatedCount} records updated.` });
     setAnonymizing(false);
     setFound(null);
     setSummary(null);
@@ -123,8 +183,25 @@ export default function GdprPrivacyTools() {
     for (const id of summary.submissionIds) await submissionsData.remove(id);
     for (const id of summary.attendanceIds) await attendanceData.remove(id);
     for (const id of summary.behaviorIds) await behaviorRecordsData.remove(id);
-    const total = summary.membershipIds.length + summary.submissionIds.length + summary.attendanceIds.length + summary.behaviorIds.length;
-    setActionResult({ type: 'success', message: `${total} records permanently deleted for this user.` });
+    for (const id of summary.gradeItemIds) await gradebookData.remove(id);
+    for (const id of summary.assessmentSubmissionIds) await assessmentSubmissionsData.remove(id);
+    for (const id of summary.reportIds) await reportsData.remove(id);
+    for (const id of summary.casExperienceIds) await casExperiencesData.remove(id);
+    for (const id of summary.parentLinkIds) await parentStudentLinksData.remove(id);
+    for (const id of summary.childLinkIds) await parentStudentLinksData.remove(id);
+    const total = summary.membershipIds.length + summary.submissionIds.length + summary.attendanceIds.length + summary.behaviorIds.length + summary.gradeItemIds.length + summary.assessmentSubmissionIds.length + summary.reportIds.length + summary.casExperienceIds.length + summary.parentLinkIds.length + summary.childLinkIds.length;
+    let authNote = '';
+    try {
+      const res = await fns.invoke('superAdminDeleteUser', { userId: found.userId });
+      const errMsg = res?.error;
+      const failures = res?.failures || [];
+      if (errMsg) throw new Error(errMsg);
+      if (failures.length > 0) throw new Error(failures[0].error || 'Delete failed');
+      authNote = ' Their auth record was also deleted.';
+    } catch (err) {
+      authNote = ' Their auth record could not be deleted (' + (err?.message || 'unexpected error') + ').';
+    }
+    setActionResult({ type: 'success', message: `${total} records permanently deleted for this user.${authNote}` });
     setDeleting(false);
     setFound(null);
     setSummary(null);

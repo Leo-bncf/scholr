@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { CheckCircle2, Loader2, Send } from 'lucide-react';
+import * as email from '@/data/email';
 
 export default function AnnouncementsPanel({ schools }) {
   const [subject, setSubject] = useState('');
@@ -34,27 +35,42 @@ export default function AnnouncementsPanel({ schools }) {
         ? schools
         : schools.filter((s) => selectedSchoolIds.includes(s.id));
 
-    // Get school admin emails from their billing_email field or send to all
+    // Recipients come from stored school records, not from anything typed here.
     const emails = targetSchools
       .map((s) => s.billing_email || s.email)
       .filter(Boolean);
 
+    if (emails.length === 0) {
+      setError('None of the selected schools have a contact email address on record.');
+      setSending(false);
+      return;
+    }
+
+    const failures = [];
     await Promise.all(
-      emails.map((email) =>
-        email.send({
-          to: email,
-          subject,
-          body,
-        })
-      )
+      emails.map(async (recipient) => {
+        try {
+          await email.send({ to: recipient, subject: subject.trim(), body: body.trim() });
+        } catch (sendError) {
+          failures.push({ recipient, message: sendError.message || String(sendError) });
+        }
+      })
     );
 
     setSending(false);
-    setSent(true);
-    setSubject('');
-    setBody('');
-    setSelectedSchoolIds([]);
-    setTimeout(() => setSent(false), 3000);
+
+    if (failures.length === 0) {
+      setSent(true);
+      setSubject('');
+      setBody('');
+      setSelectedSchoolIds([]);
+      setTimeout(() => setSent(false), 3000);
+    } else {
+      setError(
+        `Email could not be sent to ${failures.length} of ${emails.length} address(es).`
+        + ` ${failures[0].message}`
+      );
+    }
   };
 
   return (
