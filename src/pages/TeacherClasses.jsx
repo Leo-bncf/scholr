@@ -6,12 +6,8 @@ import { useUser } from '@/components/auth/UserContext';
 import { LayoutDashboard, BookOpen, MessageSquare, Loader2, Users } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import * as classesData from '@/data/classes';
+import { getAppSidebarLinks } from '@/components/app/sidebarLinks';
 
-const sidebarLinks = [
-  { label: 'Dashboard', page: 'TeacherDashboard', icon: LayoutDashboard },
-  { label: 'My Classes', page: 'TeacherClasses', icon: BookOpen },
-  { label: 'Messages', page: 'Messages', icon: MessageSquare },
-];
 
 export default function TeacherClasses() {
   const { user, school, schoolId } = useUser();
@@ -34,7 +30,7 @@ export default function TeacherClasses() {
   return (
     <RoleGuard allowedRoles={['teacher', 'school_admin', 'super_admin', 'admin']}>
       <div className="min-h-screen scholr-sunk">
-        <AppSidebar links={sidebarLinks} role="teacher" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
+        <AppSidebar links={getAppSidebarLinks('teacher')} role="teacher" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
         <main className="app-offset p-8">
           <div className="max-w-7xl mx-auto">
             <div className="mb-6">
