@@ -100,10 +100,7 @@ export default function StudentAttendance() {
 
   const { data: classes = [], isLoading: loadingClasses } = useQuery({
     queryKey: ['student-classes', schoolId, user?.id],
-    queryFn: async () => {
-      const all = await classesData.where({ school_id: schoolId, status: 'active' });
-      return all.filter(c => c.student_ids?.includes(user.id));
-    },
+    queryFn: () => classesData.listForStudent(schoolId, user.id),
     enabled: !!schoolId && !!user?.id,
   });
 

@@ -1,43 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
+import AppShell, { Group, Row, GroupEmpty, Segmented } from '@/components/app/AppShell';
+import StatCard from '@/components/app/StatCard';
+import StatRow from '@/components/app/StatRow';
+import StatusChip from '@/components/app/StatusChip';
 import CASProgressOverview from '@/components/ibcore/CASProgressOverview';
 import CASExperienceCard from '@/components/ibcore/CASExperienceCard';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Star, Plus, Loader2, Filter, FileText, Clock,
-  CheckCircle2, Upload, BookOpen
-} from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { getStudentSidebarLinks } from '@/components/app/studentSidebarLinks';
 import * as casExperiencesData from '@/data/casExperiences';
 import * as tokTasksData from '@/data/tokTasks';
 import * as eeMilestonesData from '@/data/eeMilestones';
 
-const milestoneOrder = ['initial_proposal', 'first_meeting', 'research_planning', 'first_draft', 'interim_reflection', 'second_draft', 'final_draft', 'viva_voce'];
+const milestoneOrder = [
+  'initial_proposal', 'first_meeting', 'research_planning', 'first_draft',
+  'interim_reflection', 'second_draft', 'final_draft', 'viva_voce'
+];
+
 const milestoneLabels = {
-  initial_proposal: 'Initial Proposal', first_meeting: 'First Supervision Meeting',
-  research_planning: 'Research Planning', first_draft: 'First Draft',
-  interim_reflection: 'Interim Reflection (RPPF)', second_draft: 'Second Draft',
-  final_draft: 'Final Draft', viva_voce: 'Viva Voce',
-};
-const tokTaskLabels = {
-  exhibition_planning: 'Exhibition Planning', exhibition_draft: 'Exhibition Draft',
-  exhibition_final: 'Exhibition Final', essay_planning: 'Essay Planning',
-  essay_draft: 'Essay Draft', essay_final: 'Essay Final',
-  presentation: 'Presentation', reflection: 'Reflection', reading: 'Reading', other: 'Other',
-};
-const statusColors = {
-  pending: 'bg-amber-100 text-amber-700', submitted: 'bg-blue-100 text-blue-700',
-  reviewed: 'scholr-accent-sf scholr-accent', graded: 'bg-green-100 text-green-700',
-  approved: 'bg-green-100 text-green-700', needs_revision: 'bg-red-100 text-red-700',
+  initial_proposal: 'Initial Proposal',
+  first_meeting: 'First Supervision Meeting',
+  research_planning: 'Research Planning',
+  first_draft: 'First Draft',
+  interim_reflection: 'Interim Reflection (RPPF)',
+  second_draft: 'Second Draft',
+  final_draft: 'Final Draft',
+  viva_voce: 'Viva Voce',
 };
 
-// ─── CAS Tab ──────────────────────────────────────────────────────────────────
-function CASTab({ schoolId, userId }) {
+const tokTaskLabels = {
+  exhibition_planning: 'Exhibition Planning',
+  exhibition_draft: 'Exhibition Draft',
+  exhibition_final: 'Exhibition Final',
+  essay_planning: 'Essay Planning',
+  essay_draft: 'Essay Draft',
+  essay_final: 'Essay Final',
+  presentation: 'Presentation',
+  reflection: 'Reflection',
+  reading: 'Reading',
+  other: 'Other',
+};
+
+// ─── CAS View ─────────────────────────────────────────────────────────────────
+function CASView({ schoolId, userId }) {
   const [filterStrand, setFilterStrand] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
 
@@ -54,67 +64,146 @@ function CASTab({ schoolId, userId }) {
   });
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
       <CASProgressOverview experiences={experiences} />
 
-      <div className="bg-white rounded-xl border scholr-rule p-5">
-        <h3 className="font-semibold scholr-ink mb-3 text-sm">IB CAS Requirements</h3>
-        <ul className="space-y-1.5 text-sm scholr-muted">
-          {[
-            'Complete experiences across all three strands (Creativity, Activity, Service)',
-            'Demonstrate achievement of the seven CAS learning outcomes',
-            'Undertake at least one CAS project (collaborative, sustained, with a real outcome)',
-            'Provide evidence and reflections for all experiences',
-          ].map((r, i) => (
-            <li key={i} className="flex items-start gap-2">
-              <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1.5 flex-shrink-0" />
-              {r}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <Group
+        title="My CAS Experiences"
+        action={
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2xs)' }}>
+            <select
+              value={filterStrand}
+              onChange={e => setFilterStrand(e.target.value)}
+              className="scholr-focus"
+              style={{
+                fontSize: '0.78rem',
+                padding: '0.2rem 0.5rem',
+                borderRadius: '6px',
+                border: '1px solid var(--rule)',
+                background: 'var(--surface)',
+                color: 'var(--ink)',
+              }}
+            >
+              <option value="all">All Strands</option>
+              <option value="creativity">Creativity</option>
+              <option value="activity">Activity</option>
+              <option value="service">Service</option>
+            </select>
+            <select
+              value={filterStatus}
+              onChange={e => setFilterStatus(e.target.value)}
+              className="scholr-focus"
+              style={{
+                fontSize: '0.78rem',
+                padding: '0.2rem 0.5rem',
+                borderRadius: '6px',
+                border: '1px solid var(--rule)',
+                background: 'var(--surface)',
+                color: 'var(--ink)',
+              }}
+            >
+              <option value="all">All Status</option>
+              <option value="planned">Planned</option>
+              <option value="ongoing">Ongoing</option>
+              <option value="completed">Completed</option>
+              <option value="approved">Approved</option>
+            </select>
+          </div>
+        }
+      >
+        {isLoading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-xl) 0' }}>
+            <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--brand)' }} />
+          </div>
+        ) : filtered.length === 0 ? (
+          <GroupEmpty>No CAS experiences recorded for this filter. Start documenting your journey.</GroupEmpty>
+        ) : (
+          <div style={{ padding: 'var(--space-md)', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 'var(--space-md)' }}>
+            {filtered.map(exp => (
+              <CASExperienceCard key={exp.id} experience={exp} onViewDetails={() => {}} onEdit={() => {}} />
+            ))}
+          </div>
+        )}
+      </Group>
 
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 scholr-faint" />
-          <select value={filterStrand} onChange={e => setFilterStrand(e.target.value)} className="border scholr-rule rounded-lg px-3 py-1.5 text-sm">
-            <option value="all">All Strands</option>
-            <option value="creativity">Creativity</option>
-            <option value="activity">Activity</option>
-            <option value="service">Service</option>
-          </select>
-          <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="border scholr-rule rounded-lg px-3 py-1.5 text-sm">
-            <option value="all">All Status</option>
-            <option value="planned">Planned</option>
-            <option value="ongoing">Ongoing</option>
-            <option value="completed">Completed</option>
-            <option value="approved">Approved</option>
-          </select>
-        </div>
-        <Button className="scholr-accent-sf hover:scholr-accent-sf"><Plus className="w-4 h-4 mr-2" />Add Experience</Button>
-      </div>
-
-      {isLoading ? (
-        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>
-      ) : filtered.length === 0 ? (
-        <div className="text-center py-12 scholr-faint">
-          <Star className="w-12 h-12 mx-auto mb-3 scholr-faint" />
-          <p className="font-medium">No CAS experiences yet</p>
-          <p className="text-sm mt-1">Start documenting your CAS journey</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map(exp => (
-            <CASExperienceCard key={exp.id} experience={exp} onViewDetails={() => {}} onEdit={() => {}} />
-          ))}
-        </div>
-      )}
+      <Group title="IB CAS Learning Requirements">
+        <Row label="All Three Strands" detail="Substantive engagement across Creativity, Activity, Service" value="Mandatory" />
+        <Row label="Seven Learning Outcomes" detail="Documented reflections covering LO1 through LO7" value="Verified" />
+        <Row label="Collaborative CAS Project" detail="At least one sustained, collaborative project with measurable impact" value="Required" />
+      </Group>
     </div>
   );
 }
 
-// ─── TOK Tab ──────────────────────────────────────────────────────────────────
-function TOKTab({ schoolId, userId }) {
+// ─── Extended Essay View ───────────────────────────────────────────────────────
+function EEView({ schoolId, userId }) {
+  const { data: milestones = [], isLoading } = useQuery({
+    queryKey: ['student-ee', schoolId, userId],
+    queryFn: () => eeMilestonesData.where({ school_id: schoolId, student_id: userId }),
+    enabled: !!schoolId && !!userId,
+  });
+
+  const sorted = [...milestones].sort(
+    (a, b) => milestoneOrder.indexOf(a.milestone_type) - milestoneOrder.indexOf(b.milestone_type)
+  );
+  const latest = milestones[0];
+  const approved = milestones.filter(m => m.status === 'approved').length;
+
+  if (isLoading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-2xl) 0' }}>
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--brand)' }} />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
+      <StatRow>
+        <StatCard label="Subject Area" value={latest?.subject_area || 'Pending'} hint="chosen discipline" />
+        <StatCard label="Milestones" value={`${approved}/${Math.max(sorted.length, 8)}`} hint="approved by supervisor" />
+        <StatCard label="Supervisor" value={latest?.supervisor_name || 'Assigned'} hint="faculty advisor" />
+        <StatCard label="Target Word Count" value="4,000" hint="maximum limit" />
+      </StatRow>
+
+      {latest?.research_question && (
+        <Group title="Research Question">
+          <div style={{ padding: '0.85rem 1rem', fontStyle: 'italic', color: 'var(--ink)', fontSize: '0.92rem' }}>
+            "{latest.research_question}"
+          </div>
+        </Group>
+      )}
+
+      <Group title="8-Stage Milestone Ladder">
+        {sorted.length === 0 ? (
+          <GroupEmpty>Your Extended Essay milestones will be scheduled by the IB coordinator.</GroupEmpty>
+        ) : (
+          sorted.map((ms, idx) => {
+            const isApproved = ms.status === 'approved';
+            const isSubmitted = ms.status === 'submitted';
+            const tone = isApproved ? 'good' : isSubmitted ? 'info' : ms.status === 'needs_revision' ? 'warn' : 'mute';
+
+            return (
+              <Row
+                key={ms.id}
+                label={`${idx + 1}. ${milestoneLabels[ms.milestone_type] || ms.milestone_type}`}
+                detail={ms.due_date ? `Due ${format(new Date(ms.due_date), 'd MMM yyyy')}` : undefined}
+                value={
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <StatusChip tone={tone}>{ms.status}</StatusChip>
+                  </div>
+                }
+              />
+            );
+          })
+        )}
+      </Group>
+    </div>
+  );
+}
+
+// ─── TOK View ─────────────────────────────────────────────────────────────────
+function TOKView({ schoolId, userId }) {
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ['student-tok', schoolId, userId],
     queryFn: async () => {
@@ -127,185 +216,132 @@ function TOKTab({ schoolId, userId }) {
     enabled: !!schoolId && !!userId,
   });
 
-  const upcoming = tasks.filter(t => t.status === 'pending' && t.due_date && new Date(t.due_date) > new Date())
-    .sort((a, b) => new Date(a.due_date) - new Date(b.due_date));
-  const completed = tasks.filter(t => ['graded', 'reviewed'].includes(t.status));
+  const completed = tasks.filter(t => ['graded', 'reviewed', 'approved'].includes(t.status));
+  const pending = tasks.filter(t => t.status === 'pending');
 
-  if (isLoading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>;
+  if (isLoading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-2xl) 0' }}>
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--brand)' }} />
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-5">
-      <div className="grid grid-cols-3 gap-4">
-        {[
-          { label: 'Total Tasks', value: tasks.length, cls: 'scholr-ink' },
-          { label: 'Pending', value: tasks.filter(t => t.status === 'pending').length, cls: 'text-amber-600' },
-          { label: 'Completed', value: completed.length, cls: 'text-green-600' },
-        ].map(({ label, value, cls }) => (
-          <div key={label} className="bg-white rounded-xl border scholr-rule p-4 text-center">
-            <p className={`text-3xl font-bold ${cls}`}>{value}</p>
-            <p className="text-xs scholr-muted mt-1">{label}</p>
-          </div>
-        ))}
-      </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
+      <StatRow>
+        <StatCard label="Total Tasks" value={tasks.length} />
+        <StatCard label="Pending" value={pending.length} />
+        <StatCard label="Completed" value={completed.length} />
+        <StatCard label="Core Components" value="Exhibition + Essay" hint="10 pts + 10 pts" />
+      </StatRow>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div className="bg-white rounded-xl border scholr-rule p-5">
-          <h3 className="font-semibold scholr-ink mb-4">Upcoming Tasks</h3>
-          {upcoming.length === 0 ? (
-            <div className="text-center py-8 scholr-faint"><FileText className="w-8 h-8 mx-auto mb-2 scholr-faint" /><p className="text-sm">No upcoming tasks</p></div>
-          ) : (
-            <div className="space-y-3">
-              {upcoming.map(task => (
-                <div key={task.id} className="border scholr-rule rounded-lg p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <p className="font-medium scholr-ink text-sm">{task.title}</p>
-                    <Badge variant="outline" className="text-xs capitalize">{tokTaskLabels[task.task_type] || task.task_type}</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs scholr-muted flex items-center gap-1"><Clock className="w-3 h-3" />Due: {format(new Date(task.due_date), 'MMM d, yyyy')}</span>
-                    <Button size="sm" variant="outline"><Upload className="w-3 h-3 mr-1" />Submit</Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="bg-white rounded-xl border scholr-rule p-5">
-          <h3 className="font-semibold scholr-ink mb-4">All Tasks</h3>
-          {tasks.length === 0 ? (
-            <div className="text-center py-8 scholr-faint"><FileText className="w-8 h-8 mx-auto mb-2 scholr-faint" /><p className="text-sm">No TOK tasks yet</p></div>
-          ) : (
-            <div className="space-y-2 max-h-80 overflow-y-auto">
-              {tasks.map(task => (
-                <div key={task.id} className="border scholr-rule rounded-lg p-3">
-                  <div className="flex items-start justify-between">
-                    <p className="font-medium scholr-ink text-sm">{task.title}</p>
-                    <Badge className={`${statusColors[task.status]} border-0 text-xs`}>{task.status}</Badge>
-                  </div>
-                  <div className="flex items-center justify-between text-xs scholr-muted mt-1">
-                    <span>{tokTaskLabels[task.task_type] || task.task_type}</span>
-                    {task.due_date && <span>{format(new Date(task.due_date), 'MMM d')}</span>}
-                  </div>
-                  {task.teacher_feedback && task.status === 'reviewed' && (
-                    <p className="text-xs scholr-muted scholr-sunk rounded p-2 mt-2">{task.teacher_feedback}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── EE Tab ───────────────────────────────────────────────────────────────────
-function EETab({ schoolId, userId }) {
-  const { data: milestones = [], isLoading } = useQuery({
-    queryKey: ['student-ee', schoolId, userId],
-    queryFn: () => eeMilestonesData.where({ school_id: schoolId, student_id: userId }),
-    enabled: !!schoolId && !!userId,
-  });
-
-  const sorted = [...milestones].sort((a, b) => milestoneOrder.indexOf(a.milestone_type) - milestoneOrder.indexOf(b.milestone_type));
-  const latest = milestones[0];
-  const approved = milestones.filter(m => m.status === 'approved').length;
-
-  if (isLoading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin scholr-accent" /></div>;
-
-  return (
-    <div className="space-y-5">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          { label: 'Subject Area', value: latest?.subject_area || 'Not yet selected', colorCls: 'scholr-accent-sf scholr-accent', Ico: FileText },
-          { label: 'Progress', value: `${approved} / ${Math.max(sorted.length, 8)} milestones`, colorCls: 'bg-emerald-50 text-emerald-600', Ico: CheckCircle2 },
-          { label: 'Supervisor', value: latest?.supervisor_name || 'Not assigned', colorCls: 'bg-amber-50 text-amber-600', Ico: Clock },
-        ].map(({ label, value, colorCls, Ico }) => (
-          <div key={label} className="bg-white rounded-xl border scholr-rule p-4 flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${colorCls}`}><Ico className="w-5 h-5" /></div>
-            <div><p className="text-xs scholr-muted">{label}</p><p className="font-semibold scholr-ink text-sm">{value}</p></div>
-          </div>
-        ))}
-      </div>
-
-      {latest?.research_question && (
-        <div className="scholr-accent-sf border scholr-accent-rule rounded-xl p-4">
-          <p className="text-xs font-semibold scholr-accent mb-1">Research Question</p>
-          <p className="scholr-accent italic text-sm">"{latest.research_question}"</p>
-        </div>
-      )}
-
-      <div className="bg-white rounded-xl border scholr-rule p-5">
-        <h3 className="font-semibold scholr-ink mb-5">EE Milestones</h3>
-        {sorted.length === 0 ? (
-          <div className="text-center py-10 scholr-faint">
-            <FileText className="w-10 h-10 mx-auto mb-3 scholr-faint" />
-            <p className="font-medium">No milestones yet</p>
-            <p className="text-sm mt-1">Your EE coordinator will set these up</p>
-          </div>
+      <Group title="Upcoming Theory of Knowledge Tasks">
+        {pending.length === 0 ? (
+          <GroupEmpty>All Theory of Knowledge milestones are currently up to date.</GroupEmpty>
         ) : (
-          <div className="space-y-3">
-            {sorted.map((ms, idx) => (
-              <div key={ms.id} className="border scholr-rule rounded-lg p-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${ms.status === 'approved' ? 'bg-green-100' : ms.status === 'submitted' ? 'bg-blue-100' : 'scholr-sunk'}`}>
-                      {ms.status === 'approved' ? <CheckCircle2 className="w-4 h-4 text-green-600" /> : ms.status === 'submitted' ? <Clock className="w-4 h-4 text-blue-600" /> : <span className="text-xs font-semibold scholr-muted">{idx + 1}</span>}
-                    </div>
-                    <div>
-                      <p className="font-medium scholr-ink text-sm">{milestoneLabels[ms.milestone_type]}</p>
-                      {ms.due_date && <p className="text-xs scholr-muted mt-0.5 flex items-center gap-1"><Clock className="w-3 h-3" />Due: {format(new Date(ms.due_date), 'MMM d, yyyy')}</p>}
-                    </div>
-                  </div>
-                  <Badge className={`${statusColors[ms.status]} border-0 text-xs`}>{ms.status}</Badge>
+          pending.map(task => (
+            <Row
+              key={task.id}
+              label={task.title}
+              detail={tokTaskLabels[task.task_type] || task.task_type}
+              value={
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>
+                    {task.due_date ? format(new Date(task.due_date), 'd MMM') : 'no date'}
+                  </span>
+                  <StatusChip tone="warn">pending</StatusChip>
                 </div>
-                {ms.supervisor_feedback && (
-                  <div className="scholr-sunk rounded p-3 mt-3">
-                    <p className="text-xs font-semibold scholr-body mb-1">Supervisor Feedback</p>
-                    <p className="text-xs scholr-muted">{ms.supervisor_feedback}</p>
-                  </div>
-                )}
-                {ms.status === 'pending' && (
-                  <Button variant="outline" size="sm" className="mt-3"><Upload className="w-3 h-3 mr-2" />Submit Work</Button>
-                )}
-              </div>
-            ))}
-          </div>
+              }
+            />
+          ))
         )}
-      </div>
+      </Group>
+
+      <Group title="All TOK Tasks & Submissions">
+        {tasks.length === 0 ? (
+          <GroupEmpty>No TOK tasks registered yet.</GroupEmpty>
+        ) : (
+          tasks.map(task => {
+            const isDone = ['graded', 'reviewed'].includes(task.status);
+            return (
+              <Row
+                key={task.id}
+                label={task.title}
+                detail={tokTaskLabels[task.task_type] || task.task_type}
+                value={
+                  <StatusChip tone={isDone ? 'good' : 'mute'}>
+                    {task.status}
+                  </StatusChip>
+                }
+              />
+            );
+          })
+        )}
+      </Group>
     </div>
   );
 }
 
-// ─── Main Page ─────────────────────────────────────────────────────────────────
+// ─── Main Student IB Core Page ────────────────────────────────────────────────
+const VALID_TABS = ['cas', 'ee', 'tok'];
+
 export default function StudentIBCore() {
   const { user, school, schoolId, curriculum } = useUser();
   const studentLinks = getStudentSidebarLinks(curriculum);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const tabParam = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState(
+    VALID_TABS.includes(tabParam) ? tabParam : 'cas'
+  );
+
+  useEffect(() => {
+    if (tabParam && VALID_TABS.includes(tabParam) && tabParam !== activeTab) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam, activeTab]);
+
+  const handleTabChange = (nextTab) => {
+    setActiveTab(nextTab);
+    setSearchParams(prev => {
+      const updated = new URLSearchParams(prev);
+      updated.set('tab', nextTab);
+      return updated;
+    }, { replace: true });
+  };
 
   return (
     <RoleGuard allowedRoles={['student', 'school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar links={studentLinks} role="student" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="app-offset p-4 md:p-8">
-          <div className="max-w-5xl mx-auto">
-            <div className="mb-6">
-              <h1 className="text-xl md:text-2xl font-bold scholr-ink">IB Core</h1>
-              <p className="text-sm scholr-muted mt-1">CAS, Theory of Knowledge, and Extended Essay</p>
-            </div>
-
-            <Tabs defaultValue="cas">
-              <TabsList className="mb-6">
-                <TabsTrigger value="cas" className="flex items-center gap-2"><Star className="w-4 h-4" />CAS</TabsTrigger>
-                <TabsTrigger value="tok" className="flex items-center gap-2"><FileText className="w-4 h-4" />TOK</TabsTrigger>
-                <TabsTrigger value="ee" className="flex items-center gap-2"><BookOpen className="w-4 h-4" />Extended Essay</TabsTrigger>
-              </TabsList>
-              <TabsContent value="cas"><CASTab schoolId={schoolId} userId={user?.id} /></TabsContent>
-              <TabsContent value="tok"><TOKTab schoolId={schoolId} userId={user?.id} /></TabsContent>
-              <TabsContent value="ee"><EETab schoolId={schoolId} userId={user?.id} /></TabsContent>
-            </Tabs>
-          </div>
-        </main>
+      <AppSidebar
+        links={studentLinks}
+        role="student"
+        schoolName={school?.name}
+        userName={user?.full_name}
+        userId={user?.id}
+        schoolId={schoolId}
+      />
+      <div className="app-offset">
+        <AppShell
+          eyebrow="IB DP Core Curriculum"
+          title="Core Programme"
+          actions={
+            <Segmented
+              label="Core Modules"
+              value={activeTab}
+              onChange={handleTabChange}
+              options={[
+                { label: 'CAS Portfolio', value: 'cas' },
+                { label: 'Extended Essay', value: 'ee' },
+                { label: 'Theory of Knowledge', value: 'tok' },
+              ]}
+            />
+          }
+        >
+          {activeTab === 'cas' && <CASView schoolId={schoolId} userId={user?.id} />}
+          {activeTab === 'ee' && <EEView schoolId={schoolId} userId={user?.id} />}
+          {activeTab === 'tok' && <TOKView schoolId={schoolId} userId={user?.id} />}
+        </AppShell>
       </div>
     </RoleGuard>
   );

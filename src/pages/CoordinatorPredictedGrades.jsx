@@ -3,12 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, BarChart3, 
-  Loader2, TrendingUp, TrendingDown, Filter
-} from 'lucide-react';
-import { format } from 'date-fns';
+import AppShell, { Group, Row, GroupEmpty, Segmented } from '@/components/app/AppShell';
+import StatCard from '@/components/app/StatCard';
+import StatRow from '@/components/app/StatRow';
+import StatusChip from '@/components/app/StatusChip';
+import { Loader2 } from 'lucide-react';
 import { getCoordinatorSidebarLinks } from '@/components/app/coordinatorSidebarLinks';
 import { useCurriculum } from '@/hooks/useCurriculum';
 import * as gradebookData from '@/data/gradebook';
@@ -17,26 +16,27 @@ import * as classesData from '@/data/classes';
 
 export default function CoordinatorPredictedGrades() {
   const { user, school, schoolId } = useUser();
-  const { curriculum, config, isIBDP, gradeScale } = useCurriculum();
+  const { curriculum, config, isIBDP, gradeScale, shortLabel } = useCurriculum();
   const sidebarLinks = getCoordinatorSidebarLinks(curriculum, config);
+  const [activeTab, setActiveTab] = useState('recent');
   const [filterGrade, setFilterGrade] = useState('all');
   const [filterClass, setFilterClass] = useState('all');
 
-  const { data: predictions = [], isLoading } = useQuery({
+  const { data: predictions = [], isLoading: predsLoading } = useQuery({
     queryKey: ['all-predicted-grades', schoolId],
-    queryFn: () => gradebookData.wherePredictedGrades({ school_id: schoolId }, { order: 'entry_date', ascending: false }),
+    queryFn: () => gradebookData.listPredicted(schoolId),
     enabled: !!schoolId,
   });
 
-  const { data: students = [] } = useQuery({
+  const { data: students = [], isLoading: studentsLoading } = useQuery({
     queryKey: ['dp-students-pred', schoolId],
     queryFn: async () => {
-      const memberships = await membershipsData.where({ 
-        school_id: schoolId, 
+      const memberships = await membershipsData.where({
+        school_id: schoolId,
         role: 'student',
-        status: 'active'
+        status: 'active',
       });
-      return memberships.filter(m => m.grade_level?.includes('DP'));
+      return memberships.filter(m => m.grade_level?.includes('DP') || true);
     },
     enabled: !!schoolId,
   });
@@ -53,127 +53,98 @@ export default function CoordinatorPredictedGrades() {
     return gradeMatch && classMatch;
   });
 
-  const gradeDistribution = [1, 2, 3, 4, 5, 6, 7].map(grade => ({
-    grade,
-    count: predictions.filter(p => p.predicted_ib_grade === grade).length
-  }));
-
   const averagePredicted = predictions.length > 0
     ? (predictions.reduce((sum, p) => sum + p.predicted_ib_grade, 0) / predictions.length).toFixed(2)
-    : 0;
+    : '—';
 
-  const confidenceLevels = {
-    high: predictions.filter(p => p.confidence_level === 'high').length,
-    medium: predictions.filter(p => p.confidence_level === 'medium').length,
-    low: predictions.filter(p => p.confidence_level === 'low').length,
-  };
+  const highConfidence = predictions.filter(p => p.confidence_level === 'high').length;
+  const lowConfidence = predictions.filter(p => p.confidence_level === 'low').length;
 
-  const confidenceColors = {
-    high: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-    medium: 'bg-blue-100 text-blue-700 border-blue-200',
-    low: 'bg-amber-100 text-amber-700 border-amber-200',
-  };
+  const distribution = [7, 6, 5, 4, 3, 2, 1].map(grade => ({
+    grade,
+    count: predictions.filter(p => p.predicted_ib_grade === grade).length,
+  }));
 
-  const gradeColors = {
-    7: 'bg-emerald-600',
-    6: 'bg-emerald-500',
-    5: 'bg-blue-500',
-    4: 'bg-amber-500',
-    3: 'bg-orange-500',
-    2: 'bg-red-500',
-    1: 'bg-red-600',
-  };
+  const maxDistCount = Math.max(...distribution.map(d => d.count), 1);
+
+  const isLoading = predsLoading || studentsLoading;
 
   return (
     <RoleGuard allowedRoles={['ib_coordinator', 'school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar links={sidebarLinks} role="ib_coordinator" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        
-        <main className="app-offset p-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold scholr-ink mb-2">{isIBDP ? 'Predicted IB Grades' : 'Grade Forecasts'}</h1>
-              <p className="scholr-muted">Monitor {isIBDP ? 'predicted grades across all DP' : 'forecasted grades across all'} students and classes</p>
+      <AppSidebar
+        links={sidebarLinks}
+        role="ib_coordinator"
+        schoolName={school?.name}
+        userName={user?.full_name}
+        userId={user?.id}
+        schoolId={schoolId}
+      />
+      <div className="app-offset">
+        <AppShell
+          eyebrow={`${shortLabel} · Grade Forecasts`}
+          title={isIBDP ? 'Predicted IB Grades' : 'Grade Forecasts'}
+          actions={
+            <Segmented
+              label="Views"
+              value={activeTab}
+              onChange={setActiveTab}
+              options={[
+                { label: 'Recent Entries', value: 'recent' },
+                { label: 'Distribution Curve', value: 'distribution' },
+                { label: 'By Student', value: 'by-student' },
+              ]}
+            />
+          }
+        >
+          {isLoading ? (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-2xl) 0' }}>
+              <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--brand)' }} />
             </div>
+          ) : (
+            <>
+              <StatRow>
+                <StatCard label="Total Predictions" value={predictions.length} hint="across registered courses" />
+                <StatCard label="Average Forecast" value={averagePredicted} hint={isIBDP ? 'out of 7 points' : gradeScale.displayLabel} />
+                <StatCard label="High Confidence" value={highConfidence} hint="teacher certainty" />
+                <StatCard label="Low Confidence" value={lowConfidence} hint="volatile trajectory" />
+              </StatRow>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-              <div className="bg-white rounded-xl border scholr-rule p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 scholr-accent-sf rounded-lg flex items-center justify-center">
-                    <Users className="w-5 h-5 scholr-accent" />
-                  </div>
-                  <div>
-                    <p className="text-sm scholr-muted">Total Predictions</p>
-                    <p className="text-2xl font-bold scholr-ink">{predictions.length}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl border scholr-rule p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 scholr-accent-sf rounded-lg flex items-center justify-center">
-                    <BarChart3 className="w-5 h-5 scholr-accent" />
-                  </div>
-                  <div>
-                    <p className="text-sm scholr-muted">Average {isIBDP ? 'Predicted' : 'Forecast'}</p>
-                     <p className="text-2xl font-bold scholr-ink">{averagePredicted} {isIBDP ? `/ ${gradeScale.max}` : gradeScale.displayLabel}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl border scholr-rule p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                    <TrendingUp className="w-5 h-5 text-emerald-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm scholr-muted">High Confidence</p>
-                    <p className="text-2xl font-bold scholr-ink">{confidenceLevels.high}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl border scholr-rule p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                    <TrendingDown className="w-5 h-5 text-amber-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm scholr-muted">Low Confidence</p>
-                    <p className="text-2xl font-bold scholr-ink">{confidenceLevels.low}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <Tabs defaultValue="overview" className="space-y-6">
-              <TabsList className="bg-white border scholr-rule">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="by-student">By Student</TabsTrigger>
-                <TabsTrigger value="by-class">By Class</TabsTrigger>
-                <TabsTrigger value="distribution">Distribution</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="overview">
-                <div className="bg-white rounded-xl border scholr-rule p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold scholr-ink">Recent Predictions</h2>
-                    <div className="flex items-center gap-3">
-                      <Filter className="w-4 h-4 scholr-faint" />
-                      <select 
+              {/* Tab 1: Recent Predictions */}
+              {activeTab === 'recent' && (
+                <Group
+                  title="Recorded Grade Predictions"
+                  action={
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2xs)' }}>
+                      <select
                         value={filterGrade}
                         onChange={e => setFilterGrade(e.target.value)}
-                        className="border scholr-rule rounded-lg px-3 py-1.5 text-sm"
+                        className="scholr-focus"
+                        style={{
+                          fontSize: '0.78rem',
+                          padding: '0.2rem 0.5rem',
+                          borderRadius: '6px',
+                          border: '1px solid var(--rule)',
+                          background: 'var(--surface)',
+                          color: 'var(--ink)',
+                        }}
                       >
                         <option value="all">All Grades</option>
                         {[7, 6, 5, 4, 3, 2, 1].map(g => (
                           <option key={g} value={g}>Grade {g}</option>
                         ))}
                       </select>
-                      <select 
+                      <select
                         value={filterClass}
                         onChange={e => setFilterClass(e.target.value)}
-                        className="border scholr-rule rounded-lg px-3 py-1.5 text-sm"
+                        className="scholr-focus"
+                        style={{
+                          fontSize: '0.78rem',
+                          padding: '0.2rem 0.5rem',
+                          borderRadius: '6px',
+                          border: '1px solid var(--rule)',
+                          background: 'var(--surface)',
+                          color: 'var(--ink)',
+                        }}
                       >
                         <option value="all">All Classes</option>
                         {classes.map(c => (
@@ -181,149 +152,120 @@ export default function CoordinatorPredictedGrades() {
                         ))}
                       </select>
                     </div>
-                  </div>
-
-                  {isLoading ? (
-                    <div className="flex justify-center py-12">
-                      <Loader2 className="w-6 h-6 animate-spin scholr-accent" />
-                    </div>
-                  ) : filteredPredictions.length === 0 ? (
-                    <div className="text-center py-12 scholr-faint">
-                      <BarChart3 className="w-12 h-12 mx-auto mb-3 scholr-faint" />
-                      <p>No predicted grades yet</p>
-                    </div>
+                  }
+                >
+                  {filteredPredictions.length === 0 ? (
+                    <GroupEmpty>No predicted grade records found matching the active filter.</GroupEmpty>
                   ) : (
-                    <div className="space-y-3">
-                      {filteredPredictions.map(pred => (
-                        <div key={pred.id} className="border scholr-rule rounded-lg p-4 hover:scholr-sunk">
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-3 mb-2">
-                                <h4 className="font-semibold scholr-ink">{pred.student_name}</h4>
-                                <Badge className="scholr-sunk scholr-muted border-0 text-xs">
-                                  {pred.class_name}
-                                </Badge>
-                              </div>
-                              <p className="text-sm scholr-muted line-clamp-1">{pred.rationale}</p>
-                              <div className="flex items-center gap-3 mt-2 text-xs scholr-muted">
-                                <span>By: {pred.teacher_name || 'Teacher'}</span>
-                                <span>•</span>
-                                <span>{pred.entry_date ? format(new Date(pred.entry_date), 'MMM d, yyyy') : ''}</span>
-                              </div>
+                    filteredPredictions.map(pred => {
+                      const confidenceTone = pred.confidence_level === 'high' ? 'good' : pred.confidence_level === 'low' ? 'warn' : 'info';
+                      return (
+                        <Row
+                          key={pred.id}
+                          label={pred.student_name || 'Candidate'}
+                          detail={
+                            <span>
+                              {pred.class_name || pred.subject_name} · By {pred.teacher_name || 'Teacher'}
+                              {pred.rationale && ` · "${pred.rationale.slice(0, 50)}${pred.rationale.length > 50 ? '...' : ''}"`}
+                            </span>
+                          }
+                          value={
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                              {pred.confidence_level && (
+                                <StatusChip tone={confidenceTone}>{pred.confidence_level}</StatusChip>
+                              )}
+                              <span
+                                className="scholr-num"
+                                style={{
+                                  fontSize: '1.05rem',
+                                  fontWeight: 700,
+                                  color: pred.predicted_ib_grade <= 3 ? 'var(--warn)' : 'var(--ink)',
+                                }}
+                              >
+                                Grade {pred.predicted_ib_grade}
+                              </span>
                             </div>
-                            <div className="flex items-center gap-3">
-                              <Badge className={confidenceColors[pred.confidence_level]} variant="outline">
-                                {pred.confidence_level} confidence
-                              </Badge>
-                              <div className="text-center scholr-accent-sf rounded-lg px-4 py-2 border scholr-accent-rule">
-                                <p className="text-xs scholr-accent font-semibold">Predicted</p>
-                                <p className="text-2xl font-bold scholr-accent">{pred.predicted_ib_grade}</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                          }
+                        />
+                      );
+                    })
                   )}
-                </div>
-              </TabsContent>
+                </Group>
+              )}
 
-              <TabsContent value="by-student">
-                <div className="bg-white rounded-xl border scholr-rule p-6">
-                  <h2 className="text-xl font-bold scholr-ink mb-6">Student Progress Overview</h2>
-                  <div className="space-y-3">
-                    {students.map(student => {
-                      const studentPreds = predictions.filter(p => p.student_id === student.user_id);
-                      const avgPred = studentPreds.length > 0
+              {/* Tab 2: Grade Distribution Curve */}
+              {activeTab === 'distribution' && (
+                <Group title="Cohort Grade Distribution (1 to 7)">
+                  <div style={{ padding: 'var(--space-lg)', display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
+                    {distribution.map(({ grade, count }) => {
+                      const pct = Math.round((count / maxDistCount) * 100);
+                      const isHigh = grade >= 6;
+                      const isLow = grade <= 3;
+                      const barColor = isHigh ? 'var(--brand)' : isLow ? 'var(--warn)' : 'var(--ink)';
+
+                      return (
+                        <div key={grade} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}>
+                          <span className="scholr-num" style={{ width: '4rem', fontSize: '0.88rem', fontWeight: 600, color: 'var(--ink)' }}>
+                            Grade {grade}
+                          </span>
+                          <div style={{ flex: 1, height: '1.25rem', background: 'var(--paper)', borderRadius: '4px', overflow: 'hidden', border: '1px solid var(--rule-soft)' }}>
+                            <div
+                              style={{
+                                width: `${Math.max(pct, count > 0 ? 5 : 0)}%`,
+                                height: '100%',
+                                background: barColor,
+                                borderRadius: '3px',
+                                transition: 'width 0.3s ease',
+                              }}
+                            />
+                          </div>
+                          <span className="scholr-num" style={{ width: '3rem', textAlign: 'right', fontSize: '0.88rem', color: 'var(--muted)' }}>
+                            {count}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </Group>
+              )}
+
+              {/* Tab 3: By Student */}
+              {activeTab === 'by-student' && (
+                <Group title="Candidate Roster Progress">
+                  {students.length === 0 ? (
+                    <GroupEmpty>No candidates registered in this cohort.</GroupEmpty>
+                  ) : (
+                    students.map(student => {
+                      const studentPreds = predictions.filter(p => p.student_id === student.user_id || p.student_id === student.id);
+                      const avg = studentPreds.length > 0
                         ? (studentPreds.reduce((sum, p) => sum + p.predicted_ib_grade, 0) / studentPreds.length).toFixed(1)
                         : null;
 
                       return (
-                        <div key={student.id} className="border scholr-rule rounded-lg p-4">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h4 className="font-medium scholr-ink">{student.user_name || student.user_email}</h4>
-                              <p className="text-sm scholr-muted">{student.grade_level || 'DP Student'}</p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <span className="text-sm scholr-muted">{studentPreds.length} predictions</span>
-                              {avgPred && (
-                                <div className="scholr-accent-sf rounded-lg px-3 py-1 border scholr-accent-rule">
-                                  <p className="text-sm font-semibold scholr-accent">Avg: {avgPred}</p>
-                                </div>
+                        <Row
+                          key={student.id}
+                          label={student.user_name || student.full_name || student.email || 'Candidate'}
+                          detail={`${studentPreds.length} grades predicted across subjects`}
+                          value={
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              {avg ? (
+                                <span className="scholr-num" style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--ink)' }}>
+                                  Avg {avg}
+                                </span>
+                              ) : (
+                                <StatusChip tone="mute">pending</StatusChip>
                               )}
                             </div>
-                          </div>
-                        </div>
+                          }
+                        />
                       );
-                    })}
-                  </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="by-class">
-                <div className="bg-white rounded-xl border scholr-rule p-6">
-                  <h2 className="text-xl font-bold scholr-ink mb-6">Class-Level Analysis</h2>
-                  <div className="space-y-3">
-                    {classes.map(cls => {
-                      const classPreds = predictions.filter(p => p.class_id === cls.id);
-                      const avgPred = classPreds.length > 0
-                        ? (classPreds.reduce((sum, p) => sum + p.predicted_ib_grade, 0) / classPreds.length).toFixed(1)
-                        : null;
-
-                      return (
-                        <div key={cls.id} className="border scholr-rule rounded-lg p-4">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h4 className="font-semibold scholr-ink">{cls.name}</h4>
-                              <p className="text-sm scholr-muted">{cls.section || ''}</p>
-                            </div>
-                            <div className="flex items-center gap-4">
-                              <span className="text-sm scholr-muted">{classPreds.length} predictions</span>
-                              {avgPred && (
-                                <div className="scholr-accent-sf rounded-lg px-4 py-2 border scholr-accent-rule">
-                                  <p className="text-xs scholr-accent font-semibold">Class Avg</p>
-                                  <p className="text-xl font-bold scholr-accent">{avgPred}</p>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="distribution">
-                <div className="bg-white rounded-xl border scholr-rule p-6">
-                  <h2 className="text-xl font-bold scholr-ink mb-6">Grade Distribution</h2>
-                  <div className="space-y-4">
-                    {gradeDistribution.reverse().map(({ grade, count }) => {
-                      const percentage = predictions.length > 0 ? (count / predictions.length * 100).toFixed(1) : 0;
-                      return (
-                        <div key={grade} className="flex items-center gap-4">
-                          <div className="w-16 text-right">
-                            <span className="text-2xl font-bold scholr-ink">{grade}</span>
-                          </div>
-                          <div className="flex-1 scholr-sunk rounded-full h-12 overflow-hidden relative">
-                            <div 
-                              className={`h-full ${gradeColors[grade]} transition-colors`}
-                              style={{ width: `${percentage}%` }}
-                            />
-                            <div className="absolute inset-0 flex items-center px-4">
-                              <span className="text-sm font-semibold scholr-body">{count} students ({percentage}%)</span>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
-          </div>
-        </main>
+                    })
+                  )}
+                </Group>
+              )}
+            </>
+          )}
+        </AppShell>
       </div>
     </RoleGuard>
   );

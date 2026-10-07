@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import SchoolAdminPage from '@/components/app/SchoolAdminPage';
 import { useUser } from '@/components/auth/UserContext';
+import { getCoordinatorSidebarLinks } from '@/components/app/coordinatorSidebarLinks';
+import { getCurriculumConfig } from '@/lib/curriculumConfig';
 import AcademicYearsTab from '@/components/academic-setup/AcademicYearsTab';
 import TermsTab from '@/components/academic-setup/TermsTab';
 import CohortsTab from '@/components/academic-setup/CohortsTab';
@@ -14,8 +16,10 @@ const TABS = [
 ];
 
 export default function SchoolAdminAcademicSetup() {
-  const { user, school, schoolId, loading } = useUser();
+  const { school, schoolId, role } = useUser();
   const [activeTab, setActiveTab] = useState('years');
+  const curriculum = school?.curriculum || 'ib_dp';
+  const isCoordinator = role === 'ib_coordinator';
 
   return (
     <SchoolAdminPage
@@ -25,12 +29,16 @@ export default function SchoolAdminAcademicSetup() {
       activeTab={activeTab}
       onTabChange={setActiveTab}
       related={[["SchoolAdminClasses","Classes"],["SchoolAdminTimetable","Timetable"],["SchoolAdminOnboarding","Onboarding"]]}
-    >          <div className="flex-1 p-6">
-            {activeTab === 'years'    && <AcademicYearsTab schoolId={schoolId} />}
-            {activeTab === 'terms'    && <TermsTab schoolId={schoolId} />}
-            {activeTab === 'cohorts'  && <CohortsTab schoolId={schoolId} />}
-            {activeTab === 'subjects' && <SubjectCatalogTab schoolId={schoolId} curriculum={school?.curriculum || 'ib_dp'} />}
-          </div>
+      allowedRoles={['school_admin', 'ib_coordinator', 'admin', 'super_admin']}
+      sidebarLinks={isCoordinator ? getCoordinatorSidebarLinks(curriculum, getCurriculumConfig(curriculum)) : undefined}
+      sidebarRole={isCoordinator ? 'ib_coordinator' : undefined}
+    >
+      <div className="flex-1 p-6">
+        {activeTab === 'years'    && <AcademicYearsTab schoolId={schoolId} />}
+        {activeTab === 'terms'    && <TermsTab schoolId={schoolId} />}
+        {activeTab === 'cohorts'  && <CohortsTab schoolId={schoolId} />}
+        {activeTab === 'subjects' && <SubjectCatalogTab schoolId={schoolId} curriculum={curriculum} />}
+      </div>
     </SchoolAdminPage>
   );
 }

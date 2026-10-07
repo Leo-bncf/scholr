@@ -3,11 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import AppSidebar from '@/components/app/AppSidebar';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import AppShell, { Segmented } from '@/components/app/AppShell';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { BarChart3,
-  TrendingUp, ClipboardList, Loader2, Clock, ChevronDown, ChevronUp, Send, Download
+import {
+  BarChart3, TrendingUp, ClipboardList, Loader2, Clock, ChevronDown, ChevronUp, Send
 } from 'lucide-react';
 import PerformanceTrends from '@/components/student/PerformanceTrends';
 import TermReportExport from '@/components/student/TermReportExport';
@@ -33,12 +33,6 @@ function scoreColor(p) {
   if (p >= 50) return 'text-amber-700';
   return 'text-red-700';
 }
-
-const confidenceBadge = {
-  high: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-  medium: 'bg-blue-100 text-blue-700 border-blue-200',
-  low: 'bg-amber-100 text-amber-700 border-amber-200',
-};
 
 // ── Grade Card ────────────────────────────────────────────────────────────────
 
@@ -118,12 +112,7 @@ function GradesTab({ schoolId, userId, classes }) {
 
   const { data: grades = [], isLoading } = useQuery({
     queryKey: ['student-grades-academic', schoolId, userId],
-    queryFn: () => gradebookData.whereGradeItems({
-      school_id: schoolId,
-      student_id: userId,
-      visible_to_student: true,
-      status: 'published'
-    }, { order: 'created_at', ascending: false }),
+    queryFn: () => gradebookData.listForStudent(schoolId, userId),
     enabled: !!schoolId && !!userId,
   });
 
@@ -143,10 +132,9 @@ function GradesTab({ schoolId, userId, classes }) {
         <div className="flex items-center gap-4">
           {avg && (
             <div className="scholr-accent-sf border scholr-accent-rule rounded-xl px-5 py-3 flex items-center gap-3">
-              <TrendingUp className="w-5 h-5 scholr-accent" />
               <div>
-                <p className="text-xs scholr-accent font-medium">Overall Average</p>
-                <p className={`text-2xl font-bold ${scoreColor(avg)}`}>{avg}%</p>
+                <p className="text-xs font-semibold scholr-accent">Average Percentage</p>
+                <p className="text-2xl font-bold scholr-accent">{avg}%</p>
               </div>
             </div>
           )}
@@ -180,11 +168,7 @@ function GradesTab({ schoolId, userId, classes }) {
 function PredictedTab({ schoolId, userId }) {
   const { data: predictions = [], isLoading } = useQuery({
     queryKey: ['student-predicted', schoolId, userId],
-    queryFn: () => gradebookData.wherePredictedGrades({
-      school_id: schoolId,
-      student_id: userId,
-      visible_to_student: true
-    }, { order: 'entry_date', ascending: false }),
+    queryFn: () => gradebookData.listPredicted(schoolId, { studentId: userId }),
     enabled: !!schoolId && !!userId,
   });
 
@@ -218,27 +202,22 @@ function PredictedTab({ schoolId, userId }) {
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1">
                 <h4 className="font-semibold scholr-ink">{pred.class_name || 'Subject'}</h4>
-                {pred.entry_date && (
-                  <p className="text-xs scholr-faint mt-0.5">Updated {format(new Date(pred.entry_date), 'MMM d, yyyy')}</p>
-                )}
-                {pred.confidence_level && (
-                  <Badge className={`mt-2 border text-xs ${confidenceBadge[pred.confidence_level] || ''}`} variant="outline">
-                    {pred.confidence_level} confidence
-                  </Badge>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-xs scholr-muted">By {pred.teacher_name || 'Teacher'}</span>
+                  {pred.entry_date && <span className="text-xs scholr-faint">· {format(new Date(pred.entry_date), 'd MMM yyyy')}</span>}
+                </div>
+                {pred.rationale && (
+                  <p className="text-sm scholr-muted mt-2 italic">"{pred.rationale}"</p>
                 )}
               </div>
-              <div className="scholr-accent-sf border scholr-accent-rule rounded-xl px-5 py-3 text-center flex-shrink-0">
-                <p className="text-xs scholr-accent font-semibold">Predicted</p>
-                <p className="text-3xl font-bold scholr-accent">{pred.predicted_ib_grade}</p>
-                <p className="text-xs scholr-accent">/7</p>
+              <div className="text-right">
+                <span className="text-xs scholr-muted block mb-1">Predicted</span>
+                <span className="text-3xl font-bold text-violet-700">
+                  {pred.predicted_ib_grade}
+                </span>
+                <span className="text-sm scholr-muted font-normal">/7</span>
               </div>
             </div>
-            {pred.rationale && (
-              <div className="mt-4 pt-4 border-t scholr-rule-soft">
-                <p className="text-xs font-semibold scholr-body mb-1">Teacher Notes</p>
-                <p className="text-sm scholr-muted">{pred.rationale}</p>
-              </div>
-            )}
           </div>
         ))}
       </div>
@@ -321,77 +300,61 @@ function AssignmentsTab({ schoolId, userId, userName, classes }) {
           <button
             key={filter}
             onClick={() => setStatusFilter(statusFilter === filter ? 'all' : filter)}
-            className={`rounded-xl border p-3 text-center transition-colors ${color} ${statusFilter === filter ? 'ring-2 ring-offset-1 ring-current' : 'hover:opacity-80'}`}
+            className={`border rounded-xl p-4 text-left transition-colors ${color} ${statusFilter === filter ? 'ring-2 ring-offset-1 ring-current' : ''}`}
           >
             <p className="text-2xl font-bold">{count}</p>
-            <p className="text-xs font-medium mt-0.5">{label}</p>
+            <p className="text-xs font-semibold mt-0.5">{label}</p>
           </button>
         ))}
       </div>
 
-      {/* Filters */}
-      <div className="flex gap-3 flex-wrap">
-        <Select value={classFilter} onValueChange={setClassFilter}>
-          <SelectTrigger className="w-48 h-9 text-sm"><SelectValue placeholder="All classes" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Classes</SelectItem>
-            {classes.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-40 h-9 text-sm"><SelectValue placeholder="All statuses" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="missing">Missing</SelectItem>
-            <SelectItem value="pending">To Do</SelectItem>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="submitted">Submitted</SelectItem>
-            <SelectItem value="late">Late</SelectItem>
-            <SelectItem value="returned">Returned</SelectItem>
-          </SelectContent>
-        </Select>
+      {/* Filter row */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <span className="text-sm scholr-muted">{filtered.length} assignment{filtered.length !== 1 ? 's' : ''}</span>
+        <div className="flex items-center gap-2">
+          <Select value={classFilter} onValueChange={setClassFilter}>
+            <SelectTrigger className="w-44 h-9 text-sm"><SelectValue placeholder="All classes" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Classes</SelectItem>
+              {classes.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {filtered.length === 0 ? (
         <div className="text-center py-16 scholr-faint">
           <ClipboardList className="w-12 h-12 mx-auto mb-3 scholr-faint" />
-          <p>No assignments match these filters</p>
+          <p>No assignments found</p>
         </div>
       ) : (
         <div className="space-y-3">
           {filtered.map(a => (
-            <div key={a.id} className={`bg-white rounded-xl border overflow-hidden ${a.displayStatus === 'missing' ? 'border-red-200' : 'scholr-rule'}`}>
-              <div className="p-4 flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold scholr-ink truncate">{a.title}</p>
-                  <div className="flex flex-wrap items-center gap-2 mt-1">
-                    <span className="text-xs scholr-muted">{a.class_name}</span>
-                    {a.type && <Badge variant="outline" className="text-xs capitalize">{a.type?.replace('_', ' ')}</Badge>}
-                  </div>
+            <div key={a.id} className="bg-white rounded-xl border scholr-rule p-4 flex items-center justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusBadge[a.displayStatus]}`}>
+                    {statusLabel[a.displayStatus]}
+                  </span>
+                  {a.class_name && <span className="text-xs scholr-muted">{a.class_name}</span>}
+                </div>
+                <p className="font-semibold scholr-ink truncate text-sm">{a.title}</p>
+                <div className="flex items-center gap-3 mt-1 text-xs scholr-muted">
                   {a.due_date && (
-                    <p className={`text-xs mt-1.5 flex items-center gap-1 ${a.displayStatus === 'missing' ? 'text-red-600' : 'scholr-muted'}`}>
+                    <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
-                      Due {format(new Date(a.due_date), 'MMM d, yyyy')}
-                    </p>
+                      Due {format(new Date(a.due_date), 'd MMM yyyy, h:mm a')}
+                    </span>
                   )}
-                  {a.submission?.feedback && (
-                    <p className="text-xs scholr-muted mt-1 truncate">Feedback: {a.submission.feedback}</p>
-                  )}
+                  {a.max_points && <span>Max: {a.max_points} pts</span>}
                 </div>
-                <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                  <Badge className={`${statusBadge[a.displayStatus]} border-0 text-xs`}>
-                    {statusLabel[a.displayStatus] || a.displayStatus}
-                  </Badge>
-                  <Button
-                    size="sm"
-                    variant={['submitted', 'late'].includes(a.displayStatus) ? 'outline' : 'default'}
-                    className={['submitted', 'late'].includes(a.displayStatus) ? '' : 'scholr-accent-sf hover:scholr-accent-sf'}
-                    onClick={() => setSubmittingAssignment(a)}
-                  >
-                    <Send className="w-3.5 h-3.5 mr-1.5" />
-                    {a.displayStatus === 'pending' ? 'Submit' : a.displayStatus === 'returned' ? 'Resubmit' : 'View'}
-                  </Button>
-                </div>
+              </div>
+
+              <div className="flex-shrink-0">
+                <Button size="sm" variant="outline" onClick={() => setSubmittingAssignment(a)}>
+                  <Send className="w-3.5 h-3.5 mr-1" />
+                  {a.submission ? 'View Submission' : 'Submit'}
+                </Button>
               </div>
             </div>
           ))}
@@ -399,103 +362,92 @@ function AssignmentsTab({ schoolId, userId, userName, classes }) {
       )}
 
       {/* Submission Dialog */}
-      <Dialog open={!!submittingAssignment} onOpenChange={() => setSubmittingAssignment(null)}>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{submittingAssignment?.title}</DialogTitle>
-            {submittingAssignment?.description && (
-              <p className="text-sm scholr-muted mt-1">{submittingAssignment.description}</p>
-            )}
-          </DialogHeader>
-          {submittingAssignment && (
+      {submittingAssignment && (
+        <Dialog open={!!submittingAssignment} onOpenChange={open => !open && setSubmittingAssignment(null)}>
+          <DialogContent className="max-w-xl">
+            <DialogHeader>
+              <DialogTitle>{submittingAssignment.title}</DialogTitle>
+            </DialogHeader>
             <StudentSubmission
               assignment={submittingAssignment}
-              studentId={userId}
-              studentName={userName}
-              existingSubmission={selectedSub}
+              submission={selectedSub}
+              userId={userId}
+              userName={userName}
+              schoolId={schoolId}
+              onSubmitted={() => setSubmittingAssignment(null)}
             />
-          )}
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
 
-// ── Main Page ────────────────────────────────────────────────────────────────
+// ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function StudentAcademicDashboard() {
   const { user, school, schoolId, curriculum } = useUser();
   const studentLinks = getStudentSidebarLinks(curriculum);
+  const [activeTab, setActiveTab] = useState('grades');
 
   const { data: classes = [], isLoading } = useQuery({
-    queryKey: ['student-classes', schoolId, user?.id],
-    queryFn: async () => {
-      const all = await classesData.where({ school_id: schoolId, status: 'active' });
-      return all.filter(c => c.student_ids?.includes(user.id));
-    },
+    queryKey: ['student-classes-academic', schoolId, user?.id],
+    queryFn: () => classesData.listForStudent(schoolId, user?.id),
     enabled: !!schoolId && !!user?.id,
   });
 
   return (
     <RoleGuard allowedRoles={['student', 'school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar links={studentLinks} role="student" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="app-offset p-4 md:p-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-6">
-              <h1 className="text-xl md:text-2xl font-bold scholr-ink">Academic Dashboard</h1>
-              <p className="text-sm scholr-muted mt-1">Your grades, predicted scores, and assignments</p>
+      <AppSidebar links={studentLinks} role="student" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
+      <div className="app-offset">
+        <AppShell
+          eyebrow="Academic Records & Feedback"
+          title="Academic Dashboard"
+          actions={
+            <Segmented
+              label="Academic Tabs"
+              value={activeTab}
+              onChange={setActiveTab}
+              options={[
+                { label: 'Grades & Feedback', value: 'grades' },
+                { label: 'Predicted Grades', value: 'predicted' },
+                { label: 'Assignments', value: 'assignments' },
+                { label: 'Analytics', value: 'analytics' },
+                { label: 'Export Report', value: 'export' },
+              ]}
+            />
+          }
+        >
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
             </div>
-
-            {isLoading ? (
-              <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
-              </div>
-            ) : (
-              <Tabs defaultValue="grades">
-                <TabsList className="mb-6 flex-wrap">
-                  <TabsTrigger value="grades" className="flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4" /> Grades & Feedback
-                  </TabsTrigger>
-                  <TabsTrigger value="predicted" className="flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4" /> Predicted Grades
-                  </TabsTrigger>
-                  <TabsTrigger value="assignments" className="flex items-center gap-2">
-                    <ClipboardList className="w-4 h-4" /> Assignments
-                  </TabsTrigger>
-                  <TabsTrigger value="analytics" className="flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4" /> Analytics
-                  </TabsTrigger>
-                  <TabsTrigger value="export" className="flex items-center gap-2">
-                    <Download className="w-4 h-4" /> Export
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="grades">
-                  <GradesTab schoolId={schoolId} userId={user?.id} classes={classes} />
-                </TabsContent>
-                <TabsContent value="predicted">
-                  <PredictedTab schoolId={schoolId} userId={user?.id} />
-                </TabsContent>
-                <TabsContent value="assignments">
-                  <AssignmentsTab schoolId={schoolId} userId={user?.id} userName={user?.full_name} classes={classes} />
-                </TabsContent>
-                <TabsContent value="analytics">
-                  <PerformanceTrends schoolId={schoolId} userId={user?.id} classes={classes} />
-                </TabsContent>
-                <TabsContent value="export">
-                  <TermReportExport
-                    schoolId={schoolId}
-                    userId={user?.id}
-                    userName={user?.full_name}
-                    schoolName={school?.name}
-                    classes={classes}
-                  />
-                </TabsContent>
-              </Tabs>
-            )}
-          </div>
-        </main>
+          ) : (
+            <>
+              {activeTab === 'grades' && (
+                <GradesTab schoolId={schoolId} userId={user?.id} classes={classes} />
+              )}
+              {activeTab === 'predicted' && (
+                <PredictedTab schoolId={schoolId} userId={user?.id} />
+              )}
+              {activeTab === 'assignments' && (
+                <AssignmentsTab schoolId={schoolId} userId={user?.id} userName={user?.full_name} classes={classes} />
+              )}
+              {activeTab === 'analytics' && (
+                <PerformanceTrends schoolId={schoolId} userId={user?.id} classes={classes} />
+              )}
+              {activeTab === 'export' && (
+                <TermReportExport
+                  schoolId={schoolId}
+                  userId={user?.id}
+                  userName={user?.full_name}
+                  schoolName={school?.name}
+                  classes={classes}
+                />
+              )}
+            </>
+          )}
+        </AppShell>
       </div>
     </RoleGuard>
   );

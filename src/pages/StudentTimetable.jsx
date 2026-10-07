@@ -16,7 +16,6 @@ import * as assignmentsData from '@/data/assignments';
 import * as submissionsData from '@/data/submissions';
 
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const FULL_DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const WEEK_DAYS = [1, 2, 3, 4, 5]; // Mon–Fri
 
 function urgencyColor(daysLeft) {
@@ -111,7 +110,6 @@ function DayView({ entries, selectedDate }) {
 
 function WeekView({ entries, weekStart }) {
   const now = format(new Date(), 'HH:mm');
-  const todayDow = getDay(new Date());
 
   return (
     <div className="grid grid-cols-5 gap-2 md:gap-3">
@@ -208,10 +206,7 @@ export default function StudentTimetable() {
 
   const { data: classes = [], isLoading: loadingClasses } = useQuery({
     queryKey: ['student-classes', schoolId, user?.id],
-    queryFn: async () => {
-      const all = await classesData.where({ school_id: schoolId, status: 'active' });
-      return all.filter(c => c.student_ids?.includes(user.id));
-    },
+    queryFn: () => classesData.listForStudent(schoolId, user.id),
     enabled: !!schoolId && !!user?.id,
   });
 
@@ -233,7 +228,7 @@ export default function StudentTimetable() {
 
   const { data: submissions = [] } = useQuery({
     queryKey: ['student-submissions-tt', schoolId, user?.id],
-    queryFn: () => submissionsData.where({ school_id: schoolId, student_id: user?.id }),
+    queryFn: () => submissionsData.listForStudent(schoolId, user?.id),
     enabled: !!schoolId && !!user?.id,
   });
 
