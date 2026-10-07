@@ -196,7 +196,7 @@ export default function ChildOverviewHub({ schoolId, studentId }) {
           <p className="text-sm scholr-muted">No attendance records yet</p>
         ) : (
           <div className="space-y-2 max-h-64 overflow-y-auto">
-            {attendance.slice(0, 10).map(record => (
+            {/* {attendance.slice(0, 10).map(record => (
               <div key={record.id} className="flex items-center justify-between text-sm border-b scholr-rule-soft pb-2">
                 <div>
                   <p className="scholr-ink font-medium">{format(new Date(record.date), 'MMM d, yyyy')}</p>
@@ -211,7 +211,7 @@ export default function ChildOverviewHub({ schoolId, studentId }) {
                   {record.status}
                 </Badge>
               </div>
-            ))}
+            ))} */}
           </div>
         )}
       </div>
