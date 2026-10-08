@@ -8,7 +8,9 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Head, Sec, Figs, St, Skel } from '@/components/console/kit';
-import { useReadiness, useInvitations, useSchools, when, ago } from '@/components/console/useConsoleData';
+import {
+  useReadiness, useInvitations, useSchools, readinessChecks, when, ago,
+} from '@/components/console/useConsoleData';
 
 const B = '/AdminConsole';
 
@@ -22,7 +24,7 @@ export default function Email() {
     [schoolsQ.data],
   );
 
-  const checks = ready.data?.checks || [];
+  const checks = readinessChecks(ready.data);
   const smtp = checks.find((c) => /smtp|email/i.test(c.name));
   const smtpOk = smtp?.status === 'pass';
 
@@ -78,7 +80,7 @@ export default function Email() {
               <thead><tr><th>Area</th><th>State</th><th>Missing</th></tr></thead>
               <tbody>
                 {checks.map((c) => (
-                  <tr key={c.name}>
+                  <tr key={c.key || c.name}>
                     <td className="name">{c.name}</td>
                     <td>
                       <St level={c.status === 'pass' ? 'idle' : c.status === 'warn' ? 'warn' : 'bad'}>

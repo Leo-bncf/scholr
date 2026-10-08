@@ -10,7 +10,7 @@ import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
 import { Toasts, Mark } from './kit';
 import {
   useConsoleGate, useHeadline, useClimate, useIlo, useNas, useMetrics, tempState,
-  useErrors, useReadiness,
+  useErrors, useReadiness, readinessChecks,
 } from './useConsoleData';
 import { useUser } from '@/components/auth/UserContext';
 import '@/styles/scholr-console.css';
@@ -145,7 +145,7 @@ export default function ConsoleShell() {
     bugs: (errors.data || []).some((e) =>
       new Date(e.created_at).getTime() > Date.now() - 24 * 3600_000) ? 'warn' : null,
     // Nothing can be sent at all, which is worth a permanent dot until fixed.
-    email: (readiness.data?.checks || []).some((c) =>
+    email: readinessChecks(readiness.data).some((c) =>
       /smtp|email/i.test(c.name) && c.status !== 'pass') ? 'warn' : null,
     cap: h.overCap.length > 0 ? 'warn' : null,
     billing: h.atRisk.length > 0 ? 'warn' : null,
