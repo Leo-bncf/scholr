@@ -26,7 +26,6 @@ import Schools from '@/pages/console/Schools';
 import SchoolDetail from '@/pages/console/SchoolDetail';
 import Revenue from '@/pages/console/Revenue';
 import People from '@/pages/console/People';
-import Timetables from '@/pages/console/Timetables';
 import Analytics from '@/pages/console/Analytics';
 import Health from '@/pages/console/Health';
 import Database from '@/pages/console/Database';
@@ -37,7 +36,6 @@ import Settings from '@/pages/console/Settings';
 import Room from '@/pages/console/Room';
 import Servers from '@/pages/console/Servers';
 import Camera from '@/pages/console/Camera';
-import Nas from '@/pages/console/Nas';
 import Backups from '@/pages/console/Backups';
 import Bugs from '@/pages/console/Bugs';
 import Email from '@/pages/console/Email';
@@ -49,7 +47,6 @@ const I = {
   school:  <path d="M3 21h18M5 21V8l7-5 7 5v13M10 21v-6h4v6" />,
   money:   <><path d="M3 18l5-6 4 3 5-8" /><path d="M3 21h18" /></>,
   people:  <><circle cx="9" cy="8" r="3.2" /><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 5.2a3.2 3.2 0 0 1 0 5.6M18 20a6 6 0 0 0-3-5.2" /></>,
-  clock:   <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>,
   chart:   <><path d="M3 21h18" /><path d="M6 21V10M11 21V5M16 21v-8M21 21v-5" /></>,
   health:  <path d="M3 12h4l2-4 3 8 2-5 2 3h5" />,
   db:      <><ellipse cx="12" cy="5.5" rx="8" ry="3" /><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" /></>,
@@ -59,7 +56,6 @@ const I = {
   room:    <><path d="M14 14.8V5a2 2 0 1 0-4 0v9.8a4 4 0 1 0 4 0z" /></>,
   hw:      <><rect x="2" y="4" width="20" height="7" rx="1" /><rect x="2" y="13" width="20" height="7" rx="1" /><path d="M6 7.5h.01M6 16.5h.01" /></>,
   cam:     <><path d="M2 7h11v10H2z" /><path d="M13 11l7-4v10l-7-4z" /></>,
-  nas:     <><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18M3 15h18M7 6h.01M7 12h.01M7 18h.01" /></>,
   backup:  <><path d="M21 12a9 9 0 1 1-2.6-6.3" /><path d="M21 3v6h-6" /></>,
   bug:     <><path d="M12 2l10 19H2z" /><path d="M12 9v5M12 17.5h.01" /></>,
   mail:    <><rect x="2" y="5" width="20" height="14" rx="2" /><path d="M2.5 6.5L12 13l9.5-6.5" /></>,
@@ -70,20 +66,19 @@ const I = {
 
 const GROUPS = [
   { fam: null, items: [{ to: '', label: 'Overview', icon: I.home, fam: '--r-5', end: true }] },
+  // Adoption sits with Schools rather than under a heading of its own: it is
+  // a fact about the schools, and a section with one item in it is a heading
+  // pretending to be a section.
   { label: 'Schools', fam: '--r-5', items: [
     { to: 'schools', label: 'Schools', icon: I.school, flag: 'cap' },
     { to: 'revenue', label: 'Revenue', icon: I.money, flag: 'billing' },
     { to: 'people', label: 'People', icon: I.people },
-  ] },
-  { label: 'Teaching', fam: '--r-4', items: [
-    { to: 'timetables', label: 'Timetables', icon: I.clock },
     { to: 'analytics', label: 'Adoption', icon: I.chart },
   ] },
   { label: 'The room', fam: '--r-3', items: [
     { to: 'room', label: 'Room', icon: I.room, flag: 'room' },
     { to: 'servers', label: 'Servers', icon: I.hw, flag: 'ilo' },
     { to: 'camera', label: 'Camera', icon: I.cam },
-    { to: 'nas', label: 'NAS', icon: I.nas, flag: 'nas' },
   ] },
   { label: 'Platform', fam: '--r-3', items: [
     { to: 'health', label: 'Health', icon: I.health, flag: 'health' },
@@ -103,6 +98,15 @@ const GROUPS = [
   ] },
 ];
 
+/* A late off-site backup on a RAID 0 host is red, not amber: it is the only
+   copy that survives a dead disk. */
+function backupsFlag(nas) {
+  if (!nas || nas.configured === false) return null;
+  const age = nas.status?.backup_age_h;
+  const limit = nas.limits?.backup_max_age_h ?? 36;
+  return age == null || age > limit ? 'bad' : null;
+}
+
 export const CONSOLE_BASE = '/AdminConsole';
 const BASE = CONSOLE_BASE;
 
@@ -114,7 +118,9 @@ export default function ConsoleShell() {
   const h = useHeadline();
   const climate = useClimate();
   const ilo = useIlo();
-  const nas = useNas();
+  // Backups is the only page left that reads the NAS, and its rail dot still
+  // has to mean something, so the shell keeps the query for that one flag.
+  const nasForBackups = useNas();
   const metrics = useMetrics();
   const errors = useErrors(300);
   const readiness = useReadiness();
@@ -134,13 +140,7 @@ export default function ConsoleShell() {
     ilo: (ilo.data?.servers || []).some((s) => !s.ok) ? 'bad'
       : (ilo.data?.servers || []).some((s) => s.ok && s.powerState && s.powerState !== 'On') ? 'bad'
       : null,
-    // A missed backup on a RAID 0 host is red, not amber.
-    nas: nas.data?.alerts?.some((a) => a.level === 'red') ? 'bad'
-      : nas.data?.alerts?.length ? 'warn' : null,
-    backups: nas.data?.configured !== false
-      && (nas.data?.status?.backup_age_h == null
-        || nas.data.status.backup_age_h > (nas.data?.limits?.backup_max_age_h ?? 36))
-      ? 'bad' : null,
+    backups: backupsFlag(nasForBackups.data),
     // Something broke for a real person in the last day.
     bugs: (errors.data || []).some((e) =>
       new Date(e.created_at).getTime() > Date.now() - 24 * 3600_000) ? 'warn' : null,
@@ -203,12 +203,10 @@ export default function ConsoleShell() {
               <Route path="schools/:schoolId" element={<SchoolDetail />} />
               <Route path="revenue" element={<Revenue />} />
               <Route path="people" element={<People />} />
-              <Route path="timetables" element={<Timetables />} />
               <Route path="analytics" element={<Analytics />} />
               <Route path="room" element={<Room />} />
               <Route path="servers" element={<Servers />} />
               <Route path="camera" element={<Camera />} />
-              <Route path="nas" element={<Nas />} />
               <Route path="backups" element={<Backups />} />
               <Route path="automation" element={<Automation />} />
               <Route path="bugs" element={<Bugs />} />

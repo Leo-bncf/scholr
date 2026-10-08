@@ -59,7 +59,7 @@ export default function Backups() {
                       ? `${s.last_backup_object || 'object'} · ${bytes(s.last_backup_bytes)} · ${ago(s.last_backup_at)} ago`
                       : 'The collector reports no backup object at all.'}
                 </td>
-                <td><Link className="cons__link" to={`${B}/nas`}>NAS</Link></td>
+                <td className="muted">this page</td>
               </tr>
               <tr>
                 <td className="name">The Scholr database</td>
