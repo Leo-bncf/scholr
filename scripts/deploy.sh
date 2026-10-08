@@ -113,7 +113,29 @@ if [ ! -f dist/index.html ]; then
 fi
 
 echo "==> publish to $HOST:$WEBROOT"
-rsync -az --delete -e "ssh ${SSH_OPTS[*]}" dist/ "$HOST:$WEBROOT/"
+
+# Two passes, because the hashed chunks must outlive the deploy that replaced
+# them.
+#
+# This used to be one `rsync --delete`, which removed the previous build's
+# chunks the moment the new one landed. Every browser still holding the old
+# index.html — an open tab, a restored session, a page coming back from the
+# bfcache — then asked for a file that no longer existed. The dynamic import
+# rejected, React unmounted, and the user got a blank white page. It looked
+# fine to whoever deployed, because their browser fetched the new index.
+#
+# So: everything except assets/ is mirrored exactly, and assets/ is only ever
+# added to. Old chunks are pruned below once they are far older than any
+# plausible open tab.
+rsync -az --delete --exclude '/assets/***' -e "ssh ${SSH_OPTS[*]}" dist/ "$HOST:$WEBROOT/"
+rsync -az -e "ssh ${SSH_OPTS[*]}" dist/assets/ "$HOST:$WEBROOT/assets/"
+
+# Prune chunks untouched for 30 days. rsync updates the mtime of everything it
+# publishes, so a file still in the current build is never 30 days stale —
+# only genuinely abandoned chunks age out.
+echo "==> prune assets older than 30 days"
+pruned=$(ssh "${SSH_OPTS[@]}" "$HOST" "find $WEBROOT/assets -type f -mtime +30 -print -delete | wc -l" 2>/dev/null || echo 0)
+echo "    removed $pruned"
 
 echo "==> verify"
 code=$(curl -s -o /dev/null -m 20 -w '%{http_code}' https://scholr.pro)

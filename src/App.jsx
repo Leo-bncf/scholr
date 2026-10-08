@@ -5,6 +5,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
 import { Suspense } from 'react';
+import ChunkBoundary from '@/components/app/ChunkBoundary';
 
 /* Routes declared here, rather than through pages.config, are lazy for the
  * same reason the rest are — and one of them mattered more than the others:
@@ -117,6 +118,7 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
+    <ChunkBoundary>
     <Suspense fallback={<RouteFallback />}>
     <Routes>
       {/* One persistent PublicShell (nav + background glow + footer) for
@@ -377,6 +379,7 @@ const AuthenticatedApp = () => {
       <Route path="*" element={<PageNotFound />} />
     </Routes>
     </Suspense>
+    </ChunkBoundary>
   );
 };
 
