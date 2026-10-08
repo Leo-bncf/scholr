@@ -12,6 +12,12 @@ import { Suspense } from 'react';
  * 421 kB charting library in the entry graph. Every visitor to the
  * marketing site downloaded it. */
 const SchoolAdminRules = lazyPage('SchoolAdminRules', () => import('./pages/SchoolAdminRules'));
+/* The platform console is one lazy chunk holding all thirteen of its pages.
+   They are statically imported inside ConsoleShell on purpose — a super admin
+   moves between these constantly, and a per-page chunk meant a full-screen
+   loader on every tab. Keeping ConsoleShell itself lazy is what stops any of
+   it reaching a teacher, a parent, or the marketing site. */
+const ConsoleShell = lazyPage('AdminConsole', () => import('./components/console/ConsoleShell'));
 const SuperAdminAnalytics = lazyPage('SuperAdminAnalytics', () => import('./pages/SuperAdminAnalytics'));
 const SuperAdminSupport = lazyPage('SuperAdminSupport', () => import('./pages/SuperAdminSupport'));
 const SuperAdminTimetables = lazyPage('SuperAdminTimetables', () => import('./pages/SuperAdminTimetables'));
@@ -142,6 +148,11 @@ const AuthenticatedApp = () => {
       <Route path="/demo/parent" element={<DemoParent />} />
       <Route path="/demo/parent/assignment/:assignmentId" element={<DemoParentAssignment />} />
       <Route path="/demo/leader" element={<DemoLeader />} />
+      {/* The platform console. Deliberately not inside LayoutWrapper: it is a
+          sealed operator surface with its own rail, its own design system and
+          its own super-admin gate, which asks the database rather than
+          trusting the session's role. */}
+      <Route path="/AdminConsole/*" element={<ConsoleShell />} />
       {Object.entries(Pages)
         .filter(([path]) => !PUBLIC_SHELL_PAGE_KEYS.includes(path))
         .map(([path, Page]) => (

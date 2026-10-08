@@ -22,9 +22,10 @@ export default function AppHome() {
 
     const user = await getCurrentUser();
 
-    // Super admin goes directly to platform dashboard
+    // A super admin lands in the platform console, which is its own sealed
+    // surface rather than a page inside the school-side app.
     if (user.role === 'super_admin' || user.role === 'admin') {
-      navigate('/SuperAdminDashboard');
+      navigate('/AdminConsole');
       return;
     }
 
