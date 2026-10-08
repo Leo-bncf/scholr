@@ -266,6 +266,33 @@ export function useSignIns(limit = 200) {
   });
 }
 
+/**
+ * The readiness checks as a list.
+ *
+ * `deploymentReady` returns `checks` as an object keyed by area
+ * ({ smtp: {...}, stripe: {...} }), not an array. Two call sites assumed an
+ * array and called .some()/.map() on it, which throws — and because one of
+ * them is in the console shell, it took down every page at once. It only ever
+ * happened for a signed-in super admin: unauthenticated the call 401s, `data`
+ * is undefined, and the `|| []` fallback quietly hid the bug from every test.
+ *
+ * Accepts either shape so it cannot break again if the function changes.
+ */
+export function readinessChecks(data) {
+  const checks = data?.checks;
+  if (Array.isArray(checks)) return checks;
+  if (checks && typeof checks === 'object') {
+    return Object.entries(checks).map(([key, value]) => ({
+      key,
+      name: value?.name || key,
+      status: value?.status || 'unknown',
+      missing: Array.isArray(value?.missing) ? value.missing : [],
+      ...value,
+    }));
+  }
+  return [];
+}
+
 /** What the deployment is actually configured for: SMTP, Stripe, Google. */
 export function useReadiness() {
   return useQuery({

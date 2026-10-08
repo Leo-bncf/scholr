@@ -29,14 +29,25 @@ function isStaleChunk(error) {
 export default class ChunkBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { failed: false, stale: false };
+    this.state = { failed: false, stale: false, detail: null };
   }
 
   static getDerivedStateFromError(error) {
-    return { failed: true, stale: isStaleChunk(error) };
+    return {
+      failed: true,
+      stale: isStaleChunk(error),
+      // Keep the message. A boundary that swallows what threw turns one
+      // reproducible bug into a conversation, which is exactly what happened
+      // the first time this fired.
+      detail: `${error?.name || 'Error'}: ${error?.message || String(error)}`,
+    };
   }
 
-  componentDidCatch(error) {
+  componentDidCatch(error, info) {
+    // Always log, whatever kind of failure it was. React only prints its own
+    // notice in development.
+    console.error('[ChunkBoundary]', error, info?.componentStack);
+    this.setState({ stack: info?.componentStack || null });
     if (!isStaleChunk(error)) return;
     let already = false;
     try {
@@ -73,6 +84,22 @@ export default class ChunkBoundary extends React.Component {
           }}>
             Reload
           </button>
+
+          {/* The error itself, folded away. Nobody has to read it, but when
+              somebody reports this there is something to copy rather than a
+              description of a grey box. */}
+          {!this.state.stale && this.state.detail && (
+            <details style={{ marginTop: '1.25rem', textAlign: 'left' }}>
+              <summary style={{ cursor: 'pointer', fontSize: '.8125rem', color: '#6b7280' }}>
+                What went wrong
+              </summary>
+              <pre style={{
+                marginTop: '.5rem', padding: '.75rem', overflow: 'auto', maxHeight: '14rem',
+                fontSize: '.75rem', lineHeight: 1.5, whiteSpace: 'pre-wrap',
+                background: '#f3f4f6', borderRadius: '.375rem', color: '#374151',
+              }}>{this.state.detail}{this.state.stack ? `\n${this.state.stack}` : ''}</pre>
+            </details>
+          )}
         </div>
       </div>
     );
