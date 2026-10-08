@@ -89,6 +89,98 @@ export function useConfig() {
   });
 }
 
+/* ── The room ────────────────────────────────────────────────────────
+   The hardware Scholr runs on. Every one of these resolves even when the
+   credentials are unset — each function answers `configured: false` with a
+   reason, which the pages render as a setup note rather than an error. A
+   missing Tuya key should not make the console look broken. */
+
+const infra = (name, body) => async () => (await fns.invoke(name, body)) ?? {};
+
+export function useIlo() {
+  return useQuery({
+    queryKey: ['console', 'ilo'],
+    queryFn: infra('adminIlo', { action: 'status' }),
+    refetchInterval: 45_000, retry: false,
+  });
+}
+
+export function useClimate() {
+  return useQuery({
+    queryKey: ['console', 'climate'],
+    queryFn: infra('adminClimate', { action: 'status' }),
+    refetchInterval: 60_000, retry: false,
+  });
+}
+
+// One frame every 10 s, and only while the tab is visible — React Query pauses
+// refetchInterval in a background tab, which is what keeps this from pulling
+// snapshots all night.
+export function useCamera(enabled = true) {
+  return useQuery({
+    queryKey: ['console', 'camera'],
+    queryFn: infra('adminCamera', { action: 'snapshot' }),
+    refetchInterval: 10_000, retry: false, enabled,
+  });
+}
+
+export function useNas() {
+  return useQuery({
+    queryKey: ['console', 'nas'],
+    queryFn: infra('adminNas', {}),
+    refetchInterval: 5 * 60_000, retry: false,
+  });
+}
+
+/** Newest row per host, from the table the collectors push into. */
+export function useMetrics() {
+  return useQuery({
+    queryKey: ['console', 'metrics'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('server_metrics').select('*')
+        .order('ts', { ascending: false }).limit(80);
+      if (error) throw error;
+      const latest = new Map();
+      for (const row of data || []) if (!latest.has(row.server_id)) latest.set(row.server_id, row);
+      return [...latest.values()];
+    },
+    refetchInterval: 30_000, retry: false,
+  });
+}
+
+/** 24 hours of inlet readings, half-hourly, worst reading per bucket —
+    because for a room it is the peak that matters, not the average. */
+export function useInletHistory() {
+  return useQuery({
+    queryKey: ['console', 'inlet-history'],
+    queryFn: async () => {
+      const since = new Date(Date.now() - 24 * 3600_000).toISOString();
+      const { data, error } = await supabase
+        .from('server_metrics').select('ts, ambient_temp')
+        .gte('ts', since).not('ambient_temp', 'is', null)
+        .order('ts', { ascending: true });
+      if (error) throw error;
+      const buckets = new Map();
+      for (const r of data || []) {
+        const k = Math.floor(new Date(r.ts).getTime() / 1800_000);
+        const v = Number(r.ambient_temp);
+        if (!buckets.has(k) || v > buckets.get(k).c) buckets.set(k, { t: r.ts, c: v });
+      }
+      return [...buckets.values()];
+    },
+    refetchInterval: 5 * 60_000, retry: false,
+  });
+}
+
+/* A CPU past 85 °C or inlet air past 32 °C is a call to act, not a colour to
+   admire. Anything below is ink. */
+export function tempState(c, ambient) {
+  if (c == null) return 'idle';
+  if (ambient) return c >= 32 ? 'bad' : c >= 28 ? 'warn' : 'idle';
+  return c >= 85 ? 'bad' : c >= 75 ? 'warn' : 'idle';
+}
+
 /* ── The headline ────────────────────────────────────────────────────
    What the rail's dots and the Overview page both read. Derived once from
    the queries above rather than each page counting schools again. */
@@ -141,6 +233,63 @@ export function useHeadline() {
     coldCache: cacheRatio != null && cacheRatio < 99,
     tightConns: connPct != null && connPct > 85,
   };
+}
+
+/** Error logs, newest first. The table exists and nothing has ever shown it. */
+export function useErrors(limit = 300) {
+  return useQuery({
+    queryKey: ['console', 'errors', limit],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('error_logs')
+        .select('id, message, code, context, severity, school_id, user_id, stack_trace, timestamp, user_agent, created_at')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60 * 1000, retry: false,
+  });
+}
+
+/** Sign-in recency per account, through the definer function — auth.users is
+    not readable directly, and should not be. */
+export function useSignIns(limit = 200) {
+  return useQuery({
+    queryKey: ['console', 'sign-ins', limit],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('recent_sign_ins', { limit_n: limit });
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60 * 1000, retry: false,
+  });
+}
+
+/** What the deployment is actually configured for: SMTP, Stripe, Google. */
+export function useReadiness() {
+  return useQuery({
+    queryKey: ['console', 'readiness'],
+    queryFn: () => fns.invoke('deploymentReady'),
+    staleTime: 5 * 60 * 1000, retry: false,
+  });
+}
+
+/** Outstanding invitations — the other half of the email story. */
+export function useInvitations() {
+  return useQuery({
+    queryKey: ['console', 'invitations'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('user_invitations')
+        .select('id, email, role, school_id, status, created_at, expires_at, accepted_at')
+        .order('created_at', { ascending: false })
+        .limit(200);
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60 * 1000, retry: false,
+  });
 }
 
 /* ── Formatting ──────────────────────────────────────────────────────── */
