@@ -235,6 +235,63 @@ export function useHeadline() {
   };
 }
 
+/** Error logs, newest first. The table exists and nothing has ever shown it. */
+export function useErrors(limit = 300) {
+  return useQuery({
+    queryKey: ['console', 'errors', limit],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('error_logs')
+        .select('id, message, code, context, severity, school_id, user_id, stack_trace, timestamp, user_agent, created_at')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60 * 1000, retry: false,
+  });
+}
+
+/** Sign-in recency per account, through the definer function — auth.users is
+    not readable directly, and should not be. */
+export function useSignIns(limit = 200) {
+  return useQuery({
+    queryKey: ['console', 'sign-ins', limit],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('recent_sign_ins', { limit_n: limit });
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60 * 1000, retry: false,
+  });
+}
+
+/** What the deployment is actually configured for: SMTP, Stripe, Google. */
+export function useReadiness() {
+  return useQuery({
+    queryKey: ['console', 'readiness'],
+    queryFn: () => fns.invoke('deploymentReady'),
+    staleTime: 5 * 60 * 1000, retry: false,
+  });
+}
+
+/** Outstanding invitations — the other half of the email story. */
+export function useInvitations() {
+  return useQuery({
+    queryKey: ['console', 'invitations'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('user_invitations')
+        .select('id, email, role, school_id, status, created_at, expires_at, accepted_at')
+        .order('created_at', { ascending: false })
+        .limit(200);
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60 * 1000, retry: false,
+  });
+}
+
 /* ── Formatting ──────────────────────────────────────────────────────── */
 
 export function money(value, currency = 'EUR') {
