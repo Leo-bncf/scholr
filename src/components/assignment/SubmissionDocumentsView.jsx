@@ -4,6 +4,7 @@ import FileInlinePreview from './FileInlinePreview';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import DocumentAccessValidator from '@/components/google/DocumentAccessValidator';
+import StoredFileLink from '@/components/common/StoredFileLink';
 
 const TYPE_CONFIGS = {
   google_doc: { icon: FileText, label: 'Google Doc', color: 'bg-blue-50 text-blue-700 border-blue-200' },
@@ -71,9 +72,9 @@ export default function SubmissionDocumentsView({ documents, onRemove = null, on
                   className="text-xs h-7"
                   asChild
                 >
-                  <a href={doc.url} target="_blank" rel="noopener noreferrer">
+                  <StoredFileLink href={doc.url}>
                     <ExternalLink className="w-3.5 h-3.5 mr-1" /> Open
-                  </a>
+                  </StoredFileLink>
                 </Button>
               ) : null}
               {onRemove && (

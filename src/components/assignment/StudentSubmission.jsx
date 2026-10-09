@@ -19,6 +19,7 @@ import GoogleConnectionStatus from '@/components/google/GoogleConnectionStatus';
 import { useSubmissionPolicy, getLateSubmissionStatus } from '@/hooks/useSubmissionPolicy';
 import * as submissionsData from '@/data/submissions';
 import * as fns from '@/data/functions';
+import * as storage from '@/data/storage';
 
 export default function StudentSubmission({ assignment, studentId, studentName, existingSubmission }) {
   const queryClient = useQueryClient();
@@ -160,7 +161,7 @@ export default function StudentSubmission({ assignment, studentId, studentName, 
 
   const handleOpenDocument = (doc) => {
     if (doc.url) {
-      window.open(doc.url, '_blank');
+      storage.openStored(doc.url);
     }
   };
 

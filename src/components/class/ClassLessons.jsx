@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Loader2, Plus, CalendarDays, Clock, CheckCircle2, Circle, Link2, FileText, X, Upload, ExternalLink } from 'lucide-react';
 import { format } from 'date-fns';
 import * as lessonPlansData from '@/data/lessonPlans';
+import StoredFileLink from '@/components/common/StoredFileLink';
 
 function LessonFormDialog({ open, onClose, classData, userId, lesson = null }) {
   const queryClient = useQueryClient();
@@ -65,7 +66,7 @@ function LessonFormDialog({ open, onClose, classData, userId, lesson = null }) {
     if (!file) return;
     setUploading(true);
     const uploaded = await storage.upload(file, { schoolId: classData?.school_id, prefix: 'lessons' });
-      const file_url = uploaded.url;
+      const file_url = uploaded.ref; // a stored ref, not the hour-long signed URL
     setForm({
       ...form,
       resources: [...form.resources, { id: `res-${Date.now()}`, name: file.name, type: 'file', url: file_url }],
@@ -140,7 +141,7 @@ function LessonFormDialog({ open, onClose, classData, userId, lesson = null }) {
                 <div key={r.id} className="flex items-center gap-2 p-2 scholr-sunk rounded-lg">
                   {r.type === 'file' ? <FileText className="w-4 h-4 scholr-faint" /> : <Link2 className="w-4 h-4 scholr-faint" />}
                   <span className="text-sm flex-1 truncate">{r.name}</span>
-                  <a href={r.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="w-4 h-4 scholr-faint hover:scholr-accent" /></a>
+                  <StoredFileLink href={r.url}><ExternalLink className="w-4 h-4 scholr-faint hover:scholr-accent" /></StoredFileLink>
                   <button onClick={() => removeResource(r.id)}><X className="w-4 h-4 scholr-faint hover:text-red-600" /></button>
                 </div>
               ))}
@@ -295,11 +296,11 @@ export default function ClassLessons({ classData, isTeacher, userId }) {
                   {lesson.resources?.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-3">
                       {lesson.resources.map(r => (
-                        <a key={r.id} href={r.url} target="_blank" rel="noopener noreferrer"
+                        <StoredFileLink key={r.id} href={r.url}
                           className="flex items-center gap-1.5 px-2.5 py-1 scholr-sunk border scholr-rule rounded-md text-xs scholr-muted hover:scholr-accent-rule hover:scholr-accent transition-colors">
                           {r.type === 'file' ? <FileText className="w-3 h-3" /> : <Link2 className="w-3 h-3" />}
                           {r.name}
-                        </a>
+                        </StoredFileLink>
                       ))}
                     </div>
                   )}

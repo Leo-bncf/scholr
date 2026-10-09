@@ -11,7 +11,7 @@ import { FileText, Link2, Upload, Loader2, Plus, Sheet, Presentation, FolderOpen
 export default function DocumentPicker({ open, onClose, onAddDocuments, trigger }) {
   // Uploads are scoped to a school by storage policy, and this component isn't
   // given one, so take it from the signed-in user's context.
-  const { schoolId } = useUser();
+  const { schoolId, user } = useUser();
   const [activeTab, setActiveTab] = useState('upload');
   const [uploading, setUploading] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
@@ -23,8 +23,11 @@ export default function DocumentPicker({ open, onClose, onAddDocuments, trigger 
     
     setUploading(true);
     try {
-      const uploaded = await storage.upload(file, { schoolId: schoolId, prefix: 'documents' });
-      const file_url = uploaded.url;
+      // Student work belongs in the submissions bucket under the student's own
+      // folder. It used to go to `materials`, which students may not write to
+      // (so the upload was refused) and which the whole school can read.
+      const uploaded = await storage.uploadSubmission(file, { schoolId, userId: user?.id });
+      const file_url = uploaded.ref;
       
       const fileType = file.name.split('.').pop()?.toLowerCase() || file.type;
       const document = {
