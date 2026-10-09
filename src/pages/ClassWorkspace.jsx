@@ -19,7 +19,7 @@ export default function ClassWorkspace() {
 
   const { data: classData, isLoading: loadingClass } = useQuery({
     queryKey: ['class-details', classId],
-    queryFn: () => classesData.where({ id: classId, school_id: schoolId }).then(res => res[0]),
+    queryFn: () => classesData.get(classId),
     enabled: !!classId && !!schoolId,
   });
 

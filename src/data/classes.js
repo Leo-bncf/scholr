@@ -108,6 +108,22 @@ export async function setStudentEnrolled(classId, studentId, enrolled) {
 }
 
 /**
+ * Add several students to a class at once.
+ *
+ * Reads the roster fresh rather than trusting the caller's copy, so two
+ * teachers adding students to the same class don't overwrite each other.
+ */
+export async function enrollStudents(classId, studentIds) {
+  const cls = await maybeOne(
+    supabase.from('classes').select('id, student_ids, roster_locked').eq('id', classId),
+    'classes.enrollStudents/read',
+  );
+  if (!cls) throw new Error('classes.enrollStudents: class not found');
+  if (cls.roster_locked) throw new Error('This class roster is locked.');
+  return update(classId, { student_ids: Array.from(new Set([...(cls.student_ids ?? []), ...studentIds])) });
+}
+
+/**
  * Remove a student from a class roster.
  *
  * Deliberately without `setStudentEnrolled`'s roster-lock guard: GDPR erasure

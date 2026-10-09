@@ -10,6 +10,7 @@ import * as membershipsData from '@/data/memberships';
 import * as academics from '@/data/academics';
 import * as submissionsData from '@/data/submissions';
 import * as fns from '@/data/functions';
+import StoredFileLink from '@/components/common/StoredFileLink';
 
 export default function ChildReporting({ schoolId, studentId, studentName }) {
   const [downloading, setDownloading] = useState(null);
@@ -291,9 +292,9 @@ export default function ChildReporting({ schoolId, studentId, studentName }) {
                       </div>
                       {submission.documents?.[0]?.url && (
                         <Button size="sm" variant="outline" asChild className="ml-2">
-                          <a href={submission.documents[0].url} target="_blank" rel="noopener noreferrer">
+                          <StoredFileLink href={submission.documents[0].url}>
                             <Download className="w-3 h-3 mr-1" /> View
-                          </a>
+                          </StoredFileLink>
                         </Button>
                       )}
                     </div>

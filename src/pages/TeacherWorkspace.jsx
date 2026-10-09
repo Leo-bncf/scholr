@@ -1,260 +1,188 @@
 import React, { useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import RoleGuard from '@/components/auth/RoleGuard';
-import AppSidebar from '@/components/app/AppSidebar';
-import { useUser } from '@/components/auth/UserContext';
-import { getAppSidebarLinks } from '@/components/app/sidebarLinks';
-import WorkspaceAlertsBar from '@/components/teacher-workspace/WorkspaceAlertsBar';
-import WorkspaceClassList from '@/components/teacher-workspace/WorkspaceClassList';
-import WorkspacePipeline from '@/components/teacher-workspace/WorkspacePipeline';
-import WorkspaceQuickActions from '@/components/teacher-workspace/WorkspaceQuickActions';
-import WorkspaceGradingPanel from '@/components/teacher-workspace/WorkspaceGradingPanel';
-import { Loader2 } from 'lucide-react';
-import * as classesData from '@/data/classes';
-import * as assignmentsData from '@/data/assignments';
-import * as submissionsData from '@/data/submissions';
-import * as membershipsData from '@/data/memberships';
-import * as gradebookData from '@/data/gradebook';
+import { useSearchParams } from 'react-router-dom';
+import { format } from 'date-fns';
+import { X } from 'lucide-react';
+import { Group, Row, GroupEmpty } from '@/components/app/AppShell';
+import StatusChip from '@/components/app/StatusChip';
+import Notice from '@/components/app/Notice';
+import { SelectField, FilterBar } from '@/components/app/Field';
+import TeacherPage from '@/components/teacher/TeacherPage';
+import MarkSheet from '@/components/teacher/MarkSheet';
+import { PageLoading } from '@/components/teacher/bits';
+import { useTeacherLoad } from '@/components/teacher/useTeacherLoad';
+import { relativeDays, byAssignment } from '@/components/teacher/links';
 
+/**
+ * Marking — everything handed in, everything missing, everything marked.
+ *
+ * This was a four-column kanban with one card per student per assignment:
+ * forty-five "Not submitted" cards for a teacher with three classes, each
+ * with its own button, and the column that mattered (Submitted) squeezed to a
+ * fifth of the width. It is now a queue. Work is grouped by assignment, oldest
+ * first, and marking one piece opens the next.
+ *
+ * "Missing" is its own view because it is a different job: chasing students,
+ * or recording a mark for work done on paper.
+ */
 export default function TeacherWorkspace() {
-  const { user, school, schoolId, effectiveUserId } = useUser();
-  const userId = effectiveUserId || user?.id;
-  const queryClient = useQueryClient();
-  const [selectedClassId, setSelectedClassId] = useState(null);
-  const [selectedRow, setSelectedRow] = useState(null);
+  const load = useTeacherLoad();
+  const [params, setParams] = useSearchParams();
+  const [tab, setTab] = useState(params.get('tab') || 'queue');
+  const classFilter = params.get('class') || 'all';
+  const assignmentFilter = params.get('assignment');
+  const [openKey, setOpenKey] = useState(null);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['teacher-workspace', schoolId, userId],
-    queryFn: async () => {
-      const [allClasses, memberships, gradeItems] = await Promise.all([
-        classesData.where({ school_id: schoolId, status: 'active' }),
-        membershipsData.where({ school_id: schoolId, status: 'active' }),
-        gradebookData.whereGradeItems({ school_id: schoolId }),
-      ]);
+  const setParam = (key, value) => {
+    const next = new URLSearchParams(params);
+    if (value && value !== 'all') next.set(key, value); else next.delete(key);
+    setParams(next, { replace: true });
+  };
 
-      const teacherClasses = allClasses.filter((item) => item.teacher_ids?.includes(userId));
-      const teacherClassIds = teacherClasses.map((item) => item.id);
+  const keep = (x) => (classFilter === 'all' || x.cls?.id === classFilter)
+    && (!assignmentFilter || x.assignment?.id === assignmentFilter);
 
-      /* Both reads are scoped to the teacher's own classes. Submissions come
-         back as current versions only — a superseded resubmission is not a
-         second piece of work in the marking queue. */
-      const [assignments, submissions] = await Promise.all([
-        assignmentsData.listForClasses(teacherClassIds),
-        submissionsData.listForClasses(teacherClassIds),
-      ]);
-      const studentMemberships = memberships.filter((item) => item.role === 'student');
-
-      return {
-        classes: teacherClasses,
-        assignments,
-        submissions,
-        students: studentMemberships,
-        gradeItems,
-      };
-    },
-    enabled: !!schoolId && !!userId,
+  const toItem = (s) => ({
+    key: `${s.assignment_id}:${s.student_id}`,
+    assignment: s.assignment,
+    cls: s.cls,
+    student_id: s.student_id,
+    studentName: s.studentName,
+    submission: s,
+    grade: s.grade,
   });
 
-  const reviewedMutation = useMutation({
-    // Marking something reviewed carries no score, which grade() now allows.
-    mutationFn: (row) => submissionsData.grade(row.submissionId, {
-      feedback: row.submission?.feedback || '',
-      publish: true,
-    }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['teacher-workspace'] });
-    },
-  });
+  const lists = useMemo(() => ({
+    queue: load.toMark.filter(keep).map(toItem),
+    missing: load.missing.filter(keep).map((m) => ({
+      ...m,
+      submission: load.submissionFor(m.assignment.id, m.student_id),
+      grade: load.gradeFor(m.assignment.id, m.student_id),
+    })),
+    marked: load.marked.filter(keep).map(toItem),
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [load.toMark, load.missing, load.marked, classFilter, assignmentFilter]);
 
-  const saveGradeMutation = useMutation({
-    mutationFn: async ({ row, payload, publish }) => {
-      const existing = row.gradeItem;
-      const gradeData = {
-        school_id: row.assignment.school_id,
-        class_id: row.assignment.class_id,
-        student_id: row.studentId,
-        student_name: row.studentName,
-        assignment_id: row.assignment.id,
-        title: row.assignmentName,
-        grading_type: payload.criteria.length > 1 ? 'rubric' : 'simple',
-        rubric_criteria: payload.criteria.map((criterion) => ({
-          id: criterion.criterion_id,
-          name: criterion.name,
-          description: criterion.description,
-          max_score: criterion.max_score,
-        })),
-        criterion_scores: payload.criteria.map((criterion) => ({
-          criterion_id: criterion.criterion_id,
-          score: Number(criterion.score) || 0,
-          feedback: criterion.feedback,
-        })),
-        score: payload.totalScore,
-        max_score: payload.criteria.reduce((sum, criterion) => sum + (Number(criterion.max_score) || 0), 0),
-        comment: payload.overallFeedback,
-        status: publish ? 'published' : 'draft',
-        visible_to_student: publish,
-        visible_to_parent: publish,
-      };
-
-      if (existing?.id) {
-        await gradebookData.update(existing.id, gradeData);
-      } else {
-        await gradebookData.create(gradeData);
-      }
-
-      await submissionsData.grade(row.submissionId, {
-        feedback: payload.overallFeedback,
-        score: payload.totalScore,
-        publish,
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['teacher-workspace'] });
-      setSelectedRow(null);
-    },
-  });
-
-  const computed = useMemo(() => {
-    if (!data) {
-      return {
-        classCards: [],
-        selectedClass: null,
-        groupedRows: { not_submitted: [], submitted: [], needs_review: [], reviewed: [] },
-        alerts: { missing: 0, needsReview: 0, performanceDrops: 0 },
-      };
-    }
-
-    const assignmentMap = new Map(data.assignments.map((item) => [item.id, item]));
-    const gradeMap = new Map();
-    data.gradeItems.forEach((item) => {
-      if (item.assignment_id && item.student_id) {
-        gradeMap.set(`${item.assignment_id}_${item.student_id}`, item);
-      }
-    });
-
-    const classCards = data.classes.map((classItem) => {
-      const classAssignments = data.assignments.filter((assignment) => assignment.class_id === classItem.id);
-      const classSubmissions = data.submissions.filter((submission) => submission.class_id === classItem.id);
-      const missingSubmissions = classAssignments.reduce((sum, assignment) => {
-        const expected = classItem.student_ids?.length || 0;
-        const actual = classSubmissions.filter((submission) => submission.assignment_id === assignment.id && ['submitted', 'late', 'graded', 'returned', 'resubmitted'].includes(submission.status)).length;
-        return sum + Math.max(0, expected - actual);
-      }, 0);
-
-      const upcomingAssignments = classAssignments.filter((assignment) => assignment.due_date && new Date(assignment.due_date) > new Date()).length;
-
-      return {
-        ...classItem,
-        studentCount: classItem.student_ids?.length || 0,
-        upcomingAssignments,
-        missingSubmissions,
-      };
-    });
-
-    const activeClassId = selectedClassId || classCards[0]?.id || null;
-    const selectedClass = classCards.find((item) => item.id === activeClassId) || null;
-
-    const groupedRows = { not_submitted: [], submitted: [], needs_review: [], reviewed: [] };
-
-    if (selectedClass) {
-      const classAssignments = data.assignments.filter((assignment) => assignment.class_id === selectedClass.id);
-      const students = data.students.filter((student) => selectedClass.student_ids?.includes(student.user_id));
-
-      classAssignments.forEach((assignment) => {
-        students.forEach((student) => {
-          const submission = data.submissions.find((item) => item.assignment_id === assignment.id && item.student_id === student.user_id);
-          const gradeItem = gradeMap.get(`${assignment.id}_${student.user_id}`) || null;
-          let column = 'not_submitted';
-          let statusLabel = 'Not submitted';
-          let canMarkReviewed = false;
-
-          if (submission) {
-            if (submission.status === 'graded') {
-              column = 'reviewed';
-              statusLabel = 'Reviewed';
-            } else if (submission.status === 'returned') {
-              column = 'needs_review';
-              statusLabel = 'Needs review';
-              canMarkReviewed = true;
-            } else if (submission.status === 'submitted' || submission.status === 'late' || submission.status === 'resubmitted') {
-              column = 'submitted';
-              statusLabel = submission.status === 'late' ? 'Late submission' : 'Submitted';
-              canMarkReviewed = true;
-            }
-          }
-
-          groupedRows[column].push({
-            key: `${assignment.id}_${student.user_id}`,
-            submissionId: submission?.id,
-            studentId: student.user_id,
-            studentName: student.user_name || student.user_email,
-            assignmentName: assignment.title,
-            submittedAt: submission?.submitted_at,
-            statusLabel,
-            submission,
-            assignment,
-            gradeItem,
-            canMarkReviewed,
-          });
-        });
-      });
-    }
-
-    const alerts = {
-      missing: classCards.reduce((sum, item) => sum + item.missingSubmissions, 0),
-      needsReview: groupedRows.submitted.length + groupedRows.needs_review.length,
-      performanceDrops: data.gradeItems.filter((item) => Number(item.percentage) < 60).length,
-    };
-
-    return { classCards, selectedClass, groupedRows, alerts };
-  }, [data, selectedClassId]);
-
-  const handleOpenSubmission = (row) => setSelectedRow(row);
-  const handleMarkReviewed = (row) => reviewedMutation.mutate(row);
-
-  if (isLoading) {
-    return <div className="min-h-screen scholr-sunk flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-700" /></div>;
-  }
+  const current = lists[tab] || lists.queue;
+  const groups = byAssignment(current);
+  const openIndex = current.findIndex((x) => x.key === openKey);
+  const openItem = openIndex >= 0 ? current[openIndex] : null;
+  const nextItem = openIndex >= 0 ? current.find((x, i) => i > openIndex) : null;
+  const filteredAssignment = assignmentFilter && [...load.toMark, ...load.missing, ...load.marked]
+    .find((x) => x.assignment?.id === assignmentFilter)?.assignment;
 
   return (
-    <RoleGuard allowedRoles={['teacher', 'school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar links={getAppSidebarLinks('teacher')} role="teacher" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="app-offset p-4 md:p-6">
-          <div className="max-w-[1600px] mx-auto space-y-6">
-            <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
-              <div>
-                <h1 className="text-2xl font-bold scholr-ink">Teacher Workspace</h1>
-                <p className="text-sm scholr-muted mt-1">Daily teaching, review, and grading in one place.</p>
-              </div>
-              <WorkspaceQuickActions classData={computed.selectedClass} userId={userId} />
-            </div>
+    <TeacherPage
+      title="Marking"
+      eyebrow={load.isLoading ? undefined : `${load.toMark.length} waiting · ${load.missing.length} missing`}
+      tabs={[
+        { value: 'queue', label: `To mark${lists.queue.length ? ` · ${lists.queue.length}` : ''}` },
+        { value: 'missing', label: `Missing${lists.missing.length ? ` · ${lists.missing.length}` : ''}` },
+        { value: 'marked', label: 'Marked' },
+      ]}
+      activeTab={tab}
+      onTabChange={(v) => { setTab(v); setOpenKey(null); }}
+    >
+      {load.error && <Notice tone="crit" title="Marking didn't load">{String(load.error.message || load.error)}</Notice>}
 
-            <WorkspaceAlertsBar alerts={computed.alerts} />
+      <FilterBar>
+        {load.classes.length > 1 && (
+          <span style={{ width: 'min(100%, 18rem)' }}>
+          <SelectField
+            label="Class"
+            value={classFilter}
+            onChange={(v) => setParam('class', v)}
+            options={[{ value: 'all', label: 'All classes' }, ...load.classes.map((c) => ({ value: c.id, label: c.name }))]}
+          />
+          </span>
+        )}
+        {filteredAssignment && (
+          <button
+            type="button"
+            className="pub-btn pub-btn-line scholr-focus"
+            onClick={() => setParam('assignment', null)}
+            aria-label={`Stop filtering by ${filteredAssignment.title}`}
+          >
+            {filteredAssignment.title}
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </FilterBar>
 
-            <div className="grid grid-cols-1 xl:grid-cols-[320px_minmax(0,1fr)] gap-6 items-start">
-              <WorkspaceClassList
-                classes={computed.classCards}
-                selectedClassId={computed.selectedClass?.id}
-                onSelectClass={setSelectedClassId}
-              />
-              <WorkspacePipeline
-                groupedRows={computed.groupedRows}
-                onOpenSubmission={handleOpenSubmission}
-                onMarkReviewed={handleMarkReviewed}
-              />
-            </div>
-          </div>
-        </main>
+      {load.isLoading ? <PageLoading /> : groups.length === 0 ? (
+        <Group>
+          <GroupEmpty>
+            {tab === 'queue' && 'Nothing is waiting to be marked. Work your students hand in lands here, oldest first.'}
+            {tab === 'missing' && 'Nobody is missing work that was due.'}
+            {tab === 'marked' && 'Nothing marked yet.'}
+          </GroupEmpty>
+        </Group>
+      ) : groups.map(({ assignment, cls, items }) => (
+        <Group
+          key={assignment.id}
+          title={`${assignment.title} · ${cls?.name ?? ''}`}
+          action={
+            <span style={{ fontSize: '.78rem', color: 'var(--muted)' }}>
+              {assignment.due_date ? `due ${format(new Date(assignment.due_date), 'd MMM')}` : 'no due date'}
+              {assignment.max_score != null ? ` · out of ${assignment.max_score}` : ''}
+            </span>
+          }
+        >
+          {items.map((x) => (
+            <Row
+              key={x.key}
+              onClick={() => setOpenKey(x.key)}
+              label={x.studentName}
+              detail={detailFor(tab, x)}
+            >
+              {chipsFor(tab, x)}
+            </Row>
+          ))}
+        </Group>
+      ))}
 
-        <WorkspaceGradingPanel
-          row={selectedRow}
-          open={!!selectedRow}
-          onClose={() => setSelectedRow(null)}
-          onSaveDraft={(payload) => saveGradeMutation.mutate({ row: selectedRow, payload, publish: false })}
-          onPublishGrade={(payload) => saveGradeMutation.mutate({ row: selectedRow, payload, publish: true })}
-        />
-      </div>
-    </RoleGuard>
+      <MarkSheet
+        item={openItem}
+        open={!!openItem}
+        onOpenChange={(o) => { if (!o) setOpenKey(null); }}
+        onNext={tab === 'marked' ? undefined : () => setOpenKey(nextItem ? nextItem.key : null)}
+        nextLabel={nextItem ? 'next' : 'close'}
+      />
+    </TeacherPage>
+  );
+}
+
+function detailFor(tab, x) {
+  if (tab === 'missing') {
+    return `was due ${relativeDays(x.assignment.due_date)}${x.submission?.status === 'draft' ? ' · started a draft' : ''}`;
+  }
+  if (tab === 'marked') {
+    const s = x.submission;
+    return s?.graded_at ? `marked ${relativeDays(s.graded_at)}` : 'marked';
+  }
+  return x.submission?.submitted_at ? `handed in ${relativeDays(x.submission.submitted_at)}` : 'handed in';
+}
+
+function chipsFor(tab, x) {
+  const s = x.submission;
+  if (tab === 'marked') {
+    const score = x.grade?.score ?? s?.score;
+    return (
+      <>
+        {s?.status === 'returned'
+          ? <StatusChip tone="mute">Returned</StatusChip>
+          : <StatusChip tone="good">Published</StatusChip>}
+        {score != null && <span className="scholr-num" style={{ fontFamily: 'var(--font-mono)', fontSize: '.86rem' }}>{score}{x.assignment?.max_score != null ? ` / ${x.assignment.max_score}` : ''}</span>}
+      </>
+    );
+  }
+  if (tab === 'missing') {
+    return x.grade?.status === 'draft' ? <StatusChip tone="info">Draft mark</StatusChip> : null;
+  }
+  return (
+    <>
+      {s?.status === 'late' && <StatusChip tone="warn">Late</StatusChip>}
+      {s?.version_number > 1 && <StatusChip tone="info">Resubmitted</StatusChip>}
+      {x.grade?.status === 'draft' && <StatusChip tone="info">Draft mark</StatusChip>}
+    </>
   );
 }

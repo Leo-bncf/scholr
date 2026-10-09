@@ -89,7 +89,10 @@ export default function AppShell({ title, eyebrow, actions, tabs, children }) {
         {/* Zero-height marker: when it leaves the viewport the toolbar takes
             over the title. Watching the heading itself would flip the state
             while the heading is still half-visible. */}
-        <div ref={sentinel} aria-hidden="true" style={{ height: 0, marginTop: '-1.25rem' }} />
+        {/* Offset with `top`, not a negative margin: a margin moved the content
+            up with it, and on a tabbed page that left the first section
+            sitting on the tab bar. */}
+        <div ref={sentinel} aria-hidden="true" style={{ height: 0, position: 'relative', top: '-1.25rem' }} />
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xl)' }}>
           {children}

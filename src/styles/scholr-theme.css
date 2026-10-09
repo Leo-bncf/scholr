@@ -1147,12 +1147,16 @@ select.app-input { appearance: none; padding-right: 1.9rem; cursor: pointer; }
 }
 
 .app-segmented {
+  /* Scrolls sideways when it outgrows a phone screen rather than being cut
+     off — on a 375px screen the class page lost its last four tabs. */
   display: inline-flex; padding: 2px; gap: 2px;
+  max-width: 100%; overflow-x: auto; scrollbar-width: none;
   background: color-mix(in oklab, var(--ink) 6%, transparent);
   border-radius: var(--radius-control);
 }
 .app-segment {
   appearance: none; border: none; background: transparent; cursor: pointer;
+  white-space: nowrap; flex: none;
   font: inherit; font-size: .82rem; font-weight: 500; color: var(--muted);
   padding: .3rem .7rem; border-radius: calc(var(--radius-control) - 3px);
   transition: color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
@@ -1269,3 +1273,27 @@ select.app-input { appearance: none; padding-right: 1.9rem; cursor: pointer; }
  * present/absent/late buttons. Was bg-emerald-500 text-white, a fixed
  * light-mode pair that did not move with the theme. */
 .app-chip-on { background: var(--brand); color: var(--surface); }
+
+/* --- teacher gradebook grid ------------------------------------------------
+   Rows are students, columns assignments; every cell is a button that opens
+   the marking sheet. State is carried by a word in the cell AND a tone, never
+   by colour alone. Drafts are greyed because students can't see them yet. */
+.marks-grid tbody th {
+  font-size: .88rem; letter-spacing: normal; text-transform: none;
+  border-bottom: none; border-top: 1px solid var(--rule-soft);
+  position: sticky; left: 0; z-index: 1;
+}
+.marks-grid tbody tr:first-child th { border-top: none; }
+.marks-grid thead th:first-child { z-index: 2; }
+.marks-cell {
+  appearance: none; border: none; background: transparent; cursor: pointer;
+  width: 100%; min-height: 2.6rem; padding: .55rem .9rem;
+  font: inherit; font-family: var(--font-mono); font-size: .86rem; text-align: right;
+  color: var(--ink);
+  transition: background-color var(--dur-micro) var(--ease-out);
+}
+.marks-cell:hover { background: color-mix(in oklab, var(--ink) 4%, transparent); }
+.marks-cell[data-tone='draft']   { color: var(--faint); }
+.marks-cell[data-tone='todo']    { color: var(--brand); font-family: var(--font-sans); font-size: .8rem; }
+.marks-cell[data-tone='missing'] { color: var(--warn); font-family: var(--font-sans); font-size: .8rem; }
+.marks-cell[data-tone='quiet']   { color: var(--faint); font-family: var(--font-sans); font-size: .8rem; }
