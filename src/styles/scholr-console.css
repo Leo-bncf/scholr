@@ -179,6 +179,13 @@
 .cons__b--go { background:var(--green); color:#fff; border-color:var(--green); }
 .cons__b--go:hover:not(:disabled) { background:var(--f-5); }
 .cons__b--bad { color:var(--bad); border-color:#dbb6ad; }
+/* Sign out: the one way out of the console, so it is bigger than the row
+   buttons and carries the power symbol — readable at a glance as "leave". */
+.cons__b--out { font-size:.875rem; padding:8px 16px; gap:8px; border-color:var(--ink-soft); }
+.cons__b--out svg { flex:none; }
+.cons__out { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+.cons__out p { margin:0; color:var(--ink-soft); }
+.cons__out .cons__b--out { margin-left:auto; }
 
 .cons__link { color:var(--f-5); font-weight:600; text-decoration:none; }
 .cons__link:hover { text-decoration:underline; }
