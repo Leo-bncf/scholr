@@ -121,7 +121,10 @@ export function seed() {
       const score = Math.round(a.max_score * (0.55 + ((i * 7) % 40) / 100));
       submissions.push({
         id: id('f7000000', s++), school_id: SCHOOL_ID, assignment_id: a.id, class_id: cls.id, student_id: stId,
-        student_name: st.full_name, content: '', file_urls: [], documents: [], version_number: 1,
+        student_name: st.full_name,
+        content: i % 3 === 0 ? 'Rate of reaction rose with substrate concentration until about 2.5 mol/dm³, then levelled off as the active sites saturated.' : '',
+        link_url: i % 3 === 1 ? 'https://docs.example.test/enzyme-report' : null,
+        file_urls: [], documents: [], version_number: i % 7 === 2 ? 2 : 1,
         is_current_version: true, status: graded ? 'graded' : late ? 'late' : 'submitted',
         submitted_at: iso(late ? 0 : -3, 14 + (i % 4)), score: graded ? score : null,
         feedback: graded ? 'Clear method. Tighten the evaluation of uncertainty.' : null,
@@ -133,7 +136,7 @@ export function seed() {
           student_name: st.full_name, assignment_id: a.id, title: a.title, score, max_score: a.max_score,
           percentage: Math.round((score / a.max_score) * 100), ib_grade: Math.max(1, Math.min(7, Math.round((score / a.max_score) * 7))),
           comment: null, status: 'published', visible_to_student: true, visible_to_parent: true, term_id: TERM_ID,
-          grading_type: 'simple', created_at: iso(-1),
+          grading_type: 'simple', is_template: false, created_at: iso(-1),
         });
       }
     });
