@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import PublicShell, { Section, CTA } from '@/components/public/PublicShell';
+import { Section, CTA } from '@/components/public/PublicShell';
 import Seo from '@/components/public/Seo';
 import { ArrowRight } from 'lucide-react';
 
@@ -104,7 +104,7 @@ function Question({ q, a }) {
 
 export default function FAQ() {
   return (
-    <PublicShell>
+    <>
       <Seo
         title="Questions"
         description="What Scholr costs, whether it runs two curricula at once, how parent access works, how the Schedual timetable fits, and how to get your data out."
@@ -139,6 +139,6 @@ export default function FAQ() {
           <CTA to="/BookDemo">Ask us something else <ArrowRight className="w-4 h-4" /></CTA>
         </div>
       </Section>
-    </PublicShell>
+    </>
   );
 }

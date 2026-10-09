@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import PublicShell, { Section, CTA, RuledList } from '@/components/public/PublicShell';
+import { Section, CTA, RuledList } from '@/components/public/PublicShell';
 import Seo from '@/components/public/Seo';
 import { CURRICULUM_LIST } from './data';
 import { SCHEDUAL_BY_CURRICULUM } from '@/components/public/schedual';
@@ -19,7 +19,7 @@ export default function CurriculumPage({ curriculum: c }) {
   const timetable = SCHEDUAL_BY_CURRICULUM[c.slug];
 
   return (
-    <PublicShell>
+    <>
       <Seo title={c.seoTitle} description={c.seoDescription} canonical={`/${c.slug}`} />
 
       <Section>
@@ -127,6 +127,6 @@ export default function CurriculumPage({ curriculum: c }) {
           that is the whole reason the product exists.
         </p>
       </Section>
-    </PublicShell>
+    </>
   );
 }

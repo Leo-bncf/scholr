@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import PublicShell, { Section, CTA, RuledList } from '@/components/public/PublicShell';
+import { Section, CTA, RuledList } from '@/components/public/PublicShell';
 import Seo from '@/components/public/Seo';
 import { ArrowRight } from 'lucide-react';
 
@@ -31,7 +31,7 @@ const ERRANDS = [
 
 export default function Contact() {
   return (
-    <PublicShell>
+    <>
       <Seo
         title="Contact"
         description="One address, read by the two people who build Scholr: support@scholr.pro. Evaluations, security questionnaires, procurement paperwork and data-protection requests."
@@ -109,6 +109,6 @@ export default function Contact() {
           </Link>
         </p>
       </Section>
-    </PublicShell>
+    </>
   );
 }

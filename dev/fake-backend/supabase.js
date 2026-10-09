@@ -19,7 +19,7 @@
  * stack (`npm run verify`).
  *
  * Reset the data with ?reset-fake in the URL. Sign in as someone else with
- * ?as=<role> (teacher, student, school_admin).
+ * ?as=<role> (teacher, student, school_admin, super_admin).
  */
 import { seed, USERS } from './seed';
 
@@ -315,7 +315,7 @@ function channel() {
 
 export const supabase = {
   from: (name) => new Query(name),
-  rpc: async (name) => ({ data: name === 'is_super_admin' ? false : [], error: null }),
+  rpc: async (name) => ({ data: name === 'is_super_admin' ? currentUser().role === 'super_admin' : [], error: null }),
   auth,
   storage,
   functions,

@@ -33,6 +33,13 @@ export const PORTED = new Set([
   'verifyGoogleConnection',
   'deploymentReady',
   'exportReportPDF',
+  // The room: these four read the hardware Scholr runs on. They answer only a
+  // super admin, and each reports `configured: false` rather than failing when
+  // its credentials are not set.
+  'adminIlo',
+  'adminClimate',
+  'adminCamera',
+  'adminNas',
   // stripeWebhook is called by Stripe, never from the browser.
 ]);
 

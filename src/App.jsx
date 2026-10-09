@@ -5,6 +5,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
 import { Suspense } from 'react';
+import ChunkBoundary from '@/components/app/ChunkBoundary';
 
 /* Routes declared here, rather than through pages.config, are lazy for the
  * same reason the rest are — and one of them mattered more than the others:
@@ -12,6 +13,12 @@ import { Suspense } from 'react';
  * 421 kB charting library in the entry graph. Every visitor to the
  * marketing site downloaded it. */
 const SchoolAdminRules = lazyPage('SchoolAdminRules', () => import('./pages/SchoolAdminRules'));
+/* The platform console is one lazy chunk holding all thirteen of its pages.
+   They are statically imported inside ConsoleShell on purpose — a super admin
+   moves between these constantly, and a per-page chunk meant a full-screen
+   loader on every tab. Keeping ConsoleShell itself lazy is what stops any of
+   it reaching a teacher, a parent, or the marketing site. */
+const ConsoleShell = lazyPage('AdminConsole', () => import('./components/console/ConsoleShell'));
 const SuperAdminAnalytics = lazyPage('SuperAdminAnalytics', () => import('./pages/SuperAdminAnalytics'));
 const SuperAdminSupport = lazyPage('SuperAdminSupport', () => import('./pages/SuperAdminSupport'));
 const SuperAdminTimetables = lazyPage('SuperAdminTimetables', () => import('./pages/SuperAdminTimetables'));
@@ -50,10 +57,21 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { ImpersonationProvider } from '@/components/auth/ImpersonationContext';
 import { UserProvider } from '@/components/auth/UserContext';
 import ImpersonationBanner from '@/components/auth/ImpersonationBanner';
+import PublicShellLayout from '@/components/public/PublicShellLayout';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
+
+/* These pages all render inside one persistent PublicShell (nav + background
+ * glow + footer) via the pathless layout route below, instead of each
+ * mounting its own — see PublicShellLayout for why. Excluded from the
+ * generic pagesConfig loop further down so they aren't registered twice. */
+const PUBLIC_SHELL_PAGE_KEYS = [
+  'Features', 'Pricing', 'Security', 'Contact', 'BookDemo', 'About', 'FAQ', 'Schedual',
+  'ib-school-management-software', 'igcse-school-management-software',
+  'a-level-school-management-software', 'us-school-management-software',
+];
 
 const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -100,13 +118,25 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
+    <ChunkBoundary>
     <Suspense fallback={<RouteFallback />}>
     <Routes>
-      <Route path="/" element={
-        <LayoutWrapper currentPageName={mainPageKey}>
-          <MainPage />
-        </LayoutWrapper>
-      } />
+      {/* One persistent PublicShell (nav + background glow + footer) for
+          every marketing/public page, instead of each page mounting its
+          own — see PublicShellLayout. A pathless layout route: it
+          contributes no path segment of its own, so each child's path
+          below is exactly the same URL it always was. PrivacyPolicy and
+          TermsOfService move in here too, next to their standalone routes
+          further down previously. */}
+      <Route element={<PublicShellLayout />}>
+        <Route path="/" element={<MainPage />} />
+        {PUBLIC_SHELL_PAGE_KEYS.map((path) => {
+          const Page = Pages[path];
+          return <Route key={path} path={`/${path}`} element={<Page />} />;
+        })}
+        <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
+        <Route path="/TermsOfService" element={<TermsOfService />} />
+      </Route>
       {/* The interactive sandbox. These come before the pagesConfig loop, and
           because React Router matches case-insensitively they also claim /Demo,
           /DEMO and so on. The lead-capture form is therefore registered as
@@ -120,17 +150,24 @@ const AuthenticatedApp = () => {
       <Route path="/demo/parent" element={<DemoParent />} />
       <Route path="/demo/parent/assignment/:assignmentId" element={<DemoParentAssignment />} />
       <Route path="/demo/leader" element={<DemoLeader />} />
-      {Object.entries(Pages).map(([path, Page]) => (
-        <Route
-          key={path}
-          path={`/${path}`}
-          element={
-            <LayoutWrapper currentPageName={path}>
-              <Page />
-            </LayoutWrapper>
-          }
-        />
-      ))}
+      {/* The platform console. Deliberately not inside LayoutWrapper: it is a
+          sealed operator surface with its own rail, its own design system and
+          its own super-admin gate, which asks the database rather than
+          trusting the session's role. */}
+      <Route path="/AdminConsole/*" element={<ConsoleShell />} />
+      {Object.entries(Pages)
+        .filter(([path]) => !PUBLIC_SHELL_PAGE_KEYS.includes(path))
+        .map(([path, Page]) => (
+          <Route
+            key={path}
+            path={`/${path}`}
+            element={
+              <LayoutWrapper currentPageName={path}>
+                <Page />
+              </LayoutWrapper>
+            }
+          />
+        ))}
       <Route
         path="/SuperAdminAnalytics"
         element={
@@ -284,22 +321,6 @@ const AuthenticatedApp = () => {
         }
       />
       <Route
-        path="/PrivacyPolicy"
-        element={
-          <LayoutWrapper currentPageName="PrivacyPolicy">
-            <PrivacyPolicy />
-          </LayoutWrapper>
-        }
-      />
-      <Route
-        path="/TermsOfService"
-        element={
-          <LayoutWrapper currentPageName="TermsOfService">
-            <TermsOfService />
-          </LayoutWrapper>
-        }
-      />
-      <Route
         path="/SecurityAndCompliance"
         element={
           <LayoutWrapper currentPageName="SecurityAndCompliance">
@@ -358,6 +379,7 @@ const AuthenticatedApp = () => {
       <Route path="*" element={<PageNotFound />} />
     </Routes>
     </Suspense>
+    </ChunkBoundary>
   );
 };
 

@@ -18,6 +18,7 @@ export const USERS = {
   teacher: { id: id('f1000000', 1), email: 'aoife.brennan@example.test', full_name: 'Aoife Brennan', role: 'teacher' },
   school_admin: { id: id('f1000000', 2), email: 'admin@example.test', full_name: 'Declan Murphy', role: 'school_admin' },
   coteacher: { id: id('f1000000', 3), email: 'tomas.ruiz@example.test', full_name: 'Tomás Ruiz', role: 'teacher' },
+  super_admin: { id: id('f1000000', 9), email: 'platform@example.test', full_name: 'Platform Admin', role: 'super_admin' },
 };
 
 const STUDENT_NAMES = [
@@ -52,7 +53,8 @@ export function seed() {
   };
 
   const allPeople = [t, USERS.school_admin, USERS.coteacher, ...students];
-  const profiles = allPeople.map((u) => ({
+  const superAdmin = USERS.super_admin;
+  const profiles = [...allPeople, superAdmin].map((u) => ({
     id: u.id, email: u.email, full_name: u.full_name, display_name: null, role: u.role,
     active_school_id: SCHOOL_ID, created_at: iso(-150),
   }));

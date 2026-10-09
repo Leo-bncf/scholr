@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Seo from '@/components/public/Seo';
-import PublicShell, { Section, CTA, RuledList } from '@/components/public/PublicShell';
+import { Section, CTA, RuledList } from '@/components/public/PublicShell';
 import StatusChip from '@/components/app/StatusChip';
 import { ArrowRight } from 'lucide-react';
 
@@ -49,7 +49,7 @@ const ROADMAP = [
 
 export default function Security() {
   return (
-    <PublicShell>
+    <>
       <Seo
         title="Security"
         description="How tenant separation works in Scholr, enforced as a row-level security policy in Postgres — and a plain list of what we have not built yet."
@@ -107,7 +107,7 @@ export default function Security() {
             ['Isolation is covered by tests', 'The suite checks that a classmate cannot read another student’s grades and that a teacher outside a class sees nothing.', 'Negative cases asserted'],
           ].map(([h, body, proof]) => (
             <div key={h} style={{ padding: '1.2rem 0', borderTop: '1px solid var(--rule)' }}>
-              <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.02rem', letterSpacing: '-0.02em', color: 'var(--ink)' }}>{h}</h3>
+              <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.02rem', letterSpacing: '-0.02em', color: 'var(--brand)' }}>{h}</h3>
               <p style={{ margin: '.55rem 0 0', fontSize: '.94rem', lineHeight: 1.55, color: 'var(--muted)', maxWidth: '46ch' }}>{body}</p>
               <p className="scholr-label" style={{ margin: '.7rem 0 0', color: 'var(--brand)' }}>{proof}</p>
             </div>
@@ -163,7 +163,7 @@ export default function Security() {
           {ROADMAP.map(([title, state, desc]) => (
             <div key={title} className="py-4" style={{ borderTop: '1px solid var(--rule)' }}>
               <div className="flex items-center gap-3 flex-wrap">
-                <h3 className="m-0 text-base font-medium" style={{ color: 'var(--ink)' }}>{title}</h3>
+                <h3 className="m-0 text-base font-medium" style={{ color: 'var(--brand)' }}>{title}</h3>
                 <StatusChip tone={state === 'not held' ? 'crit' : 'warn'}>{state}</StatusChip>
               </div>
               <p className="m-0 mt-1.5 text-sm leading-relaxed" style={{ color: 'var(--muted)' }}>{desc}</p>
@@ -190,6 +190,6 @@ export default function Security() {
           </span>
         </div>
       </Section>
-    </PublicShell>
+    </>
   );
 }

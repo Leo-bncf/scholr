@@ -41,7 +41,11 @@ export default function ConsentModal({ isOpen, onClose }) {
       className="scholr-panel fixed bottom-4 left-4 right-4 md:left-auto md:right-6 z-50 p-5"
       style={{ maxWidth: '23rem', boxShadow: '0 10px 30px oklch(20% 0.02 170 / 0.14)' }}
     >
-      <h2 className="scholr-label m-0">Cookies</h2>
+      {/* Scoped inline override, not a change to .scholr-label itself — that
+          shared class also drives eyebrow/kicker text sitewide (e.g. the
+          hero's "ONE BUILDING · FOUR PROGRAMMES..."), which isn't header
+          text and shouldn't turn green along with it. */}
+      <h2 className="scholr-label m-0" style={{ color: 'var(--brand)' }}>Cookies</h2>
       <p className="m-0 mt-2 text-sm leading-relaxed" style={{ color: 'var(--body)' }}>
         Scholr uses strictly necessary cookies to keep you signed in. There is no analytics or
         advertising tracking on this site.{' '}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import PublicShell, { Section, CTA, RuledList } from '@/components/public/PublicShell';
+import { Section, CTA, RuledList } from '@/components/public/PublicShell';
 import Seo from '@/components/public/Seo';
 import StatusChip from '@/components/app/StatusChip';
 import { SCHEDUAL_HOME, SCHEDUAL_PAGES, SCHEDUAL_BY_CURRICULUM } from '@/components/public/schedual';
@@ -66,7 +66,7 @@ const STATUS = [
 
 export default function Schedual() {
   return (
-    <PublicShell>
+    <>
       <Seo
         title="Schedual — the timetabling half"
         description="Scholr and Schedual are built by the same two people in Ireland: Schedual solves the timetable, Scholr runs the school year around it. What each does, how they fit, and exactly where the sync stands."
@@ -173,7 +173,7 @@ export default function Schedual() {
           {STATUS.map(([title, state, desc]) => (
             <div key={title} style={{ padding: 'var(--space-sm) 0', borderTop: '1px solid var(--rule)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2xs)', flexWrap: 'wrap' }}>
-                <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-base)', letterSpacing: '-0.02em', color: 'var(--ink)' }}>
+                <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-base)', letterSpacing: '-0.02em', color: 'var(--brand)' }}>
                   {title}
                 </h3>
                 <StatusChip tone={state === 'in progress' ? 'info' : 'warn'}>{state}</StatusChip>
@@ -199,6 +199,6 @@ export default function Schedual() {
           <CTA to="/BookDemo">Book one call for both <ArrowRight className="w-4 h-4" /></CTA>
         </div>
       </Section>
-    </PublicShell>
+    </>
   );
 }

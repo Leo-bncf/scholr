@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Seo from '@/components/public/Seo';
-import PublicShell, { Section } from '@/components/public/PublicShell';
+import { Section } from '@/components/public/PublicShell';
 import * as demoRequests from '@/data/demoRequests';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 
@@ -70,7 +70,7 @@ export default function Demo() {
   };
 
   return (
-    <PublicShell>
+    <>
       <Seo
         title="Book a demo"
         description="Thirty minutes against your own timetable and mark scheme, with one of the two people who build it. No slide deck and no sales team."
@@ -109,7 +109,7 @@ export default function Demo() {
                 ['Who else is using it', 'Not many schools yet, and we would rather say so than imply otherwise. If being early is a problem for your board, that is a fair reason to wait — and a fair thing to raise on the call.'],
               ].map(([t, d]) => (
                 <div key={t} className="py-3.5" style={{ borderTop: '1px solid var(--rule)' }}>
-                  <h2 className="m-0 text-base font-medium" style={{ color: 'var(--ink)' }}>{t}</h2>
+                  <h2 className="m-0 text-base font-medium" style={{ color: 'var(--brand)' }}>{t}</h2>
                   <p className="m-0 mt-1 text-sm leading-relaxed" style={{ color: 'var(--muted)' }}>{d}</p>
                 </div>
               ))}
@@ -198,6 +198,6 @@ export default function Demo() {
           </div>
         </div>
       </Section>
-    </PublicShell>
+    </>
   );
 }

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import PublicShell from '@/components/public/PublicShell';
 import ConsentModal from '@/components/public/ConsentModal';
 import Rise from '@/components/public/Rise';
 import WeekMap from '@/components/landing/WeekMap';
@@ -67,62 +66,36 @@ export default function Landing() {
   }, []);
 
   return (
-    <PublicShell>
-      {/* Erik: back to the original idea — not a shape at all, a glow.
-          Every version since (border-radius blob, hand-drawn SVG blob,
-          even the halo+core bloom) was still a FILLED SHAPE with blur on
-          top, and a blurred fill always keeps a perceptible boundary once
-          you look for it. This is a radial gradient instead — colour
-          fades smoothly to full transparency across four stops, so there
-          is no edge to blur in the first place. That's what actually
-          reads as "a bulb of light behind glass" rather than a shape.
-          A modest blur on top adds the frosted-glass softness, but it is
-          no longer doing the work of hiding an edge. Fixed to the
-          viewport, -z-10 + `isolate` on PublicShell — same reasoning as
-          every prior iteration. Motion is drift + rotation on the outer
-          wrapper and a small hover-bob on the inner glow; nothing morphs
-          a silhouette anymore, because there isn't one. */}
-      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
-        <div className="mkt-blob-drift-a absolute -bottom-16 -left-16 h-[30rem] w-[30rem] sm:h-[38rem] sm:w-[38rem]">
-          <div
-            className="mkt-blob-a h-full w-full rounded-full blur-2xl"
-            style={{
-              background:
-                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 72%, transparent) 0%, '
-                + 'color-mix(in oklab, var(--mkt-accent) 42%, transparent) 32%, '
-                + 'color-mix(in oklab, var(--mkt-accent) 16%, transparent) 58%, transparent 78%)',
-            }}
-          />
-        </div>
-        <div className="mkt-blob-drift-b absolute -right-16 -top-16 h-[28rem] w-[28rem] sm:h-[36rem] sm:w-[36rem]">
-          <div
-            className="mkt-blob-b h-full w-full rounded-full blur-2xl"
-            style={{
-              background:
-                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 64%, transparent) 0%, '
-                + 'color-mix(in oklab, var(--mkt-accent) 36%, transparent) 32%, '
-                + 'color-mix(in oklab, var(--mkt-accent) 13%, transparent) 58%, transparent 78%)',
-            }}
-          />
-        </div>
-      </div>
-
+    <>
+      {/* Background glow now lives in PublicShell — every public page gets
+          it, not just this one. See that file for the implementation. */}
       <WeekMap />
 
+      {/* Was a full-bleed bar (section background + top hairline spanning the
+          viewport). Now an inset "island": the section itself is a plain
+          layout container, and the coloured surface + radius live on the
+          inner max-width div instead, so it reads as a distinct rounded
+          card floating in the page rather than a band that touches both
+          edges. The green outline this card also had is gone again —
+          Erik's call, right after asking for it — the rounded shape
+          stays, just without a border drawing a line around it. */}
       <section
         aria-labelledby="roles-heading"
-        style={{
-          padding: 'clamp(2.5rem, 6vw, 4rem) var(--space-md)',
-          borderTop: '1px solid var(--rule)',
-          background: 'var(--surface)',
-        }}
+        style={{ padding: 'clamp(2.5rem, 6vw, 4rem) var(--space-md)' }}
       >
-        <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+        <div
+          style={{
+            maxWidth: '72rem', margin: '0 auto',
+            background: 'var(--surface)',
+            borderRadius: 'var(--radius-large)',
+            padding: 'clamp(1.75rem, 5vw, 3rem)',
+          }}
+        >
           <h2
             id="roles-heading"
             style={{
               margin: '0 0 var(--space-md)', fontSize: '1.05rem', fontWeight: 650,
-              letterSpacing: '-0.012em', color: 'var(--ink)',
+              letterSpacing: '-0.012em', color: 'var(--brand)',
             }}
           >
             The same week, from four desks.
@@ -183,7 +156,7 @@ export default function Landing() {
           <Rise from="right">
             <h2
               id="what-it-is-heading"
-              style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--ink)' }}
+              style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--brand)' }}
             >
               What the software actually is
             </h2>
@@ -201,7 +174,7 @@ export default function Landing() {
           </Rise>
 
           <Rise from="right" delay={90}>
-            <h2 style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--ink)' }}>
+            <h2 style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--brand)' }}>
               What a second programme costs you elsewhere
             </h2>
             <p style={{ margin: '0 0 var(--space-sm)', fontSize: '.96rem', lineHeight: 1.65, color: 'var(--muted)' }}>
@@ -219,7 +192,7 @@ export default function Landing() {
           </Rise>
 
           <Rise from="right" delay={180}>
-            <h2 style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--ink)' }}>
+            <h2 style={{ margin: '0 0 var(--space-sm)', fontSize: '1.05rem', fontWeight: 650, letterSpacing: '-0.012em', color: 'var(--brand)' }}>
               What it does not do yet
             </h2>
             <p style={{ margin: '0 0 var(--space-sm)', fontSize: '.96rem', lineHeight: 1.65, color: 'var(--muted)' }}>
@@ -258,6 +231,6 @@ export default function Landing() {
       </section>
 
       <ConsentModal isOpen={showConsent} onClose={() => setShowConsent(false)} />
-    </PublicShell>
+    </>
   );
 }

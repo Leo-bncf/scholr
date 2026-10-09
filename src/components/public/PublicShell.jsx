@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
 import Rise from './Rise';
 import useLightTheme from './useLightTheme';
 import PublicNav from './PublicNav';
@@ -7,20 +9,167 @@ import PublicFooter from './PublicFooter';
 /**
  * Every public page, wrapped the same way. Pages used to each assemble their
  * own nav and footer, which is how the two navbars diverged.
+ *
+ * Now mounted once by PublicShellLayout (see that file) instead of once per
+ * page, so nav/glow/footer persist across navigation between these pages —
+ * see below for why that also drives the page-transition direction.
  */
+
+// Rough left-to-right order of the public pages — nav link order first
+// (Platform/Features, Curricula's four curriculum pages, Pricing, Security,
+// Timetabling/Schedual), everything else after. Only used to decide which
+// way a transition slides; a page not in this list (there isn't one, but
+// belt-and-braces) just gets a plain crossfade via routeIndex's fallback.
+const ROUTE_ORDER = [
+  '/', '/Features',
+  '/ib-school-management-software', '/igcse-school-management-software',
+  '/a-level-school-management-software', '/us-school-management-software',
+  '/Pricing', '/Security', '/Schedual',
+  '/About', '/FAQ', '/Contact', '/BookDemo',
+  '/PrivacyPolicy', '/TermsOfService',
+];
+
+function routeIndex(pathname) {
+  const i = ROUTE_ORDER.indexOf(pathname);
+  return i === -1 ? ROUTE_ORDER.length : i;
+}
+
+const slideVariants = {
+  enter: (dir) => ({ opacity: 0, x: dir === 0 ? 0 : dir > 0 ? 24 : -24 }),
+  center: { opacity: 1, x: 0 },
+  exit: (dir) => ({ opacity: 0, x: dir > 0 ? -24 : dir < 0 ? 24 : 0 }),
+};
+
 export default function PublicShell({ children }) {
   useLightTheme();
+  const location = useLocation();
+  const reduced = useReducedMotion();
+
+  // Ref, not state: reading the PREVIOUS render's index during THIS render
+  // is exactly what decides direction, and updating it in an effect (which
+  // runs after commit) is what keeps it holding the old value long enough
+  // to be read that way — see the comment at the effect below.
+  const prevIndexRef = useRef(routeIndex(location.pathname));
+  const currentIndex = routeIndex(location.pathname);
+  const direction = Math.sign(currentIndex - prevIndexRef.current);
+
+  useEffect(() => {
+    prevIndexRef.current = currentIndex;
+  }, [currentIndex]);
+
+  // Scroll-linked parallax for the glow, layered ON TOP of its existing
+  // CSS-keyframe ambient drift, not replacing it — that's why this applies
+  // to a separate outer element per blob (see below) rather than adding a
+  // `y` style to the same div the `mkt-blob-drift-*` animation runs on:
+  // framer-motion's tracked transform and a running CSS animation's
+  // transform would both be fighting over the same property on the same
+  // element. `useScroll()` with no `target` tracks window scroll directly.
+  // Opposite signs on the two blobs (A drifts down with scroll, B drifts
+  // up) so they separate rather than moving as one unit.
+  //
+  // Raw scroll * factor (the previous version) is a flat, linear follow —
+  // every pixel of scroll produces exactly proportional motion, which
+  // reads as smooth, not frantic. useSpring wraps that target in spring
+  // physics instead: low damping relative to stiffness means it overshoots
+  // and wobbles past the target on every scroll-direction change rather
+  // than tracking it directly, which is what actually reads as energetic/
+  // erratic rather than a calm trailing lag. Factors themselves also
+  // roughly doubled for "even bigger."
+  const { scrollY } = useScroll();
+  const rawParallaxA = useTransform(scrollY, (v) => (reduced ? 0 : v * 0.32));
+  const rawParallaxB = useTransform(scrollY, (v) => (reduced ? 0 : v * -0.28));
+  const springConfig = { stiffness: 180, damping: 9, mass: 0.4 };
+  const parallaxA = useSpring(rawParallaxA, springConfig);
+  const parallaxB = useSpring(rawParallaxB, springConfig);
 
   return (
     // isolate: gives this element its own stacking context, so its own
     // background counts as that context's step-1 paint rather than being
     // lumped in with ordinary in-flow content at step-3. Without it, a
-    // negative-z-index descendant (the landing bloom) painted BEHIND this
-    // div's own background and vanished entirely — z-index alone can't fix
-    // that, the missing piece is the stacking-context boundary itself.
+    // negative-z-index descendant (the background glow below) painted
+    // BEHIND this div's own background and vanished entirely — z-index
+    // alone can't fix that, the missing piece is the stacking-context
+    // boundary itself.
     <div className="scholr-page min-h-screen flex flex-col isolate">
+      {/* Background glow — was Landing-only, moved here at Erik's request
+          so every public page gets it, not just the one. Not a shape: a
+          radial gradient fading smoothly to full transparency across four
+          colour-mix stops, so there's no edge for the blur on top to hide
+          — that's what reads as "a bulb of light behind glass" rather
+          than a blurred shape (every earlier shaped version — border-
+          radius blob, hand-drawn SVG blob, halo+core bloom — kept a
+          findable boundary no matter how much blur). Fixed to the
+          viewport, so it holds its screen position on every page as the
+          page scrolls beneath it. -z-10 + the `isolate` above keep it
+          behind normal content but above the page's own background.
+          Motion is drift + rotation on the outer wrapper, scroll-linked
+          parallax on top of that (see the hooks above), and a small
+          hover-bob on the inner glow — nothing morphs a silhouette,
+          because there isn't one. Two separate fixed+motion containers
+          (one per blob) rather than one shared one: each needs its own
+          `y` value, and applying a transform to a `position:fixed`
+          element doesn't disturb its `inset-0` viewport sizing or its
+          absolutely-positioned children — it just translates the already-
+          fixed box, which is exactly the parallax effect. */}
+      <motion.div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10" style={{ y: parallaxA }}>
+        <div className="mkt-blob-drift-a absolute -bottom-16 -left-16 h-[30rem] w-[30rem] sm:h-[38rem] sm:w-[38rem]">
+          <div
+            className="mkt-blob-a h-full w-full rounded-full blur-2xl"
+            style={{
+              // Peak opacity brought down from 72/42/16 — the bigger
+              // parallax swing means the glow now actually passes over
+              // headings and body copy, and text colour here is the same
+              // green family as the glow, so a strong core reduced
+              // contrast right where they overlapped. Confirmed the fix
+              // by screenshotting the exact scroll depth that showed it.
+              //
+              // This blob (not B) carries the warmed gold-in-green variant
+              // — see --mkt-accent-warm in index.css.
+              background:
+                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent-warm) 38%, transparent) 0%, '
+                + 'color-mix(in oklab, var(--mkt-accent-warm) 22%, transparent) 32%, '
+                + 'color-mix(in oklab, var(--mkt-accent-warm) 9%, transparent) 58%, transparent 78%)',
+            }}
+          />
+        </div>
+      </motion.div>
+      <motion.div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10" style={{ y: parallaxB }}>
+        <div className="mkt-blob-drift-b absolute -right-16 -top-16 h-[28rem] w-[28rem] sm:h-[36rem] sm:w-[36rem]">
+          <div
+            className="mkt-blob-b h-full w-full rounded-full blur-2xl"
+            style={{
+              background:
+                'radial-gradient(circle, color-mix(in oklab, var(--mkt-accent) 34%, transparent) 0%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 19%, transparent) 32%, '
+                + 'color-mix(in oklab, var(--mkt-accent) 8%, transparent) 58%, transparent 78%)',
+            }}
+          />
+        </div>
+      </motion.div>
+
       <PublicNav />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1">
+        {reduced ? (
+          // motion.md: spatial motion collapses to nothing for reduced
+          // motion, not a faster version of itself — no AnimatePresence,
+          // no slide, the new page is just there.
+          children
+        ) : (
+          <AnimatePresence mode="wait" initial={false} custom={direction}>
+            <motion.div
+              key={location.pathname}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
+        )}
+      </main>
       <PublicFooter />
     </div>
   );

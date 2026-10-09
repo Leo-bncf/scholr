@@ -116,7 +116,8 @@ export async function anonymiseAuditLogsForUser(userId, { email, anonEmail }) {
 const CONFIG_COLUMNS = `
   id, name, default_trial_days, default_notification_email, allow_school_brand_overrides,
   theme_mode, default_primary_color, default_accent_color, default_logo_url,
-  notifications, integration_settings, global_feature_flags, school_feature_overrides
+  notifications, integration_settings, global_feature_flags, school_feature_overrides,
+  updated_at
 `;
 
 /** The single platform config row, or null if it hasn't been created yet. */
