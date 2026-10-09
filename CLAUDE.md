@@ -30,9 +30,18 @@ Everything else: decide, do it, say what you did.
 ## Hard rules
 
 **Work on a branch and open a pull request.** Features merge into `staging`;
-`main` is promoted from `staging` and is merged by Leo on GitHub, the same way
-Schedual works. Push your branch, say it's ready, and let the PR be the review
-surface — don't commit to `main` directly.
+`main` is promoted from `staging`. Push your branch and let the PR be the
+review surface — don't commit to `main` directly.
+
+Leo used to merge every PR himself. Since 2026-10-09 he has handed that over:
+merge your own PRs and deploy, without waiting to be told. The PR still gets
+opened and still carries the reasoning, because it is the record of why a
+change was made — but it is no longer a gate you stop at.
+
+Two things that did NOT move with it, because they are not reversible by
+re-running a deploy: anything touching real school data, and credential
+rotation. Those still stop and ask. The same goes for merging somebody else's
+PR — Erik's branches are his to land, not yours.
 
 **Deploy from a clean, up-to-date checkout.** `npm run deploy` and
 `npm run deploy:functions` publish straight to the live site. There is one
