@@ -26,6 +26,10 @@
   --ink:#0d2219; --ink-soft:#3c5247; --ink-faint:#6f8278;
   --on-green:#eef5f0; --on-green-2:#a9c3b6; --on-green-3:#74958a;
   --ok:#2f7a52; --warn:#8a6414; --bad:#a23a2c; --gold:#c8a24a;
+  /* The logo's own two colours — the product mark is identical everywhere,
+     so these match scholr-theme.css's --brand and --gold exactly rather than
+     the console's duller --gold above. */
+  --logo-green:oklch(45% 0.115 152); --logo-gold:oklch(81% 0.145 78);
   /* Two ladders of the one hue, because they sit on opposite grounds. The
      f-* values are for the white page (a meter fill, a link, an avatar); the
      r-* values are for the dark green rail, where anything below about 60%
