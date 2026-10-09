@@ -70,7 +70,9 @@ export default function IssueReporter({ schoolId, user, school }) {
       let screenshotUrl = null;
       if (screenshotFile) {
         const uploaded = await storage.upload(screenshotFile, { schoolId: schoolId, prefix: 'support' });
-      const file_url = uploaded.url;
+      // Pasted into the ticket as plain text, so it has to be a real URL — signed
+      // for 30 days rather than the default hour, or support sees a dead link.
+      const file_url = await storage.signedUrl(uploaded.bucket, uploaded.path, 60 * 60 * 24 * 30);
         screenshotUrl = file_url;
       }
 

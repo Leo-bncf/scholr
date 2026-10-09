@@ -7,6 +7,7 @@ import { useUser } from '@/components/auth/UserContext';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
 import AddMaterialDialog from './AddMaterialDialog';
 import * as classMaterialsData from '@/data/classMaterials';
+import StoredFileLink from '@/components/common/StoredFileLink';
 
 function formatSize(bytes) {
   if (!bytes) return '';
@@ -84,9 +85,9 @@ export default function ClassMaterials({ classData, isTeacher }) {
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <Button variant="ghost" size="sm" asChild>
-                    <a href={m.url} target="_blank" rel="noopener noreferrer" title={m.type === 'file' ? 'Download' : 'Open'}>
+                    <StoredFileLink href={m.url} title={m.type === 'file' ? 'Download' : 'Open'}>
                       {m.type === 'file' ? <Download className="w-4 h-4" /> : <ExternalLink className="w-4 h-4" />}
-                    </a>
+                    </StoredFileLink>
                   </Button>
                   {canManage(m) && (
                     <Button variant="ghost" size="sm" onClick={() => setToDelete(m)} className="text-red-600 hover:text-red-700 hover:bg-red-50">

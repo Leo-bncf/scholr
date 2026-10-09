@@ -73,7 +73,7 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
     setUploading(true);
     try {
       const uploaded = await storage.upload(file, { schoolId: classData?.school_id, prefix: 'assignments' });
-      const file_url = uploaded.url;
+      const file_url = uploaded.ref; // a stored ref, not the hour-long signed URL
       setAttachments([...attachments, { name: file.name, url: file_url }]);
     } catch (error) {
       console.error('Upload failed:', error);
