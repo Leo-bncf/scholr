@@ -48,6 +48,14 @@ export default function Settings() {
     onError: (e) => toast(e?.message || 'Could not change the password', 'bad'),
   });
 
+  // Signing out was only possible from the app's own sidebar, never from the
+  // console; this is its one clear exit.
+  const signOut = useMutation({
+    mutationFn: session.signOut,
+    onSuccess: () => { window.location.href = '/'; },
+    onError: (e) => toast(e?.message || 'Could not sign out', 'bad'),
+  });
+
   const signOutOthers = useMutation({
     mutationFn: session.signOutOtherDevices,
     onSuccess: () => toast('Signed out everywhere else'),
@@ -69,6 +77,16 @@ export default function Settings() {
 
   return (
     <Head title="Settings">
+      <Sec>
+        <div className="cons__out">
+          <p>Signed in as <strong>{user.full_name || account?.email}</strong>{account?.email && user.full_name ? ` · ${account.email}` : ''}</p>
+          <button type="button" className="cons__b cons__b--out" disabled={signOut.isPending} onClick={() => signOut.mutate()}>
+            <PowerIcon />
+            {signOut.isPending ? 'Signing out…' : 'Sign out'}
+          </button>
+        </div>
+      </Sec>
+
       <Sec>
         <Figs items={[
           { label: 'Access', value: ROLE[user.role] || user.role, sub: 'every school, every record',
@@ -171,5 +189,16 @@ export default function Settings() {
         </p>
       </Sec>
     </Head>
+  );
+}
+
+/** The power symbol, drawn like the console's other rail icons (stroked, 24px grid). */
+function PowerIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+      strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+      <path d="M12 2v10" />
+      <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+    </svg>
   );
 }
