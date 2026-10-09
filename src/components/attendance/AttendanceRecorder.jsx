@@ -6,6 +6,7 @@ import { Loader2, CheckCircle2, XCircle, Clock, AlertCircle, Save, Users } from 
 import { format } from 'date-fns';
 import * as attendancePoliciesData from '@/data/attendancePolicies';
 import * as membershipsData from '@/data/memberships';
+import * as attendanceApi from '@/data/attendance';
 
 const DEFAULT_STATUSES = [
   { key: 'present', label: 'Present', icon: CheckCircle2, color: 'scholr-body', bg: 'scholr-sunk', activeBg: 'app-chip-on' },
@@ -32,7 +33,10 @@ function StatusButton({ status, selected, onClick }) {
 export default function AttendanceRecorder({ classData, teacherId, teacherName }) {
   const queryClient = useQueryClient();
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const [attendanceData, setAttendanceData] = useState({});
+  // Named `marks`, not `attendanceData`: the base44 codemod gave this state
+  // the same name as the data module, so every read and save called methods on
+  // a plain object and the register could neither load nor save.
+  const [marks, setMarks] = useState({});
   const [notes, setNotes] = useState({});
   const [expandedNote, setExpandedNote] = useState(null);
 
@@ -62,47 +66,32 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
 
   const { data: students = [], isLoading: loadingStudents } = useQuery({
     queryKey: ['class-students-attendance', classData.id],
-    queryFn: async () => {
-      const members = await membershipsData.where({
-        school_id: classData.school_id,
-        status: 'active'
-      });
-      return members.filter(m => classData.student_ids?.includes(m.user_id));
-    },
+    queryFn: () => membershipsData.listClassRoster(classData.school_id, classData.student_ids),
   });
 
-  const { data: existingRecords = [], isLoading: loadingRecords } = useQuery({
+  // No `= []` default here: a fresh array on every render would re-run the
+  // effect below on every render, which is how this used to loop forever.
+  const { data: existingRecords, isLoading: loadingRecords } = useQuery({
     queryKey: ['class-attendance-records', classData.id, selectedDate],
-    queryFn: () => attendanceData.whereRecords({
-      school_id: classData.school_id,
-      class_id: classData.id,
-      date: selectedDate
-    }),
+    queryFn: () => attendanceApi.listForClassOnDate(classData.id, selectedDate),
     enabled: !!selectedDate,
   });
 
   useEffect(() => {
     const initialData = {};
     const initialNotes = {};
-    existingRecords.forEach(record => {
+    (existingRecords || []).forEach(record => {
       initialData[record.student_id] = record.status;
       if (record.note) initialNotes[record.student_id] = record.note;
     });
-    setAttendanceData(initialData);
+    setMarks(initialData);
     setNotes(initialNotes);
   }, [existingRecords]);
 
   const saveMutation = useMutation({
-    mutationFn: async (records) => {
-      const promises = records.map(record => {
-        const existing = existingRecords.find(r => r.student_id === record.student_id);
-        if (existing) {
-          return attendanceData.update(existing.id, record);
-        }
-        return attendanceData.create(record);
-      });
-      return Promise.all(promises);
-    },
+    // One upsert on (class_id, student_id, date): re-taking a register corrects
+    // it rather than duplicating rows.
+    mutationFn: (records) => attendanceApi.saveRegister(records),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['class-attendance-records'] });
       queryClient.invalidateQueries({ queryKey: ['parent-child-attendance'] });
@@ -112,14 +101,14 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
 
   const handleSave = () => {
     const records = students
-      .filter(s => attendanceData[s.user_id])
+      .filter(s => marks[s.user_id])
       .map(s => ({
         school_id: classData.school_id,
         class_id: classData.id,
         student_id: s.user_id,
         student_name: s.user_name || s.user_email,
         date: selectedDate,
-        status: attendanceData[s.user_id],
+        status: marks[s.user_id],
         note: notes[s.user_id] || '',
         recorded_by: teacherId,
       }));
@@ -129,16 +118,16 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
   const markAll = (status) => {
     const newData = {};
     students.forEach(s => { newData[s.user_id] = status; });
-    setAttendanceData(newData);
+    setMarks(newData);
   };
 
   const statusCounts = useMemo(() => {
     const counts = {};
-    Object.values(attendanceData).forEach(s => { counts[s] = (counts[s] || 0) + 1; });
+    Object.values(marks).forEach(s => { counts[s] = (counts[s] || 0) + 1; });
     return counts;
-  }, [attendanceData]);
+  }, [marks]);
 
-  const markedCount = Object.keys(attendanceData).length;
+  const markedCount = Object.keys(marks).length;
   const allMarked = markedCount === students.length && students.length > 0;
 
   if (loadingStudents) {
@@ -222,7 +211,7 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
           </thead>
           <tbody className="divide-y scholr-divide">
             {students.map(student => {
-              const current = attendanceData[student.user_id];
+              const current = marks[student.user_id];
               return (
                 <tr key={student.user_id} className={`${current ? '' : 'scholr-sunk/50'} hover:scholr-sunk transition-colors`}>
                   <td className="px-5 py-3.5">
@@ -238,7 +227,7 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
                           key={s.key}
                           status={s}
                           selected={current === s.key}
-                          onClick={() => setAttendanceData({ ...attendanceData, [student.user_id]: s.key })}
+                          onClick={() => setMarks({ ...marks, [student.user_id]: s.key })}
                         />
                       ))}
                     </div>
