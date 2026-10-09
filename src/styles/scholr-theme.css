@@ -1147,12 +1147,16 @@ select.app-input { appearance: none; padding-right: 1.9rem; cursor: pointer; }
 }
 
 .app-segmented {
+  /* Scrolls sideways when it outgrows a phone screen rather than being cut
+     off — on a 375px screen the class page lost its last four tabs. */
   display: inline-flex; padding: 2px; gap: 2px;
+  max-width: 100%; overflow-x: auto; scrollbar-width: none;
   background: color-mix(in oklab, var(--ink) 6%, transparent);
   border-radius: var(--radius-control);
 }
 .app-segment {
   appearance: none; border: none; background: transparent; cursor: pointer;
+  white-space: nowrap; flex: none;
   font: inherit; font-size: .82rem; font-weight: 500; color: var(--muted);
   padding: .3rem .7rem; border-radius: calc(var(--radius-control) - 3px);
   transition: color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);

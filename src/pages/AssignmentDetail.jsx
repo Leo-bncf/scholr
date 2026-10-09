@@ -15,6 +15,7 @@ import * as assignmentsData from '@/data/assignments';
 import * as classesData from '@/data/classes';
 import * as submissionsData from '@/data/submissions';
 import StoredFileLink from '@/components/common/StoredFileLink';
+import TeacherAssignmentView from '@/components/teacher/TeacherAssignmentView';
 
 export default function AssignmentDetail() {
   const { user, schoolId, membership } = useUser();
@@ -23,31 +24,22 @@ export default function AssignmentDetail() {
 
   const { data: assignment, isLoading: loadingAssignment } = useQuery({
     queryKey: ['assignment-detail', assignmentId],
-    queryFn: async () => {
-      const results = await assignmentsData.where({ id: assignmentId, school_id: schoolId });
-      return results[0];
-    },
+    queryFn: () => assignmentsData.get(assignmentId),
     enabled: !!assignmentId && !!schoolId,
   });
 
   const { data: classData } = useQuery({
     queryKey: ['class-for-assignment', assignment?.class_id],
-    queryFn: async () => {
-      const results = await classesData.where({ id: assignment.class_id, school_id: schoolId });
-      return results[0];
-    },
+    queryFn: () => classesData.get(assignment.class_id),
     enabled: !!assignment?.class_id && !!schoolId,
   });
 
   const { data: studentSubmission } = useQuery({
     queryKey: ['student-submission', assignmentId, user?.id],
-    queryFn: async () => {
-      const results = await submissionsData.where({
-        assignment_id: assignmentId,
-        student_id: user.id
-      });
-      return results[0];
-    },
+    // The current version, or null. `where(...)[0]` returned undefined when
+    // nothing had been handed in (React Query rejects undefined), and when
+    // there was a resubmission it could pick a superseded version.
+    queryFn: () => submissionsData.getForStudent(assignmentId, user.id),
     enabled: !!assignmentId && !!user?.id && classData?.student_ids?.includes(user.id),
   });
 
@@ -75,6 +67,16 @@ export default function AssignmentDetail() {
     );
   }
 
+  // Wait for the class: before it loads nobody is its teacher or student, and
+  // the page flashed "You don't have access" at everyone.
+  if (!classData) {
+    return (
+      <div className="min-h-screen scholr-sunk flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin scholr-accent" />
+      </div>
+    );
+  }
+
   const isTeacher = classData?.teacher_ids?.includes(user.id) || membership?.role === 'school_admin' || membership?.role === 'super_admin';
   const isStudent = classData?.student_ids?.includes(user.id);
 
@@ -84,6 +86,10 @@ export default function AssignmentDetail() {
         <p className="scholr-muted">You don't have access to this assignment</p>
       </div>
     );
+  }
+
+  if (isTeacher && !isStudent) {
+    return <TeacherAssignmentView assignment={assignment} classData={classData} />;
   }
 
   const typeColors = {
