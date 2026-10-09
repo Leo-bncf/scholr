@@ -70,6 +70,28 @@ export function listStudents(schoolId, { gradeLevel } = {}) {
   return rows(q.order('user_name'), 'memberships.listStudents');
 }
 
+/**
+ * The students on a class roster, by user id.
+ *
+ * A class stores its roster as `student_ids`; this turns those ids into
+ * memberships (names, emails) in one bounded read. The callers used to fetch
+ * every active membership in the school and filter in the browser.
+ */
+export function listClassRoster(schoolId, studentIds) {
+  if (!studentIds?.length) return Promise.resolve([]);
+  return rows(
+    supabase
+      .from('school_memberships')
+      .select(COLUMNS)
+      .eq('school_id', schoolId)
+      .eq('status', 'active')
+      .eq('role', 'student')
+      .in('user_id', studentIds)
+      .order('user_name'),
+    'memberships.listClassRoster',
+  );
+}
+
 export function get(id) {
   return maybeOne(
     supabase.from('school_memberships').select(COLUMNS).eq('id', id),
