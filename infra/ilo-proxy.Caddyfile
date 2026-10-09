@@ -1,0 +1,50 @@
+# iLO relay for the Scholr platform console.
+#
+# The Supabase edge runtime compiles its root store in, so it will never trust
+# a private CA however DENO_CERT or SSL_CERT_FILE are set: an iLO with a
+# perfectly good internally-signed certificate still comes back UnknownIssuer.
+# Verification therefore happens here rather than being switched off — on an
+# interface that can power a hypervisor down, "skip TLS checks" is not a trade
+# worth making. Caddy talks to the iLO over TLS, checks it against the
+# infrastructure CA, and hands the edge runtime plain HTTP.
+#
+# Bound to the docker gateway, never 0.0.0.0: nothing on the LAN should be
+# able to reach an iLO through an unauthenticated hop. The edge container is
+# the only thing that can open 172.18.0.1.
+#
+# This mirrors the relay on the Schedual host, because it is the same hardware
+# and the same CA — but it is Scholr's own service, so neither product's
+# console depends on the other staying up.
+{
+	admin off
+	auto_https off
+}
+
+http://172.18.0.1:8099 {
+	# A site address alone does not restrict the listener: Caddy still binds
+	# 0.0.0.0 and the whole LAN can reach this hop. `bind` is what actually
+	# holds it to the docker gateway.
+	bind 172.18.0.1
+	reverse_proxy https://192.168.2.15 {
+		# The iLO rejects a Host header it does not recognise, and Caddy
+		# forwards the original by default — which here is the docker gateway.
+		header_up Host 192.168.2.15
+		transport http {
+			tls
+			tls_trusted_ca_certs /etc/scholr/ilo-ca.crt
+			tls_server_name ILOCZ233700F5.localdomain
+		}
+	}
+}
+
+http://172.18.0.1:8100 {
+	bind 172.18.0.1
+	reverse_proxy https://192.168.2.17 {
+		header_up Host 192.168.2.17
+		transport http {
+			tls
+			tls_trusted_ca_certs /etc/scholr/ilo-ca.crt
+			tls_server_name ServeRVM.localdomain
+		}
+	}
+}
