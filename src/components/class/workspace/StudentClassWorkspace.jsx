@@ -40,12 +40,19 @@ export default function StudentClassWorkspace({ classData, user, initialTab }) {
       <ClassTabBar groups={groups} activeTab={activeTab} onTabChange={setActiveTab} />
 
       <div className="min-h-[calc(100vh-180px)]">
-        {activeTab === 'stream' && <ClassStream classData={classData} isTeacher={false} userId={user.id} />}
+        {activeTab === 'stream' && <Padded><ClassStream classData={classData} isTeacher={false} userId={user.id} /></Padded>}
         {activeTab === 'assignments' && <ClassAssignments classData={classData} isTeacher={false} userId={user.id} />}
-        {activeTab === 'materials' && <ClassMaterials classData={classData} isTeacher={false} />}
+        {activeTab === 'materials' && <Padded><ClassMaterials classData={classData} isTeacher={false} /></Padded>}
         {activeTab === 'grades' && <ClassGrades classData={classData} isTeacher={false} isStudent userId={user.id} />}
         {activeTab === 'people' && <ClassPeople classData={classData} />}
       </div>
     </div>
   );
+}
+
+/* Stream, materials and attendance were restyled for the teacher frame, which
+   supplies the page width and padding; this older frame doesn't, so they get
+   the container the other tabs here draw for themselves. */
+function Padded({ children }) {
+  return <div className="p-6 max-w-5xl mx-auto">{children}</div>;
 }
