@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-10-09",
+    "macrostructure": "n/a — app chrome (multi-page redesign inside the 2026-09-14 signed-in system)",
+    "theme": "custom",
+    "theme_axes": "light / grotesk-sans / chromatic-green",
+    "vibe": "same Apple-minimalist grouped lists, Irish green — consistency over variety",
+    "nav": "app sidebar (unchanged), teacher links reordered Today · Classes · Marking",
+    "footer": "n/a",
+    "enrichment": "none",
+    "brief": "Scholr · teacher area redesign: Today, Classes, Marking queue + MarkSheet, class page (7 tabs, marks grid, roster with progress), teacher assignment page — all on SchoolAdminPage/AppShell, Group/Row/StatCard/StatusChip, tokens only"
+  },
+  {
     "date": "2026-09-17",
     "macrostructure": "19 Map / Diagram (unchanged — scoped redesign pass, not a rebuild)",
     "theme": "custom",
@@ -19,18 +30,18 @@
     "nav": "N5 floating pill",
     "footer": "Ft1 mast-headed",
     "enrichment": "real product screenshots (demo sandbox) + an interactive tab-driven role explorer (F5 annotated screenshot)",
-    "brief": "Scholr \u00b7 school-management LMS for international schools \u2014 Landing page only, page-scoped theme"
+    "brief": "Scholr · school-management LMS for international schools — Landing page only, page-scoped theme"
   },
   {
     "date": "2026-09-14",
-    "macrostructure": "n/a \u2014 app chrome, not a page shape",
+    "macrostructure": "n/a — app chrome, not a page shape",
     "theme": "custom",
     "theme_axes": "light / grotesk-sans / chromatic-green",
     "vibe": "Apple-minimalist grouped lists, Irish green",
     "nav": "app sidebar, translucent material",
     "footer": "n/a",
     "enrichment": "none",
-    "brief": "Scholr \u00b7 signed-in dashboards \u00b7 Apple minimalism within Hallmark"
+    "brief": "Scholr · signed-in dashboards · Apple minimalism within Hallmark"
   },
   {
     "date": "2026-09-14",
@@ -41,7 +52,7 @@
     "nav": "N10 floating-on-scroll morph",
     "footer": "Ft5 Statement",
     "enrichment": "none (real product captures)",
-    "brief": "Scholr \u00b7 school management for international schools \u00b7 public site (all pages except Landing)"
+    "brief": "Scholr · school management for international schools · public site (all pages except Landing)"
   },
   {
     "date": "2026-09-15",
@@ -49,10 +60,10 @@
     "theme": "custom",
     "theme_axes": "light / grotesk-sans / chromatic-green",
     "vibe": "a memo from a small Dublin company; prose at reading measure, no marketing scaffolding",
-    "nav": "masthead \u2014 full-bleed hairline, replacing the N5/N10 floating pill site-wide",
+    "nav": "masthead — full-bleed hairline, replacing the N5/N10 floating pill site-wide",
     "footer": "Ft1 mast-headed (unchanged)",
     "enrichment": "two inline product captures at text measure, never full-bleed",
-    "brief": "Scholr \u00b7 Landing. Leo: the site still reads AI-made. Cause was the log itself \u2014 three prior entries, all Workbench. Gate 8 fails against a project's own history. \u2014 REVERTED: Leo, correctly, \"that is not a landing page, you made a blog post\". Long Document sells philosophically; a school evaluating software needs to see the thing."
+    "brief": "Scholr · Landing. Leo: the site still reads AI-made. Cause was the log itself — three prior entries, all Workbench. Gate 8 fails against a project's own history. — REVERTED: Leo, correctly, \"that is not a landing page, you made a blog post\". Long Document sells philosophically; a school evaluating software needs to see the thing."
   },
   {
     "date": "2026-09-15",
@@ -60,9 +71,9 @@
     "theme": "custom",
     "theme_axes": "light / grotesk-sans / chromatic-green",
     "vibe": "green and white only; the four programmes are four tints of one green, never four hues",
-    "nav": "masthead \u2014 full-bleed hairline (replaced the N5/N10 floating pill site-wide)",
+    "nav": "masthead — full-bleed hairline (replaced the N5/N10 floating pill site-wide)",
     "footer": "Ft1 mast-headed",
     "enrichment": "the map is the composition; four product captures below it as evidence, not as content",
-    "brief": "Scholr \u00b7 Landing. A school week as the page's one spatial composition \u2014 four programmes in the same building, selectable period by period. Educational by construction, and the one shape no generic SaaS page can borrow."
+    "brief": "Scholr · Landing. A school week as the page's one spatial composition — four programmes in the same building, selectable period by period. Educational by construction, and the one shape no generic SaaS page can borrow."
   }
 ]

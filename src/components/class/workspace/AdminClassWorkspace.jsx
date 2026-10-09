@@ -64,17 +64,24 @@ export default function AdminClassWorkspace({ classData, user, initialTab }) {
 
       <div className="min-h-[calc(100vh-180px)]">
         {activeTab === 'overview' && <AdminOverviewTab classData={classData} onNavigate={setActiveTab} />}
-        {activeTab === 'stream' && <ClassStream classData={classData} isTeacher userId={user.id} />}
+        {activeTab === 'stream' && <Padded><ClassStream classData={classData} isTeacher userId={user.id} /></Padded>}
         {activeTab === 'assignments' && <ClassAssignments classData={classData} isTeacher userId={user.id} />}
         {activeTab === 'lessons' && <ClassLessons classData={classData} isTeacher userId={user.id} />}
-        {activeTab === 'materials' && <ClassMaterials classData={classData} isTeacher />}
+        {activeTab === 'materials' && <Padded><ClassMaterials classData={classData} isTeacher /></Padded>}
         {activeTab === 'grades' && <ClassGrades classData={classData} isTeacher isStudent={false} userId={user.id} />}
         {activeTab === 'rubrics' && <ClassRubrics classData={classData} />}
-        {activeTab === 'attendance' && <ClassAttendance classData={classData} isTeacher userId={user.id} />}
+        {activeTab === 'attendance' && <Padded><ClassAttendance classData={classData} isTeacher userId={user.id} /></Padded>}
         {activeTab === 'people' && <ClassPeople classData={classData} />}
         {activeTab === 'analytics' && <ClassAnalytics classData={classData} isTeacher />}
         {activeTab === 'settings' && <ClassSettings classData={classData} isTeacher />}
       </div>
     </div>
   );
+}
+
+/* Stream, materials and attendance were restyled for the teacher frame, which
+   supplies the page width and padding; this older frame doesn't, so they get
+   the container the other tabs here draw for themselves. */
+function Padded({ children }) {
+  return <div className="p-6 max-w-5xl mx-auto">{children}</div>;
 }
