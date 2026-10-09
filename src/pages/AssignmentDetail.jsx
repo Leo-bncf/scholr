@@ -14,6 +14,7 @@ import AssessmentTeacherReview from '@/components/assessment/AssessmentTeacherRe
 import * as assignmentsData from '@/data/assignments';
 import * as classesData from '@/data/classes';
 import * as submissionsData from '@/data/submissions';
+import StoredFileLink from '@/components/common/StoredFileLink';
 
 export default function AssignmentDetail() {
   const { user, schoolId, membership } = useUser();
@@ -151,16 +152,10 @@ export default function AssignmentDetail() {
                 <h2 className="font-semibold scholr-ink mb-3">Attachments</h2>
                 <div className="space-y-2">
                   {assignment.attachments.map((url, i) => (
-                    <a
-                      key={i}
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 p-3 scholr-sunk rounded-lg hover:scholr-sunk transition-colors"
-                    >
+                    <StoredFileLink key={i} href={url} className="flex items-center gap-2 p-3 scholr-sunk rounded-lg hover:scholr-sunk transition-colors">
                       <Paperclip className="w-4 h-4 scholr-faint" />
                       <span className="text-sm scholr-body">Attachment {i + 1}</span>
-                    </a>
+                    </StoredFileLink>
                   ))}
                 </div>
               </div>

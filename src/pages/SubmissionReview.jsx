@@ -13,6 +13,8 @@ import TeacherAnnotationsPanel from '@/components/assignment/TeacherAnnotationsP
 import FileInlinePreview from '@/components/assignment/FileInlinePreview';
 import * as submissionsData from '@/data/submissions';
 import * as assignmentsData from '@/data/assignments';
+import * as storage from '@/data/storage';
+import StoredFileLink from '@/components/common/StoredFileLink';
 
 export default function SubmissionReview() {
   const { user, schoolId } = useUser();
@@ -154,7 +156,7 @@ export default function SubmissionReview() {
                       <div key={doc.id} className="space-y-3">
                         <DocumentCard
                           document={doc}
-                          onOpen={(doc) => window.open(doc.url, '_blank')}
+                          onOpen={(doc) => storage.openStored(doc.url)}
                           compact={false}
                         />
                         <FileInlinePreview document={doc} />
@@ -184,16 +186,10 @@ export default function SubmissionReview() {
                   <p className="text-sm font-medium scholr-body mb-2">Attachments (Legacy)</p>
                   <div className="space-y-2">
                     {submission.file_urls.map((url, i) => (
-                      <a
-                        key={i}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 p-3 scholr-sunk rounded-lg hover:scholr-sunk transition-colors"
-                      >
+                      <StoredFileLink key={i} href={url} className="flex items-center gap-2 p-3 scholr-sunk rounded-lg hover:scholr-sunk transition-colors">
                         <FileText className="w-4 h-4 scholr-faint" />
                         <span className="text-sm scholr-body">File {i + 1}</span>
-                      </a>
+                      </StoredFileLink>
                     ))}
                   </div>
                 </div>

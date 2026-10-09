@@ -8,6 +8,8 @@ import { createPageUrl } from '@/utils';
 import DocumentAccessValidator from '@/components/google/DocumentAccessValidator';
 import * as membershipsData from '@/data/memberships';
 import * as submissionsData from '@/data/submissions';
+import * as storage from '@/data/storage';
+import StoredFileLink from '@/components/common/StoredFileLink';
 
 export default function TeacherSubmissions({ assignment, classData }) {
   const { data: students = [] } = useQuery({
@@ -150,7 +152,7 @@ export default function TeacherSubmissions({ assignment, classData }) {
                              <div key={doc.id} className="flex items-center gap-2 text-xs">
                                <DocumentAccessValidator 
                                  document={doc}
-                                 onOpenDocument={() => window.open(doc.url, '_blank')}
+                                 onOpenDocument={() => storage.openStored(doc.url)}
                                  isTeacher={true}
                                />
                                <span className="scholr-muted truncate">{doc.name}</span>
@@ -163,14 +165,9 @@ export default function TeacherSubmissions({ assignment, classData }) {
                              <Icon className={`w-3.5 h-3.5 ${color}`} />
                              <span className="scholr-body max-w-xs truncate">{doc.name}</span>
                              {doc.url && (
-                               <a
-                                 href={doc.url}
-                                 target="_blank"
-                                 rel="noopener noreferrer"
-                                 className={`${color} hover:opacity-70`}
-                               >
+                               <StoredFileLink href={doc.url} className={`${color} hover:opacity-70`}>
                                  <ExternalLink className="w-3 h-3" />
-                               </a>
+                               </StoredFileLink>
                              )}
                            </div>
                          );

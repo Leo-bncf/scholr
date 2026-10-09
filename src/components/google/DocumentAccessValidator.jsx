@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AlertCircle, Lock, Link as LinkIcon, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import * as storage from '@/data/storage';
 
 /**
  * Validates document access and shows appropriate UI for:
@@ -74,7 +75,7 @@ export default function DocumentAccessValidator({
 
   const handleOpenDocument = () => {
     if (accessStatus?.valid) {
-      window.open(document.url, '_blank');
+      storage.openStored(document.url);
       onOpenDocument?.(document);
     }
   };
