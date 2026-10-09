@@ -13,17 +13,15 @@ export function ClassSignals({ row }) {
   return <>{chips}</>;
 }
 
-export function GroupLink({ to, children }) {
-  return (
-    <Link
-      to={to}
-      className="scholr-focus"
-      style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', fontSize: '.8rem', color: 'var(--brand)', textDecoration: 'none' }}
-    >
-      {children}
-      <ArrowRight className="w-3.5 h-3.5" />
-    </Link>
-  );
+export function GroupLink({ to, onClick, children }) {
+  // `font` first: the shorthand resets font-size, so it must not come after it.
+  const style = {
+    font: 'inherit', display: 'inline-flex', alignItems: 'center', gap: '.25rem', fontSize: '.8rem',
+    color: 'var(--brand)', textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+  };
+  const inner = <>{children}<ArrowRight className="w-3.5 h-3.5" /></>;
+  if (onClick) return <button type="button" onClick={onClick} className="scholr-focus" style={style}>{inner}</button>;
+  return <Link to={to} className="scholr-focus" style={style}>{inner}</Link>;
 }
 
 /** The loading state for a whole page section. */

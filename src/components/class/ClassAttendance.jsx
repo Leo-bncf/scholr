@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useUser } from '@/components/auth/UserContext';
 import { useQuery } from '@tanstack/react-query';
 import AttendanceRecorder from '@/components/attendance/AttendanceRecorder';
-import { CheckCircle2, XCircle, Clock, AlertCircle, BarChart2, PenSquare } from 'lucide-react';
+import { CheckCircle2, XCircle, Clock, AlertCircle, Loader2 } from 'lucide-react';
 import { format, subDays } from 'date-fns';
 import * as attendanceData from '@/data/attendance';
+import { Group, Row, GroupEmpty, Segmented } from '@/components/app/AppShell';
+import StatusChip from '@/components/app/StatusChip';
 
 const STATUS_META = {
   present: { label: 'Present', icon: CheckCircle2, bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
@@ -108,41 +110,76 @@ function StudentAttendanceHistory({ classData, userId }) {
 
 export default function ClassAttendance({ classData, isTeacher, userId }) {
   const { membership } = useUser();
-  const [tab, setTab] = useState(isTeacher ? 'mark' : 'history');
+  if (!isTeacher) {
+    return (
+      <div className="p-6 max-w-7xl mx-auto">
+        <StudentAttendanceHistory classData={classData} userId={userId} />
+      </div>
+    );
+  }
+  return <TeacherAttendance classData={classData} userId={userId} teacherName={membership?.user_name} />;
+}
+
+/**
+ * The register, and the registers already taken.
+ *
+ * "Trends" here used to render the student view with the teacher's own user
+ * id — the teacher's personal attendance, which is always empty. It now lists
+ * this class's past registers; opening one loads it for correction.
+ */
+function TeacherAttendance({ classData, userId, teacherName }) {
+  const [view, setView] = useState('register');
+  const [date, setDate] = useState(null);
+  const from = format(subDays(new Date(), 60), 'yyyy-MM-dd');
+  const to = format(new Date(), 'yyyy-MM-dd');
+
+  const { data: records = [], isLoading } = useQuery({
+    queryKey: ['class-attendance-history', classData.id, from, to],
+    queryFn: () => attendanceData.listForClassBetween(classData.id, from, to),
+    enabled: view === 'history',
+  });
+
+  const days = Object.values(records.reduce((acc, r) => {
+    const d = acc[r.date] || (acc[r.date] = { date: r.date, present: 0, late: 0, absent: 0, excused: 0 });
+    d[r.status] = (d[r.status] || 0) + 1;
+    return acc;
+  }, {})).sort((a, b) => b.date.localeCompare(a.date));
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <h2 className="text-xl font-bold scholr-ink">Attendance</h2>
-        {isTeacher && (
-          <div className="flex gap-1 scholr-sunk rounded-lg p-1">
-            <button
-              onClick={() => setTab('mark')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${tab === 'mark' ? 'bg-white scholr-accent shadow-sm' : 'scholr-muted hover:scholr-ink'}`}
-            >
-              <PenSquare className="w-3.5 h-3.5" /> Mark Attendance
-            </button>
-            <button
-              onClick={() => setTab('history')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${tab === 'history' ? 'bg-white scholr-accent shadow-sm' : 'scholr-muted hover:scholr-ink'}`}
-            >
-              <BarChart2 className="w-3.5 h-3.5" /> Trends
-            </button>
-          </div>
-        )}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
+      <div style={{ alignSelf: 'flex-start' }}>
+        <Segmented
+          label="Attendance views"
+          value={view}
+          onChange={setView}
+          options={[{ value: 'register', label: 'Register' }, { value: 'history', label: 'Past registers' }]}
+        />
       </div>
 
-      {tab === 'mark' && isTeacher && (
-        <AttendanceRecorder
-          classData={classData}
-          teacherId={userId}
-          teacherName={membership?.user_name}
-        />
+      {view === 'register' && (
+        <AttendanceRecorder key={date || 'today'} classData={classData} teacherId={userId} teacherName={teacherName} initialDate={date || undefined} />
       )}
 
-      {(tab === 'history' || !isTeacher) && (
-        <StudentAttendanceHistory classData={classData} userId={userId} />
-      )}
+      {view === 'history' && (isLoading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-lg) 0' }}>
+          <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--brand)' }} />
+        </div>
+      ) : (
+        <Group title="Last 60 days">
+          {days.length === 0 ? (
+            <GroupEmpty>No registers taken in the last 60 days.</GroupEmpty>
+          ) : days.map((d) => (
+            <Row
+              key={d.date}
+              onClick={() => { setDate(d.date); setView('register'); }}
+              label={format(new Date(`${d.date}T12:00:00`), 'EEEE d MMMM')}
+              detail={`${d.present} present · ${d.late} late · ${d.absent} absent${d.excused ? ` · ${d.excused} excused` : ''}`}
+            >
+              {d.absent > 0 ? <StatusChip tone="warn">{d.absent} absent</StatusChip> : <StatusChip tone="good">All in</StatusChip>}
+            </Row>
+          ))}
+        </Group>
+      ))}
     </div>
   );
 }
