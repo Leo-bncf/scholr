@@ -32,6 +32,20 @@ export default function Camera() {
 
   const data = cam.data || {};
 
+  if (cam.isError) {
+    return (
+      <Head title="Camera">
+        <Sec>
+          <p className="cons__empty">The camera could not be reached: {cam.error?.message}</p>
+          <p className="cons__note">
+            If <code>adminCamera</code> is not deployed to this project yet, run
+            <code> npm run deploy:functions adminCamera</code>.
+          </p>
+        </Sec>
+      </Head>
+    );
+  }
+
   if (data.configured === false) {
     return (
       <Head title="Camera">
