@@ -173,6 +173,37 @@ export function useInletHistory() {
   });
 }
 
+/* The controller returns `temps` and `fans` as arrays of named sensors, not as
+   a single number — a PSU, an inlet and a CPU do not share a safe range, so
+   the chassis reports each one with its own threshold. These pull the headline
+   out of the array without throwing the detail away.
+
+   Reading `server.temp` instead returns undefined and the page quietly draws a
+   dash, which is how the fleet looked like it had no thermal data at all. */
+export function hottestSensor(server) {
+  const temps = server?.temps || [];
+  if (!temps.length) return null;
+  return temps.reduce((a, b) => (b.celsius > a.celsius ? b : a));
+}
+
+export function fastestFan(server) {
+  const fans = (server?.fans || []).filter((f) => f.percent != null);
+  if (!fans.length) return null;
+  return fans.reduce((a, b) => (b.percent > a.percent ? b : a));
+}
+
+/** A sensor past the threshold the chassis itself states, not one we invented. */
+export function sensorState(t) {
+  if (!t || t.celsius == null) return 'idle';
+  if (t.health && /critical/i.test(t.health)) return 'bad';
+  if (t.warn != null) {
+    if (t.celsius >= t.warn) return 'bad';
+    if (t.celsius >= t.warn * 0.9) return 'warn';
+    return 'idle';
+  }
+  return tempState(t.celsius);
+}
+
 /* A CPU past 85 °C or inlet air past 32 °C is a call to act, not a colour to
    admire. Anything below is ink. */
 export function tempState(c, ambient) {

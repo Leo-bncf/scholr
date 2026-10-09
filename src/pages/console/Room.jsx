@@ -6,9 +6,10 @@
 // half hour rather than the average, because a room is judged on its peaks.
 import React, { useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Head, Sec, Figs, St, Skel, Field, useToast } from '@/components/console/kit';
+import { Head, Sec, Figs, St, Skel, Meter, Field, useToast } from '@/components/console/kit';
 import {
-  useClimate, useMetrics, useInletHistory, tempState, when, ago,
+  useClimate, useMetrics, useInletHistory, useIlo,
+  hottestSensor, sensorState, tempState, when, ago,
 } from '@/components/console/useConsoleData';
 import * as fns from '@/data/functions';
 
@@ -52,17 +53,41 @@ export default function Room() {
   const climate = useClimate();
   const metrics = useMetrics();
   const history = useInletHistory();
+  // The controllers are in the same room and already report its air. Reading
+  // only server_metrics meant this page showed three dashes while the chassis
+  // two metres away knew the answer.
+  const ilo = useIlo();
   const qc = useQueryClient();
   const toast = useToast();
   const [target, setTarget] = useState('');
 
   const hosts = metrics.data || [];
+  const machines = ilo.data?.servers || [];
+
+  // Inlet air, best source first: a collector's BMC reading, then the sensor
+  // the chassis calls an inlet, then what the air conditioner says about the
+  // room. They measure slightly different things, so the page says which.
   const inlets = hosts.map((m) => m.ambient_temp).filter((v) => v != null).map(Number);
-  const hottestInlet = inlets.length ? Math.max(...inlets) : null;
+  // "Ambient" only. Matching /inlet/ as well pulled in "PS 1 Inlet" — the air
+  // going into a power supply, which sits downstream of the fans and reads far
+  // hotter than the room. That is how this figure first showed 52 °C in a room
+  // that was 26.5 °C.
+  const chassisInlets = machines.flatMap((m) => (m.temps || [])
+    .filter((t) => /ambient/i.test(t.name)).map((t) => t.celsius));
+  const roomAir = climate.data?.state?.current_temp;
+  const inlet = inlets.length ? Math.max(...inlets)
+    : chassisInlets.length ? Math.max(...chassisInlets)
+    : roomAir != null ? Number(roomAir) : null;
+  const inletFrom = inlets.length ? 'collector'
+    : chassisInlets.length ? 'chassis inlet sensor'
+    : roomAir != null ? 'the air conditioner' : null;
+
   const hottestCpu = useMemo(() => {
-    const cpus = hosts.map((m) => m.cpu_temp).filter((v) => v != null).map(Number);
-    return cpus.length ? Math.max(...cpus) : null;
-  }, [hosts]);
+    const fromCollectors = hosts.map((m) => m.cpu_temp).filter((v) => v != null).map(Number);
+    if (fromCollectors.length) return Math.max(...fromCollectors);
+    const fromChassis = machines.map(hottestSensor).filter(Boolean).map((t) => t.celsius);
+    return fromChassis.length ? Math.max(...fromChassis) : null;
+  }, [hosts, machines]);
 
   const state = climate.data || {};
   const unit = state.state || {};
@@ -127,9 +152,9 @@ export default function Room() {
           </button>
         }>
         <Figs items={[
-          { label: 'Inlet air', value: hottestInlet != null ? hottestInlet.toFixed(1) : '—',
-            unit: hottestInlet != null ? '°C' : '', sub: 'warmest host',
-            state: tempState(hottestInlet, true) === 'idle' ? undefined : tempState(hottestInlet, true) },
+          { label: 'Inlet air', value: inlet != null ? inlet.toFixed(1) : '—',
+            unit: inlet != null ? '°C' : '', sub: inletFrom ? `from ${inletFrom}` : 'nothing reporting',
+            state: tempState(inlet, true) === 'idle' ? undefined : tempState(inlet, true) },
           { label: 'Hottest CPU', value: hottestCpu != null ? Math.round(hottestCpu) : '—',
             unit: hottestCpu != null ? '°C' : '', sub: 'across the fleet',
             state: tempState(hottestCpu) === 'idle' ? undefined : tempState(hottestCpu) },
@@ -138,9 +163,9 @@ export default function Room() {
             state: offline || acOff ? 'warn' : undefined },
           { label: 'Set to', value: unit.set_point != null ? unit.set_point : '—',
             unit: unit.set_point != null ? '°C' : '', sub: 'target on the unit' },
-          { label: 'Hosts reporting', value: metrics.isLoading ? '—' : hosts.length,
-            sub: 'collectors pushing metrics',
-            state: !metrics.isLoading && hosts.length === 0 ? 'warn' : undefined },
+          { label: 'Machines', value: ilo.isLoading ? '—' : machines.length,
+            sub: hosts.length ? `${hosts.length} also pushing metrics` : 'via the controllers',
+            state: !ilo.isLoading && machines.length === 0 ? 'warn' : undefined },
         ]} />
       </Sec>
 
@@ -154,10 +179,21 @@ export default function Room() {
               ? 'Only one reading so far — a trace needs at least two. '
               : 'No inlet readings yet. '}
             The collectors on the hosts push into <code>server_metrics</code> every 30 seconds;
-            until they do, this page can only show what the air conditioner says about itself.
+            until they do, there is no history to draw.
           </p>
         ) : <Trace points={history.data} />}
       </Sec>
+
+      {inlet != null && roomAir != null && Math.abs(inlet - Number(roomAir)) > 2 && (
+        <Sec title="Why two different room temperatures">
+          <p className="cons__note" style={{ marginTop: 0 }}>
+            The air conditioner reports {roomAir} °C where its own sensor sits; the chassis
+            reports {inlet.toFixed(1)} °C for the air actually arriving at the machines. The gap
+            is the room, not a fault — the figure that matters for the hardware is the warmer
+            one, because that is the air doing the cooling.
+          </p>
+        </Sec>
+      )}
 
       <Sec title="The unit" meta={state.device?.name || undefined}
         action={
@@ -218,7 +254,53 @@ export default function Room() {
         </div>
       </Sec>
 
-      <Sec title="Hosts" meta="newest reading from each collector">
+      <Sec title="Machines in this room"
+        meta={machines.length ? 'read from the controllers' : undefined}>
+        {ilo.isLoading ? <Skel /> : machines.length === 0 ? (
+          <p className="cons__empty">No controller is configured, so the machines cannot be read.</p>
+        ) : (
+          <div className="cons__scroll">
+            <table className="cons__t">
+              <thead>
+                <tr>
+                  <th>Machine</th><th>Power</th><th className="num">Hottest</th>
+                  <th>Against its own limit</th><th className="num">Draw</th>
+                </tr>
+              </thead>
+              <tbody>
+                {machines.map((m) => {
+                  const hot = hottestSensor(m);
+                  return (
+                    <tr key={m.label}>
+                      <td className="name mono">{m.label}</td>
+                      <td>
+                        <St level={!m.ok ? 'bad' : m.powerState === 'On' ? 'idle' : 'bad'}>
+                          {m.ok ? String(m.powerState || 'unknown').toLowerCase() : 'unreachable'}
+                        </St>
+                      </td>
+                      <td className="num">
+                        <St level={sensorState(hot)}>
+                          {hot ? `${Math.round(hot.celsius)} °C` : '—'}
+                        </St>
+                        {hot?.name && <div className="muted" style={{ fontSize: '.6875rem' }}>{hot.name}</div>}
+                      </td>
+                      <td>
+                        {hot
+                          ? <Meter value={hot.celsius} max={hot.warn || 100}
+                              over={sensorState(hot) !== 'idle'} />
+                          : <span className="muted">—</span>}
+                      </td>
+                      <td className="num muted">{m.watts != null ? `${Math.round(m.watts)} W` : '—'}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Sec>
+
+      <Sec title="Operating system metrics" meta="newest reading from each collector">
         {metrics.isLoading ? <Skel /> : hosts.length === 0 ? (
           <p className="cons__empty">
             {metrics.isError
