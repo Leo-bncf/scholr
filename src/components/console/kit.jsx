@@ -90,6 +90,64 @@ export function Meter({ value, max, over }) {
   );
 }
 
+/* Counts per bucket, as bars.
+ *
+ * Deliberately bars and not a line: these are discrete daily totals, and a
+ * line drawn across thirteen zeros and one spike reads as a rendering fault
+ * rather than as "quiet fortnight, busy today". A zero is an empty slot you
+ * can see and hover, which is the honest shape of a quiet day.
+ *
+ * `points` is [{ v, label }], already bucketed — what a bucket means is the
+ * caller's business, not the chart's.
+ *
+ * `width` caps it rather than letting it go fluid: fourteen bars across a wide
+ * page become slabs, and a bar chart whose bars are wider than they are tall
+ * has stopped reading as a chart.
+ */
+export function Bars({ points, height = 46, format = (v) => v, empty = 'nothing', width = 420 }) {
+  const [hover, setHover] = React.useState(null);
+  if (!points?.length) return null;
+
+  const max = Math.max(1, ...points.map((p) => p.v));
+  const total = points.reduce((n, p) => n + p.v, 0);
+  const shown = hover ?? points[points.length - 1];
+
+  return (
+    <figure className="cons__bars" style={{ margin: 0, maxWidth: width }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height }}
+        onMouseLeave={() => setHover(null)}>
+        {points.map((p, i) => (
+          <button key={i} type="button" className="cons__bar"
+            onMouseEnter={() => setHover(p)} onFocus={() => setHover(p)}
+            aria-label={`${p.label}: ${format(p.v)}`}
+            style={{
+              flex: 1, minWidth: 0, height: '100%', padding: 0, border: 0,
+              background: 'none', cursor: 'default', display: 'flex',
+              alignItems: 'flex-end',
+            }}>
+            <i style={{
+              display: 'block', width: '100%',
+              // A zero still draws a sliver, so the day exists on the axis
+              // instead of vanishing.
+              height: p.v === 0 ? 2 : `${Math.max(6, (p.v / max) * 100)}%`,
+              background: p.v === 0 ? 'var(--rule-2)'
+                : (hover === p ? 'var(--f-5)' : 'var(--f-4)'),
+              borderRadius: '2px 2px 0 0',
+            }} />
+          </button>
+        ))}
+      </div>
+      <figcaption className="cons__note" style={{ marginTop: 5 }}>
+        <b style={{ color: 'var(--ink)', fontVariantNumeric: 'tabular-nums' }}>
+          {shown.v === 0 ? empty : format(shown.v)}
+        </b>
+        {' · '}{shown.label}
+        <span className="muted"> · {format(total)} in {points.length} days</span>
+      </figcaption>
+    </figure>
+  );
+}
+
 export function Field({ label, children }) {
   return <label className="cons__f"><span>{label}</span>{children}</label>;
 }
