@@ -36,6 +36,28 @@ is the same hardware and the same CA, but neither product's console should go
 dark because the other one is down. The Schedual relay is bound to that host's
 own docker gateway and has no route from here.
 
+### The firewall rule, which is half the job
+
+`ufw` is active on `scholr-prod` with a default-deny forward policy, so the
+relay listening is not enough: traffic from the container to the gateway is
+dropped, and the Servers page reports every controller "unreachable" with no
+clue why. The rule has to name the bridge interface, because allowing the port
+globally would open the hop to the LAN and undo the `bind`.
+
+    BR="br-$(sudo docker network inspect supabase_default --format '{{.Id}}' | cut -c1-12)"
+    sudo ufw allow in on "$BR" to 172.18.0.1 port 8099 proto tcp comment 'iLO relay for the edge runtime'
+    sudo ufw allow in on "$BR" to 172.18.0.1 port 8100 proto tcp comment 'iLO relay .17'
+
+The bridge name is derived from the docker network id, so **it changes if the
+compose stack is recreated from scratch** and the rules then point at an
+interface that no longer exists. If Servers starts saying "unreachable" after
+infrastructure work, check this first:
+
+    sudo docker run --rm --network supabase_default alpine:3.20 \
+      sh -c 'apk add -q curl && curl -s -o /dev/null -w "%{http_code}\n" http://172.18.0.1:8099/redfish/v1/'
+
+200 means the path is good. 000 means the firewall, not the relay.
+
 ### Rebuilding it
 
     sudo mkdir -p /etc/scholr
