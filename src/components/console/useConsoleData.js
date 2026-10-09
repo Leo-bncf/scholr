@@ -278,6 +278,8 @@ export function useSignIns(limit = 200) {
  *
  * Accepts either shape so it cannot break again if the function changes.
  */
+const BLOCKING = new Set(['environment', 'smtp', 'stripe', 'database']);
+
 export function readinessChecks(data) {
   const checks = data?.checks;
   if (Array.isArray(checks)) return checks;
@@ -287,6 +289,10 @@ export function readinessChecks(data) {
       name: value?.name || key,
       status: value?.status || 'unknown',
       missing: Array.isArray(value?.missing) ? value.missing : [],
+      // The function treats Google and NODE_ENV as warnings and everything
+      // else as a go-live blocker, so a failing Google integration must not
+      // be drawn in the same red as a database that will not answer.
+      blocking: BLOCKING.has(key),
       ...value,
     }));
   }
