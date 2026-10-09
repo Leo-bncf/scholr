@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { Head, Sec, Figs, St, Skel, Meter, Bars } from '@/components/console/kit';
 import {
   useHeadline, useAudit, useIlo, useClimate, useReadiness, readinessChecks,
-  tempState, num, when, ago,
+  hottestSensor, sensorState, num, when, ago,
 } from '@/components/console/useConsoleData';
 
 const B = '/AdminConsole';
@@ -54,8 +54,9 @@ export default function Overview() {
   const roomWired = ilo.data?.configured !== false && !ilo.isError;
   const acWired = climate.data?.configured !== false && !climate.isError;
   const unit = climate.data?.state || {};
-  const temps = machines.filter((m) => m.temp != null).map((m) => Number(m.temp));
-  const hottest = temps.length ? Math.max(...temps) : null;
+  // `temps` is an array of named sensors per machine, not one number.
+  const hottestPer = machines.map((m) => ({ m, t: hottestSensor(m) })).filter((x) => x.t);
+  const worst = hottestPer.reduce((a, b) => (!a || b.t.celsius > a.t.celsius ? b : a), null);
   const checks = readinessChecks(readiness.data);
 
   // ── What needs a person ────────────────────────────────────────────────
@@ -69,7 +70,13 @@ export default function Overview() {
   for (const m of machines) {
     if (!m.ok) add(`ilo-${m.label}`, 'bad', `${m.label}'s controller is not answering`, `${B}/servers`, 'Servers');
     else if (m.powerState && m.powerState !== 'On') add(`pw-${m.label}`, 'bad', `${m.label} is powered ${String(m.powerState).toLowerCase()}`, `${B}/servers`, 'Servers');
-    else if (tempState(m.temp) !== 'idle') add(`t-${m.label}`, tempState(m.temp), `${m.label} is running at ${Math.round(m.temp)} °C`, `${B}/room`, 'Room');
+    else {
+      const hot = hottestSensor(m);
+      if (hot && sensorState(hot) !== 'idle') {
+        add(`t-${m.label}`, sensorState(hot),
+          `${m.label} is at ${Math.round(hot.celsius)} °C on ${hot.name}`, `${B}/room`, 'Room');
+      }
+    }
   }
   if (acWired && unit.power === false) add('ac', 'warn', 'The air conditioning is off', `${B}/room`, 'Room');
   if (acWired && climate.data?.device?.online === false) add('ac-off', 'warn', 'The air conditioning is offline — it cannot be commanded', `${B}/room`, 'Room');
@@ -122,10 +129,10 @@ export default function Overview() {
             sub: `${h.live.length} live · ${h.trial.length} trial · ${h.onboarding.length} setting up` },
           { label: 'People', value: h.loading ? '—' : num(h.members),
             sub: `${num(h.stats.reduce((n, s) => n + Number(s.students ?? 0), 0))} students · ${num(h.stats.reduce((n, s) => n + Number(s.teachers ?? 0), 0))} teachers` },
-          { label: 'Warmest machine', value: hottest != null ? Math.round(hottest) : '—',
-            unit: hottest != null ? '°C' : '',
-            sub: hottest != null ? (machines.find((m) => Number(m.temp) === hottest)?.label || '') : 'no controller',
-            state: tempState(hottest) === 'idle' ? undefined : tempState(hottest) },
+          { label: 'Warmest machine', value: worst ? Math.round(worst.t.celsius) : '—',
+            unit: worst ? '°C' : '',
+            sub: worst ? `${worst.m.label} · ${worst.t.name}` : 'no controller',
+            state: sensorState(worst?.t) === 'idle' ? undefined : sensorState(worst?.t) },
           { label: 'Database', value: h.health?.database?.size_pretty || '—',
             sub: h.cacheRatio != null ? `${h.cacheRatio}% from memory` : 'size on disk',
             state: h.coldCache ? 'warn' : undefined },
@@ -175,32 +182,39 @@ export default function Overview() {
             <table className="cons__t">
               <thead>
                 <tr>
-                  <th>Machine</th><th>Power</th><th className="num">Temp</th>
-                  <th>Against 85 °C</th><th className="num">Draw</th>
+                  <th>Machine</th><th>Power</th><th className="num">Hottest</th>
+                  <th>Against its own limit</th><th className="num">Draw</th>
                 </tr>
               </thead>
               <tbody>
-                {machines.map((m) => (
-                  <tr key={m.label}>
-                    <td className="name mono">{m.label}</td>
-                    <td>
-                      <St level={!m.ok ? 'bad' : m.powerState === 'On' ? 'idle' : 'bad'}>
-                        {m.ok ? String(m.powerState || 'unknown').toLowerCase() : 'unreachable'}
-                      </St>
-                    </td>
-                    <td className="num">
-                      <St level={tempState(m.temp)}>{m.temp != null ? `${Math.round(m.temp)} °C` : '—'}</St>
-                    </td>
-                    <td>
-                      {/* A ratio against a known ceiling is a meter, not a
-                          number you have to hold the limit in your head for. */}
-                      {m.temp != null
-                        ? <Meter value={m.temp} max={85} over={tempState(m.temp) !== 'idle'} />
-                        : <span className="muted">—</span>}
-                    </td>
-                    <td className="num muted">{m.watts != null ? `${Math.round(m.watts)} W` : '—'}</td>
-                  </tr>
-                ))}
+                {machines.map((m) => {
+                  const hot = hottestSensor(m);
+                  return (
+                    <tr key={m.label}>
+                      <td className="name mono">{m.label}</td>
+                      <td>
+                        <St level={!m.ok ? 'bad' : m.powerState === 'On' ? 'idle' : 'bad'}>
+                          {m.ok ? String(m.powerState || 'unknown').toLowerCase() : 'unreachable'}
+                        </St>
+                      </td>
+                      <td className="num">
+                        <St level={sensorState(hot)}>
+                          {hot ? `${Math.round(hot.celsius)} °C` : '—'}
+                        </St>
+                        {hot?.name && <div className="muted" style={{ fontSize: '.6875rem' }}>{hot.name}</div>}
+                      </td>
+                      <td>
+                        {/* Against the limit the chassis states for that
+                            sensor, not one number for every kind of part. */}
+                        {hot
+                          ? <Meter value={hot.celsius} max={hot.warn || 100}
+                              over={sensorState(hot) !== 'idle'} />
+                          : <span className="muted">—</span>}
+                      </td>
+                      <td className="num muted">{m.watts != null ? `${Math.round(m.watts)} W` : '—'}</td>
+                    </tr>
+                  );
+                })}
                 {acWired && (
                   <tr>
                     <td className="name">Air conditioning</td>
