@@ -9,6 +9,7 @@ import {
   getBillingStatusMeta, getSchoolStatusMeta, isAtRiskSchool,
 } from '@/components/admin/super-admin/superAdminConfig';
 import { annualCost } from '@/lib/pricing';
+import PlatformConfigSection from '@/components/console/PlatformConfigSection';
 
 const B = '/AdminConsole';
 
@@ -127,6 +128,8 @@ export default function Schools() {
           </div>
         )}
       </Sec>
+
+      <PlatformConfigSection kind="defaults" />
     </Head>
   );
 }

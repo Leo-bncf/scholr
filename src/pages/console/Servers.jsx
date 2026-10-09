@@ -31,6 +31,22 @@ export default function Servers() {
   const data = ilo.data || {};
   const servers = data.servers || [];
 
+  if (ilo.isError) {
+    return (
+      <Head title="Servers">
+        <Sec>
+          <p className="cons__empty">
+            The controllers could not be reached: {ilo.error?.message}
+          </p>
+          <p className="cons__note">
+            If <code>adminIlo</code> is not deployed to this project yet, run
+            <code> npm run deploy:functions adminIlo</code>.
+          </p>
+        </Sec>
+      </Head>
+    );
+  }
+
   if (data.configured === false) {
     return (
       <Head title="Servers">

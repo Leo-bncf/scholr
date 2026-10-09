@@ -78,6 +78,24 @@ export default function Room() {
     onError: (e) => toast(e?.message || 'Could not reach the air conditioning', 'bad'),
   });
 
+  // Not deployed here, or it refused us — different from "deployed but no
+  // credentials", and it must not render as an empty room.
+  if (climate.isError) {
+    return (
+      <Head title="Room">
+        <Sec>
+          <p className="cons__empty">
+            The air conditioning could not be reached: {climate.error?.message}
+          </p>
+          <p className="cons__note">
+            If <code>adminClimate</code> is not deployed to this project yet, run
+            <code> npm run deploy:functions adminClimate</code>.
+          </p>
+        </Sec>
+      </Head>
+    );
+  }
+
   if (!configured) {
     return (
       <Head title="Room">
@@ -202,7 +220,11 @@ export default function Room() {
 
       <Sec title="Hosts" meta="newest reading from each collector">
         {metrics.isLoading ? <Skel /> : hosts.length === 0 ? (
-          <p className="cons__empty">No host is pushing metrics into this database yet.</p>
+          <p className="cons__empty">
+            {metrics.isError
+              ? `Host metrics could not be read: ${metrics.error?.message}. If migration 0016 has not been applied, the server_metrics table does not exist yet.`
+              : 'No host is pushing metrics into this database yet.'}
+          </p>
         ) : (
           <div className="cons__scroll">
             <table className="cons__t">

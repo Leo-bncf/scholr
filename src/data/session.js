@@ -139,6 +139,31 @@ export async function setPassword(newPassword) {
   if (error) throw error;
 }
 
+/**
+ * The signed-in account as the auth server sees it: how it signs in
+ * (identities — email, google), when it was created and last signed in.
+ * The profile row doesn't hold any of this.
+ */
+export async function getAuthAccount() {
+  const { data, error } = await supabase.auth.getUser();
+  if (error) throw error;
+  const u = data?.user;
+  if (!u) return null;
+  return {
+    id: u.id,
+    email: u.email,
+    createdAt: u.created_at,
+    lastSignInAt: u.last_sign_in_at,
+    providers: [...new Set((u.identities || []).map((i) => i.provider))],
+  };
+}
+
+/** End every other session for this account, keeping this one. */
+export async function signOutOtherDevices() {
+  const { error } = await supabase.auth.signOut({ scope: 'others' });
+  if (error) throw error;
+}
+
 /** Subscribe to sign-in/sign-out. Returns an unsubscribe function. */
 export function onAuthChange(handler) {
   const { data } = supabase.auth.onAuthStateChange((event, session) => handler(event, session));
