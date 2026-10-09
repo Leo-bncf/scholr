@@ -7,6 +7,7 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Head, Sec, Figs, St, Skel, Meter } from '@/components/console/kit';
 import { useHeadline, num } from '@/components/console/useConsoleData';
+import PlatformConfigSection from '@/components/console/PlatformConfigSection';
 
 const B = '/AdminConsole';
 
@@ -125,6 +126,8 @@ export default function Analytics() {
           </div>
         </Sec>
       )}
+
+      <PlatformConfigSection kind="features" />
     </Head>
   );
 }
