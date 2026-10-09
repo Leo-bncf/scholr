@@ -265,7 +265,13 @@ class Query {
 const listeners = new Set();
 
 const auth = {
-  async getUser() { return { data: { user: { id: currentUser().id, email: currentUser().email } }, error: null }; },
+  async getUser() {
+    const u = currentUser();
+    return { data: { user: {
+      id: u.id, email: u.email, created_at: '2026-08-20T09:00:00Z', last_sign_in_at: new Date().toISOString(),
+      identities: [{ provider: 'google' }],
+    } }, error: null };
+  },
   async getSession() {
     const u = currentUser();
     return { data: { session: { user: { id: u.id, email: u.email }, access_token: 'fake' } }, error: null };
@@ -276,7 +282,7 @@ const auth = {
   },
   async signInWithPassword() { return { data: {}, error: null }; },
   async signInWithOAuth() { return { data: {}, error: null }; },
-  async signOut() { localStorage.removeItem(AS_KEY); return { error: null }; },
+  async signOut(opts) { if (opts?.scope !== 'others') localStorage.removeItem(AS_KEY); return { error: null }; },
   async updateUser() { return { data: {}, error: null }; },
   async resetPasswordForEmail() { return { data: {}, error: null }; },
 };

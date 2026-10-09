@@ -7,6 +7,7 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Head, Sec, Figs, St, Skel } from '@/components/console/kit';
 import { useAudit, num, when, ago } from '@/components/console/useConsoleData';
+import PlatformConfigSection from '@/components/console/PlatformConfigSection';
 
 const B = '/AdminConsole';
 
@@ -120,6 +121,8 @@ export default function Automation() {
           </div>
         )}
       </Sec>
+
+      <PlatformConfigSection kind="integrations" />
     </Head>
   );
 }

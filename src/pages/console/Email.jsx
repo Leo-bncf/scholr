@@ -11,6 +11,7 @@ import { Head, Sec, Figs, St, Skel } from '@/components/console/kit';
 import {
   useReadiness, useInvitations, useSchools, readinessChecks, when, ago,
 } from '@/components/console/useConsoleData';
+import PlatformConfigSection from '@/components/console/PlatformConfigSection';
 
 const B = '/AdminConsole';
 
@@ -134,6 +135,8 @@ export default function Email() {
           </div>
         )}
       </Sec>
+
+      <PlatformConfigSection kind="alerts" />
     </Head>
   );
 }

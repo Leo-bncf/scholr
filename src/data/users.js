@@ -26,6 +26,14 @@ export function getMany(ids) {
   return rows(supabase.from('profiles').select(COLUMNS).in('id', ids), 'users.getMany');
 }
 
+/** Everyone with platform-wide access — who else could act if one admin is locked out. */
+export function listSuperAdmins() {
+  return rows(
+    supabase.from('profiles').select(COLUMNS).in('role', ['super_admin', 'admin']).order('full_name'),
+    'users.listSuperAdmins',
+  );
+}
+
 export function findByEmail(email) {
   return maybeOne(
     supabase.from('profiles').select(COLUMNS).ilike('email', email),
