@@ -97,8 +97,24 @@ export default function Settings() {
   const featuresOff = form
     ? FEATURES.filter((f) => !form.global_feature_flags?.[f.key]).length : 0;
 
-  if (configQ.isLoading || !form) {
+  // Order matters. This used to check `!form` first, and `form` is only ever
+  // set from a loaded row — so with no platform_config row, or a failed read,
+  // the page showed its skeleton forever and the two messages below were
+  // unreachable.
+  if (configQ.isLoading) {
     return <Head title="Settings"><Sec><Skel /></Sec></Head>;
+  }
+
+  if (configQ.error) {
+    return (
+      <Head title="Settings">
+        <Sec>
+          <p className="cons__empty">
+            Settings couldn't be read: {String(configQ.error.message || configQ.error)}
+          </p>
+        </Sec>
+      </Head>
+    );
   }
 
   if (!configQ.data) {
@@ -112,6 +128,10 @@ export default function Settings() {
         </Sec>
       </Head>
     );
+  }
+
+  if (!form) {
+    return <Head title="Settings"><Sec><Skel /></Sec></Head>;
   }
 
   return (
