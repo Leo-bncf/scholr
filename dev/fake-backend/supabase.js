@@ -286,7 +286,7 @@ const auth = {
   },
   async signInWithPassword() { return { data: {}, error: null }; },
   async signInWithOAuth() { return { data: {}, error: null }; },
-  async signOut(opts) { if (opts?.scope !== 'others') localStorage.removeItem(AS_KEY); return { error: null }; },
+  async signOut(opts) { if (opts?.scope !== 'others') { localStorage.setItem(AS_KEY, 'none'); listeners.forEach((cb) => cb('SIGNED_OUT', null)); } return { error: null }; },
   async updateUser() { return { data: {}, error: null }; },
   async resetPasswordForEmail() { return { data: {}, error: null }; },
 };
