@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Head, Sec, Figs, Skel, Field, useToast } from '@/components/console/kit';
 import { useConfig, useHeadline, when } from '@/components/console/useConsoleData';
 import * as admin from '@/data/admin';
+import { DEFAULT_PLATFORM_CONFIG } from '@/lib/platformConfigDefaults';
 
 const FEATURES = [
   { key: 'advanced_analytics', label: 'Analytics', off: 'Schools lose their dashboards and forecasting.' },
@@ -101,6 +102,27 @@ export default function Settings() {
   // set from a loaded row — so with no platform_config row, or a failed read,
   // the page showed its skeleton forever and the two messages below were
   // unreachable.
+  // The live database had no platform_config row, so this page had nothing to
+  // edit and no way to make one. Creating it from the shared defaults keeps
+  // behaviour exactly as it was — every feature on — and makes it editable.
+  const create = useMutation({
+    mutationFn: async () => {
+      const row = await admin.createPlatformConfig(DEFAULT_PLATFORM_CONFIG);
+      await admin.recordAuditLog({
+        action: 'platform_config.created_from_console',
+        entity_type: 'platform_config',
+        entity_id: row?.id,
+        level: 'warning',
+      }).catch(() => {});
+      return row;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['console', 'config'] });
+      toast('Platform settings created');
+    },
+    onError: (e) => toast(e?.message || 'Could not create settings', 'bad'),
+  });
+
   if (configQ.isLoading) {
     return <Head title="Settings"><Sec><Skel /></Sec></Head>;
   }
@@ -122,9 +144,14 @@ export default function Settings() {
       <Head title="Settings">
         <Sec>
           <p className="cons__empty">
-            There is no platform_config row on this database, so there is nothing to configure
-            yet. Everything falls back to its built-in default.
+            Platform settings haven't been created on this database yet, so everything runs on
+            its built-in defaults: every feature on, {DEFAULT_PLATFORM_CONFIG.default_trial_days}-day
+            trials, school branding allowed. Create them to make these switches editable —
+            creating changes nothing for schools.
           </p>
+          <button type="button" className="cons__b cons__b--go" disabled={create.isPending} onClick={() => create.mutate()}>
+            {create.isPending ? 'Creating…' : 'Create platform settings'}
+          </button>
         </Sec>
       </Head>
     );

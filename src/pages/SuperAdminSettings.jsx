@@ -17,40 +17,13 @@ import MaintenanceModePanel from '@/components/admin/super-admin/operational/Mai
 import SystemHealthPanel from '@/components/admin/super-admin/operational/SystemHealthPanel';
 import { useSuperAdminAccess } from '@/components/hooks/useSuperAdminAccess';
 import { useSuperAdminConfigurationQuery } from '@/components/hooks/useSuperAdminData';
-import { DEFAULT_SCHOOL_PLAN, SCHOOL_PLAN_OPTIONS, SCHOOL_TRIAL_DURATION_DAYS } from '@/components/admin/super-admin/superAdminConfig';
+import { DEFAULT_SCHOOL_PLAN, SCHOOL_PLAN_OPTIONS } from '@/components/admin/super-admin/superAdminConfig';
+import { DEFAULT_PLATFORM_CONFIG as DEFAULT_CONFIG } from '@/lib/platformConfigDefaults';
 import DataExportImport from '@/components/admin/super-admin/data/DataExportImport';
 import DataIntegrityChecker from '@/components/admin/super-admin/data/DataIntegrityChecker';
 import GdprPrivacyTools from '@/components/admin/super-admin/data/GdprPrivacyTools';
 import * as admin from '@/data/admin';
 
-const DEFAULT_CONFIG = {
-  name: 'default',
-  default_trial_days: SCHOOL_TRIAL_DURATION_DAYS,
-  default_notification_email: '',
-  allow_school_brand_overrides: true,
-  theme_mode: 'light',
-  default_primary_color: '#4f46e5',
-  default_accent_color: '#0f172a',
-  default_logo_url: '',
-  notifications: {
-    billing_alerts: true,
-    onboarding_alerts: true,
-    security_alerts: true,
-    weekly_digest: false,
-  },
-  integration_settings: {
-    google_drive_enabled: true,
-    stripe_billing_enabled: true,
-  },
-  global_feature_flags: {
-    advanced_analytics: true,
-    messaging: true,
-    attendance: true,
-    behavior_tracking: true,
-    report_builder: true,
-  },
-  school_feature_overrides: [],
-};
 
 const NOTIFICATION_FLAGS = [
   { key: 'billing_alerts', label: 'Billing alerts', description: 'Notify for failed payments and past-due schools.' },
