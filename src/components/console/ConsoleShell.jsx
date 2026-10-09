@@ -169,7 +169,7 @@ export default function ConsoleShell() {
         <div className="cons__app">
           <aside className="cons__rail">
             <NavLink to="/" className="cons__brand" aria-label="Back to the site">
-              <Mark size={30} />
+              <Mark size={30} onDark />
               <span><b>scholr</b><small>platform console</small></span>
             </NavLink>
 
