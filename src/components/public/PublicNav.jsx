@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { isAuthenticated, redirectToLogin } from '@/data/session';
+import { useUser } from '@/components/auth/UserContext';
 
 /**
  * The public site's one navigation bar.
@@ -35,6 +36,12 @@ export default function PublicNav() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // A signed-in visitor is offered their dashboard, not a sign-in they don't
+  // need. Until the session has loaded this stays "Sign in" — which is also
+  // what the prerendered HTML says, so the label never flickers the other way.
+  const { isAuthenticated: signedIn, loading } = useUser() || {};
+  const accountLabel = !loading && signedIn ? 'Access dashboard' : 'Sign in';
 
   const signIn = async () => {
     if (await isAuthenticated()) window.location.href = '/AppHome';
@@ -109,7 +116,7 @@ export default function PublicNav() {
 
           <div className="hidden md:flex" style={{ marginLeft: 'auto', alignItems: 'center', gap: '.9rem' }}>
             <button type="button" onClick={signIn} className="scholr-focus" style={{ background: 'none', border: 'none', font: 'inherit', fontSize: '.89rem', color: 'var(--body)', cursor: 'pointer' }}>
-              Sign in
+              {accountLabel}
             </button>
             {/* Rounded to match the now-pill nav bar around it — scoped to
                 this one instance via inline style, not a change to
@@ -150,7 +157,7 @@ export default function PublicNav() {
             </Link>
           ))}
           <div style={{ display: 'flex', alignItems: 'center', gap: '.8rem', paddingTop: '.9rem' }}>
-            <button type="button" onClick={signIn} className="scholr-focus" style={{ background: 'none', border: 'none', font: 'inherit', fontSize: '.9rem', color: 'var(--body)', cursor: 'pointer' }}>Sign in</button>
+            <button type="button" onClick={signIn} className="scholr-focus" style={{ background: 'none', border: 'none', font: 'inherit', fontSize: '.9rem', color: 'var(--body)', cursor: 'pointer' }}>{accountLabel}</button>
             <Link to="/BookDemo" onClick={() => setOpen(false)} className="pub-btn pub-btn-gold scholr-focus" style={{ marginLeft: 'auto' }}>Book a demo</Link>
           </div>
         </div>

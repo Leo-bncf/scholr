@@ -19,7 +19,7 @@
  * stack (`npm run verify`).
  *
  * Reset the data with ?reset-fake in the URL. Sign in as someone else with
- * ?as=<role> (teacher, student, school_admin, super_admin).
+ * ?as=<role> (teacher, student, school_admin, super_admin, or none for signed out).
  */
 import { seed, USERS } from './seed';
 
@@ -52,8 +52,10 @@ function table(name) {
 const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`);
 const now = () => new Date().toISOString();
 
+/** null when signed out (?as=none). */
 function currentUser() {
   const as = localStorage.getItem(AS_KEY) || 'teacher';
+  if (as === 'none') return null;
   return USERS[as] || USERS.teacher;
 }
 
@@ -212,7 +214,7 @@ class Query {
           ? t.find((r) => keys.every((k) => row[k] != null && String(r[k]) === String(row[k])))
           : null;
         if (existing) { Object.assign(existing, row, { updated_at: now() }); return existing; }
-        const created = { id: uuid(), created_at: now(), updated_at: now(), created_by: currentUser().id, ...row };
+        const created = { id: uuid(), created_at: now(), updated_at: now(), created_by: currentUser()?.id ?? null, ...row };
         t.push(created);
         return created;
       });
@@ -267,6 +269,7 @@ const listeners = new Set();
 const auth = {
   async getUser() {
     const u = currentUser();
+    if (!u) return { data: { user: null }, error: null };
     return { data: { user: {
       id: u.id, email: u.email, created_at: '2026-08-20T09:00:00Z', last_sign_in_at: new Date().toISOString(),
       identities: [{ provider: 'google' }],
@@ -274,6 +277,7 @@ const auth = {
   },
   async getSession() {
     const u = currentUser();
+    if (!u) return { data: { session: null }, error: null };
     return { data: { session: { user: { id: u.id, email: u.email }, access_token: 'fake' } }, error: null };
   },
   onAuthStateChange(cb) {
@@ -321,7 +325,7 @@ function channel() {
 
 export const supabase = {
   from: (name) => new Query(name),
-  rpc: async (name) => ({ data: name === 'is_super_admin' ? currentUser().role === 'super_admin' : [], error: null }),
+  rpc: async (name) => ({ data: name === 'is_super_admin' ? currentUser()?.role === 'super_admin' : [], error: null }),
   auth,
   storage,
   functions,
