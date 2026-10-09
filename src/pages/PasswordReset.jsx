@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import { AuthCard, AuthField, AuthError, AuthNote, AuthSubmit } from '@/components/public/AuthCard';
-import { requestPasswordReset } from '@/data/session';
+import { requestPasswordReset, setPassword as updatePassword, onAuthChange } from '@/data/session';
 
 /**
  * Password reset.
@@ -22,15 +22,25 @@ export default function PasswordReset() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-  const [token] = useState(searchParams.get('token'));
   const [isProcessing, setIsProcessing] = useState(false);
 
+  /* Arriving from the emailed link.
+   *
+   * This looked for a base44-style `?token=`, which a Supabase link never
+   * carries — it lands with `#…type=recovery` (or a `?code=` it exchanges),
+   * and the client then announces PASSWORD_RECOVERY. So the link opened the
+   * "enter your email" form again and a reset could never be finished. */
   useEffect(() => {
-    // If token is present, skip to reset step
-    if (token) {
-      setStep('reset');
+    const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    if (hash.get('error_description') || searchParams.get('error_description')) {
+      setError('That reset link has expired or was already used. Send yourself a new one below.');
+      return undefined;
     }
-  }, [token]);
+    if (hash.get('type') === 'recovery' || searchParams.get('type') === 'recovery') setStep('reset');
+    return onAuthChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') setStep('reset');
+    });
+  }, [searchParams]);
 
   const handleRequestReset = async (e) => {
     e.preventDefault();
@@ -69,7 +79,10 @@ export default function PasswordReset() {
 
     setIsProcessing(true);
     try {
-      await setPassword(password);
+      // `updatePassword`, not `setPassword`: inside this component that name
+      // is the state setter for the input, and calling it "saved" nothing —
+      // the page said "password changed" while the old one still worked.
+      await updatePassword(password);
       setStep('success');
       setError(null);
     } catch (err) {
@@ -129,12 +142,19 @@ export default function PasswordReset() {
       {step === 'sent' && (
         <div className="flex flex-col gap-4">
           <p className="m-0 text-sm" style={{ color: 'var(--body)', lineHeight: 'var(--lh-body)' }}>
-            If <strong style={{ color: 'var(--ink)' }}>{email}</strong> has an account, a reset link is
-            on its way. It expires in an hour.
+            If an account uses <strong style={{ color: 'var(--ink)' }}>{email}</strong>, a reset link is
+            on its way from noreply@scholr.pro. It works once and expires in an hour.
           </p>
+          <ol className="m-0 text-sm" style={{ color: 'var(--body)', lineHeight: 'var(--lh-body)', paddingLeft: '1.1rem' }}>
+            <li>Open the email and select <strong style={{ color: 'var(--ink)' }}>Reset password</strong>.</li>
+            <li>Choose a new password on the page it opens.</li>
+            <li>You're signed in — use the new password from then on.</li>
+          </ol>
           <AuthNote>
-            Nothing arrived? Check spam, then send another — links are single-use, so an old one in
-            your inbox will not work.
+            Nothing within a few minutes? Check spam, and make sure this is the address you sign in
+            with. If you sign in with Google, use “Continue with Google” instead — there is no Scholr
+            password to reset. Scholr accounts are created by your school, so if you were never
+            invited, ask your school's administrator.
           </AuthNote>
           <button
             type="button"
@@ -193,12 +213,14 @@ export default function PasswordReset() {
             <CheckCircle className="w-4 h-4" />
             Done — your password has been changed.
           </p>
+          {/* The recovery link already signed them in; send them in, not back
+              to a sign-in form. */}
           <button
             type="button"
-            onClick={() => navigate('/Login')}
+            onClick={() => navigate('/AppHome')}
             className="pub-btn pub-btn-primary scholr-focus w-full justify-center"
           >
-            Sign in
+            Continue to Scholr
           </button>
         </div>
       )}

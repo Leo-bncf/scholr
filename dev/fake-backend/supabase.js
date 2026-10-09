@@ -287,8 +287,8 @@ const auth = {
   async signInWithPassword() { return { data: {}, error: null }; },
   async signInWithOAuth() { return { data: {}, error: null }; },
   async signOut(opts) { if (opts?.scope !== 'others') { localStorage.setItem(AS_KEY, 'none'); listeners.forEach((cb) => cb('SIGNED_OUT', null)); } return { error: null }; },
-  async updateUser() { return { data: {}, error: null }; },
-  async resetPasswordForEmail() { return { data: {}, error: null }; },
+  async updateUser(patch) { localStorage.setItem('scholr_fake_last_update_user', JSON.stringify({ ...patch, password: patch?.password ? '•••' : undefined, at: Date.now() })); return { data: {}, error: null }; },
+  async resetPasswordForEmail(email, opts) { localStorage.setItem('scholr_fake_last_reset', JSON.stringify({ email, redirectTo: opts?.redirectTo })); return { data: {}, error: null }; },
 };
 
 /** Uploaded files live in memory as object URLs; they don't survive a reload. */
