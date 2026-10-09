@@ -30,9 +30,9 @@ function StatusButton({ status, selected, onClick }) {
   );
 }
 
-export default function AttendanceRecorder({ classData, teacherId, teacherName }) {
+export default function AttendanceRecorder({ classData, teacherId, teacherName, initialDate }) {
   const queryClient = useQueryClient();
-  const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [selectedDate, setSelectedDate] = useState(initialDate || format(new Date(), 'yyyy-MM-dd'));
   // Named `marks`, not `attendanceData`: the base44 codemod gave this state
   // the same name as the data module, so every read and save called methods on
   // a plain object and the register could neither load nor save.
@@ -96,6 +96,10 @@ export default function AttendanceRecorder({ classData, teacherId, teacherName }
       queryClient.invalidateQueries({ queryKey: ['class-attendance-records'] });
       queryClient.invalidateQueries({ queryKey: ['parent-child-attendance'] });
       queryClient.invalidateQueries({ queryKey: ['attendance-dashboard'] });
+      // The teacher's Today page and class overview count untaken registers.
+      queryClient.invalidateQueries({ queryKey: ['teacher-load'] });
+      queryClient.invalidateQueries({ queryKey: ['class-attendance-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['class-attendance-history'] });
     },
   });
 

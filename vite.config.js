@@ -3,12 +3,28 @@ import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
 
 // https://vite.dev/config/
-export default defineConfig({
+// `npm run dev:fake` swaps the Supabase client for an in-memory one seeded with
+// an invented school (dev/fake-backend/). The only Supabase project is
+// production, so this is the safe place to click through unfinished screens.
+// Serve-only: a build in this mode would ship fake auth, so it is refused.
+export default defineConfig(({ mode, command }) => {
+  const fake = mode === 'fake';
+  if (fake && command === 'build') throw new Error('--mode fake is for the dev server only; never build with it.');
+  return {
   // base44 set this to 'error', which also swallowed Vite's startup banner —
   // `npm run dev` printed nothing at all, so it looked like it had failed.
   // Developers need to see the URL it's serving on.
   logLevel: 'info',
-  plugins: [react()],
+  plugins: [
+    react(),
+    fake && {
+      name: 'scholr-fake-banner',
+      transformIndexHtml: (html) => html.replace(
+        '<body>',
+        '<body><div style="position:fixed;bottom:8px;left:8px;z-index:9999;font:600 11px/1 ui-monospace,monospace;padding:6px 8px;border-radius:6px;background:#1d3b2a;color:#fff;opacity:.85;pointer-events:none">FAKE DATA · dev:fake</div>',
+      ),
+    },
+  ],
   build: {
     /* No manualChunks.
        Forcing react/react-dom into their own chunk produced
@@ -25,8 +41,10 @@ export default defineConfig({
   },
   resolve: {
     // The base44 vite plugin used to provide this alias; it's ours now.
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
+    alias: [
+      ...(fake ? [{ find: /^@\/lib\/supabase$/, replacement: fileURLToPath(new URL('./dev/fake-backend/supabase.js', import.meta.url)) }] : []),
+      { find: '@', replacement: fileURLToPath(new URL('./src', import.meta.url)) },
+    ],
   },
+  };
 });

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:fake": "vite --mode fake",
     "build": "node scripts/gen-sitemap.mjs && node scripts/verify-data-calls.mjs && node scripts/verify-query-bounds.mjs && vite build && node scripts/check-build-env.mjs && node scripts/prerender.mjs",
     "prerender": "node scripts/prerender.mjs",
     "lint": "eslint . --quiet",

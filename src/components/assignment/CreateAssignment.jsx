@@ -15,10 +15,15 @@ import { useSubmissionPolicy } from '@/hooks/useSubmissionPolicy';
 import * as curriculumTopicsData from '@/data/curriculumTopics';
 import * as assignmentsData from '@/data/assignments';
 
-export default function CreateAssignment({ classData, userId, onClose, trigger }) {
+// `open`/`onOpenChange` make the dialog controllable from outside (the class
+// page opens it from its header); without them it renders its own buttons.
+export default function CreateAssignment({ classData, userId, onClose, trigger, open: openProp, onOpenChange }) {
   const queryClient = useQueryClient();
   const { policy } = useSubmissionPolicy(classData?.school_id);
-  const [open, setOpen] = useState(false);
+  const [openState, setOpenState] = useState(false);
+  const controlled = openProp !== undefined;
+  const open = controlled ? openProp : openState;
+  const setOpen = (v) => { if (controlled) onOpenChange?.(v); else setOpenState(v); };
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -47,6 +52,7 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
     mutationFn: (data) => assignmentsData.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['class-assignments'] });
+      queryClient.invalidateQueries({ queryKey: ['teacher-load'] });
       setOpen(false);
       if (onClose) onClose();
       setForm({
@@ -82,9 +88,13 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
   };
 
   const handleCreate = (status) => {
-    const dueDateTime = form.due_date && form.due_time 
-      ? `${form.due_date}T${form.due_time}:00`
-      : form.due_date;
+    // Built in the browser's time zone and sent as an instant. A bare
+    // "2026-10-14T16:00:00" was read by Postgres as UTC, so a 4pm deadline
+    // moved by the school's offset; a date alone became midnight UTC, and
+    // work was "late" the evening before it was due.
+    const dueDateTime = form.due_date
+      ? new Date(`${form.due_date}T${form.due_time || '23:59'}`).toISOString()
+      : null;
 
     createMutation.mutate({
       ...form,
@@ -100,7 +110,7 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
 
   return (
     <>
-      <div className="flex gap-3">
+      {!controlled && <div className="flex gap-3">
         {trigger ? (
           <div onClick={() => setOpen(true)}>{trigger}</div>
         ) : (
@@ -111,7 +121,7 @@ export default function CreateAssignment({ classData, userId, onClose, trigger }
         <Button variant="outline" onClick={() => setAssessmentOpen(true)}>
           <Plus className="w-4 h-4 mr-2" /> Create Assessment
         </Button>
-      </div>
+      </div>}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
