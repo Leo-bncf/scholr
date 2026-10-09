@@ -6,18 +6,19 @@
 // import lines.
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
-/* The Scholr mark, drawn rather than shipped as a bitmap: a rounded green
-   tile holding an open book as two leaves, with the fore-edge left white.
-   Green and white, which is the whole identity. */
-export function Mark({ size = 38 }) {
+/* The Scholr mark: a rounded brand-green tile with the gold dot in its top
+   right corner — the same mark as the app sidebar, the favicon and the public
+   site. The console used to draw its own open-book tile, so the platform's
+   own admin pages were the one place Scholr didn't carry its logo.
+   Proportions follow the sidebar's 26px tile (radius 8, 7px dot inset 4px). */
+// `onDark` adds a faint light edge: on the console's dark-green rail the
+// brand-green tile is too close in tone to hold its shape without one.
+export function Mark({ size = 38, onDark = false }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 48 48" role="img" aria-label="Scholr" focusable="false">
-      <rect width="48" height="48" rx="12" fill="#044f36" />
-      <path d="M24 15.5c-3.2-2.1-6.6-2.9-10.5-2.6v18.9c3.9-.3 7.3.5 10.5 2.6 3.2-2.1 6.6-2.9 10.5-2.6V12.9c-3.9-.3-7.3.5-10.5 2.6z"
-        fill="#fdfefd" />
-      <path d="M24 15.5v18.9" stroke="#044f36" strokeWidth="1.8" strokeLinecap="round" />
-      <path d="M17.5 19.5c1.4-.2 2.8-.1 4.2.4M17.5 24.2c1.4-.2 2.8-.1 4.2.4M26.3 19.9c1.4-.5 2.8-.6 4.2-.4M26.3 24.6c1.4-.5 2.8-.6 4.2-.4"
-        stroke="#6fb493" strokeWidth="1.4" strokeLinecap="round" />
+    <svg width={size} height={size} viewBox="0 0 26 26" role="img" aria-label="Scholr" focusable="false">
+      <rect width="26" height="26" rx="8" style={{ fill: 'var(--logo-green)' }} />
+      {onDark && <rect x=".5" y=".5" width="25" height="25" rx="7.5" fill="none" style={{ stroke: 'var(--on-green-3)' }} strokeOpacity=".55" />}
+      <circle cx="18.5" cy="7.5" r="3.5" style={{ fill: 'var(--logo-gold)' }} />
     </svg>
   );
 }
