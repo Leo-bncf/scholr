@@ -176,11 +176,11 @@ export default function FirstLogin() {
     }
 
     const routes = {
-      school_admin: '/school-admin-dashboard',
-      ib_coordinator: '/coordinator-dashboard',
-      teacher: '/teacher-dashboard',
-      student: '/student-dashboard',
-      parent: '/parent-dashboard',
+      school_admin: '/SchoolAdminDashboard',
+      ib_coordinator: '/CoordinatorDashboard',
+      teacher: '/TeacherDashboard',
+      student: '/StudentDashboard',
+      parent: '/ParentDashboard',
     };
 
     const targetRoute = routes[accountState.role] || '/';

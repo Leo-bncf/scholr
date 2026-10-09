@@ -1,4 +1,4 @@
-import { LayoutDashboard, BarChart3, Star, BookOpen } from 'lucide-react';
+import { LayoutDashboard, BarChart3, Star, BookOpen, Layers } from 'lucide-react';
 
 /**
  * Coordinator navigation, built from the curriculum config: the IB Core item
@@ -16,8 +16,9 @@ export function getCoordinatorSidebarLinks(curriculum, config) {
   const features = config?.features || {};
 
   const links = [
-    { label: 'Dashboard', page: 'CoordinatorDashboard', icon: LayoutDashboard },
-    { label: 'Subjects',  page: 'SchoolAdminAcademicSetup',  icon: BookOpen },
+    { label: 'Dashboard',  page: 'CoordinatorDashboard',     icon: LayoutDashboard },
+    { label: 'Curriculum', page: 'CurriculumMapping',        icon: Layers },
+    { label: 'Subjects',   page: 'SchoolAdminAcademicSetup', icon: BookOpen },
   ];
 
   if (features.predictedGrades) {

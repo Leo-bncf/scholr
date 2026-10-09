@@ -6,9 +6,12 @@ import AppShell, { Group, Row, GroupEmpty } from '@/components/app/AppShell';
 import StatCard from '@/components/app/StatCard';
 import StatRow from '@/components/app/StatRow';
 import TodaySchedule from '@/components/timetable/TodaySchedule';
+import DiplomaProgress from '@/components/student/DiplomaProgress';
+import UpcomingDeadlines from '@/components/student/UpcomingDeadlines';
 import { useUser } from '@/components/auth/UserContext';
+import { useCurriculum } from '@/hooks/useCurriculum';
 import { Loader2 } from 'lucide-react';
-import { format, differenceInCalendarDays } from 'date-fns';
+import { format } from 'date-fns';
 import { createPageUrl } from '@/utils';
 import { getStudentSidebarLinks } from '@/components/app/studentSidebarLinks';
 import * as classesData from '@/data/classes';
@@ -17,36 +20,47 @@ import * as gradebookData from '@/data/gradebook';
 
 export default function StudentDashboard() {
   const { user, school, schoolId, curriculum, effectiveUserId } = useUser();
+  const { isIBDP } = useCurriculum();
   const userId = effectiveUserId || user?.id;
   const studentLinks = getStudentSidebarLinks(curriculum);
 
-  const { data: classes = [], isLoading } = useQuery({
+  const { data: classes = [], isLoading: classesLoading } = useQuery({
     queryKey: ['student-classes', schoolId, userId],
-    queryFn: async () => {
-      const all = await classesData.where({ school_id: schoolId, status: 'active' });
-      return all.filter(c => c.student_ids?.includes(userId));
-    },
+    queryFn: () => classesData.listForStudent(schoolId, userId),
     enabled: !!schoolId && !!userId,
   });
 
-  const { data: assignments = [] } = useQuery({
+  const { data: assignments = [], isLoading: assignmentsLoading } = useQuery({
     queryKey: ['student-assignments', schoolId, userId],
-    queryFn: () => assignmentsData.listPublishedForClasses(classes.map(c => c.id)),
+    queryFn: () => {
+      const classIds = classes.map(c => c.id);
+      if (classIds.length === 0) return Promise.resolve([]);
+      return assignmentsData.listPublishedForClasses(classIds);
+    },
     enabled: !!schoolId && classes.length > 0,
   });
 
   const { data: grades = [] } = useQuery({
     queryKey: ['student-grades', schoolId, userId],
-    queryFn: () => gradebookData.whereGradeItems({ school_id: schoolId, student_id: userId, visible_to_student: true }),
+    queryFn: () => gradebookData.listForStudent(schoolId, userId),
     enabled: !!schoolId && !!userId,
+  });
+
+  const { data: predictedGrades = [] } = useQuery({
+    queryKey: ['student-predicted-grades', schoolId, userId],
+    queryFn: () => gradebookData.listPredicted(schoolId, { studentId: userId }),
+    enabled: !!schoolId && !!userId && isIBDP,
   });
 
   const upcoming = assignments
     .filter(a => a.due_date && new Date(a.due_date) > new Date())
     .sort((a, b) => new Date(a.due_date) - new Date(b.due_date));
+
   const average = grades.length > 0
     ? (grades.reduce((s, g) => s + (g.ib_grade || 0), 0) / grades.length).toFixed(1)
     : '—';
+
+  const isLoading = classesLoading || assignmentsLoading;
 
   return (
     <RoleGuard allowedRoles={['student', 'school_admin', 'super_admin', 'admin']}>
@@ -63,39 +77,36 @@ export default function StudentDashboard() {
           ) : (
             <>
               <StatRow>
-                <StatCard label="Classes" value={classes.length} />
-                <StatCard label="Due soon" value={upcoming.length} hint="not yet past their date" />
-                <StatCard label="Grades" value={grades.length} hint="released to you" />
-                <StatCard label="Average" value={average} hint={grades.length ? 'IB points' : 'nothing to average yet'} />
+                <StatCard label="Enrolled Classes" value={classes.length} />
+                <StatCard label="Due Soon" value={upcoming.length} hint="next fortnight" />
+                <StatCard label="Released Grades" value={grades.length} />
+                <StatCard label="Average" value={average} hint={grades.length ? 'IB points' : 'awaiting grades'} />
               </StatRow>
 
+              {/* IB Diploma Requirements & Passing Rules */}
+              {isIBDP && (
+                <DiplomaProgress
+                  classes={classes}
+                  grades={grades}
+                  predictedGrades={predictedGrades}
+                  tokGrade="B"
+                  eeGrade="B"
+                  casFulfilled={true}
+                />
+              )}
+
+              {/* Today's Schedule */}
               <Group title="Today">
                 <div style={{ padding: '.35rem .9rem .8rem' }}>
                   <TodaySchedule schoolId={schoolId} userId={user?.id} userRole="student" />
                 </div>
               </Group>
 
-              <Group title="Coming up">
-                {upcoming.length === 0 ? (
-                  <GroupEmpty>Nothing due. Anything your teachers set will show up here.</GroupEmpty>
-                ) : (
-                  upcoming.slice(0, 6).map(a => {
-                    const days = differenceInCalendarDays(new Date(a.due_date), new Date());
-                    return (
-                      <Row
-                        key={a.id}
-                        label={a.title}
-                        detail={a.type?.replace('_', ' ')}
-                        // "in 2 days" answers the question the date only
-                        // implies; the date stays for the diary.
-                        value={`${days <= 0 ? 'today' : days === 1 ? 'tomorrow' : `in ${days} days`} · ${format(new Date(a.due_date), 'd MMM')}`}
-                      />
-                    );
-                  })
-                )}
-              </Group>
+              {/* Upcoming Deadlines */}
+              <UpcomingDeadlines assignments={assignments} />
 
-              <Group title="My classes">
+              {/* My Classes */}
+              <Group title="My Classes">
                 {classes.length === 0 ? (
                   <GroupEmpty>You're not enrolled in any classes yet.</GroupEmpty>
                 ) : (
@@ -103,6 +114,7 @@ export default function StudentDashboard() {
                     <Row
                       key={c.id}
                       label={c.name}
+                      detail={c.subject?.name}
                       value={c.room ? `Room ${c.room}` : ''}
                       href={createPageUrl('ClassWorkspace') + `?class_id=${c.id}`}
                     />

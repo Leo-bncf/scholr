@@ -10,7 +10,7 @@ import * as behaviorRecordsData from '@/data/behaviorRecords';
 const sidebarLinks = [
   { label: 'Dashboard', page: 'StudentDashboard', icon: LayoutDashboard },
   { label: 'My Grades', page: 'StudentDashboard', icon: BarChart3 },
-  { label: 'IB Core', page: 'StudentCAS', icon: Star },
+  { label: 'IB Core', page: 'StudentIBCore', icon: Star },
   { label: 'Messages', page: 'Messages', icon: MessageSquare },
 ];
 

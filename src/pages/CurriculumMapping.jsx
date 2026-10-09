@@ -4,6 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@/components/auth/UserContext';
 import { getAppSidebarLinks } from '@/components/app/sidebarLinks';
 import { SCHOOL_ADMIN_SIDEBAR_LINKS } from '@/components/app/schoolAdminSidebarLinks';
+import { getCoordinatorSidebarLinks } from '@/components/app/coordinatorSidebarLinks';
+import { getCurriculumConfig } from '@/lib/curriculumConfig';
 import { Loader2 } from 'lucide-react';
 import CoverageSummaryCards from '@/components/curriculum/CoverageSummaryCards';
 import SubjectCoverageList from '@/components/curriculum/SubjectCoverageList';
@@ -28,8 +30,13 @@ export default function CurriculumMapping() {
   const { user, school, schoolId, role } = useUser();
   const [selectedSubjectId, setSelectedSubjectId] = useState(null);
   const isAdminView = ['school_admin', 'ib_coordinator', 'admin', 'super_admin'].includes(role);
-  const sidebarLinks = role === 'teacher' ? getAppSidebarLinks('teacher') : SCHOOL_ADMIN_SIDEBAR_LINKS;
-  const sidebarRole = role === 'teacher' ? 'teacher' : 'school_admin';
+  const curriculum = school?.curriculum || 'ib_dp';
+  const sidebarLinks = role === 'teacher'
+    ? getAppSidebarLinks('teacher')
+    : role === 'ib_coordinator'
+      ? getCoordinatorSidebarLinks(curriculum, getCurriculumConfig(curriculum))
+      : SCHOOL_ADMIN_SIDEBAR_LINKS;
+  const sidebarRole = role === 'teacher' ? 'teacher' : role === 'ib_coordinator' ? 'ib_coordinator' : 'school_admin';
 
   const { data, isLoading } = useQuery({
     queryKey: ['curriculum-mapping', schoolId, role, user?.id],
