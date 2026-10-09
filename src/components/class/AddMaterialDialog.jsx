@@ -53,7 +53,7 @@ export default function AddMaterialDialog({ open, onOpenChange, classData, user,
       setUploading(true);
       try {
         const uploaded = await storage.upload(file, { schoolId: schoolId, prefix: 'materials' });
-      const file_url = uploaded.url;
+      const file_url = uploaded.ref; // a stored ref, not the hour-long signed URL
         await createMutation.mutateAsync({
           school_id: schoolId,
           class_id: classData.id,

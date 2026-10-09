@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import DocumentCard from '@/components/assignment/DocumentCard';
+import * as storage from '@/data/storage';
 
 function buildCriteria(submissionRow) {
   if (submissionRow?.gradeItem?.rubric_criteria?.length) {
@@ -82,7 +83,7 @@ export default function WorkspaceGradingPanel({ row, open, onClose, onSaveDraft,
               {row?.submission?.documents?.length > 0 && (
                 <div className="space-y-3">
                   {row.submission.documents.map((document) => (
-                    <DocumentCard key={document.id} document={document} onOpen={(doc) => window.open(doc.url, '_blank')} compact />
+                    <DocumentCard key={document.id} document={document} onOpen={(doc) => storage.openStored(doc.url)} compact />
                   ))}
                 </div>
               )}

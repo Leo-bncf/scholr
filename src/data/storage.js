@@ -55,7 +55,9 @@ export async function upload(file, { bucket = BUCKETS.materials, schoolId, prefi
   if (error) throw new Error(`storage.upload: ${error.message}`);
 
   const url = bucket === BUCKETS.public ? publicUrl(bucket, path) : await signedUrl(bucket, path);
-  return { bucket, path, url, name: file.name, size: file.size, type: file.type };
+  // `ref` is what to persist. `url` is for showing the file right now — for a
+  // private bucket it is signed and dies after an hour.
+  return { bucket, path, ref: toRef(bucket, path), url, name: file.name, size: file.size, type: file.type };
 }
 
 /**
@@ -96,4 +98,63 @@ export async function download(bucket, path) {
   const { data, error } = await supabase.storage.from(bucket).download(path);
   if (error) throw new Error(`storage.download: ${error.message}`);
   return data;
+}
+
+/* ── Stored references ───────────────────────────────────────────────────
+ *
+ * Every upload site used to persist `uploaded.url` — a signed link that
+ * expires an hour later. So every material, assignment attachment and piece
+ * of student work became a dead link the same afternoon it was uploaded.
+ *
+ * Persist `ref` instead (`storage:<bucket>/<path>`) and resolve it with
+ * resolveUrl() or openStored() when someone actually opens the file.
+ *
+ * Rows written before this change hold expired signed URLs. Those still carry
+ * the bucket and path, so parseStored() recovers them and they re-sign like
+ * any other ref — the old links repair themselves without a data migration.
+ */
+
+const REF_PREFIX = 'storage:';
+
+export function toRef(bucket, path) {
+  return `${REF_PREFIX}${bucket}/${path}`;
+}
+
+/** { bucket, path } for a ref or a Supabase storage URL; null for anything else. */
+export function parseStored(value) {
+  if (typeof value !== 'string' || !value) return null;
+  if (value.startsWith(REF_PREFIX)) {
+    const rest = value.slice(REF_PREFIX.length);
+    const slash = rest.indexOf('/');
+    if (slash < 1) return null;
+    return { bucket: rest.slice(0, slash), path: rest.slice(slash + 1) };
+  }
+  const m = value.match(/\/storage\/v1\/object\/(?:sign|public|authenticated)\/([^/?#]+)\/([^?#]+)/);
+  if (!m) return null;
+  return { bucket: m[1], path: decodeURIComponent(m[2]) };
+}
+
+/** A URL that works now: re-signed for stored files, unchanged for ordinary links. */
+export async function resolveUrl(value) {
+  const stored = parseStored(value);
+  if (!stored) return value;
+  if (stored.bucket === BUCKETS.public) return publicUrl(stored.bucket, stored.path);
+  return signedUrl(stored.bucket, stored.path);
+}
+
+/**
+ * Open a stored file or link in a new tab.
+ *
+ * The tab is opened before the await: a window.open() that happens after an
+ * async gap is no longer tied to the click, and browsers block it as a popup.
+ */
+export async function openStored(value) {
+  const win = window.open('', '_blank');
+  try {
+    const url = await resolveUrl(value);
+    if (win) win.location.href = url; else window.location.href = url;
+  } catch (err) {
+    if (win) win.close();
+    throw err;
+  }
 }
