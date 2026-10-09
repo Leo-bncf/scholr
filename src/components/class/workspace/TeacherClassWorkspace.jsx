@@ -1,71 +1,130 @@
-import React, { useState, useEffect } from 'react';
-import {
-  LayoutGrid, MessageSquare, ClipboardList, CalendarDays, FolderOpen,
-  BarChart3, BookMarked, CheckSquare, Users, TrendingUp, Settings
-} from 'lucide-react';
-import ClassHeader from './ClassHeader';
-import ClassTabBar from './ClassTabBar';
-import TeacherTodayTab from './TeacherTodayTab';
-import ClassStream from '@/components/class/ClassStream';
-import ClassAssignments from '@/components/class/ClassAssignments';
-import ClassLessons from '@/components/class/ClassLessons';
+import React, { useState } from 'react';
+import { Plus } from 'lucide-react';
+import { Segmented } from '@/components/app/AppShell';
+import Notice from '@/components/app/Notice';
+import TeacherPage from '@/components/teacher/TeacherPage';
+import { PageLoading } from '@/components/teacher/bits';
+import { useTeacherLoad } from '@/components/teacher/useTeacherLoad';
+import ClassOverview from '@/components/teacher/class/ClassOverview';
+import ClassAssignmentList from '@/components/teacher/class/ClassAssignmentList';
+import ClassMarksGrid from '@/components/teacher/class/ClassMarksGrid';
+import ClassStudents from '@/components/teacher/class/ClassStudents';
+import CreateAssignment from '@/components/assignment/CreateAssignment';
 import ClassMaterials from '@/components/class/ClassMaterials';
+import ClassLessons from '@/components/class/ClassLessons';
 import ClassGrades from '@/components/class/ClassGrades';
 import ClassRubrics from '@/components/class/ClassRubrics';
-import ClassPeople from '@/components/class/ClassPeople';
 import ClassAttendance from '@/components/class/ClassAttendance';
 import ClassAnalytics from '@/components/class/ClassAnalytics';
 import ClassSettings from '@/components/class/ClassSettings';
 
+const TABS = [
+  { value: 'overview', label: 'Overview' },
+  { value: 'assignments', label: 'Assignments' },
+  { value: 'gradebook', label: 'Gradebook' },
+  { value: 'attendance', label: 'Attendance' },
+  { value: 'students', label: 'Students' },
+  { value: 'resources', label: 'Resources' },
+  { value: 'settings', label: 'Settings' },
+];
+
+/**
+ * Eleven tabs became seven. The old ones still resolve, so links and
+ * bookmarks into a class keep working: each lands on the tab that now holds
+ * what it used to show.
+ */
+const LEGACY = {
+  today: ['overview'], stream: ['overview'],
+  lessons: ['resources', 'lessons'], materials: ['resources', 'materials'],
+  grades: ['gradebook', 'marks'], rubrics: ['gradebook', 'rubrics'], analytics: ['gradebook', 'analytics'],
+  people: ['students'],
+};
+
+/**
+ * One class, for the teacher who teaches it.
+ *
+ * Used to be the only teacher page without the sidebar: opening a class took
+ * the navigation away and left an eleven-tab strip in its own visual language.
+ * It now sits in the same frame as Today, Classes and Marking.
+ */
 export default function TeacherClassWorkspace({ classData, user, initialTab }) {
-  const [activeTab, setActiveTab] = useState(initialTab || 'today');
+  const [first, firstSub] = LEGACY[initialTab] || [TABS.some((t) => t.value === initialTab) ? initialTab : 'overview'];
+  const [tab, setTab] = useState(first);
+  const [gradebookView, setGradebookView] = useState(first === 'gradebook' && firstSub ? firstSub : 'marks');
+  const [resourcesView, setResourcesView] = useState(first === 'resources' && firstSub ? firstSub : 'materials');
+  const [creating, setCreating] = useState(false);
+  const load = useTeacherLoad({ classId: classData.id });
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    params.set('tab', activeTab);
-    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
-  }, [activeTab]);
+  const students = classData.student_ids?.length || 0;
+  const eyebrow = [
+    classData.subject?.name,
+    classData.section && `Section ${classData.section}`,
+    classData.room && `Room ${classData.room}`,
+    `${students} student${students === 1 ? '' : 's'}`,
+  ].filter(Boolean).join(' · ');
 
-  const groups = [
-    { label: 'Home', tabs: [
-      { id: 'today', label: 'Today', icon: LayoutGrid },
-      { id: 'stream', label: 'Stream', icon: MessageSquare },
-    ]},
-    { label: 'Teach', tabs: [
-      { id: 'assignments', label: 'Assignments', icon: ClipboardList },
-      { id: 'lessons', label: 'Lessons', icon: CalendarDays },
-      { id: 'materials', label: 'Materials', icon: FolderOpen },
-    ]},
-    { label: 'Assess', tabs: [
-      { id: 'grades', label: 'Grades', icon: BarChart3 },
-      { id: 'rubrics', label: 'Rubrics', icon: BookMarked },
-      { id: 'attendance', label: 'Attendance', icon: CheckSquare },
-    ]},
-    { label: 'Manage', tabs: [
-      { id: 'people', label: 'Roster', icon: Users },
-      { id: 'analytics', label: 'Analytics', icon: TrendingUp },
-      { id: 'settings', label: 'Settings', icon: Settings },
-    ]},
-  ];
+  const canCreate = classData.status !== 'archived' && ['overview', 'assignments'].includes(tab);
 
   return (
-    <div className="min-h-screen scholr-sunk">
-      <ClassHeader classData={classData} />
-      <ClassTabBar groups={groups} activeTab={activeTab} onTabChange={setActiveTab} />
+    <TeacherPage
+      title={classData.name}
+      eyebrow={eyebrow}
+      tabs={TABS}
+      activeTab={tab}
+      onTabChange={setTab}
+      actions={canCreate ? (
+        <button type="button" className="pub-btn pub-btn-primary scholr-focus" onClick={() => setCreating(true)}>
+          <Plus className="w-4 h-4" /> New assignment
+        </button>
+      ) : null}
+    >
+      {classData.status === 'archived' && (
+        <Notice title="This class is archived">You can look back at its work and marks, but nothing new can be set.</Notice>
+      )}
+      {load.error && <Notice tone="crit" title="Some of this class didn't load">{String(load.error.message || load.error)}</Notice>}
 
-      <div className="min-h-[calc(100vh-180px)]">
-        {activeTab === 'today' && <TeacherTodayTab classData={classData} onNavigate={setActiveTab} />}
-        {activeTab === 'stream' && <ClassStream classData={classData} isTeacher userId={user.id} />}
-        {activeTab === 'assignments' && <ClassAssignments classData={classData} isTeacher userId={user.id} />}
-        {activeTab === 'lessons' && <ClassLessons classData={classData} isTeacher userId={user.id} />}
-        {activeTab === 'materials' && <ClassMaterials classData={classData} isTeacher />}
-        {activeTab === 'grades' && <ClassGrades classData={classData} isTeacher isStudent={false} userId={user.id} />}
-        {activeTab === 'rubrics' && <ClassRubrics classData={classData} />}
-        {activeTab === 'attendance' && <ClassAttendance classData={classData} isTeacher userId={user.id} />}
-        {activeTab === 'people' && <ClassPeople classData={classData} />}
-        {activeTab === 'analytics' && <ClassAnalytics classData={classData} isTeacher />}
-        {activeTab === 'settings' && <ClassSettings classData={classData} isTeacher />}
-      </div>
-    </div>
+      {load.isLoading && ['overview', 'assignments', 'gradebook', 'students'].includes(tab) ? <PageLoading /> : (
+        <>
+          {tab === 'overview' && <ClassOverview classData={classData} load={load} onTab={setTab} userId={user.id} />}
+          {tab === 'assignments' && <ClassAssignmentList classData={classData} load={load} />}
+          {tab === 'gradebook' && (
+            <>
+              <div style={{ alignSelf: 'flex-start', maxWidth: '100%', overflowX: 'auto' }}><Segmented
+                label="Gradebook views"
+                value={gradebookView}
+                onChange={setGradebookView}
+                options={[
+                  { value: 'marks', label: 'Marks' },
+                  { value: 'other', label: 'Other marks & predicted' },
+                  { value: 'rubrics', label: 'Rubrics' },
+                  { value: 'analytics', label: 'Analytics' },
+                ]}
+              /></div>
+              {gradebookView === 'marks' && <ClassMarksGrid classData={classData} load={load} />}
+              {gradebookView === 'other' && <ClassGrades classData={classData} isTeacher isStudent={false} userId={user.id} />}
+              {gradebookView === 'rubrics' && <ClassRubrics classData={classData} />}
+              {gradebookView === 'analytics' && <ClassAnalytics classData={classData} isTeacher />}
+            </>
+          )}
+          {tab === 'attendance' && <ClassAttendance classData={classData} isTeacher userId={user.id} />}
+          {tab === 'students' && <ClassStudents classData={classData} load={load} />}
+          {tab === 'resources' && (
+            <>
+              <div style={{ alignSelf: 'flex-start' }}><Segmented
+                label="Resources views"
+                value={resourcesView}
+                onChange={setResourcesView}
+                options={[{ value: 'materials', label: 'Materials' }, { value: 'lessons', label: 'Lesson plans' }]}
+              /></div>
+              {resourcesView === 'materials' && <ClassMaterials classData={classData} isTeacher />}
+              {resourcesView === 'lessons' && <ClassLessons classData={classData} isTeacher userId={user.id} />}
+            </>
+          )}
+          {tab === 'settings' && <ClassSettings classData={classData} isTeacher />}
+        </>
+      )}
+
+      <CreateAssignment classData={classData} userId={user.id} open={creating} onOpenChange={setCreating} />
+    </TeacherPage>
   );
 }
