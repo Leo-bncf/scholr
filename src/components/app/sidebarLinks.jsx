@@ -17,11 +17,14 @@ export function getAppSidebarLinks(role) {
   switch (role) {
     case 'teacher':
       return [
-        { label: 'Workspace', page: 'TeacherWorkspace', icon: ClipboardCheck },
-        { label: 'Curriculum', page: 'CurriculumMapping', icon: BookOpen },
+        // In the order a teaching day runs: what's on, which class, what to
+        // mark. Dashboard used to sit fourth, below Curriculum and Calendar,
+        // although it is the page a teacher lands on after signing in.
+        { label: 'Today', page: 'TeacherDashboard', icon: LayoutDashboard },
+        { label: 'Classes', page: 'TeacherClasses', icon: Users },
+        { label: 'Marking', page: 'TeacherWorkspace', icon: ClipboardCheck },
         { label: 'Calendar', page: 'UnifiedCalendar', icon: CalendarDays },
-        { label: 'Dashboard', page: 'TeacherDashboard', icon: LayoutDashboard },
-        { label: 'My Classes', page: 'TeacherClasses', icon: BookOpen },
+        { label: 'Curriculum', page: 'CurriculumMapping', icon: BookOpen },
         { label: 'Messages', page: 'Messages', icon: MessageSquare },
         { label: 'Settings', page: 'PersonalSettings', icon: Settings },
       ];

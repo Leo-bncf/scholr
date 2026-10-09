@@ -23,6 +23,15 @@ export function listForClassOnDate(classId, date) {
   );
 }
 
+/** Registers for several classes on one day — "which have I not taken yet". */
+export function listForClassesOnDate(classIds, date) {
+  if (!classIds?.length) return Promise.resolve([]);
+  return rows(
+    supabase.from('attendance_records').select(COLUMNS).in('class_id', classIds).eq('date', date),
+    'attendance.listForClassesOnDate',
+  );
+}
+
 export function listForClassBetween(classId, from, to) {
   return rows(
     supabase

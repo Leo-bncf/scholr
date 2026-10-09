@@ -1,90 +1,86 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import RoleGuard from '@/components/auth/RoleGuard';
-import AppSidebar from '@/components/app/AppSidebar';
+import { format } from 'date-fns';
+import { Group, Row, GroupEmpty } from '@/components/app/AppShell';
+import StatusChip from '@/components/app/StatusChip';
+import TeacherPage from '@/components/teacher/TeacherPage';
+import { ClassSignals, PageLoading } from '@/components/teacher/bits';
+import { useTeacherLoad } from '@/components/teacher/useTeacherLoad';
+import { classUrl } from '@/components/teacher/links';
 import { useUser } from '@/components/auth/UserContext';
-import { LayoutDashboard, BookOpen, MessageSquare, Loader2, Users } from 'lucide-react';
-import { createPageUrl } from '@/utils';
 import * as classesData from '@/data/classes';
-import { getAppSidebarLinks } from '@/components/app/sidebarLinks';
 
-
+/**
+ * Classes — every class this teacher teaches, as a list.
+ *
+ * Was a grid of cards, each with a coloured stripe picked by position from six
+ * hues (so a class changed colour when the list reordered) and nothing on the
+ * card but a student count. A teacher opens this page to get into a class, and
+ * to see which one needs them; the rows now carry that instead.
+ */
 export default function TeacherClasses() {
-  const { user, school, schoolId } = useUser();
-  const [statusFilter, setStatusFilter] = useState('active');
+  const { schoolId, user, effectiveUserId } = useUser();
+  const teacherId = effectiveUserId || user?.id;
+  const [tab, setTab] = useState('active');
+  const load = useTeacherLoad();
 
-  const { data: classes = [], isLoading } = useQuery({
-    queryKey: ['teacher-classes', schoolId, user?.id],
-    queryFn: async () => {
-      const all = await classesData.where({ school_id: schoolId });
-      return all.filter(c => c.teacher_ids?.includes(user.id));
-    },
-    enabled: !!schoolId && !!user?.id,
+  const { data: archived = [], isLoading: loadingArchived } = useQuery({
+    queryKey: ['teacher-classes-archived', schoolId, teacherId],
+    queryFn: () => classesData.listForTeacher(schoolId, teacherId, { status: 'archived' }),
+    enabled: tab === 'archived' && !!schoolId && !!teacherId,
   });
 
-  const filteredClasses = classes.filter(c => statusFilter === 'all' || c.status === statusFilter);
-  const activeCount = classes.filter(c => c.status === 'active').length;
-  const archivedCount = classes.filter(c => c.status === 'archived').length;
-  const colors = ['bg-indigo-500', 'bg-emerald-500', 'bg-violet-500', 'bg-amber-500', 'bg-rose-500', 'bg-blue-500'];
+  const rows = [...load.byClass.values()];
 
   return (
-    <RoleGuard allowedRoles={['teacher', 'school_admin', 'super_admin', 'admin']}>
-      <div className="min-h-screen scholr-sunk">
-        <AppSidebar links={getAppSidebarLinks('teacher')} role="teacher" schoolName={school?.name} userName={user?.full_name} userId={user?.id} schoolId={schoolId} />
-        <main className="app-offset p-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="mb-6">
-              <h1 className="text-2xl font-bold scholr-ink">My Classes</h1>
-              <p className="text-sm scholr-muted mt-1">Classes you're teaching</p>
-            </div>
+    <TeacherPage
+      title="Classes"
+      eyebrow={load.classes.length ? `${load.classes.length} teaching this year` : undefined}
+      tabs={[
+        { value: 'active', label: 'Teaching' },
+        { value: 'archived', label: 'Archived' },
+      ]}
+      activeTab={tab}
+      onTabChange={setTab}
+    >
+      {tab === 'active' && (load.isLoading ? <PageLoading /> : (
+        <Group>
+          {rows.length === 0 ? (
+            <GroupEmpty>You aren't teaching any classes yet. When your school adds you to one it will appear here.</GroupEmpty>
+          ) : rows.map((r) => (
+            <Row
+              key={r.cls.id}
+              href={classUrl(r.cls.id)}
+              label={r.cls.name}
+              detail={[
+                r.cls.subject?.name,
+                `${r.students} student${r.students === 1 ? '' : 's'}`,
+                r.cls.room && `Room ${r.cls.room}`,
+                r.nextDue && `next due ${format(new Date(r.nextDue.due_date), 'd MMM')}`,
+              ].filter(Boolean).join(' · ')}
+            >
+              <ClassSignals row={r} />
+            </Row>
+          ))}
+        </Group>
+      ))}
 
-            {isLoading ? (
-              <div className="flex items-center justify-center py-20"><Loader2 className="w-8 h-8 animate-spin scholr-accent" /></div>
-            ) : classes.length === 0 ? (
-              <div className="bg-white rounded-xl border scholr-rule-soft p-16 text-center">
-                <BookOpen className="w-12 h-12 scholr-faint mx-auto mb-4" />
-                <p className="scholr-muted">No classes assigned yet</p>
-              </div>
-            ) : (
-              <>
-                <div className="flex items-center gap-2 mb-6 flex-wrap">
-                  {[
-                    { key: 'active', label: 'Active', count: activeCount, color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-                    { key: 'archived', label: 'Archived', count: archivedCount, color: 'scholr-sunk scholr-muted scholr-rule' },
-                    { key: 'all', label: 'All', count: classes.length, color: 'bg-white scholr-muted scholr-rule' },
-                  ].map(({ key, label, count, color }) => (
-                    <button
-                      key={key}
-                      onClick={() => setStatusFilter(key)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${color} ${statusFilter === key ? 'ring-2 scholr-accent-rule ring-offset-1' : ''}`}
-                    >
-                      {label} <span className="font-bold">{count}</span>
-                    </button>
-                  ))}
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {filteredClasses.map((c, i) => (
-                  <a key={c.id} href={createPageUrl('ClassWorkspace') + `?class_id=${c.id}`}>
-                    <div className="bg-white rounded-xl border scholr-rule-soft overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-                      <div className={`h-2 ${colors[i % colors.length]}`} />
-                      <div className="p-6">
-                        <h3 className="font-bold scholr-ink text-lg">{c.name}</h3>
-                        <p className="text-sm scholr-faint mt-1">{c.section ? `Section ${c.section}` : ''} {c.room ? `· Room ${c.room}` : ''}</p>
-                        <div className="flex items-center gap-2 mt-4 text-sm scholr-muted">
-                          <Users className="w-4 h-4" />
-                          <span>{c.student_ids?.length || 0} students</span>
-                        </div>
-                      </div>
-                    </div>
-                  </a>
-                ))}
-              </div>
-              </>
-            )}
-          </div>
-        </main>
-      </div>
-    </RoleGuard>
+      {tab === 'archived' && (loadingArchived ? <PageLoading /> : (
+        <Group>
+          {archived.length === 0 ? (
+            <GroupEmpty>No archived classes. Classes from earlier years appear here once your school archives them.</GroupEmpty>
+          ) : archived.map((c) => (
+            <Row
+              key={c.id}
+              href={classUrl(c.id)}
+              label={c.name}
+              detail={[c.subject?.name, `${c.student_ids?.length || 0} students`].filter(Boolean).join(' · ')}
+            >
+              <StatusChip tone="mute">Archived</StatusChip>
+            </Row>
+          ))}
+        </Group>
+      ))}
+    </TeacherPage>
   );
 }
